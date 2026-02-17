@@ -1,0 +1,46 @@
+/* Tab Selector Container */
+.tab-selector-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+/* Tab Selector Button */
+.tab-selector-button {
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-selector-button.active {
+    background-color: #FFF;
+    border: 1px solid var(--sayso-border);
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
+}
+
+.tab-selector-button svg,
+.tab-selector-button p {
+    color: var(--sayso-lightgray);
+    transition: color 0.2s ease;
+}
+
+.tab-selector-button.active svg,
+.tab-selector-button.active p {
+    color: var(--sayso-dark);
+}
+
+.tab-selector-button p {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+}
+

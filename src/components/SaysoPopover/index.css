@@ -1,0 +1,23 @@
+.popover-trigger {
+    display: flex;
+    gap: 8px;
+    border: 1px solid var(--sayso-border);
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #FFF;
+}
+
+.popover-trigger:hover {
+    background-color: var(--sayso-white);
+}
+
+.popover-content {
+    padding: 8px !important;
+    border-radius: 12px;
+    box-shadow: 0px 4px 6px -2px #0000000D;
+    width: auto !important;
+}

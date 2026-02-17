@@ -1,0 +1,32 @@
+.view-layout-container {
+    width: calc(100% - 260px);
+    height: 100vh;
+    padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    overflow: hidden;
+    position: relative;
+    color: var(--sayso-dark);
+    gap: 24px
+}
+
+.view-layout-container.scrollable {
+    overflow-y: auto;
+}
+
+.view-container-header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.view-container-header h1 {
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--sayso-indigo);
+    margin: 0;
+    text-align: left;
+}

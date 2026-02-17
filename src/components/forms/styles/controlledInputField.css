@@ -1,0 +1,143 @@
+.loginInFormInputLabel {
+  display: block !important;
+  font-weight: 500 !important;
+  font-size: 15px !important;
+  color: var(--sayso-darkgray) !important;
+}
+
+.controlledInputFieldGroup .inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.controlledInputFieldGroup .inputRightChildren {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sayso-darkgray);
+}
+
+.controlledInputFieldGroup .formInput {
+  outline: none;
+  padding: 11px 13px;
+  border: 1px solid var(--sayso-border);
+  border-radius: 6px;
+  font-size: 0.95em;
+  background-color: white;
+  color: var(--sayso-darkgray);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.controlledInputFieldGroup .formInput:focus {
+  border: 1px solid var(--sayso-indigo);
+  outline: none;
+}
+
+.controlledInputFieldGroup .formInput:invalid {
+  outline: none;
+  box-shadow: none;
+}
+
+.controlledInputFieldGroup .formInput:invalid:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Custom validation error styling */
+.controlledInputFieldGroup .formInput:invalid {
+  border-color: var(--sayso-error);
+  background-color: #fff5f5;
+}
+
+.controlledInputFieldGroup .formInput:invalid:focus {
+  border-color: var(--sayso-error);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+}
+
+/* Custom error styling for validation */
+.controlledInputFieldGroup .formInput.error {
+  border-color: var(--sayso-error);
+  background-color: #fff5f5;
+}
+
+.controlledInputFieldGroup .formInput.error:focus {
+  border-color: var(--sayso-error);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+}
+
+/* Custom error message styling */
+.controlledInputFieldGroup .fieldError {
+    color: var(--sayso-error);
+    display: flex;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.toggleText {
+    margin-top: 20px;
+    text-align: center;
+    color: #52617a;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .toggleText:hover {
+    color: #4a85e5;
+  }
+
+/* Textarea styles */
+.controlledTextarea {
+  outline: none;
+  padding: 11px 13px;
+  border: 1px solid var(--sayso-border);
+  border-radius: 6px;
+  font-size: 0.95em;
+  background-color: white;
+  color: var(--sayso-darkgray);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.controlledTextarea:focus {
+  border: 1px solid var(--sayso-indigo);
+  outline: none;
+}
+
+.controlledTextarea.error {
+  border-color: var(--sayso-error);
+  background-color: #fff5f5;
+}
+
+.controlledTextarea.error:focus {
+  border-color: var(--sayso-error);
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.15);
+}
+
+/* Select styles */
+.controlledSelect {
+  border: 1px solid var(--sayso-border);
+  background-color: white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.controlledSelect:focus-within {
+  border: 1px solid var(--sayso-indigo);
+  outline: none;
+}
+
+.controlledSelect.error {
+  border-color: var(--sayso-error);
+  background-color: #fff5f5;
+}
+
+.controlledSelect.error:focus-within {
+  border-color: var(--sayso-error);
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.15);
+}

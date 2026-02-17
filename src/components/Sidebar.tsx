@@ -1,0 +1,134 @@
+import { useMemo, useState } from 'react';
+
+import { NavLink } from 'react-router-dom'
+import {
+    LuUsers,
+    LuLogOut,
+    LuChevronRight,
+    LuSettings,
+    LuCreditCard,
+    LuCircleUser,
+    LuCircleHelp,
+} from 'react-icons/lu'
+
+
+import Divider from './Divider';
+import { openExternal } from '../utils/helpers/openExternal';
+import SaysoModal from './SaysoModal';
+
+import { useAuth } from '../context/AuthContext';
+
+import logoHorizontal from '/assets/logo-pos-horizontal.png';
+import '../styles/Sidebar.css';
+
+
+export default function Sidebar() {
+
+    //STATE
+    const [showSignOutModal, setShowSignOutModal] = useState(false);
+
+    //HOOKS
+    const { globalUser, handleSignOut } = useAuth();
+    const hasSubscription = useMemo(() => !!globalUser?.subscription_plan_id, [globalUser]);
+    
+    // const navigationItems = [
+    //     {
+    //         label: 'Dashboard',
+    //         icon: <LuUsers />,
+    //         path: '/',
+    //     },
+    //     {
+    //         label: 'Admin',
+    //         icon: <LuSettings />,
+    //         path: '/admin',
+    //     },
+    //     {
+    //         label: 'Account',
+    //         icon: <LuCircleUser />,
+    //         path: '/account',
+    //     },
+    //     {
+    //         label: 'Subscription',
+    //         icon: <LuCreditCard />,
+    //         path: '/subscription',
+    //     },
+    // ]
+
+    return (
+        <div className="sidebar-container">
+            {showSignOutModal && (
+                <SaysoModal
+                    title="Sign Out"
+                    text="Are you sure you want to sign out?"
+                    onConfirm={handleSignOut}
+                    primaryText="Sign Out"
+                    secondaryText="Cancel"
+                    onDeny={() => setShowSignOutModal(false)}
+                />
+            )}
+            <div className='full-w'>
+                <div className="sidebar-header">
+                    <img src={logoHorizontal} alt="Sayso Logo" />
+                </div>
+                <div className='sidebar-nav-container'>
+                    {hasSubscription && 
+                        <NavLink to="/" >
+                            <div className="outline"></div>
+                            <div className='sidebar-nav-item'>
+                                <LuUsers />
+                                <p>Dashboard</p>
+                            </div>
+                        </NavLink>
+                    }
+                    {globalUser?.isAdmin && (
+                    <NavLink to="/admin" >
+                        <div className="outline"></div>
+                        <div className='sidebar-nav-item'>
+                            <LuSettings />
+                            <p>Admin</p>
+                        </div>
+                    </NavLink>
+                    )}
+                    <NavLink to="/account" >
+                        <div className="outline"></div>
+                        <div className='sidebar-nav-item'>
+                            <LuCircleUser />
+                            <p>Account</p>
+                        </div>
+                    </NavLink>
+                    <NavLink to="/subscription" >
+                        <div className="outline"></div>
+                        <div className='sidebar-nav-item'>
+                            <LuCreditCard />
+                            <p>Subscription</p>
+                        </div>
+                    </NavLink>
+                </div>
+            </div>
+            <div className="sidebar-footer">
+                <div className='account-widget'>
+                    <div className='account-widget-active-container'>
+                        <div className='account-widget-icon'>
+                            <p>{globalUser?.name?.charAt(0)}{globalUser?.lastname?.charAt(0)}</p>
+                        </div>
+                    </div>
+                    <div className='account-widget-info'>
+                        <div className='account-widget-info-header'>
+                            <h3>{globalUser?.name} {globalUser?.lastname}</h3>
+                        </div>
+                        <p>{globalUser?.email}</p>
+                    </div>
+                </div>
+                <Divider />
+                <div className='sidebar-footer-button' onClick={() => openExternal('mailto:dev@asksayso.com')}>
+                    <LuCircleHelp />
+                    <p>Support</p>
+                </div>
+                <div className='sidebar-footer-button' onClick={() => setShowSignOutModal(true)}>
+                    <LuLogOut />
+                    <p>Log Out</p>
+                </div>
+            </div>
+        </div>
+    );
+}

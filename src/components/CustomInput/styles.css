@@ -1,0 +1,81 @@
+.customInputFormGroup {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.customInputFormGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--sayso-darkgray);
+}
+
+.customInputFormGroup .formInput {
+  outline: none;
+  padding: 11px 13px;
+  border: 1px solid var(--sayso-border);
+  border-radius: 6px;
+  font-size: 0.95em;
+  background-color: white;
+  color: var(--sayso-darkgray);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.customInputFormGroup .formInput:focus {
+  border: 1px solid var(--sayso-indigo);
+  outline: none;
+}
+
+.customInputFormGroup .formInput:invalid {
+  outline: none;
+  box-shadow: none;
+}
+
+.customInputFormGroup .formInput:invalid:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Custom validation error styling */
+.customInputFormGroup .formInput:invalid {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+.customInputFormGroup .formInput:invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+}
+
+/* Custom error styling for validation */
+.customInputFormGroup .formInput.error {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+.customInputFormGroup .formInput.error:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+}
+
+/* Custom error message styling */
+.customInputFormGroup .fieldError {
+    color: #dc3545;
+    display: flex;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.toggleText {
+    margin-top: 20px;
+    text-align: center;
+    color: #52617a;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .toggleText:hover {
+    color: #4a85e5;
+  }
