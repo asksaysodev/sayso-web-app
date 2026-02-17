@@ -1,0 +1,52 @@
+.new-file-input-container{
+    width: 100%;
+    height: 112px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--sayso-border);
+    border-radius: 8px;
+    padding: 16px 24px;
+    cursor: pointer;
+    margin-top: 16px;
+    background-color: var(--sayso-white);
+}
+
+.new-file-input-container label{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.new-file-input-container:hover{
+    background-color: var(--sayso-active-lightblue);
+    border-color: var(--sayso-blue);
+    transition: all 0.2s ease;
+}
+
+.new-file-input-container svg{
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: var(--sayso-blue);
+}
+
+.new-file-input-container p{
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: var(--sayso-lightgray);
+}
+
+.new-file-input-container p span{
+    color: black;
+    font-weight: 500;
+}
+
+/* Drag and drop states */
+.new-file-input-container.drag-over{
+    background-color: var(--sayso-active-lightblue);
+    border-color: var(--sayso-blue);
+    cursor: grab;
+}

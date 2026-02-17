@@ -1,0 +1,135 @@
+/* Base button styles - consistent across all variants */
+.sayso-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    border: 1px solid transparent;
+}
+
+.sayso-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.sayso-button.loading {
+    opacity: 0.7;
+    cursor: wait;
+    pointer-events: none;
+}
+
+.sayso-button-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sayso-button-label {
+    white-space: nowrap;
+}
+
+/* Full width modifier */
+.sayso-button.full-width {
+    width: 100%;
+}
+
+/* Variant: sayso-indigo (default) */
+.sayso-button.variant-sayso-indigo {
+    background-color: var(--sayso-indigo);
+    color: white;
+    border: none;
+}
+
+.sayso-button.variant-sayso-indigo:hover:not(:disabled) {
+    background-color: var(--sayso-indigo);
+    filter: brightness(0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+}
+
+.sayso-button.variant-sayso-indigo:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+}
+
+.sayso-button.variant-sayso-indigo:focus-visible {
+    outline: 2px solid var(--sayso-indigo);
+    outline-offset: 2px;
+}
+
+/* Variant: error (destructive actions) */
+.sayso-button.variant-error {
+    background-color: #dc2626;
+    color: white;
+    border: none;
+}
+
+.sayso-button.variant-error:hover:not(:disabled) {
+    background-color: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
+}
+
+.sayso-button.variant-error:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+}
+
+.sayso-button.variant-error:focus-visible {
+    outline: 2px solid #dc2626;
+    outline-offset: 2px;
+}
+
+/* Variant: outlined (secondary actions) */
+.sayso-button.variant-outlined {
+    background-color: #FFF;
+    color: #000;
+    border: 1px solid var(--sayso-border);
+}
+
+.sayso-button.variant-outlined:hover:not(:disabled) {
+    background-color: var(--sayso-white);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sayso-button.variant-outlined:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.sayso-button.variant-outlined:focus-visible {
+    outline: 2px solid var(--sayso-border);
+    outline-offset: 2px;
+}
+
+/* Variant: blue */
+.sayso-button.variant-blue {
+    background-color: var(--sayso-blue);
+    color: white;
+    border: none;
+}
+
+.sayso-button.variant-blue:hover:not(:disabled) {
+    background-color: var(--sayso-blue);
+    filter: brightness(0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sayso-button.variant-blue:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sayso-button.variant-blue:focus-visible {
+    outline: 2px solid var(--sayso-blue);
+    outline-offset: 2px;
+}

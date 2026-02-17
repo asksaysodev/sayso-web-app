@@ -1,0 +1,43 @@
+.customFileInputWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #dbeafe;
+  height: 2.5rem;
+  cursor: pointer;
+}
+
+.customFileLabel {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 0;
+  cursor: pointer;
+  color: #3b4a6b;
+  font-weight: 200;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+  margin: 0;
+} 
+
+.customFileInput {
+  margin: 0;
+}
+
+/* Disabled state */
+.customFileInputWrapper:has(input:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.customFileInputWrapper:has(input:disabled) .customFileLabel {
+  cursor: not-allowed;
+} 

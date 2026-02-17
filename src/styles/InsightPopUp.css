@@ -1,0 +1,106 @@
+.insight-main-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.insight-container {
+    position: relative;
+    overflow: visible;
+    background: #18181c;
+    border-radius: 500px;
+    padding: 24px 40px;
+    /* box-shadow: 0 0 32px 0 rgb(0, 0, 0); */
+    backdrop-filter: blur(10px);
+    z-index: 1;
+    opacity: 0;
+    transform: scale(0);
+    animation: popIn 0.3s ease-out forwards;
+}
+
+.insight-container.closing {
+    animation: popOut 0.3s ease-in forwards;
+}
+
+.insight-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 108%;
+    height: 108%;
+    transform: translate(-50%, -50%);
+    border-radius: 500px;
+    z-index: -2;
+    background: conic-gradient(
+        from 0deg,
+        #002bff,
+        #7a00ff,
+        #ff00c8,
+        #ff5e00,
+        #ff9900,
+        #002bff
+    );
+    filter: blur(8px);
+    opacity: 0.7;
+    animation: glowing 3s linear infinite;
+    pointer-events: none;
+}
+
+.insight-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 500px;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: -1;
+    pointer-events: none;
+}
+
+@keyframes glowing {
+    0% {
+        filter: blur(24px) hue-rotate(260deg);
+    }
+    70% {
+        filter: blur(24px) hue-rotate(240deg);
+    }
+    100% {
+        filter: blur(24px) hue-rotate(260deg);
+    }
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes popOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+.insight-container p {
+    margin: 0;
+    font-size: 1.2rem;
+    color: white;
+}

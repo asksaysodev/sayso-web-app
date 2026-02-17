@@ -1,0 +1,141 @@
+.content-template {
+  /* padding: 2rem; */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 500px;
+  align-items: center;
+}
+
+.content-template label {
+  /* font-size: 1.2rem;
+  font-weight: 500; */
+  color: var(--blue0);
+  text-align: left;
+}
+
+.content-header {
+  height: 2rem;
+  margin-bottom: 3rem;
+  /* padding-bottom: 1rem; */
+}
+
+.addProspectForm {
+  padding: 35px, 0px; /* More padding */
+  border-radius: 10px; 
+  width: 500px;
+}
+
+.content-header h1 {
+  font-size: 1.8rem;
+  color: var(--blue0);
+  margin: 0;
+  padding-bottom: 0.5rem;
+}
+
+.content-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.content-actions {
+  display: flex;
+  width: 500px;
+  gap: 1rem;
+}
+
+.content-actions .btn-primary,
+.content-actions .btn-secondary {
+  flex: 1 1 0;
+  width: 50%;
+  max-width: 100%;
+}
+
+/* If there's only one button, make it take full width */
+.content-actions .btn-primary:only-child,
+.content-actions .btn-secondary:only-child {
+  width: 100%;
+  flex-basis: 100%;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--blue0);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: var(--blue1);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--blue0);
+  border: 1px solid var(--blue1);
+}
+
+.btn-secondary:hover {
+  background: var(--blue1);
+  color: white;
+}
+
+.file-upload-section {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.selected-files {
+  margin-top: 15px;
+}
+
+.selected-files h3 {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.selected-files ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.file-item span {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.remove-file-btn {
+  background: none;
+  border: none;
+  color: #ff4444;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.2s;
+}
+
+.remove-file-btn:hover {
+  color: #cc0000;
+} 

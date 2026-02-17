@@ -1,0 +1,31 @@
+.cta-bar-main {
+    width: 100%;
+    background-color: var(--sayso-lightblue);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cta-bar-body {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    text-align: left;
+    margin-right: 16px;
+}
+
+.cta-bar-body h2 {
+    font-size: 18px;
+    font-weight: 400;
+    color: black;
+    margin-bottom: 12px;
+}
+
+.cta-bar-body p {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--sayso-darkblue);
+}

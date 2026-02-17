@@ -1,0 +1,334 @@
+.prospects-container-main {
+    width: calc(100% - 260px);
+    height: 100vh;
+    padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    overflow: hidden;
+    position: relative;
+}
+
+.prospects-container-header {
+    width: 100%;
+    justify-content: start;
+    margin-bottom: 32px;
+}
+
+.prospects-container-header h1 {
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--sayso-indigo);
+    margin: 0;
+    text-align: left;
+}
+
+.prospects-container-body {
+    width: 100%;
+    height: 100%;
+}
+
+.prospects-toolbar-container {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.prospect-searchbar-container {
+    width: 336px;
+    height: 100%;
+    background-color: white;
+    border-radius: 6px;
+    color: var(--sayso-darkblue);
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border: 1px solid var(--sayso-border);
+}
+
+.prospect-searchbar-container input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    padding: 0 6px;
+}
+
+.prospect-searchbar-container:focus-within {
+    border: 1px solid var(--sayso-indigo);
+    /* box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1); */
+}
+
+.prospect-view-toggle {
+  height: 100%;
+  width: 218px;
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 4px;
+  border: 1px solid var(--sayso-border);
+  background-color: var(--sayso-gray);
+  position: relative;
+}
+
+.prospect-view-toggle::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background-color: white;
+  border-radius: 2px;
+  transition: transform 0.15s ease;
+  z-index: 1;
+}
+
+.prospect-view-toggle[data-view="list"]::before {
+  transform: translateX(100%);
+}
+
+.prospect-view-toggle-button {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 2px;
+  color: var(--sayso-lightgray);
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.prospect-view-toggle-button:hover {
+    color: black;
+  }
+
+.prospect-view-toggle-button.active {
+  color: black;
+}
+
+.prospect-view-toggle-button p {
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.prospect-view-toggle-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.add-prospect-button {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100px;
+    background-color: var(--sayso-indigo);
+    color: white;
+    padding: 0 14px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 20px;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+
+}
+
+.add-prospect-button:hover {
+    opacity: 0.9;
+}
+
+.add-prospect-button p {
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.prospects-list-container {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 300px)
+    
+}
+
+.prospect-cards-container{
+    width: 100%;
+    /* height: 100%; */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 18px;
+    padding-top: 4px;
+    /* border: 1px solid red; */
+}
+
+.prospects-list-container {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 300px);
+    /* padding-right: 4px; */
+    
+    /* Modern scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(205, 205, 205, 0.3) transparent;
+}
+
+.prospects-list-container::-webkit-scrollbar {
+
+    width: 6px;
+}
+
+.prospects-list-container::-webkit-scrollbar-track {
+
+    background: transparent;
+}
+
+.prospects-list-container::-webkit-scrollbar-thumb {
+    
+    background: rgba(230, 230, 230, 0.3);
+    border-radius: 3px;
+}
+
+.prospects-list-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(188, 188, 188, 0.5);
+}
+
+.prospect-listview-container {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 300px);
+    padding: 24px;
+    background-color: white;
+    border-radius: 12px;
+    border: 1px solid var(--sayso-border);
+    color: var(--sayso-darkgray);
+}
+
+.prospect-list-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.prospect-header-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    padding-right: 8px;
+    opacity: 0.8;
+    font-size: 16px;
+}
+
+.prospect-header-item h4{
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--sayso-darkgray);
+    opacity: 0.8;
+}
+
+.prospect-header-item svg{
+    margin-right: 8px;
+}
+
+.prospect-listview-container .prospect-list-name{
+    width: calc(50% - 120px);
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.prospect-listview-container .prospect-list-company{
+    padding-left: 4px;
+    width: calc(50% - 150px);
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.prospect-listview-container .prospect-list-files{
+    width: 120px;
+    display: flex;
+    justify-content: center;
+}
+
+.prospect-listview-container .prospect-list-action{
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    /* flex-direction: column; */
+    
+}
+
+.prospect-list-items-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    /* padding-right: 4px; */
+}
+
+.prospect-list-action-button{
+    height: 36px;
+    padding: 0 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--sayso-white);
+    border-radius: 100px;
+    cursor: pointer;
+}
+
+.prospect-list-action-button p{
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--sayso-darkgray);
+}
+
+.prospect-list-action-button svg{
+    margin-left: 8px;
+}
+
+.prospect-list-action-button:hover{
+    background-color: var(--sayso-lightgray);
+    color: white;
+}
+
+.prospect-list-action-button:hover p{
+    color: white;
+}
+
+.no-prospects-found-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--sayso-lightgray);
+    padding-top: 24px;
+}
+
+.no-prospects-found-container .add-prospect-button{
+    margin: 0;
+    margin-top: 24px;
+    height: 40px;
+}

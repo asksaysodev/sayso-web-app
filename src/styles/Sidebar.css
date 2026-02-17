@@ -1,0 +1,235 @@
+.sidebar-container {
+  width: 256px;
+  height: 100%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 24px;
+  padding: 28px 8px 16px 8px;
+}
+
+.sidebar-footer {
+  width: 100%;
+}
+
+.sidebar-header {
+  width: 100%;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.sidebar-header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--sayso-indigo);
+  text-align: left;
+  margin-left: 8px;
+}
+
+.sidebar-header img {
+  margin-top: 6px;
+  height: 22px;
+  opacity: 1;
+  margin-left: 8px;
+  height: 30px;
+}
+
+.sidebar-nav-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  gap: 12px;
+}
+
+.sidebar-container a {
+  width: 100%;
+  text-decoration: none;
+  position: relative;
+}
+
+.sidebar-nav-container .outline {
+  display: none;
+}
+
+/* .sidebar-nav-container .active .outline{
+  display: block;
+  width: 100%;
+  height: 44px;
+  border-radius: 10px;
+  background-color: var(--sayso-yellow);
+  position: absolute;
+  top: 3px;
+  left: 0;
+  opacity: 0.6;
+} */
+
+
+.sidebar-nav-container a:hover .outline {
+    opacity: 1;
+}
+
+.sidebar-nav-container svg {
+    font-size: 18px;
+    opacity: 0.8;
+}
+
+.sidebar-nav-container a:hover svg {
+    opacity: 1;
+}
+
+.active .sidebar-nav-item {
+	background-color: var(--sayso-white);
+	opacity: 1;
+}
+
+.sidebar-nav-item {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  border-radius: 8px;
+  color: var(--sayso-indigo);
+  color: black;
+  position: relative;
+  padding: 16px 8px;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.sidebar-nav-item p {
+  margin-left: 8px;
+  transition: margin-left 0.2s ease;
+}
+
+.sidebar-nav-item:hover p {
+    margin-left: 12px;
+    font-weight: 500;
+
+}
+
+.sidebar-footer .sidebar-footer-button {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  border-radius: 8px;
+  color: black;
+  padding: 16px 8px;
+  cursor: pointer;
+  margin: 16px 0;
+}
+
+.sidebar-footer .sidebar-footer-button:hover {
+  background-color: var(--sayso-white);
+}
+
+.sidebar-footer .sidebar-footer-button p {
+    margin-left: 8px;
+    transition: margin-left 0.2s ease;
+}
+
+.sidebar-footer .sidebar-footer-button:hover p {
+    margin-left: 12px;
+    font-weight: 500;
+
+}
+.sidebar-footer .account-widget {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  border-radius: 8px;
+  padding: 16px 8px;
+  background-color: white;
+  margin: 16px 0;
+}
+
+.sidebar-footer .active .account-widget {
+    background-color: var(--sayso-active-lightblue);
+
+}
+
+.account-widget-active-container {
+  /* width: 40px; */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-widget-info-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.account-widget-info-header svg {
+  font-size: 20px;
+  opacity: 1;
+  transition: transform 0.2s ease;
+  color: black;
+  opacity: 0.8;
+}
+
+.account-widget:hover svg {
+  animation: pivotChevron 0.4s ease-in-out;
+  opacity: 1;
+}
+
+@keyframes pivotChevron {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(1px) ; }
+    75% { transform: translateX(-2px); }
+}
+
+.account-widget-info {
+    text-align: left;
+    margin-left: 4px;
+    width: 100%;
+}
+
+.account-widget-info h3 {
+  margin: 0;
+  text-decoration: none;
+  color: black;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.account-widget-info p {
+    margin: 0;
+    text-decoration: none;
+    color: black;
+    opacity: 0.6;
+    font-size: 14px;
+}
+
+.account-widget-active-container .account-widget-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--sayso-white);
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.active .account-widget-icon  {
+    background-color: white;
+}   

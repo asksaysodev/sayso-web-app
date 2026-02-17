@@ -1,0 +1,72 @@
+.prospect-list-item{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: white;
+    border-radius: 14px;
+}
+
+.prospect-list-item-content{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 14px;
+    background-color: white;
+    z-index: 10;
+    padding: 12px 8px;
+    border: 1px solid white;
+}
+
+.prospect-list-item:hover .prospect-list-item-content{
+    border: 1px solid var(--sayso-border);
+}
+
+.prospect-list-item .outline{
+    position: absolute;
+    top: 11px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background-color: var(--sayso-yellow);
+    border-radius: 16px;
+    z-index: 9;
+}
+
+.prospect-item-content-div{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+}
+
+.prospect-item-content-div p{
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--sayso-darkgray);
+}
+
+.prospect-list-item-content .prospect-card-header-content-info p{
+    font-weight: 200;
+}
+
+.prospect-list-item .prospect-list-file-badge{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--sayso-border);
+}
+
+.prospect-list-item-divider{
+    width: 100%;
+    height: 1px;
+    background-color: var(--sayso-border);
+    margin: 6px 0;
+    opacity: 0.5;
+}

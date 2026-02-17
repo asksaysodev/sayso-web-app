@@ -1,0 +1,95 @@
+.sayso-modal-view-container{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.sayso-modal-container {
+    width: 516px;
+    background-color: var(--sayso-white);
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+}
+
+.sayso-modal-container h2{
+    font-size: 18px;
+    font-weight: 500;
+    color: black;
+    margin-bottom: 8px;
+    text-align: left;
+    width: 100%;
+}
+
+.sayso-modal-container p{
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--sayso-lightgray);
+    margin-bottom: 24px;
+    text-align: left;
+    line-height: 1.4;
+}
+
+.sayso-modal-actions{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.sayso-modal-actions button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 100px;
+    /* border: none; */
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.sayso-modal-actions button:first-child{
+    margin-right: 8px;
+}
+
+.sayso-modal-action-primary{
+    background-color: var(--sayso-indigo);
+    border: 1px solid var(--sayso-indigo);
+    color: white;
+    opacity: 1;
+}
+
+.delete .sayso-modal-action-primary{
+    background-color: var(--sayso-destructive);
+    border: 1px solid var(--sayso-destructive);
+    /* color: white;
+    opacity: 1; */
+}
+
+.sayso-modal-action-primary:hover{
+    opacity: 0.9;
+}
+
+.sayso-modal-action-secondary{
+    border: 1px solid var(--sayso-lightgray);
+    color: var(--sayso-dark);
+}
+
+.sayso-modal-action-secondary:hover{
+    background-color: var(--sayso-border);
+    border: 1px solid var(--sayso-lightgray);
+}

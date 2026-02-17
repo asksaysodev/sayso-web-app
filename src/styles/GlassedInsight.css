@@ -1,0 +1,188 @@
+.glassed-insight-container {
+    position: relative;
+    background: rgba(0, 0, 0, 0.261); /* glassy background */
+    padding: 24px 40px;
+    border-radius: 90px / 95px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.288);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    z-index: 1;
+    overflow: visible;
+    animation: glassedEmergeFromWater 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    transform-origin: center;
+    opacity: 0;
+}
+
+.glassed-insight-container.closing {
+    animation: disappearIntoWater 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.glassed-insight-container::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    right: -12px;
+    bottom: -12px;
+    z-index: 0;
+    border-radius: 100px / 105px;
+    pointer-events: none;
+    background: linear-gradient(45deg, rgba(93, 0, 255, 0.345), rgba(51,51,255,0.2), rgba(244, 226, 93, 0.141), rgba(30, 0, 255, 0.274));
+    background-size: 300% 300%;
+    background-position: 0% 50%;
+    /* border: 2px solid rgba(241, 9, 9, 0.8); */
+    opacity: 0;
+    filter: blur(16px);
+    animation: glassed-glow 5s ease-in-out infinite, emergeGlow 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+}
+
+.glassed-insight-container.closing::before {
+    animation: glassed-glow 5s ease-in-out infinite, disappearGlow 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.glassed-insight-container::after {
+    content: '';
+    position: absolute;
+    /* border: 1px solid rgba(255, 255, 255, 0.074); */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.01) 40%);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    animation: emergeGradient 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.glassed-insight-container.closing::after {
+    animation: disappearGradient 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.glassed-insight-container > * {
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes glassed-glow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 50% 50%; }
+    80% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes glassedEmergeFromWater {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+        border-radius: 100px / 120px;
+        border-color: transparent;
+        background: transparent;
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.01) translateY(-5px);
+        border-radius: 85px / 100px;
+        border-color: transparent;
+        background: transparent;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        border-radius: 90px / 95px;
+        border-color: rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.561);
+    }
+}
+
+@keyframes emergeGlow {
+    0% {
+        opacity: 0;
+        filter: blur(16px);
+    }
+    100% {
+        opacity: 0.6;
+        filter: blur(16px);
+    }
+}
+
+@keyframes disappearIntoWater {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        border-radius: 90px / 95px;
+        border-color: rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.461);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.97) translateY(8px);
+        border-radius: 93px / 98px;
+        border-color: transparent;
+        background: transparent;
+    }
+}
+
+@keyframes disappearGlow {
+    0% {
+        opacity: 0.6;
+        filter: blur(16px);
+    }
+    100% {
+        opacity: 0;
+        filter: blur(20px);
+    }
+}
+
+@keyframes emergeGradient {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.01) translateY(-5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes disappearGradient {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.97) translateY(8px);
+    }
+}
+
+.glassed-insight-container h1{
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    text-align: center;
+}
+
+.glassed-insight-container-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.glassed-insight-container-view{
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    background-color: rgb(14, 13, 13);
+}   
+

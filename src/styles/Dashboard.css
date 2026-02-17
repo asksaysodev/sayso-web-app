@@ -1,0 +1,510 @@
+/* Base styles for the dashboard window */
+.DashboardApp {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f8faff; /* Very light blue/gray background */
+  height: 100vh;
+  overflow: hidden; /* Prevent body scroll */
+}
+
+.dashboardContainer {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+/* --- Sidebar Styles --- */
+/* .sidebar {
+  width: 260px;
+  background-color: #ffffff;
+  border-right: 1px solid #eaf0f6;
+  padding: 20px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 1px 0 8px rgba(100, 120, 150, 0.05);
+  max-height: 100vh;
+  overflow-y: auto;
+} */
+
+.sidebarTitle {
+  font-size: 1.3em; /* Slightly smaller */
+  font-weight: 600;
+  color: #2a3f5f; /* Darker blue-gray */
+  margin-top: 0;
+  margin-bottom: 30px; /* More space */
+  text-align: left;
+}
+
+.prospectList {
+  list-style: none;
+  padding: 0 10px 0 0; /* Add padding to the right side */
+  margin: 0 0 10px 0;
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 330px);
+}
+
+/* Custom scrollbar for prospect list */
+.prospectList::-webkit-scrollbar {
+  width: 4px; /* Thinner scrollbar */
+  margin-left: 0; /* Remove the margin we added before */
+}
+
+.prospectList::-webkit-scrollbar-track {
+  background: #f8faff; /* Light background to match the app */
+  /* margin-right: 10px; Add margin to the track */
+}
+
+.prospectList::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* Lighter, more subtle color */
+  border-radius: 20px; /* Fully rounded corners */
+  transition: background-color 0.2s ease; /* Smooth hover effect */
+}
+
+.prospectList::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; /* Darker on hover for better interaction feedback */
+}
+
+.prospectItem {
+  padding: 12px 15px; /* More padding */
+  cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: #f8faff; /* Match overall background */
+  transition: background-color 0.2s ease, color 0.2s ease;
+  color: #52617a; /* Softer text */
+  font-weight: 500;
+  border: 1px solid transparent; /* Add border for selected state transition */
+}
+
+.prospectItem:hover {
+  background-color: #eef3f8;
+}
+
+.prospectItem.selected {
+    color: #2a5299; /* Darker blue text for selected */
+    border: 1px solid var(--blue1); /* Subtle border for selected */
+}
+
+/* .sidebar button {
+    padding: 12px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    width: 100%;
+    margin-top: 10px;
+} */
+
+.sidebar .btn-secondary {
+    background-color: #eef3f8; /* Lighter secondary */
+    color: #3e517a;
+    border: 1px solid #dce4ec; /* Subtle border */
+}
+
+.sidebar .btn-secondary:hover {
+    background-color: #dce4ec;
+}
+
+.sidebar .btn-upload {
+    background-color: #eef3f8; /* Match secondary */
+    color: #3e517a;
+    border: 1px solid #dce4ec;
+}
+
+.sidebar .btn-upload:hover {
+    background-color: #dce4ec;
+}
+
+
+/* --- Main Content Styles --- */
+.mainContent {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-grow: 1;
+  padding: 30px 40px;
+  overflow-y: auto;
+  background-color: #f8faff; /* Match base background */
+}
+
+.mainContent h1, .mainContent h2, .mainContent h3 {
+    color: #2a3f5f; /* Dark blue-gray headings */
+    margin-top: 0;
+}
+
+.mainContent h1 { font-size: 1.7em; margin-bottom: 25px; font-weight: 600; }
+.mainContent h2 { font-size: 1.4em; margin-bottom: 20px; font-weight: 600; }
+.mainContent h3 { font-size: 1.15em; margin-bottom: 20px; font-weight: 600; }
+
+
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #52617a; /* Softer label color */
+}
+
+.formInput {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #dce4ec; /* Lighter border */
+  border-radius: 6px;
+  font-size: 0.95em;
+  background-color: #fdfdff; /* Slightly off-white input */
+  color: #3e517a;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* .formInput:focus {
+    border-color: #a8c5e9;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(70, 120, 190, 0.15);
+    background-color: #fff;
+} */
+
+.formInput[type="file"] {
+    padding: 7px 12px; /* Adjust padding for file input */
+}
+
+.formActions {
+  margin-top: 40px;
+  text-align: right;
+}
+
+/* .formActions button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+
+
+.formActions .btn-primary:hover {
+    background-color: #3b70ca;
+}
+
+.formActions .btn-cancel {
+    background-color: #f8f9fa;
+    color: #343a40;
+    border: 1px solid #dce4ec;
+}
+
+.formActions .btn-cancel:hover {
+    background-color: #e9ecef;
+}
+
+
+/* --- Prospect Detail Styles --- */
+.prospectDetailView {
+  /* display: flex; */
+  width: 500px;
+    /* Add padding or styles if needed, base is mainContent */
+}
+
+.detailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eaf0f6;
+}
+
+.detailHeader h2 {
+    margin-bottom: 0;
+}
+
+.launchButton {
+  padding: 8px 15px;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background: #4caf50; /* Standard nice green */
+  color: white;
+  font-size: 0.95em;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.launchButton:hover {
+    background-color: #45a049;
+}
+
+/* Style for when the button is active (End Call) */
+.launchButton.active {
+  background-color: #dc3545; /* Red color for active/end state */
+}
+
+.launchButton.active:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+.prospectDetailView p {
+    color: #52617a; /* Softer text */
+    line-height: 1.6;
+}
+
+.prospectDetailView strong {
+    color: #3e517a;
+}
+
+.fileList {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.fileListItem {
+  background: #ffffff;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #eaf0f6;
+  box-shadow: 0 2px 5px rgba(100, 120, 150, 0.04);
+}
+
+.fileDate {
+  font-size: 0.85em;
+  color: #7b8da8; /* Lighter date */
+  margin-left: 15px;
+}
+
+.addFileButton {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background: #4a85e5; /* Match primary form button */
+    color: white;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.addFileButton:hover {
+    background-color: #3b70ca;
+}
+
+.addFileButton:disabled {
+    background-color: #a4c1e9;
+    cursor: not-allowed;
+}
+
+
+/* --- Utility Classes --- */
+.loadingMessage, .errorMessage {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.loadingMessage {
+    color: #495057;
+}
+
+.errorMessage {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+/* --- Checklist Component Styles (for floating window) --- */
+.checklistContainer {
+    /* Inherits .App styles (transparent bg, white text etc) */
+    padding: 15px 20px; /* Increased padding */
+    box-sizing: border-box;
+    height: 100%;
+    overflow-y: auto;
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack title and list vertically */
+}
+
+.checklistTitle {
+    margin: 0 0 15px 0; /* Space below title */
+    padding-bottom: 10px; /* Space */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Faint separator */
+    color: #f0f0f0; /* Light color for title */
+    font-weight: 500;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.checklist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Allow list to take up space */
+    display: flex;
+    flex-direction: column;
+}
+
+.checklistItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px; /* Added back for consistent spacing */
+    font-size: 0.95em; /* Slightly larger */
+}
+
+.checklistItem input[type="checkbox"] {
+    margin-right: 10px;
+    /* Optional: Style checkbox appearance */
+    /* accent-color: #eee; */
+    cursor: pointer;
+}
+
+.checklistItem label {
+    cursor: pointer;
+    /* Ensure text doesn't wrap too aggressively */
+    white-space: normal;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Coach Status Styles */
+.coachStatus {
+  background: #f8faff;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  border: 1px solid #eaf0f6;
+}
+
+.coachStatus h3 {
+  margin-top: 0;
+  color: #2a3f5f;
+}
+
+.coachStatus p {
+  margin: 8px 0;
+  color: #52617a;
+}
+
+.currentNudge {
+  margin-top: 15px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #eaf0f6;
+}
+
+.currentNudge h4 {
+  margin: 0 0 10px 0;
+  color: #2a3f5f;
+}
+
+.currentNudge p {
+  margin: 0;
+  color: #52617a;
+  font-style: italic;
+}
+
+/* Loading and Error Messages */
+.loadingMessage, .errorMessage {
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+.loadingMessage {
+  background: #f8faff;
+  color: #52617a;
+}
+
+.errorMessage {
+  background: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #ffd7d7;
+}
+
+.customFileInputWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #dbeafe;
+  height: 2.5rem;
+  cursor: pointer;
+  /* padding: 0.5rem 0.75rem; */
+}
+
+.customFileInputWrapper:hover {
+  background: #f9f9f9;
+}
+
+.customFileLabel {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 0;
+  cursor: pointer;
+  color: #3b4a6b;
+  font-weight: 200;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+  margin:0;
+}
+
+.customFileInput {
+  margin:0;
+}
+
+
+.fileName {
+  color: #3b4a6b;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+body, * {
+  box-sizing: border-box;
+}
