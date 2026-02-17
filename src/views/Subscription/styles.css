@@ -258,7 +258,6 @@
 /* Active Plan Information Container */
 .active-plan-information-container {
     width: 100%;
-    max-width: 1200px;
     display: flex;
     flex-direction: column;
     gap: 32px;

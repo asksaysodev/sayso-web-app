@@ -63,7 +63,7 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    background-color: #FFF;
+    background-color: #FAFAFA;
     border: 1px solid var(--sayso-border);
     border-top: none;
     border-bottom-left-radius: 8px;
@@ -109,6 +109,7 @@
 .time-cell {
     white-space: nowrap;
     width: 180px;
+    border-radius: 26px;
 }
 
 .lead-type-cell {

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-import CTABar from './CTABar';
 import ProspectCard from './ProspectCard';
 import ProspectListItem from './ProspectListItem';
 import ProspectDetail from './ProspectDetail';
@@ -74,7 +73,6 @@ export default function ProspectsContainer() {
             <div className='prospects-container-header'>
                 <h1>My Prospects</h1>
             </div>
-            <CTABar active={false} />
             {
                 displayingProspects?.length === 0 ? (
                     <div className='no-prospects-found-container'>
