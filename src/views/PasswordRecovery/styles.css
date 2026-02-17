@@ -1,0 +1,33 @@
+.password-recovery-description {
+  text-align: center;
+  color: var(--sayso-lightgray);
+  margin-bottom: 25px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.password-recovery-input-label { 
+  display: block !important;
+  color: var(--sayso-darkgray) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+.password-recovery-primary-button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--sayso-indigo);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.password-recovery-countdown {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #64748b;
+  text-align: center;
+}
