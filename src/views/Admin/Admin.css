@@ -97,7 +97,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    height: 100%;
+    padding: 10px 16px;
     border-radius: 8px;
 }
 
@@ -571,13 +572,13 @@
 
 @media (max-width: 767px) {
     .signals-draggable-list-header {
-        flex-direction: column-reverse;
+        flex-direction: column;
         align-items: stretch;
         gap: 12px;
     }
 
     .signals-header-actions {
-        justify-content: flex-end;
+        justify-content: flex-start;
     }
 
     .signal-search-bar {
@@ -591,13 +592,9 @@
     }
 
     .admin-panel-header-left-actions {
-        flex-direction: column;
-    }
-
-    .tool-selector-container,
-    .select-lead-type-container,
-    .sheet-version-selector-container {
-        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
     }
 
     .tool-selector-container select,
