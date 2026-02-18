@@ -131,17 +131,7 @@ export default function InsightsContainer() {
                 <p>Insights</p>
 
                 <div className='insights-header-right-content'>
-                    <div className='insights-filters-row'>
-                        <SaysoPopover
-                            popoverContent={<LeadTypeFilterSelector selectedLeadTypeFilter={selectedLeadTypeFilter} setSelectedLeadTypeFilter={setSelectedLeadTypeFilter} />}
-                        >
-                            <LuUsers /> Lead Type
-                        </SaysoPopover>
-
-                        <InsightsCalendarPopover applyDateRangeFilter={setDateRangeFilter} />
-                    </div>
-
-                    <div>
+                    <div className='insights-search-row'>
                         <SaysoInputGroup
                             className='h-[40px]'
                             placeholder='Search Insight...'
@@ -150,6 +140,16 @@ export default function InsightsContainer() {
                             icon={<LuSearch />}
                             size={20}
                         />
+                    </div>
+
+                    <div className='insights-filters-row'>
+                        <SaysoPopover
+                            popoverContent={<LeadTypeFilterSelector selectedLeadTypeFilter={selectedLeadTypeFilter} setSelectedLeadTypeFilter={setSelectedLeadTypeFilter} />}
+                        >
+                            <LuUsers /> <span className='insights-filter-label'>Lead Type</span>
+                        </SaysoPopover>
+
+                        <InsightsCalendarPopover applyDateRangeFilter={setDateRangeFilter} />
                     </div>
                 </div>
             </div>

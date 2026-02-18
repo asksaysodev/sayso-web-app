@@ -396,6 +396,10 @@
     gap: 16px;
 }
 
+.insights-search-row {
+    display: flex;
+}
+
 .lead-type-filter-selector-container {
     display: flex;
     flex-direction: column;
@@ -582,33 +586,38 @@
 
 @media (max-width: 1280px) {
     .dashboard-cards-container {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 12px;
+    }
+
+    .dashboard-cards-container > :last-child {
+        grid-column: 1 / -1;
     }
 
     .informative-card-container {
         padding: 16px;
-        gap: 16px;
+        gap: 12px;
     }
 
     .informative-card-header-title p {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .card-content-bold-text {
-        font-size: 36px;
+        font-size: 28px;
     }
 
     .card-content-lighter-text {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .card-content-container {
-        height: 64px;
+        height: auto;
     }
 
     .informative-card-description {
-        font-size: 13px;
+        font-size: 12px;
         min-height: unset;
     }
 
@@ -643,16 +652,25 @@
     .insights-header-right-content {
         width: 100%;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
+    }
+
+    .insights-search-row {
+        width: 100%;
     }
 
     .insights-filters-row {
         width: 100%;
-        gap: 12px;
+        gap: 8px;
     }
 
-    .insights-filters-row > * {
-        flex: 1;
+    .insights-filter-label {
+        display: none;
+    }
+
+    .insights-filters-row .sayso-outlined-button {
+        padding: 6px 10px;
+        font-size: 13px;
     }
 
     .insights-list-container {

@@ -20,7 +20,7 @@ export default function InsightsCalendarPopover({ applyDateRangeFilter }: Props)
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <button className="sayso-outlined-button">
-                    <LuCalendar /> Search by date
+                    <LuCalendar /> <span className="insights-filter-label">Search by date</span>
                 </button>
             </PopoverTrigger>
             <PopoverContent className="w-auto overflow-hidden p-0" align="end">
