@@ -834,3 +834,69 @@
 .mfa-spinner {
     animation: spin 1s linear infinite;
 }
+
+@media (max-width: 767px) {
+    .account-settings-selector-container {
+        overflow-x: auto;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .account-settings-selector-container .tab-selector-button {
+        padding: 6px 10px;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    .account-settings-selector-container .tab-selector-button p {
+        font-size: 12px;
+    }
+
+    .account-settings-selector-container .tab-selector-button svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .account-settings-panel-container {
+        padding: 16px;
+    }
+
+    .account-settings-title-container h1 {
+        font-size: 20px;
+    }
+
+    .account-settings-personal-form {
+        grid-template-columns: 1fr;
+    }
+
+    .account-settings-company-form {
+        grid-template-columns: 1fr;
+    }
+
+    .invite-team-member-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .invite-team-member-container .invite-team-member-input-container {
+        width: 100%;
+    }
+
+    .security-setting-item {
+        gap: 12px;
+        padding: 16px 0;
+    }
+
+    .security-setting-title {
+        font-size: 14px;
+    }
+
+    .security-setting-description {
+        font-size: 13px;
+    }
+
+    .mfa-modal {
+        margin: 16px;
+    }
+}
