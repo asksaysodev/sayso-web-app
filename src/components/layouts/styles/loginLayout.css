@@ -69,3 +69,64 @@
   .forgotPasswordText {
     margin-top: 10px;
   }
+
+@media (max-width: 767px) {
+    .loginLayoutContainer {
+        padding: 20px 16px;
+    }
+
+    .loginLayoutForm {
+        padding: 24px 20px;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /*height: 100%;
+        width: 100vw;*/
+    }
+
+    .loginLayoutForm img {
+        height: 80px !important;
+        margin: 12px auto !important;
+    }
+
+    .loginLayoutForm h2 {
+        font-size: 16px;
+        margin-top: 24px;
+        margin-bottom: 6px;
+    }
+
+    .loginLayoutDescription {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    .loginInFormInputLabel {
+        font-size: 14px !important;
+    }
+
+    .controlledInputFieldGroup .formInput {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    .login-layout-form-inputs-wrapper {
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .formActions {
+        margin-top: 28px;
+        gap: 12px;
+    }
+
+    .toggleText {
+        font-size: 14px;
+        margin-top: 16px;
+    }
+
+    .errorMessage {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+}
