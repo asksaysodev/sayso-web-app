@@ -14,7 +14,7 @@ export default function ViewLayout({ title, children, scrollable = false, rightC
                 <h1>{title}</h1>
                 {rightContent && rightContent}
             </div>
-            
+
             {children}
         </div>
     )

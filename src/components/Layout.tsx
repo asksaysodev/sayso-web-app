@@ -4,6 +4,8 @@ import Sidebar from './Sidebar';
 
 import '../styles/Home.css';
 
+import logoHorizontal from '/assets/logo-pos-horizontal.png';
+
 interface Props {
   children: React.ReactNode;
 }
@@ -21,6 +23,7 @@ export default function Layout({ children }: Props) {
         >
           <LuMenu />
         </button>
+        <img className="mobile-header-logo" src={logoHorizontal} alt="Sayso" />
       </div>
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       {children}

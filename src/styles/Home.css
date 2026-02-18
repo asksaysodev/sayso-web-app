@@ -11,6 +11,13 @@
   display: none;
 }
 
+.mobile-header-logo {
+  height: 22px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .mobile-menu-btn {
   background: none;
   border: none;
@@ -38,6 +45,7 @@
     background-color: white;
     border-bottom: 1px solid hsl(var(--border));
     flex-shrink: 0;
+    position: relative;
   }
 
   .home-container {
