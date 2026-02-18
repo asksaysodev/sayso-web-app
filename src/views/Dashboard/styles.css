@@ -580,7 +580,7 @@
     animation: shimmer 2s ease-in-out infinite;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1280px) {
     .dashboard-cards-container {
         flex-direction: column;
         gap: 12px;

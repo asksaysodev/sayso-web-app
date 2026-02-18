@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Dispatch, Fragment, SetStateAction, useState } from 'react';
+import { Dispatch, Fragment, SetStateAction } from 'react';
 import { LuPlus, LuMinus } from 'react-icons/lu';
 import './InsightCollapsibleTable.css';
 import { Insight } from '@/types/coach';
@@ -21,7 +21,7 @@ interface Props {
 }
 
 export default function InsightCollapsibleTable({ groupDate, groupInsights, openedInsights, setOpenedInsights }: Props) {
-    const {updateInsightRating, isUpdatingInsightRating} = useUpdateInsights();
+    const {updateInsightRating } = useUpdateInsights();
     const isCollapsed = !openedInsights.includes(groupDate);
 
     const handleCollapsible = (id: string) => {
