@@ -93,3 +93,9 @@
     background-color: var(--sayso-border);
     border: 1px solid var(--sayso-lightgray);
 }
+
+@media (max-width: 767px) {
+    .sayso-modal-container {
+        margin: 0 16px;
+    }
+}
