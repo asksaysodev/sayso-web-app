@@ -568,3 +568,83 @@
     border: 1px solid var(--sayso-border) !important;
     box-shadow: none;
 }
+
+@media (max-width: 767px) {
+    .signals-draggable-list-header {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .signals-header-actions {
+        justify-content: flex-end;
+    }
+
+    .signal-search-bar {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .admin-panel-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-panel-header-left-actions {
+        flex-direction: column;
+    }
+
+    .tool-selector-container,
+    .select-lead-type-container,
+    .sheet-version-selector-container {
+        width: 100%;
+    }
+
+    .tool-selector-container select,
+    .select-lead-type-container select,
+    .sheet-version-selector-container select {
+        width: 100%;
+    }
+
+    .admin-panel-header-right-actions {
+        width: 100%;
+    }
+
+    .import-sheet-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .signals-draggable-list {
+        padding: 16px;
+    }
+
+    .signal-collapsible-header h3 {
+        font-size: 14px;
+    }
+
+    .signal-collapsible-header span {
+        font-size: 11px;
+    }
+
+    .signal-collapsible-header {
+        padding: 12px;
+    }
+
+    .signal-collapsible-content-fields {
+        padding: 0 12px 12px 12px;
+    }
+
+    .signal-card-field label {
+        font-size: 11px;
+    }
+
+    .signal-text-field {
+        font-size: 12px;
+    }
+
+    .section-title,
+    .pricing-plan-name {
+        font-size: 16px;
+    }
+}

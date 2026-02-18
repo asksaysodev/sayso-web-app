@@ -232,4 +232,64 @@
 
 .active .account-widget-icon  {
     background-color: white;
-}   
+}
+
+/* Close button - hidden on desktop */
+.sidebar-close-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: black;
+  padding: 4px;
+  opacity: 0.6;
+}
+
+.sidebar-close-btn:hover {
+  opacity: 1;
+}
+
+/* Overlay - hidden on desktop */
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    border-radius: 0;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    box-shadow: none;
+  }
+
+  .sidebar-container.sidebar-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-header {
+    justify-content: space-between;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}

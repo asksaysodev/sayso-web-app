@@ -42,7 +42,7 @@ export default function ToolSelector({ selectedTool, setSelectedTool }: Props) {
                 variant="outline"
                 role="combobox"
                 aria-expanded={open}
-                className="w-[200px] justify-between !h-10"
+                className="w-full lg:w-[200px] justify-between !h-10"
                 style={{ border: '1px solid var(--sayso-border)' }}
                 >
                 {selectedTool
@@ -51,7 +51,7 @@ export default function ToolSelector({ selectedTool, setSelectedTool }: Props) {
                 <ChevronsUpDown className="opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
+            <PopoverContent className="w-full lg:w-[200px] p-0">
                 <Command>
                 <CommandInput placeholder="Search a Tool..." className="h-9" />
                 <CommandList>

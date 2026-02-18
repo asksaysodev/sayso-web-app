@@ -17,7 +17,7 @@ export default function SheetVersionSelector() {
         <div className="sheet-version-selector-container">
             <label htmlFor="sheet-version-select">Sheet Version</label>
             <Select value={String(activeSheetVersion)} onValueChange={(v) => setActiveSheetVersion(Number(v))}>
-                <SelectTrigger className="w-[180px] sayso-outlined-button !h-10">
+                <SelectTrigger className="w-full lg:w-[200px] sayso-outlined-button !h-10">
                     <SelectValue placeholder="Select a version" />
                 </SelectTrigger>
                 <SelectContent>

@@ -1,10 +1,9 @@
 import ViewLayout from '@/components/layouts/ViewLayout';
 
 import './Admin.css';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import ToolSelector from './components/ToolSelector';
 import CueMainInstructions from './components/CueMainInstructions';
-import SelectLeadType from './components/SelectLeadType';
 import { useAdminStore } from '@/store/adminStore';
 import CueSignals from './components/CueSignals';
 import ImportSheetButton from './components/ImportSheetButton';

@@ -9,6 +9,7 @@ import {
     LuCreditCard,
     LuCircleUser,
     LuCircleHelp,
+    LuX,
 } from 'react-icons/lu'
 
 
@@ -21,8 +22,12 @@ import { useAuth } from '../context/AuthContext';
 import logoHorizontal from '/assets/logo-pos-horizontal.png';
 import '../styles/Sidebar.css';
 
+interface SidebarProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
     //STATE
     const [showSignOutModal, setShowSignOutModal] = useState(false);
@@ -55,7 +60,9 @@ export default function Sidebar() {
     // ]
 
     return (
-        <div className="sidebar-container">
+        <>
+        {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
+        <div className={`sidebar-container ${isOpen ? 'sidebar-open' : ''}`}>
             {showSignOutModal && (
                 <SaysoModal
                     title="Sign Out"
@@ -69,10 +76,13 @@ export default function Sidebar() {
             <div className='full-w'>
                 <div className="sidebar-header">
                     <img src={logoHorizontal} alt="Sayso Logo" />
+                    <button className="sidebar-close-btn" onClick={onClose} aria-label="Close menu">
+                        <LuX />
+                    </button>
                 </div>
                 <div className='sidebar-nav-container'>
-                    {hasSubscription && 
-                        <NavLink to="/" >
+                    {hasSubscription &&
+                        <NavLink to="/" onClick={onClose}>
                             <div className="outline"></div>
                             <div className='sidebar-nav-item'>
                                 <LuUsers />
@@ -81,7 +91,7 @@ export default function Sidebar() {
                         </NavLink>
                     }
                     {globalUser?.isAdmin && (
-                    <NavLink to="/admin" >
+                    <NavLink to="/admin" onClick={onClose}>
                         <div className="outline"></div>
                         <div className='sidebar-nav-item'>
                             <LuSettings />
@@ -89,14 +99,14 @@ export default function Sidebar() {
                         </div>
                     </NavLink>
                     )}
-                    <NavLink to="/account" >
+                    <NavLink to="/account" onClick={onClose}>
                         <div className="outline"></div>
                         <div className='sidebar-nav-item'>
                             <LuCircleUser />
                             <p>Account</p>
                         </div>
                     </NavLink>
-                    <NavLink to="/subscription" >
+                    <NavLink to="/subscription" onClick={onClose}>
                         <div className="outline"></div>
                         <div className='sidebar-nav-item'>
                             <LuCreditCard />
@@ -130,5 +140,6 @@ export default function Sidebar() {
                 </div>
             </div>
         </div>
+        </>
     );
 }

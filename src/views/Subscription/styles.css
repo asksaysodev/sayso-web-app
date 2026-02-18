@@ -561,3 +561,91 @@
     height: 44px;
     border-radius: 8px;
 }
+
+@media (max-width: 767px) {
+    /* Pricing cards */
+    .pricing-currency,
+    .pricing-amount {
+        font-size: 36px;
+    }
+
+    .pricing-plan-name {
+        font-size: 16px;
+    }
+
+    .pricing-card-header {
+        padding: 16px;
+    }
+
+    .pricing-features-section {
+        padding: 16px;
+    }
+
+    .pricing-components-grid {
+        margin-top: 20px;
+        gap: 16px;
+    }
+
+    /* Active subscription sections */
+    .subscription-section {
+        padding: 20px 16px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+
+    .subscription-section-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .plan-header {
+        gap: 16px;
+    }
+
+    .plan-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .plan-name {
+        font-size: 16px;
+    }
+
+    .plan-billing-period {
+        font-size: 14px;
+    }
+
+    .adjust-plan-button,
+    .update-button,
+    .cancel-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Invoices table — 2-column on mobile, hide status and actions */
+    .invoices-table-header,
+    .invoice-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .invoice-col-status,
+    .invoice-col-actions,
+    .invoices-table-header .invoice-col-status,
+    .invoices-table-header .invoice-col-actions {
+        display: none;
+    }
+
+    .invoice-col-date,
+    .invoice-col-total {
+        font-size: 14px;
+    }
+
+    /* Active plan info */
+    .active-plan-information-container {
+        gap: 20px;
+    }
+}

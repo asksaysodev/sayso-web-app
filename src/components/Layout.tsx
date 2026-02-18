@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { LuMenu } from 'react-icons/lu';
 import Sidebar from './Sidebar';
 
 import '../styles/Home.css';
@@ -7,9 +9,20 @@ interface Props {
 }
 
 export default function Layout({ children }: Props) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="home-container">
-      <Sidebar />
+      <div className="mobile-header">
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Open menu"
+        >
+          <LuMenu />
+        </button>
+      </div>
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       {children}
     </div>
   );
