@@ -34,7 +34,13 @@
 @media (max-width: 767px) {
     .view-layout-container {
         padding: 20px 16px;
-        height: calc(100vh - 56px);
+        height: auto;
+        min-height: calc(100vh - 56px);
+        overflow-y: auto;
+    }
+
+    .view-container-header h1 {
+        font-size: 24px;
     }
 }
 

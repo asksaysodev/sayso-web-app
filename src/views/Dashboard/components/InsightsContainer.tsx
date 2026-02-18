@@ -116,13 +116,6 @@ export default function InsightsContainer() {
 
         const handleScroll = () => {
             setIsScrolled(listContainer.scrollTop > 0);
-
-            const { scrollTop, scrollHeight, clientHeight } = listContainer;
-            const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
-
-            if (isNearBottom && hasNextPage && !isFetchingNextPage) {
-                fetchNextPage();
-            }
         };
 
         listContainer.addEventListener('scroll', handleScroll);
@@ -130,7 +123,7 @@ export default function InsightsContainer() {
         return () => {
             listContainer.removeEventListener('scroll', handleScroll);
         };
-    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, []);
 
     return (
         <div className='insights-container'>
@@ -138,7 +131,17 @@ export default function InsightsContainer() {
                 <p>Insights</p>
 
                 <div className='insights-header-right-content'>
-                   <div>
+                    <div className='insights-filters-row'>
+                        <SaysoPopover
+                            popoverContent={<LeadTypeFilterSelector selectedLeadTypeFilter={selectedLeadTypeFilter} setSelectedLeadTypeFilter={setSelectedLeadTypeFilter} />}
+                        >
+                            <LuUsers /> Lead Type
+                        </SaysoPopover>
+
+                        <InsightsCalendarPopover applyDateRangeFilter={setDateRangeFilter} />
+                    </div>
+
+                    <div>
                         <SaysoInputGroup
                             className='h-[40px]'
                             placeholder='Search Insight...'
@@ -147,16 +150,7 @@ export default function InsightsContainer() {
                             icon={<LuSearch />}
                             size={20}
                         />
-                   </div>
-
-
-                    <SaysoPopover 
-                        popoverContent={<LeadTypeFilterSelector selectedLeadTypeFilter={selectedLeadTypeFilter} setSelectedLeadTypeFilter={setSelectedLeadTypeFilter} />}
-                    >
-                        <LuUsers /> Lead Type
-                    </SaysoPopover>
-
-                    <InsightsCalendarPopover applyDateRangeFilter={setDateRangeFilter} />
+                    </div>
                 </div>
             </div>
 
@@ -191,10 +185,14 @@ export default function InsightsContainer() {
                                 />
                             )
                         })}
-                        {isFetchingNextPage && (
-                            <div className='empty-insights-container'>
-                                <p className='empty-insights-text'>Loading more insights...</p>
-                            </div>
+                        {hasNextPage && (
+                            <button
+                                className='load-more-insights-button'
+                                onClick={() => fetchNextPage()}
+                                disabled={isFetchingNextPage}
+                            >
+                                {isFetchingNextPage ? 'Loading...' : 'Load more'}
+                            </button>
                         )}
                     </>
                 ) : (

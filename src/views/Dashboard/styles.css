@@ -391,6 +391,11 @@
     gap: 16px;
 }
 
+.insights-filters-row {
+    display: flex;
+    gap: 16px;
+}
+
 .lead-type-filter-selector-container {
     display: flex;
     flex-direction: column;
@@ -512,6 +517,27 @@
     height: 14px;
 }
 
+.load-more-insights-button {
+    background: none;
+    border: none;
+    padding: 12px 0;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--sayso-indigo);
+    cursor: pointer;
+    text-align: center;
+}
+
+.load-more-insights-button:hover {
+    opacity: 0.7;
+}
+
+.load-more-insights-button:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
 /* ===== Insights Skeleton ===== */
 .insight-group-skeleton {
     border: 1px solid var(--sayso-border);
@@ -552,4 +578,87 @@
     background-size: 200% 100%;
     border-radius: 50%;
     animation: shimmer 2s ease-in-out infinite;
+}
+
+@media (max-width: 767px) {
+    .dashboard-cards-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .informative-card-container {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .informative-card-header-title p {
+        font-size: 14px;
+    }
+
+    .card-content-bold-text {
+        font-size: 36px;
+    }
+
+    .card-content-lighter-text {
+        font-size: 14px;
+    }
+
+    .card-content-container {
+        height: 64px;
+    }
+
+    .informative-card-description {
+        font-size: 13px;
+        min-height: unset;
+    }
+
+    .activity-chart-container {
+        height: 64px;
+        gap: 8px;
+    }
+
+    .activity-day-label {
+        font-size: 11px;
+    }
+
+    .week-selector-date-text {
+        font-size: 11px;
+    }
+
+    .insights-container {
+        overflow: visible;
+    }
+
+    .insights-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .insights-header p {
+        font-size: 16px;
+    }
+
+    .insights-header-right-content {
+        width: 100%;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .insights-filters-row {
+        width: 100%;
+        gap: 12px;
+    }
+
+    .insights-filters-row > * {
+        flex: 1;
+    }
+
+    .insights-list-container {
+        padding: 16px;
+        padding-top: 0;
+        overflow-y: visible;
+        flex: unset;
+    }
 }
