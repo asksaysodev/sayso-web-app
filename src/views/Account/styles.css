@@ -49,15 +49,15 @@
 
 .account-settings-panel-container {
     width: 100%;
-    border: 1px solid var(--sayso-border);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: white;
     border-radius: 12px;
-    padding: 24px;
     text-align: left;
+    /*background-color: white;*/
+    /*padding: 24px;*/
+    /*border: 1px solid var(--sayso-border);*/
 }
 
 .account-settings-title-container {
@@ -835,7 +835,63 @@
     animation: spin 1s linear infinite;
 }
 
-@media (max-width: 767px) {
+/* Desktop: sidebar layout */
+@media (min-width: 1024px) {
+    .account-settings-body {
+        flex: 1;
+        min-height: 0;
+    }
+
+    .account-settings-panel-container-main {
+        flex: 1;
+        min-height: 0;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .account-settings-panel-container-main-content {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex: 1;
+        min-height: 0;
+        gap: 2rem;
+    }
+
+    .account-settings-selector-container {
+        width: 200px;
+        flex-shrink: 0;
+        flex-direction: column;
+        margin-bottom: 0;
+        align-self: flex-start;
+    }
+
+    .account-settings-selector-container .tab-selector-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .account-settings-selector-container .tab-selector-button {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 8px 12px;
+    }
+
+    .account-settings-selector-container .tab-selector-button.active {
+        background-color: var(--sayso-border);
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    .account-settings-panel-container {
+        flex: 1;
+        min-width: 0;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 1023px) {
     .account-settings-selector-container {
         overflow-x: auto;
         justify-content: flex-start;
@@ -846,6 +902,7 @@
         padding: 6px 10px;
         gap: 4px;
         flex-shrink: 0;
+        white-space: nowrap;
     }
 
     .account-settings-selector-container .tab-selector-button p {
