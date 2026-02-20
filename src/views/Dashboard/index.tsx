@@ -5,7 +5,7 @@ import InsightsContainer from "./components/InsightsContainer";
 
 export default function Dashboard() {
   return (
-		<ViewLayout title='My Dashboard'>
+		<ViewLayout title='My Dashboard' scrollable>
 			<InformativeCardsContainer />
 			<InsightsContainer />
 		</ViewLayout>

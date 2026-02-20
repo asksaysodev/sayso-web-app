@@ -9,7 +9,7 @@ import {
     LuCreditCard,
     LuCircleUser,
     LuCircleHelp,
-    LuX,
+    LuPanelLeft,
 } from 'react-icons/lu'
 
 
@@ -77,7 +77,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <div className="sidebar-header">
                     <img src={logoHorizontal} alt="Sayso Logo" />
                     <button className="sidebar-close-btn" onClick={onClose} aria-label="Close menu">
-                        <LuX />
+                        <LuPanelLeft size={18}/>
                     </button>
                 </div>
                 <div className='sidebar-nav-container'>

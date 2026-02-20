@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { LuUsers, LuSearch } from 'react-icons/lu';
 import SaysoPopover from '@/components/SaysoPopover';
 
@@ -26,8 +26,6 @@ export default function InsightsContainer() {
     const [searchInsightInputValue, setSearchInsightInputValue] = useState('');
     const [dateRangeFilter, setDateRangeFilter] = useState<DateRange>(INITIAL_DATE_RANGE);
     const [openedInsights, setOpenedInsights] = useState<string[]>([]);
-    const [isScrolled, setIsScrolled] = useState(false);
-    const listContainerRef = useRef<HTMLDivElement>(null);
 
     const {
         data: insightsData,
@@ -109,24 +107,9 @@ export default function InsightsContainer() {
         return filtered;
     }, [selectedLeadTypeFilter, insights, searchInsightInputValue, dateRangeFilter])
 
-    useEffect(() => {
-        const listContainer = listContainerRef.current;
-        if (!listContainer) return;
-
-        const handleScroll = () => {
-            setIsScrolled(listContainer.scrollTop > 0);
-        };
-
-        listContainer.addEventListener('scroll', handleScroll);
-
-        return () => {
-            listContainer.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
     return (
         <div className='insights-container'>
-            <div className={`insights-header ${isScrolled ? 'scrolled' : ''}`}>
+            <div className='insights-header'>
                 <p>Insights</p>
 
                 <div className='insights-header-right-content'>
@@ -162,7 +145,7 @@ export default function InsightsContainer() {
                 onClearDateRange={() => setDateRangeFilter(INITIAL_DATE_RANGE)}
             />
 
-            <div className='insights-list-container' ref={listContainerRef}>
+            <div className='insights-list-container'>
                 {errorInsights ? (
                     <div className='empty-insights-container'>
                         <p className='empty-insights-text'>

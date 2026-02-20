@@ -21,7 +21,7 @@ export default function Admin() {
     }, [selectedTool]);
 
     return (
-       <ViewLayout title='Admin Panel'>
+       <ViewLayout title='Admin Panel' scrollable>
             <div className='admin-panel-container'>
                 <div className='admin-panel-header'>
                     <div className='admin-panel-header-left-actions'>
