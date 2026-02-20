@@ -54,7 +54,9 @@ export default function FormLineAccount({ label, name, placeholder, value, edita
             showToast('success', 'Account updated successfully!');
             setUnsavedChanges(false);
             setIsEditing(false);
-            await updateGlobalUser(globalUser.email);
+            if (globalUser?.email) {
+                await updateGlobalUser(globalUser.email);
+            }
         } catch (error) {
             showToast('error', 'Failed to update account');
             console.error('Error saving:', error);

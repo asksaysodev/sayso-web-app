@@ -37,7 +37,7 @@
     flex: 1;
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0px 1px 2px 0px #0000000D;
+    /*box-shadow: 0px 1px 2px 0px #0000000D;*/
     background-color: #FFFFFF;
     display: flex;
     flex-direction: column;

@@ -62,7 +62,7 @@
 /* Pricing Card Styles */
 .pricing-card {
     background: #FFFFFF;
-    border: 1px solid #E5E7EB;
+    border: 1px solid var(--sayso-border);
     border-radius: 16px;
     width: 100%;
     height: fit-content;
@@ -83,7 +83,7 @@
 
 .pricing-card-header {
     /* padding-bottom: 24px; */
-    border-bottom: 1px solid #E5E7EB;
+    border-bottom: 1px solid var(--sayso-border);
     padding: 24px;
 }
 
@@ -152,7 +152,7 @@
 }
 
 .pricing-cta-button:hover {
-    background: #E5E7EB;
+    background: var(--sayso-border);
 }
 
 .pricing-cta-button-popular {
@@ -260,23 +260,25 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    /*gap: 32px;*/
+    border: 1px solid var(--sayso-border);
+    border-radius: 12px;
 }
 
 .subscription-section {
     background-color: #ffffff;
-    border: 1px solid #e5e7eb;
+    /*border: 1px solid var(--sayso-border);*/
     border-radius: 12px;
-    padding: 32px;
+    /*padding: 32px;*/
+    padding: 1.5rem;
     color: var(--sayso-dark);
     text-align: start !important;
 }
-
 .section-title {
-    font-size: 18px;
+    font-size: 1rem;
     font-weight: 600;
     margin: 0 0 24px 0;
-    color: var(--sayso-dark);
+    color: #334155;
 }
 
 .subscription-section-content {
@@ -310,25 +312,25 @@
 }
 
 .plan-name {
-    font-size: 18px;
+    font-size: 1rem;
     font-weight: 600;
     margin: 0;
-    color: var(--sayso-dark);
+    color: #334155;
     text-transform: capitalize;
 }
 
 .plan-billing-period {
-    font-size: 16px;
+    font-size: 0.875rem;
     font-weight: 400;
     margin: 0;
-    color: var(--sayso-dark);
+    color: #64748b;
 }
 
 .plan-renewal-text {
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 400;
     margin: 0;
-    color: #6b7280;
+    color: #64748b;
 }
 
 .adjust-plan-button {
