@@ -19,9 +19,9 @@ export default function AccountSettingsPersonalForm({ setUnsavedChanges, globalU
                     setUnsavedChanges={setUnsavedChanges}
                 />
                 <FormLineAccount
-                    label='Lastname'
+                    label='Last Name'
                     name='lastname'
-                    placeholder='Lastname'
+                    placeholder='Last Name'
                     value={globalUser?.lastname || ''}
                     editable={true}
                     setUnsavedChanges={setUnsavedChanges}

@@ -102,6 +102,8 @@ export default function ActiveSubscriptionInformation() {
                 </div>
             </div>
 
+            <div style={{ width: '100%', height: '1px', backgroundColor: 'var(--sayso-border)' }} />
+
             <div className="subscription-section">
                 <h3 className="section-title">Invoices</h3>
                 {invoices?.length && invoices.length > 0
@@ -139,6 +141,8 @@ export default function ActiveSubscriptionInformation() {
                 </div>
                 }
             </div>
+
+            <div style={{ width: '100%', height: '1px', backgroundColor: 'var(--sayso-border)' }} />
 
             <div className="subscription-section">
                 <h3 className="section-title">Stripe</h3>

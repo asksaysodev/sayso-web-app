@@ -100,7 +100,7 @@ export interface CreateAccountData {
 }
 
 export interface UpdateAccountData {
-  id: string;
+  id?: string;
   name?: string;
   lastname?: string;
   company_id?: string;

@@ -33,7 +33,6 @@ export default function InsightsContainer() {
         data: insightsData,
         isLoading: isLoadingInsights,
         error: errorInsights,
-        isFetching,
         isFetchingNextPage,
         isRefetching: isRefetchingInsights,
         fetchNextPage,
@@ -64,7 +63,7 @@ export default function InsightsContainer() {
         });
 
         return Array.from(dateMap.values()).sort((a, b) => b.date.localeCompare(a.date));
-    }, [insightsData?.pages]);
+    }, [insightsData]);
 
     /**
      * Checks if a date falls within the specified date range (inclusive)

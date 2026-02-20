@@ -55,9 +55,9 @@
     justify-content: center;
     border-radius: 12px;
     text-align: left;
-    /*background-color: white;*/
-    /*padding: 24px;*/
-    /*border: 1px solid var(--sayso-border);*/
+    background-color: white;
+    padding: 24px;
+    border: 1px solid var(--sayso-border);
 }
 
 .account-settings-title-container {
@@ -144,7 +144,6 @@
     flex-direction: column;
     align-items: start;
     justify-content: start;
-    /* border: 1px solid red; */
 }
 
 .account-settings-personal-container{
@@ -879,7 +878,7 @@
     }
 
     .account-settings-selector-container .tab-selector-button.active {
-        background-color: var(--sayso-border);
+        background-color: var(--sayso-white);
         border-color: transparent;
         box-shadow: none;
     }
