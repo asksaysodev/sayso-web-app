@@ -73,13 +73,12 @@
 }
 
 .account-settings-title-container h1 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 400;
     color: var(--sayso-indigo);
 }
 
 .account-settings-title-container p {
-    margin-top: 8px;
     font-size: 14px;
     font-weight: 400;
     color: var(--sayso-lightgray);
