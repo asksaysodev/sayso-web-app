@@ -594,8 +594,9 @@
 .settings-coach-setting-item {
     width: 100%;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
     padding: 20px 0;
     border-bottom: 1px solid var(--sayso-border);
 }
@@ -604,11 +605,12 @@
     border-bottom: none;
 }
 
-.settings-coach-setting-header {
-    width: 100%;
+.settings-coach-setting-left {
+    width: 30%;
+    flex-shrink: 0;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .settings-coach-setting-label-row {
@@ -621,6 +623,14 @@
     font-size: 15px;
     font-weight: 500;
     color: var(--sayso-dark);
+}
+
+.settings-coach-setting-description {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--sayso-lightgray);
+    line-height: 1.5;
+    margin: 0;
 }
 
 .settings-coach-info-btn {
@@ -650,16 +660,28 @@
     color: var(--sayso-darkgray) !important;
 }
 
+.settings-coach-setting-right {
+    flex: 1;
+    max-width: 400px;
+}
+
+.settings-coach-range-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .settings-coach-range-value {
     font-size: 14px;
     font-weight: 500;
     color: var(--sayso-indigo);
     min-width: 28px;
     text-align: right;
+    flex-shrink: 0;
 }
 
 .settings-coach-range {
-    width: 100%;
+    flex: 1;
     -webkit-appearance: none;
     appearance: none;
     height: 4px;
@@ -689,6 +711,23 @@
     cursor: pointer;
     border: 2px solid white;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 1023px) {
+    .settings-coach-setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .settings-coach-setting-left {
+        width: 100%;
+    }
+
+    .settings-coach-setting-right {
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 /* Security Settings - Section Based Layout */

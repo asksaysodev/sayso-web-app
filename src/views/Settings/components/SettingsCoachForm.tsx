@@ -8,7 +8,7 @@ export default function SettingsCoachForm() {
     return (
         <div className='settings-coach'>
             <div className='settings-coach-setting-item'>
-                <div className='settings-coach-setting-header'>
+                <div className='settings-coach-setting-left'>
                     <div className='settings-coach-setting-label-row'>
                         <span className='settings-coach-setting-label'>Buffer Time</span>
                         <TooltipProvider>
@@ -24,17 +24,22 @@ export default function SettingsCoachForm() {
                             </Tooltip>
                         </TooltipProvider>
                     </div>
-                    <span className='settings-coach-range-value'>{bufferTime}s</span>
+                    <p className='settings-coach-setting-description'>How long to wait after the call starts before Sayso begins showing insights.</p>
                 </div>
-                <input
-                    type='range'
-                    min={0}
-                    max={30}
-                    step={5}
-                    value={bufferTime}
-                    onChange={e => setBufferTime(Number(e.target.value))}
-                    className='settings-coach-range'
-                />
+                <div className='settings-coach-setting-right'>
+                    <div className='settings-coach-range-row'>
+                        <input
+                            type='range'
+                            min={0}
+                            max={30}
+                            step={5}
+                            value={bufferTime}
+                            onChange={e => setBufferTime(Number(e.target.value))}
+                            className='settings-coach-range'
+                        />
+                        <span className='settings-coach-range-value'>{bufferTime}s</span>
+                    </div>
+                </div>
             </div>
         </div>
     )
