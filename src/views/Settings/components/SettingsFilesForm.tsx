@@ -17,7 +17,7 @@ interface FileWithUploadStatus {
 }
 
 
-export default function AccountSettingsFilesForm() {
+export default function SettingsFilesForm() {
 
     //STATE
     const [existingFiles, setExistingFiles] = useState<StoredFile[]>([]);
@@ -147,7 +147,7 @@ export default function AccountSettingsFilesForm() {
     }, [fileToDelete]);
 
     return (
-        <div className='account-settings-files-container'>
+        <div className='settings-files'>
             {
                 deleteFileModalVisible && (
                     <SaysoModal 

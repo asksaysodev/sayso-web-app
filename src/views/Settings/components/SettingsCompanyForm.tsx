@@ -4,7 +4,6 @@ import { useAccounts } from "../../../hooks/useAccounts";
 import { useToast } from "../../../context/ToastContext";
 
 import { LuLoader } from "react-icons/lu";
-import { FaXmark } from "react-icons/fa6";
 import SaysoModal from "../../../components/SaysoModal";
 import FormLineAccount from "../../../components/FormLineAccount";
 import { Account, Company } from "@/types/user";
@@ -14,7 +13,7 @@ interface Props {
     setUnsavedChanges: (unsavedChanges: boolean) => void;
 }
 
-export default function AccountSettingsCompanyForm({ globalUser, setUnsavedChanges }: Props) {
+export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: Props) {
     //STATE
         const [company, setCompany] = useState<Company | null>(null);
         const [inputValue, setInputValue] = useState('');
@@ -26,11 +25,6 @@ export default function AccountSettingsCompanyForm({ globalUser, setUnsavedChang
         //HOOKS
         const { getCompanyById } = useAccounts();
         const { showToast } = useToast();
-    
-        //FUNCTIONS
-        const handleInviteTeamMember = () => {
-            console.log('invite team member');
-        }
     
         const getCompany = async (companyId: string) => {
             if (!companyId) return;
@@ -99,7 +93,7 @@ export default function AccountSettingsCompanyForm({ globalUser, setUnsavedChang
         }, [inputValue]);
     
         return (
-            <div className="account-settings-company-container">
+            <div className="settings-company">
     
                 {
                     showDeleteMemberModal && (
@@ -121,7 +115,7 @@ export default function AccountSettingsCompanyForm({ globalUser, setUnsavedChang
                         </div>
                     ):(
                         <>
-                        <form className="account-settings-company-form">
+                        <form className="settings-company-form">
                             <FormLineAccount
                                 label='Company Name'
                                 name='company'

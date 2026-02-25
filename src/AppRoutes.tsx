@@ -11,7 +11,7 @@ import PasswordRecovery from './views/PasswordRecovery';
 import ResetPassword from './views/ResetPassword';
 
 const Dashboard = lazy(() => import('./views/Dashboard'));
-const Account = lazy(() => import('./views/Account'));
+const Settings = lazy(() => import('./views/Settings'));
 const Checkout = lazy(() => import('./views/Checkout'));
 const Admin = lazy(() => import('./views/Admin'));
 const Subscription = lazy(() => import('./views/Subscription'));
@@ -66,11 +66,11 @@ export default function AppRoutes() {
                     }
                 />
                 <Route
-                    path="/account"
+                    path="/settings"
                     element={
                         <AuthGuard>
                         <Layout>
-                            <Account />
+                            <Settings />
                         </Layout>
                         </AuthGuard>
                     }

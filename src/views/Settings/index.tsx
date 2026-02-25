@@ -1,18 +1,18 @@
 import SaysoModal from "@/components/SaysoModal";
-import AccountSettingsTabs from "./components/AccountSettingsTabs";
+import SettingsTabs from "./components/SettingsTabs";
 import { useState } from "react";
 import ViewLayout from "@/components/layouts/ViewLayout";
 import "./styles.css";
-import { AccountSettingsPanel, AccountSettingsPanelEnum } from "./types";
-import AccountActivePanelContainer from "./components/AccountActivePanelContainer";
+import { SettingsPanel, SettingsPanelEnum } from "./types";
+import SettingsActivePanelContainer from "./components/SettingsActivePanelContainer";
 
-export default function Account() {
+export default function Settings() {
 	const [showUnsavedChangesModal, setShowUnsavedChangesModal] = useState(false);
-    const [selectedPanel, setSelectedPanel] = useState<AccountSettingsPanel>(AccountSettingsPanelEnum.PERSONAL);
-    const [nextPanel, setNextPanel] = useState<AccountSettingsPanel | null>(null);
+    const [selectedPanel, setSelectedPanel] = useState<SettingsPanel>(SettingsPanelEnum.PERSONAL);
+    const [nextPanel, setNextPanel] = useState<SettingsPanel | null>(null);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-    const handleSelectPanel = (panel: AccountSettingsPanel) => { 
+    const handleSelectPanel = (panel: SettingsPanel) => { 
         if(unsavedChanges) {
             setNextPanel(panel);
             setShowUnsavedChangesModal(true)
@@ -28,7 +28,7 @@ export default function Account() {
     
     const handleModalDeny = () => {
         setShowUnsavedChangesModal(false);
-        setSelectedPanel(nextPanel as AccountSettingsPanel);
+        setSelectedPanel(nextPanel as SettingsPanel);
         setUnsavedChanges(false);
         setNextPanel(null);
     }
@@ -49,11 +49,11 @@ export default function Account() {
 				)
 			}
 
-			<div className='account-settings-body'>
-				<div className='account-settings-panel-container-main'>
-					<div className='account-settings-panel-container-main-content'>
-						<AccountSettingsTabs onSelectPanel={handleSelectPanel} selectedPanel={selectedPanel} />
-						<AccountActivePanelContainer selectedPanel={selectedPanel} setUnsavedChanges={setUnsavedChanges} />
+			<div className='settings-body'>
+				<div className='settings-wrapper'>
+					<div className='settings-wrapper-inner'>
+						<SettingsTabs onSelectPanel={handleSelectPanel} selectedPanel={selectedPanel} />
+						<SettingsActivePanelContainer selectedPanel={selectedPanel} setUnsavedChanges={setUnsavedChanges} />
 					</div>
 				</div>
 			</div>  
