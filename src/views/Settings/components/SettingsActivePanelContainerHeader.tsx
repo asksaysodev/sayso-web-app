@@ -8,12 +8,12 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
 
     const panelFormContent = {
         [SettingsPanelEnum.PERSONAL]: {
-            title: 'My Information',
+            title: 'Profile',
             description: 'Fill in general info about yourself'
         },
         [SettingsPanelEnum.COMPANY]: {
-            title: 'My Company',
-            description: 'Manage your company and team information'
+            title: 'Organization',
+            description: 'Manage your organization and team information'
         },
         [SettingsPanelEnum.FILES]: {
             title: 'Context Files',
@@ -26,6 +26,10 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
         [SettingsPanelEnum.SECURITY]: {
             title: 'Security',
             description: 'Manage security settings for your account'
+        },
+        [SettingsPanelEnum.COACH]: {
+            title: 'Coach',
+            description: 'Customize Coach sessions'
         }
     }
 

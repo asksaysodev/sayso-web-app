@@ -584,6 +584,113 @@
     opacity: 1;
 }
 
+/* Coach Settings */
+.settings-coach {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-coach-setting-item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--sayso-border);
+}
+
+.settings-coach-setting-item:last-child {
+    border-bottom: none;
+}
+
+.settings-coach-setting-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.settings-coach-setting-label-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.settings-coach-setting-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--sayso-dark);
+}
+
+.settings-coach-info-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    color: var(--sayso-lightgray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: color 0.2s;
+}
+
+.settings-coach-info-btn:hover {
+    color: var(--sayso-darkgray);
+}
+
+.settings-coach-tooltip {
+    max-width: 260px;
+    line-height: 1.5;
+    white-space: normal;
+    background-color: white !important;
+    border: 1px solid var(--sayso-border) !important;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.1) !important;
+    color: var(--sayso-darkgray) !important;
+}
+
+.settings-coach-range-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--sayso-indigo);
+    min-width: 28px;
+    text-align: right;
+}
+
+.settings-coach-range {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--sayso-border);
+    outline: none;
+    cursor: pointer;
+}
+
+.settings-coach-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--sayso-indigo);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.settings-coach-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--sayso-indigo);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
 /* Security Settings - Section Based Layout */
 .security-settings-container {
     width: 100%;
@@ -901,6 +1008,12 @@
         gap: 4px;
         flex-shrink: 0;
         white-space: nowrap;
+    }
+
+    .settings-nav .tab-selector-button.active {
+        background-color: var(--sayso-white);
+        border-color: transparent;
+        box-shadow: none;
     }
 
     .settings-nav .tab-selector-button p {

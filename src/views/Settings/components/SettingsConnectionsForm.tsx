@@ -46,8 +46,7 @@ export default function SettingsConnectionsForm() {
         }
       };
 
-    //EFFECTS
-    useEffect(() => {
+    useEffect(() => {            
         setSlackConnected(globalUser?.slack_connected || false); 
     }, [globalUser]);
 

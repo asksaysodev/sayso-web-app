@@ -1,4 +1,4 @@
-import { LuUser, LuFileScan, LuBuilding, LuUnplug, LuLock } from 'react-icons/lu';
+import { LuUser, LuFileScan, LuBuilding, LuUnplug, LuLock, LuBot } from 'react-icons/lu';
 import TabSelector from '../../../components/TabSelector';
 import '../../../components/TabSelector.css';
 import { SettingsPanel, SettingsPanelEnum } from '../types';
@@ -14,12 +14,12 @@ export default function SettingsTabs({ onSelectPanel, selectedPanel }: Props) {
     const tabs = [
         {
             icon: <LuUser size={ICON_SIZE} />,
-            label: 'My Information',
+            label: 'Profile',
             value: SettingsPanelEnum.PERSONAL
         },
         {
             icon: <LuBuilding size={ICON_SIZE} />,
-            label: 'My Company',
+            label: 'Organization',
             value: SettingsPanelEnum.COMPANY
         },
         {
@@ -38,6 +38,11 @@ export default function SettingsTabs({ onSelectPanel, selectedPanel }: Props) {
             icon: <LuLock size={ICON_SIZE} />,
             label: 'Security',
             value: SettingsPanelEnum.SECURITY,
+        },
+        {
+            icon: <LuBot size={ICON_SIZE} />,
+            label: 'Coach',
+            value: SettingsPanelEnum.COACH,
         },
     ];
 
