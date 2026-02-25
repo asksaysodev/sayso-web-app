@@ -19,6 +19,8 @@ export interface UserMetadata {
   company?: string;
 }
 
+type AccountType = 'individual' | 'team';
+
 export interface Account {
   id: string;
   email: string;
@@ -45,6 +47,7 @@ export interface Account {
   subscription_updated_at?: string | null;
   stripe_price_id?: string | null;
   subscription_current_period_start?: string | null;
+  account_type: AccountType;
 }
 
 export interface AccountUsage {
@@ -81,7 +84,7 @@ export type SubscriptionStatus =
   | 'unpaid'
   | 'paused';
 
-export type UserRole = 'admin' | 'user' | 'manager';
+export type UserRole = 'admin' | 'user' | 'superadmin';
 
 export interface Company {
   id: string;
