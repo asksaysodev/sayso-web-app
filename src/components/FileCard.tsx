@@ -9,7 +9,6 @@ import '../styles/FileCard.css';
 interface Props {
     status: string;
     file: any;
-    showDeleteModal?: boolean;
     progress: number;
     fromDatabase: boolean;
     setFormData: (formData: any) => void;
@@ -17,7 +16,7 @@ interface Props {
     deletingFileId?: string | null;
 }
 
-export default function FileCard({status, file, showDeleteModal = false, progress: propProgress = 0, fromDatabase = false, setFormData, setFileToDelete, deletingFileId = null}: Props) {
+export default function FileCard({status, file, progress: propProgress = 0, fromDatabase = false, setFormData, setFileToDelete, deletingFileId = null}: Props) {
 
     //STATE
     const [progress, setProgress] = useState(propProgress);
