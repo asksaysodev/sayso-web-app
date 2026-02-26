@@ -8,7 +8,7 @@ import { useSlack } from '../../../hooks/useSlack';
 import { useToast } from '../../../context/ToastContext';
 import { openExternal } from '@/utils/helpers/openExternal';
 
-export default function AccountSettingsConnectionsForm() {
+export default function SettingsConnectionsForm() {
 
     //STATE
     const [slackConnected, setSlackConnected] = useState(false);
@@ -46,24 +46,23 @@ export default function AccountSettingsConnectionsForm() {
         }
       };
 
-    //EFFECTS
-    useEffect(() => {
+    useEffect(() => {            
         setSlackConnected(globalUser?.slack_connected || false); 
     }, [globalUser]);
 
     return (
-        <div className='account-settings-connections-container'>
-            <div className='account-settings-connections-item-container'>
-                <div className='account-settings-connections-item-header'>
-                    <div className="account-settings-connections-item-header-icon">
+        <div className='settings-connections'>
+            <div className='settings-connection-item'>
+                <div className='settings-connection-item-header'>
+                    <div className="settings-connection-icon">
                         <img src={slackIcon} alt="Slack Logo" />
                     </div>
                     <h2>Slack</h2>
                 </div>
-                <div className='account-settings-connections-item-content'>
+                <div className='settings-connection-item-body'>
                     <p>Get call summaries directly to your Slack channel.</p>
                 </div>
-                <div className='account-settings-connections-buttons'>
+                <div className='settings-connection-btns'>
                     <button onClick={() => handleConnectSlackClick()} className={`${slackConnected ? 'connected' : ''}`}>
                         {slackConnected ? 'Disconnect Account' : 'Connect Account'}
                         {isLoading && <LuLoader className='loading-icon' /> }

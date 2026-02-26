@@ -4,12 +4,11 @@ import { NavLink } from 'react-router-dom'
 import {
     LuUsers,
     LuLogOut,
-    LuChevronRight,
     LuSettings,
     LuCreditCard,
-    LuCircleUser,
     LuCircleHelp,
     LuPanelLeft,
+    LuShield,
 } from 'react-icons/lu'
 
 
@@ -28,36 +27,9 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
-
-    //STATE
     const [showSignOutModal, setShowSignOutModal] = useState(false);
-
-    //HOOKS
     const { globalUser, handleSignOut } = useAuth();
     const hasSubscription = useMemo(() => !!globalUser?.subscription_plan_id, [globalUser]);
-    
-    // const navigationItems = [
-    //     {
-    //         label: 'Dashboard',
-    //         icon: <LuUsers />,
-    //         path: '/',
-    //     },
-    //     {
-    //         label: 'Admin',
-    //         icon: <LuSettings />,
-    //         path: '/admin',
-    //     },
-    //     {
-    //         label: 'Account',
-    //         icon: <LuCircleUser />,
-    //         path: '/account',
-    //     },
-    //     {
-    //         label: 'Subscription',
-    //         icon: <LuCreditCard />,
-    //         path: '/subscription',
-    //     },
-    // ]
 
     return (
         <>
@@ -94,16 +66,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <NavLink to="/admin" onClick={onClose}>
                         <div className="outline"></div>
                         <div className='sidebar-nav-item'>
-                            <LuSettings />
+                            <LuShield />
                             <p>Admin</p>
                         </div>
                     </NavLink>
                     )}
-                    <NavLink to="/account" onClick={onClose}>
+                    <NavLink to="/settings" onClick={onClose}>
                         <div className="outline"></div>
                         <div className='sidebar-nav-item'>
-                            <LuCircleUser />
-                            <p>Account</p>
+                            <LuSettings />
+                            <p>Settings</p>
                         </div>
                     </NavLink>
                     <NavLink to="/subscription" onClick={onClose}>

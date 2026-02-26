@@ -6,10 +6,10 @@ interface Props {
     globalUser: Account | null;
 }
 
-export default function AccountSettingsPersonalForm({ setUnsavedChanges, globalUser }: Props) {
+export default function SettingsPersonalForm({ setUnsavedChanges, globalUser }: Props) {
     return (
-        <div className='account-settings-personal-container'>
-            <form className='account-settings-personal-form'>
+        <div className='settings-personal'>
+            <form className='settings-personal-form'>
                 <FormLineAccount
                     label='Name'
                     name='name'

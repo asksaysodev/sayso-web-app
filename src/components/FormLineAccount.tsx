@@ -7,7 +7,7 @@ import { useToast } from '../context/ToastContext';
 import { useAccounts } from '../hooks/useAccounts';
 import { useAuth } from '../context/AuthContext';
 
-import '../views/Account/styles.css';
+import '../views/Settings/styles.css';
 
 interface Props {
     label: string;
@@ -86,7 +86,6 @@ export default function FormLineAccount({ label, name, placeholder, value, edita
 
     useEffect(() => {
         if(inputValue !== value) {
-            console.log('value changed');
             setUnsavedChanges(true);
         }
     }, [inputValue]);

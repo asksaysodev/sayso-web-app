@@ -1,36 +1,40 @@
-import { AccountSettingsPanel, AccountSettingsPanelEnum } from "../types"
+import { SettingsPanel, SettingsPanelEnum } from "../types"
 
 interface Props {
-    selectedPanel: AccountSettingsPanel;
+    selectedPanel: SettingsPanel;
 }
 
-export default function AccountActivePanelContainerHeader({ selectedPanel }: Props) {
+export default function SettingsActivePanelContainerHeader({ selectedPanel }: Props) {
 
     const panelFormContent = {
-        [AccountSettingsPanelEnum.PERSONAL]: {
-            title: 'My Information',
+        [SettingsPanelEnum.PERSONAL]: {
+            title: 'Profile',
             description: 'Fill in general info about yourself'
         },
-        [AccountSettingsPanelEnum.COMPANY]: {
-            title: 'My Company',
-            description: 'Manage your company and team information'
+        [SettingsPanelEnum.COMPANY]: {
+            title: 'Organization',
+            description: 'Manage your organization and team information'
         },
-        [AccountSettingsPanelEnum.FILES]: {
+        [SettingsPanelEnum.FILES]: {
             title: 'Context Files',
             description: 'Upload files to give your coach more context about your company or product'
         },
-        [AccountSettingsPanelEnum.CONNECTIONS]: {
+        [SettingsPanelEnum.CONNECTIONS]: {
             title: 'Connections',
             description: 'Connect your software and external accounts'
         },
-        [AccountSettingsPanelEnum.SECURITY]: {
+        [SettingsPanelEnum.SECURITY]: {
             title: 'Security',
             description: 'Manage security settings for your account'
+        },
+        [SettingsPanelEnum.COACH]: {
+            title: 'Coach',
+            description: 'Customize Coach sessions'
         }
     }
 
     return (
-        <div className='account-settings-title-container'>
+        <div className='settings-panel-title'>
             <div>
                 <h1>{panelFormContent[selectedPanel]?.title}</h1>
                 <p>{panelFormContent[selectedPanel]?.description}</p>
