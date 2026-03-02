@@ -1,0 +1,152 @@
+.dda-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dda-modal {
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--sayso-border);
+    padding: 24px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dda-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.dda-header-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.dda-tooltip {
+    background-color: #fff !important;
+    color: var(--sayso-dark) !important;
+    border: 1px solid var(--sayso-border) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    font-size: 13px !important;
+}
+
+.dda-title-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dda-help-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--sayso-lightgray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: color 0.15s ease;
+}
+
+.dda-help-btn:hover {
+    color: var(--sayso-dark);
+}
+
+.dda-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--sayso-dark);
+    margin-bottom: 4px;
+}
+
+.dda-header p {
+    font-size: 13px;
+    color: var(--sayso-lightgray);
+    line-height: 1.4;
+}
+
+.dda-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--sayso-lightgray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.dda-close:hover {
+    background-color: var(--sayso-white);
+    color: var(--sayso-dark);
+}
+
+.dda-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dda-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--sayso-border);
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.dda-option:hover {
+    background-color: var(--sayso-active-lightblue);
+    border-color: var(--sayso-indigo);
+}
+
+.dda-option:disabled {
+    opacity: 0.45;
+    background-color: #f5f5f7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.dda-option-text {
+    flex: 1;
+}
+
+.dda-option-text h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--sayso-dark);
+    margin-bottom: 2px;
+}
+
+.dda-option-text p {
+    font-size: 12px;
+    color: var(--sayso-lightgray);
+}
+
+.dda-option-download {
+    color: var(--sayso-lightgray);
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+}
+
+.dda-option:hover .dda-option-download {
+    color: var(--sayso-indigo);
+}

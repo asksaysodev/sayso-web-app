@@ -6,17 +6,10 @@ import "./styles.css";
 export default function Checkout() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const [success, setSuccess] = useState<boolean | null>(null);
     const [seconds, setSeconds] = useState(5);
 
-    useEffect(() => {
-        const successParam = searchParams.get("success");
-        if (successParam === "true") {
-            setSuccess(true);
-        } else if (successParam === "false") {
-            setSuccess(false);
-        }
-    }, [searchParams]);
+    const successParam = searchParams.get("success");
+    const success = successParam === null ? null : successParam === "true";
 
     useEffect(() => {
         if (success !== null && seconds > 0) {
@@ -25,12 +18,12 @@ export default function Checkout() {
             }, 1000);
             return () => clearTimeout(timer);
         } else if (success !== null && seconds === 0) {
-            navigate("/");
+            navigate(success ? "/?success=true" : "/");
         }
     }, [success, seconds, navigate]);
 
     const handleGoBack = () => {
-        navigate("/");
+        navigate(success ? "/?success=true" : "/");
     };
 
     if (success === null) {

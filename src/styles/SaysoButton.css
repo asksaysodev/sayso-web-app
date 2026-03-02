@@ -133,3 +133,27 @@
     outline: 2px solid var(--sayso-blue);
     outline-offset: 2px;
 }
+
+/* Variant: black */
+.sayso-button.variant-black {
+    background-color: var(--sayso-dark);
+    color: white;
+    border: none;
+}
+
+.sayso-button.variant-black:hover:not(:disabled) {
+    background-color: var(--sayso-dark);
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.sayso-button.variant-black:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sayso-button.variant-black:focus-visible {
+    outline: 2px solid var(--sayso-dark);
+    outline-offset: 2px;
+}
