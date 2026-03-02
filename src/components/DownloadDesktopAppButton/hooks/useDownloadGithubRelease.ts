@@ -1,15 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
 import { GITHUB_RELEASES_API } from '@/constants';
+import { openExternal } from '@/utils/helpers/openExternal';
 
 interface ReleaseAsset {
     name: string;
     browser_download_url: string;
 }
 
-const fetchRelease = async () => {
+interface FetchedRelease {
+    siliconUrl: string | null;
+    intelUrl: string | null;
+}
+
+const fetchRelease = async (): Promise<FetchedRelease | undefined> => {
     const res = await fetch(GITHUB_RELEASES_API);
+    if (!res.ok) return;
+    
     const data = await res.json();
-    const dmgs: ReleaseAsset[] = data.assets.filter((a: ReleaseAsset) => a.name.endsWith('.dmg'));
+    
+    if (!Array.isArray(data.assets)) return;
+    
+    const dmgs: ReleaseAsset[] = data.assets.filter(
+        (a: ReleaseAsset) => typeof a.name ==='string' && a.name.endsWith('.dmg')
+    );
+    
     return {
         siliconUrl: dmgs.find(a => a.name.includes('arm64'))?.browser_download_url ?? null,
         intelUrl: dmgs.find(a => !a.name.includes('arm64'))?.browser_download_url ?? null,
@@ -17,7 +31,7 @@ const fetchRelease = async () => {
 };
 
 export function useDownloadGithubRelease(enabled: boolean) {
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['github-release'],
         queryFn: fetchRelease,
         enabled,
@@ -25,12 +39,13 @@ export function useDownloadGithubRelease(enabled: boolean) {
 
     const handleDownload = (url: string | null | undefined) => {
         if (!url) return;
-        window.open(url, '_blank');
+        openExternal(url)
     };
 
     return {
-        siliconUrl: data?.siliconUrl,
-        intelUrl: data?.intelUrl,
+        siliconUrl: data?.siliconUrl ?? null,
+        intelUrl: data?.intelUrl ?? null,
         handleDownload,
+        isLoadingUrls: isLoading
     };
 }

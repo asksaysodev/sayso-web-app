@@ -118,6 +118,13 @@
     border-color: var(--sayso-indigo);
 }
 
+.dda-option:disabled {
+    opacity: 0.45;
+    background-color: #f5f5f7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 .dda-option-text {
     flex: 1;
 }
