@@ -6,6 +6,7 @@ import { useToast } from "../../../context/ToastContext";
 import { LuLoader } from "react-icons/lu";
 import SaysoModal from "../../../components/SaysoModal";
 import FormLineAccount from "../../../components/FormLineAccount";
+import TeamMembersTable from "./TeamMembersTable";
 import { Account, Company } from "@/types/user";
 
 interface Props {
@@ -18,7 +19,7 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
     const [inputValue, setInputValue] = useState('');
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [deleteMemberId, setDeleteMemberId] = useState(null);
+    const [deleteMemberId, setDeleteMemberId] = useState<string | null>(null);
     const [showDeleteMemberModal, setShowDeleteMemberModal] = useState(false);
 
     //HOOKS
@@ -125,6 +126,10 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
                                 setUnsavedChanges={setUnsavedChanges}
                             />
                         </form>
+                        <TeamMembersTable
+                            onAddMember={() => console.log('add member')}
+                            onRemoveMember={(id) => setDeleteMemberId(id)}
+                        />
                     </>
                 )
             }

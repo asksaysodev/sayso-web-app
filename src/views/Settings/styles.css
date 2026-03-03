@@ -426,6 +426,207 @@
     justify-content: start;
 }
 
+/* Team Members Table */
+.team-members-table-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.team-members-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--sayso-indigo);
+    margin: 0;
+}
+
+.team-members-toolbar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.team-members-toolbar-right {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.team-members-search {
+    flex: 1;
+    max-width: 280px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--sayso-border);
+    border-radius: 6px;
+    padding: 0 10px;
+    background-color: #fff;
+}
+
+.team-members-search:focus-within {
+    border-color: var(--sayso-indigo);
+}
+
+.team-members-search-icon {
+    font-size: 14px;
+    color: var(--sayso-lightgray);
+    flex-shrink: 0;
+}
+
+.team-members-search input {
+    flex: 1;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--sayso-dark);
+    background: none;
+}
+
+.team-members-search input::placeholder {
+    color: var(--sayso-lightgray);
+}
+
+.team-members-table-wrapper {
+    width: 100%;
+    border: 1px solid var(--sayso-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.team-members-table-wrapper th {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sayso-lightgray);
+    background-color: var(--sayso-white);
+}
+
+.team-members-table-wrapper td {
+    font-size: 14px;
+    color: var(--sayso-dark);
+}
+
+.team-member-avatar {
+    background-color: var(--sayso-indigo);
+    width: 28px;
+    height: 28px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.team-member-name {
+    font-weight: 500;
+}
+
+.team-member-email {
+    color: var(--sayso-lightgray) !important;
+}
+
+.team-member-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-active {
+    background-color: #dcfce7;
+    color: var(--sayso-success);
+}
+
+.badge-inactive {
+    background-color: var(--sayso-white);
+    color: var(--sayso-lightgray);
+}
+
+.badge-invited {
+    background-color: #fef9c3;
+    color: #a16207;
+}
+
+.team-member-actions-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--sayso-lightgray);
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.team-member-actions-btn:hover {
+    background-color: var(--sayso-white);
+    color: var(--sayso-dark);
+}
+
+.team-member-action-remove {
+    color: var(--sayso-destructive) !important;
+}
+
+.team-member-action-resend {
+    color: var(--sayso-darkgray);
+}
+
+@media (max-width: 1279px) {
+    .team-members-toolbar-right .sayso-button-label {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-members-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .team-members-toolbar-right {
+        width: 100%;
+    }
+
+    .team-members-search {
+        height: 32px;
+        max-width: unset;
+        flex: 1;
+        font-size: 12px;
+    }
+
+    .team-members-search input {
+        font-size: 12px;
+    }
+
+    .team-members-toolbar-right .sayso-button.size-sm {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .team-members-toolbar-right .sayso-button.size-sm .sayso-button-icon {
+        font-size: 14px;
+    }
+}
+
 .settings-company-form{
     width: 100%;
     display: grid;

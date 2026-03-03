@@ -35,6 +35,15 @@
     white-space: nowrap;
 }
 
+/* Size modifiers */
+.sayso-button.size-lg {
+    padding: 10px 20px;
+}
+
+.sayso-button.size-sm {
+    padding: 8px 14px;
+}
+
 /* Full width modifier */
 .sayso-button.full-width {
     width: 100%;
