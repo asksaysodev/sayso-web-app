@@ -21,6 +21,7 @@ import { useAuth } from '../context/AuthContext';
 import logoHorizontal from '/assets/logo-pos-horizontal.png';
 import '../styles/Sidebar.css';
 import useHasSubscription from '@/hooks/useHasSubscription';
+import DownloadDesktopAppButton from './DownloadDesktopAppButton';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -89,6 +90,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </div>
             </div>
             <div className="sidebar-footer">
+                <DownloadDesktopAppButton />
+                <Divider />
                 <div className='account-widget'>
                     <div className='account-widget-active-container'>
                         <div className='account-widget-icon'>
