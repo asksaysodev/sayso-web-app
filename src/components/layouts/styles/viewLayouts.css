@@ -36,8 +36,6 @@
 @media (max-width: 767px) {
     .view-layout-container {
         padding: 16px;
-        height: auto;
-        min-height: calc(100vh - 56px);
         overflow-y: auto;
         gap: 16px;
     }

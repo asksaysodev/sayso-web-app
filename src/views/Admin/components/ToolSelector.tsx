@@ -23,6 +23,10 @@ const tools: { value: Tool, label: string }[] = [
       value: "cue-signals",
       label: "Cue Signals",
     },
+    {
+      value: "subscription",
+      label: "Subscription Admin",
+    },
     // {
     //   value: "cue-main-instructions",
     //   label: "Cue Main Instructions",

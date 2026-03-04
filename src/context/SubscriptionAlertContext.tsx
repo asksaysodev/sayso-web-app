@@ -1,9 +1,10 @@
 import SaysoModal from "@/components/SaysoModal";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
 import getActivePlan from "@/views/Subscription/services/getActivePlan";
+import useHasSubscription from "@/hooks/useHasSubscription";
 
 interface SubscriptionAlert {
     title: string;
@@ -25,21 +26,20 @@ const SubscriptionAlertContext = createContext<SubscriptionAlertContextValue>({}
 
 export const SubscriptionAlertProvider = ({ children }: { children: React.ReactNode }) => {
     const [subscriptionAlert, setSubscriptionAlert] = useState<SubscriptionAlert | null>(null);
-    const {globalUser} = useAuth();
     const navigate = useNavigate();
-    
+    const { globalUser } = useAuth();
+    const hasSubscription = useHasSubscription();
+
     const { data: activePlan } = useQuery({
         queryKey: ['active-plan'],
         queryFn: getActivePlan,
-        enabled: !!globalUser?.subscription_plan_id
+        enabled: hasSubscription,
     });
 
-    const isTrialing = useMemo(() => {
-        return activePlan?.subscription?.status === 'trialing';
-    }, [activePlan]);
+    const isTrialing = useMemo(() => activePlan?.subscription?.status === 'trialing', [activePlan]);
 
-    const isOutOfMinutes = useMemo(() => 
-        (globalUser?.minutes_balance !== null && globalUser?.minutes_balance !== undefined) && 
+    const isOutOfMinutes = useMemo(() =>
+        (globalUser?.minutes_balance !== null && globalUser?.minutes_balance !== undefined) &&
         globalUser?.minutes_balance <= 0,
     [globalUser]);
 
@@ -47,15 +47,15 @@ export const SubscriptionAlertProvider = ({ children }: { children: React.ReactN
         if (!title && !description) return;
         setSubscriptionAlert({ title, description, fn });
     }, []);
-
+    
     useEffect(() => {
-        if (globalUser?.subscription_plan_id && isOutOfMinutes && isTrialing) {
+        if (hasSubscription && isOutOfMinutes && isTrialing) {
             if (!sessionStorage.getItem('alreadyShownAlert')) {
                 showSubscriptionAlert(DEFAULT_SUBSCRIPTION_ALERT.title, DEFAULT_SUBSCRIPTION_ALERT.description);
                 sessionStorage.setItem('alreadyShownAlert', 'true');
             }
         }
-    }, [isOutOfMinutes, isTrialing, showSubscriptionAlert, globalUser]);
+    }, [isOutOfMinutes, isTrialing, showSubscriptionAlert, hasSubscription]);
     
 
     const hideSubscriptionAlert = () => {

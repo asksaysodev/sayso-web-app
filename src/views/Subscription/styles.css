@@ -5,6 +5,10 @@
     justify-content: center;
 }
 
+.billing-tab-selector-container .tab-selector-container {
+    width: fit-content;
+}
+
 .billing-tab-option {
     background-color: transparent;
     border: 1px solid transparent;
@@ -27,6 +31,15 @@
     color: var(--sayso-dark);
     font-size: 14px;
     font-weight: 500;
+}
+
+@keyframes priceEnter {
+    from { transform: translateY(10px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.pricing-amount-enter {
+    animation: priceEnter 0.2s ease-out forwards;
 }
 
 /* Pricing Components Grid */
@@ -59,13 +72,115 @@
     }
 }
 
+.select-your-plan-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.select-your-plan-title {
+    text-align: center;
+    font-weight: 500;
+    color: var(--sayso-dark);
+    font-size: 42px;
+    letter-spacing: -0.5px;
+}
+
+.select-your-plan-description {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--sayso-lightgray);
+    margin: 0;
+}
+
+/* ===== Plans Loader ===== */
+.subscription-plans-loader {
+    position: absolute;
+    inset: 0;
+}
+
+/* ===== Subscription Plans Skeleton ===== */
+.plans-skeleton-title {
+    width: 260px;
+    height: 52px;
+    border-radius: 8px;
+}
+
+.plans-skeleton-description {
+    width: 340px;
+    height: 20px;
+    border-radius: 6px;
+}
+
+.plans-skeleton-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 4px;
+    background-color: var(--sayso-border);
+    border-radius: 10px;
+}
+
+.plans-skeleton-tab {
+    width: 90px;
+    height: 36px;
+    border-radius: 6px;
+}
+
+.plans-skeleton-plan-name {
+    width: 90px;
+    height: 20px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.plans-skeleton-price {
+    width: 130px;
+    height: 48px;
+    border-radius: 6px;
+}
+
+.plans-skeleton-hours {
+    width: 110px;
+    height: 18px;
+    border-radius: 6px;
+}
+
+.plans-skeleton-cta {
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+}
+
+.plans-skeleton-features-title {
+    width: 150px;
+    height: 16px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.plans-skeleton-feature-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.plans-skeleton-feature-text {
+    flex: 1;
+    height: 16px;
+    border-radius: 6px;
+}
+
 /* Pricing Card Styles */
 .pricing-card {
     background: #FFFFFF;
     border: 1px solid var(--sayso-border);
     border-radius: 16px;
     width: 100%;
-    height: fit-content;
+    height: auto;
     position: relative;
 }
 
@@ -73,7 +188,7 @@
     position: absolute;
     top: -12px;
     right: 24px;
-    background-color: #000000;
+    background: linear-gradient(135deg, #2a3f5f, #4B6DCC);
     color: #FFFFFF;
     padding: 4px 12px;
     border-radius: 6px;
@@ -156,11 +271,11 @@
 }
 
 .pricing-cta-button-popular {
-    background: #000;
+    background: linear-gradient(135deg, #2a3f5f, #4B6DCC);
     color: #FFFFFF;
 }
 .pricing-cta-button-popular:hover {
-    background: #1F2937;
+    background: linear-gradient(135deg, #1e2f47, #3a5ab8);
 }
 
 .pricing-cta-button-current-plan {
@@ -242,7 +357,7 @@
 }
 
 .pricing-feature-icon.included {
-    background-color: #000000;
+    background: linear-gradient(135deg, #2a3f5f, #4B6DCC);
 }
 
 .pricing-feature-icon.not-included {
@@ -565,6 +680,18 @@
 }
 
 @media (max-width: 767px) {
+    .select-your-plan-header {
+        margin-bottom: 6px;
+    }
+
+    .select-your-plan-title {
+        font-size: 28px;
+    }
+
+    .select-your-plan-description {
+        font-size: 14px;
+    }
+
     /* Pricing cards */
     .pricing-currency,
     .pricing-amount {

@@ -1,4 +1,4 @@
-import { useMemo, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import AuthGuard from './components/AuthGuard';
@@ -17,12 +17,11 @@ const Admin = lazy(() => import('./views/Admin'));
 const Subscription = lazy(() => import('./views/Subscription'));
 const MFAVerify = lazy(() => import('./views/MFAVerify'));
 
-import { useAuth } from './context/AuthContext';
 import SaysoLoader from './components/SaysoLoader';
+import useHasSubscription from './hooks/useHasSubscription';
 
 export default function AppRoutes() {
-    const { globalUser } = useAuth();
-    const hasSubscription = useMemo(() => !!globalUser?.subscription_plan_id, [globalUser]);
+    const hasSubscription = useHasSubscription();
 
     return (
         <Suspense fallback={<SaysoLoader />}>
@@ -99,9 +98,10 @@ export default function AppRoutes() {
                     path="/subscription"
                     element={
                         <AuthGuard>
-                        <Layout>
-                            <Subscription />
-                        </Layout>
+                            {hasSubscription
+                                ? <Layout><Subscription /></Layout>
+                                : <Subscription />
+                            }
                         </AuthGuard>
                     }
                 />

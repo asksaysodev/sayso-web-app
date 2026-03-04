@@ -1,14 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { FaMinus, FaCheck } from "react-icons/fa";
-import getStripeCheckoutPageUrl from "../services/getStripeCheckoutPageUrl";
-import { useToast } from "@/context/ToastContext";
 import useStripeCheckout from "../hooks/useStripeCheckout";
 import ButtonSpinner from "@/components/ButtonSpinner";
 import { useAuth } from "@/context/AuthContext";
 import formatMinutesToHours from "@/utils/formatters/formatMinutesToHours";
 import { BillingInterval, BillingIntervalEnum, PricingPlan } from "../types";
 import { openExternal } from "@/utils/helpers/openExternal";
+import useHasSubscription from "@/hooks/useHasSubscription";
 
 interface Props {
     plan: PricingPlan | null;
@@ -29,7 +27,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
         trialIncludedMinutes = null 
     } = plan || {};
 
-    const { globalUser } = useAuth();
+    const hasSubscription = useHasSubscription();
     const { isPendingGetStripeCheckoutPageUrl, mutateGetStripeCheckoutPageUrl} = useStripeCheckout();
 
     const pricingOptionSelected = useMemo(() => pricingOptions ? pricingOptions.find(opt => opt.interval === selectedBillingTab) ?? null : null, [pricingOptions, selectedBillingTab]);
@@ -39,9 +37,9 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
     // Backend sends total price for the billing period (monthly: $79, annual: $853.20)
     // For annual plans, we display the effective monthly cost to show savings ($71.10 per month vs $79 per month)
     const pricePerMonth = useMemo(() => {
-        return selectedBillingTab === BillingIntervalEnum.MONTH 
-            ? priceInDollars 
-            : (Number(priceInDollars) / 12).toFixed(2);
+        return selectedBillingTab === BillingIntervalEnum.MONTH
+            ? priceInDollars
+            : (Number(priceInDollars) / 12).toFixed(0);
     }, [priceInDollars, selectedBillingTab]);
 
     const handlePurchase = () => {
@@ -53,11 +51,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
             }
         }
     }
-
-    const alreadySubscribed = useMemo(() =>
-        globalUser?.subscription_plan_id === plan?.id,
-    [globalUser, plan]);
-
+    
     return (
         <div className="pricing-card">
             {popular && <div className="pricing-card-popular-tag">Most popular</div>}
@@ -68,7 +62,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                     <div className="pricing-price-and-included-hours-container">
                         <div className="pricing-amount-container">
                             <span className="pricing-currency">$</span>
-                            <span className="pricing-amount">{pricePerMonth}</span>
+                            <span key={pricePerMonth} className="pricing-amount pricing-amount-enter">{pricePerMonth}</span>
                             <span className="pricing-period">per month</span>
                         </div>
                         <span className="pricing-included-hours">{includedHoursPerMonth} hours included</span>
@@ -76,8 +70,8 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                 }
 
                 <button 
-                    disabled={isPendingGetStripeCheckoutPageUrl || alreadySubscribed} 
-                    className={`pricing-cta-button ${popular ? 'pricing-cta-button-popular' : ''} ${alreadySubscribed ? 'pricing-cta-button-current-plan' : ''}`} 
+                    disabled={isPendingGetStripeCheckoutPageUrl || hasSubscription} 
+                    className={`pricing-cta-button ${popular ? 'pricing-cta-button-popular' : ''} ${hasSubscription ? 'pricing-cta-button-current-plan' : ''}`} 
                     onClick={handlePurchase}
                     style={{ opacity: isPendingGetStripeCheckoutPageUrl ? 0.7 : 1 }}
                 >
@@ -87,10 +81,10 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                             size={14} 
                         />
                     )}
-                    {purchasable ? alreadySubscribed ? 'Current plan' : 'Get started' : 'Contact sales'}
+                    {purchasable ? hasSubscription ? 'Current plan' : 'Get started' : 'Contact sales'}
                 </button>
 
-                {hasTrial && !alreadySubscribed && (
+                {hasTrial && !hasSubscription && (
                     <div>
                         <button className="pricing-trial-button" onClick={handlePurchase}>
                             <p className="pricing-trial-text bold-text">Get {freeTrialHours} free hours of Live AI Coaching</p>
