@@ -31,7 +31,7 @@ export default function StageFitPill({ filter, onUpdate, onRemove }: Props) {
     };
 
     return (
-        <div className="signal-search-filter-pill">
+        <div className="search-filter-pill">
             <span className="filter-pill-label">stage_fit</span>
 
             <Popover open={isStageDropdownOpen} onOpenChange={setIsStageDropdownOpen}>

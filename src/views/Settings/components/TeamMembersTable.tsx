@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LuSearch, LuUserPlus, LuEllipsis, LuUserMinus, LuSend, LuListFilter } from "react-icons/lu";
+import { LuUserPlus, LuEllipsis, LuUserMinus, LuSend } from "react-icons/lu";
 import {
     Table,
     TableBody,
@@ -15,11 +15,23 @@ import {
     DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu";
 import SaysoButton from "../../../components/SaysoButton";
+import SearchBar, { SearchFilterConfig } from "@/components/ui/search-bar";
 import { ORG_USERS } from "../orgaUsers";
 import { getInitials } from "@/utils/helpers/getInitials";
 import StatusBadge from "./TeamMemberStatusBadge";
+import StatusFilterPill from "./StatusFilterPill";
+import { MemberActiveFilter } from "../types";
 
 type OrgUser = typeof ORG_USERS[number];
+
+const AVAILABLE_FILTERS: SearchFilterConfig<MemberActiveFilter>[] = [
+    {
+        key: 'status',
+        label: 'status',
+        description: 'Filter by member status',
+        defaultValue: () => ({ key: 'status', value: 'active' }),
+    },
+];
 
 interface Props {
     onAddMember: () => void;
@@ -27,15 +39,25 @@ interface Props {
 }
 
 export default function TeamMembersTable({ onAddMember, onRemoveMember }: Props) {
-    const [search, setSearch] = useState("");
+    const [searchText, setSearchText] = useState("");
+    const [activeFilters, setActiveFilters] = useState<MemberActiveFilter[]>([]);
 
     const filtered = ORG_USERS.filter((u) => {
-        const q = search.toLowerCase();
-        return (
+        const q = searchText.toLowerCase();
+
+        const matchesSearch =
             u.firstName.toLowerCase().includes(q) ||
             u.lastName.toLowerCase().includes(q) ||
-            u.email.toLowerCase().includes(q)
-        );
+            u.email.toLowerCase().includes(q);
+
+        const matchesFilters = activeFilters.every((filter) => {
+            if (filter.key === 'status') {
+                return u.status.toLowerCase() === filter.value;
+            }
+            return true;
+        });
+
+        return matchesSearch && matchesFilters;
     });
 
     return (
@@ -43,22 +65,16 @@ export default function TeamMembersTable({ onAddMember, onRemoveMember }: Props)
             <div className="team-members-toolbar">
                 <h3 className="team-members-title">Members</h3>
                 <div className="team-members-toolbar-right">
-                    <div className="team-members-search">
-                        <LuSearch className="team-members-search-icon" />
-                        <input
-                            type="text"
-                            placeholder="Search members..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
-                    <SaysoButton
-                        size="sm"
-                        label="Filters"
-                        variant="outlined"
-                        fullWidth={false}
-                        icon={<LuListFilter />}
-                        onClick={() => {}}
+                    <SearchBar
+                        searchText={searchText}
+                        onSearchTextChange={setSearchText}
+                        activeFilters={activeFilters}
+                        setActiveFilters={setActiveFilters}
+                        availableFilters={AVAILABLE_FILTERS}
+                        placeholder="Search members..."
+                        renderFilterPill={(filter, onUpdate, onRemove) => (
+                            <StatusFilterPill filter={filter} onUpdate={onUpdate} onRemove={onRemove} />
+                        )}
                     />
                     <SaysoButton
                         size="sm"
