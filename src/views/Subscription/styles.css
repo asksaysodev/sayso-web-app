@@ -5,6 +5,10 @@
     justify-content: center;
 }
 
+.billing-tab-selector-container .tab-selector-container {
+    width: fit-content;
+}
+
 .billing-tab-option {
     background-color: transparent;
     border: 1px solid transparent;
@@ -27,6 +31,15 @@
     color: var(--sayso-dark);
     font-size: 14px;
     font-weight: 500;
+}
+
+@keyframes priceEnter {
+    from { transform: translateY(10px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.pricing-amount-enter {
+    animation: priceEnter 0.2s ease-out forwards;
 }
 
 /* Pricing Components Grid */
@@ -65,7 +78,7 @@
     border: 1px solid var(--sayso-border);
     border-radius: 16px;
     width: 100%;
-    height: fit-content;
+    height: auto;
     position: relative;
 }
 
@@ -73,7 +86,7 @@
     position: absolute;
     top: -12px;
     right: 24px;
-    background-color: #000000;
+    background: linear-gradient(135deg, #2a3f5f, #4B6DCC);
     color: #FFFFFF;
     padding: 4px 12px;
     border-radius: 6px;
@@ -156,11 +169,11 @@
 }
 
 .pricing-cta-button-popular {
-    background: #000;
+    background: linear-gradient(135deg, #2a3f5f, #4B6DCC);
     color: #FFFFFF;
 }
 .pricing-cta-button-popular:hover {
-    background: #1F2937;
+    background: linear-gradient(135deg, #1e2f47, #3a5ab8);
 }
 
 .pricing-cta-button-current-plan {
@@ -242,7 +255,7 @@
 }
 
 .pricing-feature-icon.included {
-    background-color: #000000;
+    background: linear-gradient(135deg, #2a3f5f, #4B6DCC);
 }
 
 .pricing-feature-icon.not-included {
