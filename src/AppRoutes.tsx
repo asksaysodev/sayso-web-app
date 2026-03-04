@@ -98,9 +98,10 @@ export default function AppRoutes() {
                     path="/subscription"
                     element={
                         <AuthGuard>
-                        <Layout>
-                            <Subscription />
-                        </Layout>
+                            {hasSubscription
+                                ? <Layout><Subscription /></Layout>
+                                : <Subscription />
+                            }
                         </AuthGuard>
                     }
                 />
