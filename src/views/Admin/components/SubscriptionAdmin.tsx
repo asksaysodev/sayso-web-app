@@ -57,6 +57,7 @@ export default function SubscriptionAdmin() {
                     secondaryText='Cancel'
                     onDeny={() => setShowResetModal(false)}
                     onConfirm={onConfirmResetSubscription}
+                    isLoading={isPending}
                 />
             )}
         </div>

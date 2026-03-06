@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useSearchParams } from 'react-router-dom';
 import { LuX, LuDownload, LuCircleHelp } from 'react-icons/lu';
@@ -10,6 +10,12 @@ import './DownloadDesktopAppButton.css';
 export default function DownloadDesktopAppButton() {
     const [searchParams] = useSearchParams();
     const [showModal, setShowModal] = useState(searchParams.get("success") === "true");
+
+    useEffect(() => {
+        if (searchParams.get("success") === "true") {
+            window.history.replaceState(null, '', window.location.pathname);
+        }
+    }, []);
     const { siliconUrl, intelUrl, handleDownload, isLoadingUrls } = useDownloadGithubRelease(showModal);
 
     return (

@@ -1,6 +1,7 @@
 import apiClient from "@/config/axios";
+import { ResetAccountSubscriptionResponse } from "../types";
 
-export default async function resetAccountSubscription(): Promise<unknown> {
+export default async function resetAccountSubscription(): Promise<ResetAccountSubscriptionResponse> {
     const response = await apiClient.post(`admin/subscription/reset`);
 
     if (!response?.data) {
