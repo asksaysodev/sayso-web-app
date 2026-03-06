@@ -61,12 +61,6 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
         return centsToDollars(Math.min(...availablePackages.map(opt => opt.priceInCents)));
     }, [hasPackages, availablePackages]);
 
-    // const formattedPrice = useMemo(() => {
-    //     return selectedBillingTab === BillingIntervalEnum.MONTH
-    //         ? priceInDollars
-    //         : Math.round(priceInDollars / 12);
-    // }, [priceInDollars, selectedBillingTab]);
-
     const openOverlay = () => {
         setPendingPackage(packageSelected);
         setIsOverlayOpen(true);
