@@ -1,6 +1,6 @@
 import useHasSubscription from "@/hooks/useHasSubscription";
 import useStripeCheckout from "../hooks/useStripeCheckout";
-import { BillingInterval, BillingIntervalEnum, PricingOption, PricingPlan } from "../types";
+import { BillingInterval, PricingOption, PricingPlan } from "../types";
 import '../styles/PricingComponent.css';
 import { useEffect, useMemo, useState } from "react";
 import formatMinutesToHours from "@/utils/formatters/formatMinutesToHours";
@@ -61,11 +61,11 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
         return centsToDollars(Math.min(...availablePackages.map(opt => opt.priceInCents)));
     }, [hasPackages, availablePackages]);
 
-    const formattedPrice = useMemo(() => {
-        return selectedBillingTab === BillingIntervalEnum.MONTH
-            ? priceInDollars
-            : Math.round(priceInDollars / 12);
-    }, [priceInDollars, selectedBillingTab]);
+    // const formattedPrice = useMemo(() => {
+    //     return selectedBillingTab === BillingIntervalEnum.MONTH
+    //         ? priceInDollars
+    //         : Math.round(priceInDollars / 12);
+    // }, [priceInDollars, selectedBillingTab]);
 
     const openOverlay = () => {
         setPendingPackage(packageSelected);
@@ -101,7 +101,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                     {purchasable && (
                         <>
                             <div className="price-row">
-                                <span className="price-amount">${formatPrice(hasPackages ? (!packageSelected ? startingPriceInDollars ?? 0 : priceInDollars) : formattedPrice)}</span>
+                                <span className="price-amount">${formatPrice(hasPackages && !packageSelected ? startingPriceInDollars ?? 0 : priceInDollars)}</span>
                                 <span className="price-period">/ {selectedBillingTab}{hasPackages && !packageSelected ? '*' : ''}</span>
                             </div>
                             <div className="hours-sub">
@@ -131,7 +131,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                             </div>
                             <div className="pkg-trigger-right">
                                 <span className="pkg-trigger-price">
-                                    {packageSelected ? `$${formatPrice(centsToDollars(packageSelected.priceInCents))}` : ''}
+                                    {packageSelected ? `$${formatPrice(priceInDollars)}` : ''}
                                 </span>
                                 <svg className="chevron" viewBox="0 0 18 18" fill="none">
                                     <path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
