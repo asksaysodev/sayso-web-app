@@ -75,16 +75,6 @@ export default function AppRoutes() {
                     }
                 />
                 <Route
-                    path="/checkout"
-                    element={
-                        <AuthGuard>
-                        <Layout>
-                            <Checkout />
-                        </Layout>
-                        </AuthGuard>
-                    }
-                />
-                <Route
                     path="/admin"
                     element={
                         <AuthGuard>
@@ -106,12 +96,18 @@ export default function AppRoutes() {
                     }
                 />
                 <Route
+                    path="/checkout"
+                    element={
+                        <AuthGuard>
+                            <Checkout />
+                        </AuthGuard>
+                    }
+                />
+                <Route
                     path="/checkout/success"
                     element={
                         <AuthGuard>
-                        <Layout>
                             <Checkout />
-                        </Layout>
                         </AuthGuard>
                     }
                 />

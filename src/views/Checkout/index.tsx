@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { LuX } from "react-icons/lu";
 import SaysoLoader from "../../components/SaysoLoader";
+import SaysoButton from "../../components/SaysoButton";
 import "./styles.css";
 
 export default function Checkout() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const [seconds, setSeconds] = useState(5);
+    const [seconds, setSeconds] = useState(6);
 
     const successParam = searchParams.get("success");
     const success = successParam === null ? null : successParam === "true";
@@ -28,23 +30,22 @@ export default function Checkout() {
 
     if (success === null || success === true) {
         return (
-            <div className="checkout-panel-main">
+            <div className="checkout-page">
                 <SaysoLoader />
             </div>
         );
     }
 
     return (
-        <div className="checkout-panel-main">
-            <div className="checkout-panel-content canceled">
-                <div className="checkout-canceled">
-                    <h2>Payment Canceled</h2>
-                    <p>Your payment was canceled. No charges were made.</p>
+        <div className="checkout-page">
+            <div className="checkout-card">
+                <div className="checkout-icon-wrapper">
+                    <LuX size={36} />
                 </div>
-                <p className="checkout-panel-redirect-text">Redirecting to Dashboard in {seconds} seconds...</p>
-            </div>
-            <div className="checkout-panel-footer">
-                <button className="checkout-panel-footer-button" onClick={handleGoBack}>Go to Dashboard</button>
+                <h2 className="checkout-title">Payment Canceled</h2>
+                <p className="checkout-description">Your payment was canceled. No charges were made.</p>
+                <p className="checkout-redirect-text">Redirecting to Dashboard in {seconds} seconds...</p>
+                <SaysoButton label="Go to Dashboard" onClick={handleGoBack} variant="outlined" fullWidth />
             </div>
         </div>
     );
