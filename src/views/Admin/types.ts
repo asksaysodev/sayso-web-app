@@ -51,3 +51,8 @@ export interface FilterConfig {
     description: string;
     defaultValue: () => ActiveFilter;
 }
+
+export interface ResetAccountSubscriptionResponse {
+    message: string;
+    companyId: string;
+}
