@@ -2,7 +2,7 @@ import useHasSubscription from "@/hooks/useHasSubscription";
 import useStripeCheckout from "../hooks/useStripeCheckout";
 import { BillingInterval, BillingIntervalEnum, PricingOption, PricingPlan } from "../types";
 import '../styles/PricingComponent.css';
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import formatMinutesToHours from "@/utils/formatters/formatMinutesToHours";
 import ButtonSpinner from "@/components/ButtonSpinner";
 import { openExternal } from "@/utils/helpers/openExternal";
@@ -28,6 +28,14 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
     const [packageSelected, setPackageSelected] = useState<null | PricingOption>(null);
     const [pendingPackage, setPendingPackage] = useState<null | PricingOption>(null);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+
+    useEffect(() => {
+        const resetPackages = () =>{
+            setPackageSelected(null);
+            setPendingPackage(null);
+        }
+        resetPackages();
+    }, [selectedBillingTab]);
 
     const hasSubscription = useHasSubscription();
     const {  isPendingGetStripeCheckoutPageUrl, mutateGetStripeCheckoutPageUrl } = useStripeCheckout();
@@ -56,6 +64,9 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
             ? priceInDollars
             : (Number(priceInDollars) / 12).toFixed(0);
     }, [priceInDollars, selectedBillingTab]);
+
+    const formatPrice = (amount: number | string) =>
+        Number(amount).toLocaleString('en-US', { maximumFractionDigits: 0 });
 
     const openOverlay = () => {
         setPendingPackage(packageSelected);
@@ -91,12 +102,12 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                     {purchasable && (
                         <>
                             <div className="price-row">
-                                <span className="price-amount">${hasPackages && !packageSelected ? startingPriceInDollars : formattedPrice}</span>
-                                <span className="price-period">/ month{hasPackages && !packageSelected ? '*' : ''}</span>
+                                <span className="price-amount">${formatPrice(hasPackages ? (!packageSelected ? startingPriceInDollars ?? 0 : priceInDollars) : formattedPrice)}</span>
+                                <span className="price-period">/ {selectedBillingTab}{hasPackages && !packageSelected ? '*' : ''}</span>
                             </div>
                             <div className="hours-sub">
                                 {hasPackages && !packageSelected
-                                    ? `*plans start at $${startingPriceInDollars} / month`
+                                    ? `*plans start at $${formatPrice(startingPriceInDollars ?? 0)} / ${selectedBillingTab}`
                                     : `${includedHoursPerMonth} hours included`
                                 }
                             </div>
@@ -121,7 +132,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                             </div>
                             <div className="pkg-trigger-right">
                                 <span className="pkg-trigger-price">
-                                    {packageSelected ? `$${(packageSelected.priceInCents / 100).toFixed(0)}` : ''}
+                                    {packageSelected ? `$${formatPrice(packageSelected.priceInCents / 100)}` : ''}
                                 </span>
                                 <svg className="chevron" viewBox="0 0 18 18" fill="none">
                                     <path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -177,7 +188,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                                     <div className="tier-hours">{opt.teamSize}</div>
                                 </div>
                             </div>
-                            <div className="tier-price-tag">${(opt.priceInCents / 100).toFixed(0)}</div>
+                            <div className="tier-price-tag">${formatPrice(opt.priceInCents / 100)}</div>
                         </div>
                     ))}
                 </div>
@@ -188,7 +199,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                         onClick={confirmPackage}
                     >
                         {pendingPackage
-                            ? `Confirm — $${(pendingPackage.priceInCents / 100).toFixed(0)} / month`
+                            ? `Confirm — $${formatPrice(pendingPackage.priceInCents / 100)} / ${selectedBillingTab}`
                             : 'Confirm package'
                         }
                     </button>
