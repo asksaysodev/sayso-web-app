@@ -69,6 +69,7 @@ export interface PricingPlan {
   hasTrial: boolean;
   trialDays: number | null;
   trialIncludedMinutes: number | null;
+  hasPackages: boolean;
 }
 
 export interface PricingOption {
@@ -77,6 +78,9 @@ export interface PricingOption {
   currency: string;
   interval: string;
   includedMinutesPerMonth: number;
+  teamSize: string;
+  planName: string;
+  sortOrder: number;
 }
 
 export type BillingInterval = 'month' | 'year';
