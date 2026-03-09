@@ -49,49 +49,8 @@
     justify-content: flex-end;
 }
 
-.sayso-modal-actions button{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 16px;
-    border-radius: 100px;
-    /* border: none; */
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 400;
-}
-
-.sayso-modal-actions button:first-child{
+.sayso-modal-actions .sayso-button:first-child {
     margin-right: 8px;
-}
-
-.sayso-modal-action-primary{
-    background-color: var(--sayso-indigo);
-    border: 1px solid var(--sayso-indigo);
-    color: white;
-    opacity: 1;
-}
-
-.delete .sayso-modal-action-primary{
-    background-color: var(--sayso-destructive);
-    border: 1px solid var(--sayso-destructive);
-    /* color: white;
-    opacity: 1; */
-}
-
-.sayso-modal-action-primary:hover{
-    opacity: 0.9;
-}
-
-.sayso-modal-action-secondary{
-    border: 1px solid var(--sayso-lightgray);
-    color: var(--sayso-dark);
-}
-
-.sayso-modal-action-secondary:hover{
-    background-color: var(--sayso-border);
-    border: 1px solid var(--sayso-lightgray);
 }
 
 @media (max-width: 767px) {

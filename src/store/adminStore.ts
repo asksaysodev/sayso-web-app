@@ -3,7 +3,7 @@ import { LeadType } from "@/types/coach";
 import { SignalVersion, Tool } from "@/views/Admin/types";
 import { create } from "zustand";
 
-export const useAdminStore = create<AdminStore>((set, get) => ({
+export const useAdminStore = create<AdminStore>((set) => ({
     selectedTool: 'cue-signals',
     leadType: 'buyer',
 

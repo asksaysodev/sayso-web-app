@@ -1,4 +1,4 @@
-export type Tool = 'cue-signals' | 'cue-main-instructions';
+export type Tool = 'cue-signals' | 'cue-main-instructions' | 'subscription';
 export type SignalLeadType = 'buyer' | 'seller' | 'all';
 export type Signal = {
     id: string;
@@ -50,4 +50,9 @@ export interface FilterConfig {
     label: string;
     description: string;
     defaultValue: () => ActiveFilter;
+}
+
+export interface ResetAccountSubscriptionResponse {
+    message: string;
+    companyId: string;
 }

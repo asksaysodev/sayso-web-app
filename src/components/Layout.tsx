@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { LuPanelLeft } from 'react-icons/lu';
 import Sidebar from './Sidebar';
 
-import '../styles/Home.css';
+import '../styles/Layout.css';
 
 interface Props {
   children: React.ReactNode;

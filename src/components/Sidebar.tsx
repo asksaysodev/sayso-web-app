@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { NavLink } from 'react-router-dom'
 import {
@@ -20,6 +20,7 @@ import { useAuth } from '../context/AuthContext';
 
 import logoHorizontal from '/assets/logo-pos-horizontal.png';
 import '../styles/Sidebar.css';
+import useHasSubscription from '@/hooks/useHasSubscription';
 import DownloadDesktopAppButton from './DownloadDesktopAppButton';
 
 interface SidebarProps {
@@ -30,7 +31,7 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const [showSignOutModal, setShowSignOutModal] = useState(false);
     const { globalUser, handleSignOut } = useAuth();
-    const hasSubscription = useMemo(() => !!globalUser?.subscription_plan_id, [globalUser]);
+    const hasSubscription = useHasSubscription();
 
     return (
         <>

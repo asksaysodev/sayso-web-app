@@ -2,9 +2,13 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     justify-content: start;
     gap: 16px;
+}
+
+.admin-panel-container.centered {
+    align-items: center;
 }
 
 .admin-panel-header {
@@ -408,6 +412,58 @@
 
 .import-modal-result.error {
     color: #dc2626;
+}
+
+/* Subscription Admin */
+.subscription-admin-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.subscription-admin-card {
+    width: 100%;
+    background-color: #FFFFFF;
+    border: 1px solid var(--sayso-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+}
+
+.subscription-admin-card.danger {
+    border-color: #fca5a5;
+    background-color: #fff9f9;
+}
+
+.subscription-admin-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.subscription-admin-card-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sayso-dark);
+    margin: 0;
+}
+
+.subscription-admin-card-header.danger h3,
+.subscription-admin-card-header.danger svg {
+    color: #dc2626;
+}
+
+.subscription-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    background-color: #dcfce7;
+    color: #16a34a;
+    white-space: nowrap;
 }
 
 /* Alert Dialog Button Overrides */
