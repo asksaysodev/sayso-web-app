@@ -127,7 +127,7 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
                             />
                         </form>
                         <TeamMembersTable
-                            onAddMember={() => console.log('add member')}
+                            onAddMember={() => {}}
                             onRemoveMember={(id) => setDeleteMemberId(id)}
                         />
                     </>

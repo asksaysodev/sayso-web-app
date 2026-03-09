@@ -1,6 +1,6 @@
 export type SettingsPanel = 'personal' | 'company' | 'files' | 'connections' | 'security' | 'coach';
 
-export type MemberStatusFilterValue = 'active' | 'inactive';
+export type MemberStatusFilterValue = 'active' | 'expired' | 'pending' | 'revoked';
 export type MemberStatusFilter = { key: 'status'; value: MemberStatusFilterValue };
 export type MemberActiveFilter = MemberStatusFilter;
 export enum SettingsPanelEnum {

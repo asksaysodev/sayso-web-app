@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { LuUserPlus, LuEllipsis, LuUserMinus, LuSend } from "react-icons/lu";
+import InviteMemberModal from "./InviteMemberModal";
 import {
     Table,
     TableBody,
@@ -21,6 +22,8 @@ import { getInitials } from "@/utils/helpers/getInitials";
 import StatusBadge from "./TeamMemberStatusBadge";
 import StatusFilterPill from "./StatusFilterPill";
 import { MemberActiveFilter } from "../types";
+import { useQuery } from "@tanstack/react-query";
+import getOrganizationMembers from "../services/getOrganizationMembers";
 
 type OrgUser = typeof ORG_USERS[number];
 
@@ -41,26 +44,23 @@ interface Props {
 export default function TeamMembersTable({ onAddMember, onRemoveMember }: Props) {
     const [searchText, setSearchText] = useState("");
     const [activeFilters, setActiveFilters] = useState<MemberActiveFilter[]>([]);
+    const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
-    const filtered = ORG_USERS.filter((u) => {
-        const q = searchText.toLowerCase();
+    const { data } = useQuery({
+        queryKey: ['get-organization-members'],
+        queryFn: getOrganizationMembers
+    })
 
-        const matchesSearch =
-            u.firstName.toLowerCase().includes(q) ||
-            u.lastName.toLowerCase().includes(q) ||
-            u.email.toLowerCase().includes(q);
-
-        const matchesFilters = activeFilters.every((filter) => {
-            if (filter.key === 'status') {
-                return u.status.toLowerCase() === filter.value;
-            }
-            return true;
-        });
-
-        return matchesSearch && matchesFilters;
-    });
-
+    const filtered = useMemo(() => {
+        console.log(data, 'data')
+        if (!data) return [];
+        const { members } = data;
+        return members ?? []
+    },[data])
+    
     return (
+        <>
+        <InviteMemberModal open={inviteModalOpen} onClose={() => setInviteModalOpen(false)} />
         <div className="team-members-table-container">
             <div className="team-members-toolbar">
                 <h3 className="team-members-title">Members</h3>
@@ -82,7 +82,7 @@ export default function TeamMembersTable({ onAddMember, onRemoveMember }: Props)
                         variant="sayso-indigo"
                         fullWidth={false}
                         icon={<LuUserPlus />}
-                        onClick={onAddMember}
+                        onClick={() => setInviteModalOpen(true)}
                     />
                 </div>
             </div>
@@ -158,5 +158,6 @@ export default function TeamMembersTable({ onAddMember, onRemoveMember }: Props)
                 </Table>
             </div>
         </div>
+        </>
     );
 }
