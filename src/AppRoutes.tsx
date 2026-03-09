@@ -16,6 +16,7 @@ const Checkout = lazy(() => import('./views/Checkout'));
 const Admin = lazy(() => import('./views/Admin'));
 const Subscription = lazy(() => import('./views/Subscription'));
 const MFAVerify = lazy(() => import('./views/MFAVerify'));
+const AcceptInvite = lazy(() => import('./views/AcceptInvite'));
 
 import { useAuth } from './context/AuthContext';
 import SaysoLoader from './components/SaysoLoader';
@@ -46,6 +47,10 @@ export default function AppRoutes() {
                 <Route
                     path="/reset-password"
                     element={<ResetPassword />}
+                />
+                <Route
+                    path="/accept-invite"
+                    element={<AcceptInvite />}
                 />
                 <Route
                     path="/mfa-verify"
