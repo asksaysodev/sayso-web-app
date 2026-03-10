@@ -22,8 +22,10 @@ import { getInitials } from "@/utils/helpers/getInitials";
 import StatusBadge from "./TeamMemberStatusBadge";
 import StatusFilterPill from "./StatusFilterPill";
 import { MemberActiveFilter } from "../types";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import getOrganizationMembers from "../services/getOrganizationMembers";
+import revokeInvite from "../services/revokeInvite";
+import resendInvite from "../services/resendInvite";
 import { AccountStatus } from "@/types/user";
 
 const AVAILABLE_FILTERS: SearchFilterConfig<MemberActiveFilter>[] = [
@@ -69,6 +71,14 @@ export default function TeamMembersTable() {
         console.log('delete member', deleteMemberId);
     }
 
+    const { mutate: handleRevoke } = useMutation({
+        mutationFn: (inviteId: string) => revokeInvite(inviteId),
+    });
+
+    const { mutate: handleResend } = useMutation({
+        mutationFn: (inviteId: string) => resendInvite(inviteId),
+    });
+
     const renderDropdownContent = (status: AccountStatus, id: string) => {
         switch(status) {
             case "active": return (
@@ -81,13 +91,19 @@ export default function TeamMembersTable() {
                 </DropdownMenuItem>
             )
             case "expired": return (
-                <DropdownMenuItem className="team-member-action-resend">
+                <DropdownMenuItem 
+                    className="team-member-action-resend" 
+                    onClick={() => handleResend(id)}
+                >
                     <LuSend />
                     Resend Invite
                 </DropdownMenuItem>
             )
             case "pending": return (
-                <DropdownMenuItem className="team-member-action-remove">
+                <DropdownMenuItem 
+                    className="team-member-action-remove" 
+                    onClick={() => handleRevoke(id)}
+                >
                     <LuBan />
                     Revoke
                 </DropdownMenuItem>
