@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { LuUserPlus, LuEllipsis, LuUserMinus, LuSend, LuBan } from "react-icons/lu";
+import { LuUserPlus, LuEllipsis, LuUserMinus, LuSend, LuBan, LuMail } from "react-icons/lu";
 import InviteMemberModal from "./InviteMemberModal";
 import SaysoModal from "../../../components/SaysoModal";
 import {
@@ -156,13 +156,13 @@ export default function TeamMembersTable() {
                             </TableRow>
                         ) : (
                             filtered.map(({name, lastname, id, email, status}) => {
-                                const initials = (name || lastname) ? getInitials(name ?? "", lastname ?? "") : (email?.[0] ?? "?").toUpperCase();
+                                const hasName = !!(name || lastname);
 
                                 return (
                                     <TableRow key={id}>
                                         <TableCell>
-                                            <div className="team-member-avatar">
-                                                {initials}
+                                            <div className={`team-member-avatar${hasName ? "" : " team-member-avatar--invite"}`}>
+                                                {hasName ? getInitials(name ?? "", lastname ?? "") : <LuMail size={16} />}
                                             </div>
                                         </TableCell>
                                         <TableCell className="team-member-name">

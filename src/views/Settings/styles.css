@@ -491,8 +491,14 @@
     justify-content: center;
     font-size: 12px;
     font-weight: 500;
-    color: #fff;
+    color: #D6E4F0;
     flex-shrink: 0;
+}
+
+.team-member-avatar--invite {
+    background-color: var(--sayso-white);
+    border: 1px solid var(--sayso-border);
+    color: var(--sayso-lightgray);
 }
 
 .team-member-name {
