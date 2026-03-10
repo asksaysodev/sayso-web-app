@@ -1,14 +1,16 @@
 import apiClient from "@/config/axios";
 
 export interface ValidateInviteResponse {
-    valid: true;
+    inviteId: string;
+    companyId: string;
     email: string;
     companyName: string;
+    expiresAt: string;
 }
 
-export default async function validateInvite(inviteId: string, token: string): Promise<ValidateInviteResponse> {
-    const response = await apiClient.get(`account/company/invite/validate`, {
-        params: { inviteId, token },
+export default async function validateInvite(token: string): Promise<ValidateInviteResponse> {
+    const response = await apiClient.get(`accounts/company/invite/validate`, {
+        params: { token },
     });
 
     if (!response?.data) {

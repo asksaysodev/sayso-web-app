@@ -7,6 +7,7 @@ import LoginLayout from "@/components/layouts/LoginLayout";
 import ControlledInputField from "@/components/forms/ControlledInputField";
 import LoginBtn from "@/components/LoginBtn";
 import EyeToggleShowPasswordButton from "@/views/Login/components/EyeToggleShowPasswordButton";
+import dayjs from "dayjs";
 import { supabase } from "@/config/supabase";
 import validateInvite from "./services/validateInvite";
 import acceptInvite from "./services/acceptInvite";
@@ -26,13 +27,12 @@ export default function AcceptInvite() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const inviteId = searchParams.get("inviteId") ?? "";
     const token = searchParams.get("token") ?? "";
 
     const { data: invite, isLoading, isError } = useQuery({
-        queryKey: ["validate-invite", inviteId, token],
-        queryFn: () => validateInvite(inviteId, token),
-        enabled: !!inviteId && !!token,
+        queryKey: ["validate-invite", token],
+        queryFn: () => validateInvite(token),
+        enabled: !!token,
         retry: false,
     });
 
@@ -55,10 +55,12 @@ export default function AcceptInvite() {
 
             if (signUpError) throw signUpError;
 
-            await acceptInvite(inviteId, {
-                token,
+            await acceptInvite({
+                // token,
+                email: invite?.email as string,
                 name: values.name,
                 lastname: values.lastname,
+                company: invite?.companyName
             });
         },
         onSuccess: () => {
@@ -70,7 +72,7 @@ export default function AcceptInvite() {
         mutate(values);
     };
 
-    if (!inviteId || !token) {
+    if (!token) {
         return (
             <LoginLayout>
                 <div className="accept-invite-invalid">
@@ -87,8 +89,10 @@ export default function AcceptInvite() {
             </div>
         );
     }
+    
+    const isExpired = invite ? dayjs().isAfter(dayjs(invite.expiresAt)) : false;
 
-    if (isError || !invite?.valid) {
+    if (isError || !invite || isExpired) {
         return (
             <LoginLayout>
                 <div className="accept-invite-invalid">
@@ -101,7 +105,7 @@ export default function AcceptInvite() {
     return (
         <LoginLayout
             title="You've been invited!"
-            description={`You're joining ${invite.companyName} on Sayso. Create your account to get started.`}
+            description={`You're joining ${invite.companyName}. Create your account to get started.`}
         >
             <div className="accept-invite-company-badge">
                 <LuBuilding2 size={14} />

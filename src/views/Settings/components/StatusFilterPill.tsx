@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/popover';
 import { MemberStatusFilter, MemberStatusFilterValue } from '../types';
 
-const STATUS_VALUES: MemberStatusFilterValue[] = ['active', 'inactive'];
+const STATUS_VALUES: MemberStatusFilterValue[] = ['active', 'pending', 'expired', 'revoked'];
 
 interface Props {
     filter: MemberStatusFilter;

@@ -4,7 +4,6 @@ import { useAccounts } from "../../../hooks/useAccounts";
 import { useToast } from "../../../context/ToastContext";
 
 import { LuLoader } from "react-icons/lu";
-import SaysoModal from "../../../components/SaysoModal";
 import FormLineAccount from "../../../components/FormLineAccount";
 import TeamMembersTable from "./TeamMembersTable";
 import { Account, Company } from "@/types/user";
@@ -19,9 +18,6 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
     const [inputValue, setInputValue] = useState('');
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [deleteMemberId, setDeleteMemberId] = useState<string | null>(null);
-    const [showDeleteMemberModal, setShowDeleteMemberModal] = useState(false);
-
     //HOOKS
     const { getCompanyById } = useAccounts();
     const { showToast } = useToast();
@@ -59,10 +55,6 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
         return emailRegex.test(email);
     }
 
-    const handleDeleteMember = async () => {
-        console.log('delete member', deleteMemberId);
-    }
-
     //EFFECTS
     useEffect(() => {
         if(inputValue !== '') {
@@ -81,14 +73,6 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
     }, [globalUser]);
 
     useEffect(() => {
-        if(deleteMemberId) {
-            setShowDeleteMemberModal(true);
-        } else {
-            setShowDeleteMemberModal(false);
-        }
-    }, [deleteMemberId]);
-
-    useEffect(() => {
             setUnsavedChanges(inputValue !== '');
     }, [inputValue]);
 
@@ -96,19 +80,6 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
     
     return (
         <div className="settings-company">
-            {
-                showDeleteMemberModal && (
-                    <SaysoModal
-                        title="Delete Member"
-                        text={`Are you sure you want to delete this member?\nThis action cannot be undone and the member will be permanently removed from the company.`}
-                        isDelete={true}
-                        primaryText="Yes, Delete"
-                        secondaryText="Cancel"
-                        onDeny={() => setDeleteMemberId(null)}
-                        onConfirm={handleDeleteMember}
-                    />
-                )
-            }
             {
                 isLoading ? (
                     <div className='files-list-container-loading'>
@@ -126,10 +97,9 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
                                 setUnsavedChanges={setUnsavedChanges}
                             />
                         </form>
-                        <TeamMembersTable
-                            onAddMember={() => {}}
-                            onRemoveMember={(id) => setDeleteMemberId(id)}
-                        />
+                        {(globalUser?.role === 'admin' || globalUser?.role === 'superadmin') &&
+                            <TeamMembersTable />
+                        }
                     </>
                 )
             }

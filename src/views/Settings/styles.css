@@ -483,8 +483,8 @@
 
 .team-member-avatar {
     background-color: var(--sayso-indigo);
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 100%;
     display: flex;
     align-items: center;
@@ -510,6 +510,7 @@
     border-radius: 50px;
     font-size: 12px;
     font-weight: 500;
+    text-transform: capitalize;
 }
 
 .badge-active {

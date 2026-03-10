@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { LuUserPlus, LuEllipsis, LuUserMinus, LuSend } from "react-icons/lu";
+import { LuUserPlus, LuEllipsis, LuUserMinus, LuSend, LuBan } from "react-icons/lu";
 import InviteMemberModal from "./InviteMemberModal";
+import SaysoModal from "../../../components/SaysoModal";
 import {
     Table,
     TableBody,
@@ -17,15 +18,13 @@ import {
 } from "../../../components/ui/dropdown-menu";
 import SaysoButton from "../../../components/SaysoButton";
 import SearchBar, { SearchFilterConfig } from "@/components/ui/search-bar";
-import { ORG_USERS } from "../orgaUsers";
 import { getInitials } from "@/utils/helpers/getInitials";
 import StatusBadge from "./TeamMemberStatusBadge";
 import StatusFilterPill from "./StatusFilterPill";
 import { MemberActiveFilter } from "../types";
 import { useQuery } from "@tanstack/react-query";
 import getOrganizationMembers from "../services/getOrganizationMembers";
-
-type OrgUser = typeof ORG_USERS[number];
+import { AccountStatus } from "@/types/user";
 
 const AVAILABLE_FILTERS: SearchFilterConfig<MemberActiveFilter>[] = [
     {
@@ -36,15 +35,11 @@ const AVAILABLE_FILTERS: SearchFilterConfig<MemberActiveFilter>[] = [
     },
 ];
 
-interface Props {
-    onAddMember: () => void;
-    onRemoveMember: (id: string) => void;
-}
-
-export default function TeamMembersTable({ onAddMember, onRemoveMember }: Props) {
+export default function TeamMembersTable() {
     const [searchText, setSearchText] = useState("");
     const [activeFilters, setActiveFilters] = useState<MemberActiveFilter[]>([]);
     const [inviteModalOpen, setInviteModalOpen] = useState(false);
+    const [deleteMemberId, setDeleteMemberId] = useState<string | null>(null);
 
     const { data } = useQuery({
         queryKey: ['get-organization-members'],
@@ -52,15 +47,69 @@ export default function TeamMembersTable({ onAddMember, onRemoveMember }: Props)
     })
 
     const filtered = useMemo(() => {
-        console.log(data, 'data')
         if (!data) return [];
-        const { members } = data;
-        return members ?? []
-    },[data])
+        const { members, invites } = data;
+        const all = [...(invites ?? []), ...(members ?? [])];
+
+        const statusFilter = activeFilters.find(f => f.key === 'status');
+        const text = searchText.toLowerCase().trim();
+
+        return all.filter(item => {
+            if (statusFilter && item.status !== statusFilter.value) return false;
+            if (text) {
+                const matchesName = `${item?.name ?? ''} ${item?.lastname ?? ''}`.toLowerCase().includes(text);
+                const matchesEmail = item.email?.toLowerCase().includes(text);
+                if (!matchesName && !matchesEmail) return false;
+            }
+            return true;
+        });
+    }, [data, searchText, activeFilters])
+    
+    const handleDeleteMember = async () => {
+        console.log('delete member', deleteMemberId);
+    }
+
+    const renderDropdownContent = (status: AccountStatus, id: string) => {
+        switch(status) {
+            case "active": return (
+                <DropdownMenuItem
+                    className="team-member-action-remove"
+                    onClick={() => setDeleteMemberId(id)}
+                >
+                    <LuUserMinus />
+                    Remove
+                </DropdownMenuItem>
+            )
+            case "expired": return (
+                <DropdownMenuItem className="team-member-action-resend">
+                    <LuSend />
+                    Resend Invite
+                </DropdownMenuItem>
+            )
+            case "pending": return (
+                <DropdownMenuItem className="team-member-action-remove">
+                    <LuBan />
+                    Revoke
+                </DropdownMenuItem>
+            )
+            case "revoked": return null
+        }
+    }
     
     return (
         <>
         <InviteMemberModal open={inviteModalOpen} onClose={() => setInviteModalOpen(false)} />
+        {deleteMemberId && (
+            <SaysoModal
+                title="Delete Member"
+                text={`Are you sure you want to delete this member?\nThis action cannot be undone and the member will be permanently removed from the company.`}
+                isDelete={true}
+                primaryText="Yes, Delete"
+                secondaryText="Cancel"
+                onDeny={() => setDeleteMemberId(null)}
+                onConfirm={handleDeleteMember}
+            />
+        )}
         <div className="team-members-table-container">
             <div className="team-members-toolbar">
                 <h3 className="team-members-title">Members</h3>
@@ -106,25 +155,24 @@ export default function TeamMembersTable({ onAddMember, onRemoveMember }: Props)
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            filtered.map((user: OrgUser) => {
-                                const initials = getInitials(user.firstName, user.lastName);
-                                const isInvited = user.status.toLowerCase() === "invited";
+                            filtered.map(({name, lastname, id, email, status}) => {
+                                const initials = (name || lastname) ? getInitials(name ?? "", lastname ?? "") : (email?.[0] ?? "?").toUpperCase();
 
                                 return (
-                                    <TableRow key={user.id}>
+                                    <TableRow key={id}>
                                         <TableCell>
                                             <div className="team-member-avatar">
                                                 {initials}
                                             </div>
                                         </TableCell>
                                         <TableCell className="team-member-name">
-                                            {user.firstName} {user.lastName}
+                                            {name || lastname ? `${name ?? ""} ${lastname ?? ""}`.trim() : <span style={{ color: "var(--sayso-lightgray)" }}>Pending invite</span>}
                                         </TableCell>
                                         <TableCell className="team-member-email">
-                                            {user.email}
+                                            {email}
                                         </TableCell>
                                         <TableCell>
-                                            <StatusBadge status={user.status} />
+                                            <StatusBadge status={status} />
                                         </TableCell>
                                         <TableCell>
                                             <DropdownMenu>
@@ -134,19 +182,7 @@ export default function TeamMembersTable({ onAddMember, onRemoveMember }: Props)
                                                     </button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
-                                                    {isInvited && (
-                                                        <DropdownMenuItem className="team-member-action-resend">
-                                                            <LuSend />
-                                                            Resend Invite
-                                                        </DropdownMenuItem>
-                                                    )}
-                                                    <DropdownMenuItem
-                                                        className="team-member-action-remove"
-                                                        onClick={() => onRemoveMember(user.id)}
-                                                    >
-                                                        <LuUserMinus />
-                                                        Remove
-                                                    </DropdownMenuItem>
+                                                    {renderDropdownContent(status, id)}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
