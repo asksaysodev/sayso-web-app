@@ -1,7 +1,8 @@
+import { useAuth } from '@/context/AuthContext';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import SaysoLoader from './SaysoLoader';
+import SaysoLoader from '../SaysoLoader';
+
 
 interface Props {
     children: React.ReactNode;

@@ -1,9 +1,9 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
-import AuthGuard from './components/AuthGuard';
-import GuestGuard from './components/GuestGuard';
-import MFAGuard from './components/MFAGuard';
+import AuthGuard from './components/guards/AuthGuard';
+import GuestGuard from './components/guards/GuestGuard';
+import MFAGuard from './components/guards/MFAGuard';
 import Layout from './components/Layout';
 
 import Login from './views/Login';
@@ -59,7 +59,7 @@ export default function AppRoutes() {
                     element={
                         <AuthGuard>
                         <Layout>
-                            {hasSubscription ? <Dashboard /> : <Navigate to="/subscription" replace />}
+                            <Dashboard />
                         </Layout>
                         </AuthGuard>
                     }
