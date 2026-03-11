@@ -17,7 +17,7 @@ export default function MinutesRemaining({ accountUsage, isRefetching }: Props) 
 
     const isTrialing = globalUser?.subscription_status === "trialing";
     const planHours = Math.floor(planMinutes / 60);
-    const cardDescription = `${planHours} ${isTrialing ? 'trial' : 'plan'} hour`;
+    const cardDescription = `${planHours} ${isTrialing ? 'trial' : 'plan'} hour${planHours > 1 ? 's' : ''}`;
     const { hours, mins } = useMemo(()=> formatMinutesToDuration(remainingMinutes), [remainingMinutes]);
 
     return (
@@ -30,8 +30,13 @@ export default function MinutesRemaining({ accountUsage, isRefetching }: Props) 
             <div className='card-content-container'>
                 <div>
                     <p className='card-content-lighter-text'>
-                        <span className='card-content-bold-text'>{hours}</span> h{' '}
-                        <span className='card-content-bold-text'>{mins}</span> min
+                        <span className='card-content-bold-text'>{hours}</span> h
+                        {mins > 0 && (
+                            <>
+                                {' '}
+                                <span className='card-content-bold-text'>{mins}</span> min
+                            </>
+                        )}
                     </p>
                 </div>
             </div>
