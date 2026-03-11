@@ -22,10 +22,13 @@ import { getInitials } from "@/utils/helpers/getInitials";
 import StatusBadge from "./TeamMemberStatusBadge";
 import StatusFilterPill from "./StatusFilterPill";
 import { MemberActiveFilter } from "../types";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/context/ToastContext";
+import { OrganizationMembersResponse } from "@/types/user";
 import getOrganizationMembers from "../services/getOrganizationMembers";
 import revokeInvite from "../services/revokeInvite";
 import resendInvite from "../services/resendInvite";
+import removeMember from "../services/removeMember";
 import { AccountStatus } from "@/types/user";
 
 const AVAILABLE_FILTERS: SearchFilterConfig<MemberActiveFilter>[] = [
@@ -42,6 +45,19 @@ export default function TeamMembersTable() {
     const [activeFilters, setActiveFilters] = useState<MemberActiveFilter[]>([]);
     const [inviteModalOpen, setInviteModalOpen] = useState(false);
     const [deleteMemberId, setDeleteMemberId] = useState<string | null>(null);
+
+    const queryClient = useQueryClient();
+    const { showToast } = useToast();
+
+    const updateInviteStatus = (id: string, status: OrganizationMembersResponse['invites'][number]['status']) => {
+        queryClient.setQueryData<OrganizationMembersResponse>(['get-organization-members'], (prev) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                invites: prev.invites.map(i => i.id === id ? { ...i, status } : i),
+            };
+        });
+    };
 
     const { data } = useQuery({
         queryKey: ['get-organization-members'],
@@ -68,15 +84,34 @@ export default function TeamMembersTable() {
     }, [data, searchText, activeFilters])
     
     const handleDeleteMember = async () => {
-        console.log('delete member', deleteMemberId);
+        if (!deleteMemberId) return;
+        const id = deleteMemberId;
+        setDeleteMemberId(null);
+        queryClient.setQueryData<OrganizationMembersResponse>(['get-organization-members'], (prev) => {
+            if (!prev) return prev;
+            return { ...prev, members: prev.members.filter(m => m.id !== id) };
+        });
+        await removeMember(id);
+        queryClient.invalidateQueries({ queryKey: ['get-organization-members'] });
+        showToast('success', 'Member removed successfully');
     }
 
     const { mutate: handleRevoke } = useMutation({
         mutationFn: (inviteId: string) => revokeInvite(inviteId),
+        onMutate: (inviteId) => updateInviteStatus(inviteId, 'revoked'),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['get-organization-members'] });
+            showToast('success', 'Invite revoked');
+        },
     });
 
     const { mutate: handleResend } = useMutation({
         mutationFn: (inviteId: string) => resendInvite(inviteId),
+        onMutate: (inviteId) => updateInviteStatus(inviteId, 'pending'),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['get-organization-members'] });
+            showToast('success', 'Invite resent successfully');
+        },
     });
 
     const renderDropdownContent = (status: AccountStatus, id: string) => {
@@ -118,7 +153,7 @@ export default function TeamMembersTable() {
         {deleteMemberId && (
             <SaysoModal
                 title="Delete Member"
-                text={`Are you sure you want to delete this member?\nThis action cannot be undone and the member will be permanently removed from the company.`}
+                text="This action cannot be undone. The member will lose access to the company and their login credentials will be revoked. Are you sure you want to continue?"
                 isDelete={true}
                 primaryText="Yes, Delete"
                 secondaryText="Cancel"
