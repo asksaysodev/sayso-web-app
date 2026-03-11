@@ -2,6 +2,8 @@ import { LuHourglass } from "react-icons/lu";
 import InformativeCard from "./InformativeCard";
 import { useAuth } from "../../../context/AuthContext";
 import { AccountUsage } from "@/types/user";
+import formatMinutesToDuration from "@/utils/formatters/formatMinutesToDuration";
+import { useMemo } from "react";
 
 interface Props {
     accountUsage: AccountUsage;
@@ -14,20 +16,22 @@ export default function MinutesRemaining({ accountUsage, isRefetching }: Props) 
     const { remainingMinutes = 0, planMinutes = 0 } = accountUsage || {};
 
     const isTrialing = globalUser?.subscription_status === "trialing";
-    const cardDescription = `${planMinutes} ${isTrialing ? 'trial' : 'plan'} minutes`
-    const totalMinutesLeft = remainingMinutes;
+    const planHours = Math.floor(planMinutes / 60);
+    const cardDescription = `${planHours} ${isTrialing ? 'trial' : 'plan'} hour`;
+    const { hours, mins } = useMemo(()=> formatMinutesToDuration(remainingMinutes), [remainingMinutes]);
 
     return (
-        <InformativeCard 
+        <InformativeCard
             icon={<LuHourglass />}
-            title={'Minutes Remaining'}
+            title={'Time Remaining'}
             description={cardDescription}
             isLoading={isRefetching}
         >
             <div className='card-content-container'>
                 <div>
                     <p className='card-content-lighter-text'>
-                        <span className='card-content-bold-text'>{totalMinutesLeft}</span> min left
+                        <span className='card-content-bold-text'>{hours}</span> h{' '}
+                        <span className='card-content-bold-text'>{mins}</span> min
                     </p>
                 </div>
             </div>
