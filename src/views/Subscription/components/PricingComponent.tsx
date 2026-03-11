@@ -1,6 +1,6 @@
 import useHasSubscription from "@/hooks/useHasSubscription";
 import useStripeCheckout from "../hooks/useStripeCheckout";
-import { BillingInterval, PricingOption, PricingPlan } from "../types";
+import { BillingInterval, BillingIntervalEnum, PricingOption, PricingPlan } from "../types";
 import '../styles/PricingComponent.css';
 import { useEffect, useMemo, useState } from "react";
 import formatMinutesToHours from "@/utils/formatters/formatMinutesToHours";
