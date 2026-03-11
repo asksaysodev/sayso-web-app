@@ -24,7 +24,7 @@ dayjs.extend(isSameOrAfter);
 export default function InsightsContainer() {
     const [selectedLeadTypeFilter, setSelectedLeadTypeFilter] = useState<LeadTypeFilter>('all');
     const [searchInsightInputValue, setSearchInsightInputValue] = useState('');
-    const [dateRangeFilter, setDateRangeFilter] = useState<DateRange>(INITIAL_DATE_RANGE);
+    const [dateRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>(INITIAL_DATE_RANGE);
     const [openedInsights, setOpenedInsights] = useState<string[]>([]);
 
     const {

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
-import SaysoLoader from './SaysoLoader';
-
-import { useAuth } from '../context/AuthContext';
 import { getAAL } from '@/services/mfaServices';
 
-import '../styles/AuthGuard.css';
+import '../../styles/AuthGuard.css'
+import { useAuth } from '@/context/AuthContext';
+import SaysoLoader from '../SaysoLoader';
+import SubscriptionGuard from './SubscriptionGuard';
 
 interface Props {
   children: React.ReactNode;
@@ -54,7 +54,7 @@ const AuthGuard = ({ children }: Props) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return children;
+  return <SubscriptionGuard>{children}</SubscriptionGuard>;
 };
 
 export default AuthGuard; 

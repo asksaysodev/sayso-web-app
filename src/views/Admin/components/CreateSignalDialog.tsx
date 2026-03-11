@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import {
   Dialog,
   DialogClose,
@@ -34,11 +34,11 @@ export default function CreateSignalDialog({ signalsLength, handleSubmitAddSigna
             instructions: '',
             lead_type: leadyType,
             priority: signalsLength + 1,
-            threshold: 0.22
+            threshold: 0.22,
         }
     });
 
-    const onSubmit = (data: Signal) => {
+    const onSubmit: SubmitHandler<Signal> = (data) => {
         handleSubmitAddSignal(data);
         setOpen(false);
         reset();
@@ -54,7 +54,7 @@ export default function CreateSignalDialog({ signalsLength, handleSubmitAddSigna
                 instructions: '',
                 lead_type: leadyType,
                 priority: signalsLength + 1,
-                threshold: 0.22
+                threshold: 0.22,
             });
         }
     };

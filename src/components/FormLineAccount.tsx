@@ -71,11 +71,11 @@ export default function FormLineAccount({ label, name, placeholder, value, edita
         setUnsavedChanges(false);
     }
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
     }
 
-    const handleKeyPress = (e) => {
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if(e.key === 'Enter') {
             handleSave();
         }
@@ -97,7 +97,16 @@ export default function FormLineAccount({ label, name, placeholder, value, edita
                 {
                     isEditing ? (
                         <>
-                            <input type="text" placeholder={placeholder} id={name} name={name} value={inputValue} onChange={handleChange} disabled={isSaving} onKeyDown={handleKeyPress} />
+                            <input 
+                                type="text" 
+                                placeholder={placeholder} 
+                                id={name} 
+                                name={name} 
+                                value={inputValue} 
+                                onChange={handleChange} 
+                                disabled={isSaving} 
+                                onKeyDown={handleKeyPress} 
+                            />
                             <div className='form-line-input-icon-container'>
                                 <IoCloseOutline onClick={handleClose} />
                                 <IoCheckmark onClick={handleSave} />

@@ -5,7 +5,7 @@ import { DateRange } from "react-day-picker";
 import { LuCalendar } from "react-icons/lu"
 
 interface Props {
-    applyDateRangeFilter: (range: DateRange) => void;
+    applyDateRangeFilter: (range: DateRange | undefined) => void;
 }
 
 export const INITIAL_DATE_RANGE: DateRange = {
@@ -13,7 +13,7 @@ export const INITIAL_DATE_RANGE: DateRange = {
 };
 
 export default function InsightsCalendarPopover({ applyDateRangeFilter }: Props) {
-    const [dateRange, setDateRange] = useState<DateRange>(INITIAL_DATE_RANGE);
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(INITIAL_DATE_RANGE);
     const [open, setOpen] = useState(false);
 
     return (

@@ -56,7 +56,7 @@ const NewFileInput = ({
     // Validate file types
     const acceptedTypes = accept.split(',').map(type => type.trim().toLowerCase());
     const validFiles = files.filter(file => {
-      const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+      const fileExtension = '.' + (file?.name.split('.').pop() ?? '').toLowerCase();
       return acceptedTypes.includes(fileExtension);
     });
 
