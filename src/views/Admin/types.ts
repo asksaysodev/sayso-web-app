@@ -7,6 +7,7 @@ export type Signal = {
     name: string;
     description: string;
     instructions: string;
+    threshold: number;
     stage_fit: {
         connect: string,
         discover: string,

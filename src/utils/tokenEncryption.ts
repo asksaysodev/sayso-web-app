@@ -34,7 +34,7 @@ const decryptToken = (encryptedText: string): string | null => {
 export const secureStorage = {
   setItem: (key: string, value: string): void => {
     const encrypted = encryptToken(value);
-    localStorage.setItem(key, encrypted);
+    if (encrypted !== null) localStorage.setItem(key, encrypted);
   },
   
   getItem: (key: string): string | null => {

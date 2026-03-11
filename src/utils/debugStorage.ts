@@ -1,5 +1,5 @@
 // Debug utility to test storage system
-import { cryptoStorage, fallbackStorage } from './tokenEncryption';
+import { cryptoStorage } from './tokenEncryption';
 
 export const debugStorage = (): void => {
   console.log('🔍 Debugging Storage System...');
@@ -9,7 +9,7 @@ export const debugStorage = (): void => {
   try {
     console.log('✅ cryptoStorage is available');
   } catch (error) {
-    console.log('❌ cryptoStorage error:', error.message);
+    console.log('❌ cryptoStorage error:', error instanceof Error ? error.message : error);
   }
   
   // Test 2: Test basic operations
@@ -32,7 +32,7 @@ export const debugStorage = (): void => {
     
     console.log('✅ All basic operations working');
   } catch (error) {
-    console.log('❌ Basic operations failed:', error.message);
+    console.log('❌ Basic operations failed:', error instanceof Error ? error.message : error);
   }
   
   // Test 3: Check localStorage state

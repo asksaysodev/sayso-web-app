@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { IoCheckmark, IoCloseOutline, IoPencilOutline } from 'react-icons/io5';
 import { LuLoader } from 'react-icons/lu';
 import { useToast } from '../context/ToastContext';
@@ -14,30 +14,33 @@ interface Props {
     placeholder: string;
     prospect: Prospect;
     fetchProspects: () => void;
-    setUpdatedHeader: (updatedHeader: any) => void;
+    setUpdatedHeader: (updatedHeader: unknown) => void;
 }
 
 export default function FormLine({ label, name, placeholder, prospect, fetchProspects, setUpdatedHeader }: Props) {
 
+    const prospectFieldName: string | null = useMemo(() => prospect[name as keyof Prospect] as string ?? null, [prospect,name]);
+    
     //STATE
     const [isEditing, setIsEditing] = useState(false);
-    const [inputValue, setInputValue] = useState(null);
+    const [inputValue, setInputValue] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     
     //HOOKS
     const { showToast } = useToast();
     const { updateProspect } = useProspects();
 
+    
     //FUNCTIONS
     const handleSave = async () => {
         setIsEditing(false);
         if(inputValue === '' || inputValue === null || inputValue === undefined) {
-            setInputValue(prospect[name]);
+            setInputValue(prospectFieldName);
             showToast('error', 'Please enter a value');
             return;
         }
         if(typeof inputValue !== 'string') {
-            setInputValue(prospect[name]);
+            setInputValue(prospectFieldName);
             showToast('error', 'Please enter a valid value');
             return;
         }
@@ -59,9 +62,9 @@ export default function FormLine({ label, name, placeholder, prospect, fetchPros
         }
     }
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
-        setUpdatedHeader(prev => ({
+        setUpdatedHeader((prev: Record<string, string>) => ({
             ...prev,
             [name]: e.target.value
         }));
@@ -69,14 +72,14 @@ export default function FormLine({ label, name, placeholder, prospect, fetchPros
 
     const handleClose = () => {
         setIsEditing(false);
-        setInputValue(prospect[name]);
-        setUpdatedHeader(prev => ({
+        setInputValue(prospectFieldName);
+        setUpdatedHeader((prev: Record<string, string>) => ({
             ...prev,
-            [name]: prospect[name]
+            [name]: prospect[name as keyof Prospect] as string
         }));
     }
 
-    const handleKeyPress = (e) => {
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
         if(isSaving) {
             return;
@@ -95,7 +98,7 @@ export default function FormLine({ label, name, placeholder, prospect, fetchPros
 
     //EFFECTS
     useEffect(() => {
-        setInputValue(prospect[name]);
+        setInputValue(prospectFieldName);
     }, [prospect]);
 
 
@@ -105,7 +108,16 @@ export default function FormLine({ label, name, placeholder, prospect, fetchPros
                 {
                     isEditing ? (
                         <>
-                            <input type="text" placeholder={placeholder} id={name} name={name} value={inputValue} onChange={handleChange} disabled={isSaving} onKeyDown={handleKeyPress} />
+                            <input 
+                                type="text" 
+                                placeholder={placeholder} 
+                                id={name} 
+                                name={name} 
+                                value={inputValue ?? ''} 
+                                onChange={handleChange} 
+                                disabled={isSaving} 
+                                onKeyDown={handleKeyPress} 
+                            />
                             <div className='prospect-form-input-icon-container'>
                                 <IoCloseOutline onClick={handleClose} />
                                 <IoCheckmark onClick={handleSave} />
