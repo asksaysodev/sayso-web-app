@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LuLoader } from "react-icons/lu";
 import {
     Dialog,
@@ -13,6 +13,7 @@ import ControlledInputField from "@/components/forms/ControlledInputField";
 import SaysoButton from "@/components/SaysoButton";
 import sendTeamInvite from "../services/sendTeamInvite";
 import { useToast } from "@/context/ToastContext";
+import { OrganizationMembersResponse } from "@/types/user";
 
 interface FormValues {
     email: string;
@@ -25,19 +26,36 @@ interface Props {
 
 export default function InviteMemberModal({ open, onClose }: Props) {
     const { showToast } = useToast();
+    const queryClient = useQueryClient();
 
-    const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+    const { control, handleSubmit, reset } = useForm<FormValues>({
         defaultValues: { email: "" },
     });
 
     const { mutate, isPending } = useMutation({
         mutationFn: (email: string) => sendTeamInvite(email),
-        onSuccess: () => {
+        onMutate: (email) => {
+            const tempId = `optimistic-${Date.now()}`;
+            queryClient.setQueryData<OrganizationMembersResponse>(['get-organization-members'], (prev) => {
+                if (!prev) return prev;
+                return {
+                    ...prev,
+                    invites: [...prev.invites, { id: tempId, email, name: '', lastname: '', status: 'pending', invited_by: '', expires_at: '' }],
+                };
+            });
+            return { tempId };
+        },
+        onSuccess: (_data, _email, _context) => {
+            queryClient.invalidateQueries({ queryKey: ['get-organization-members'] });
             showToast("success", "Invitation sent successfully.");
             reset();
             onClose();
         },
-        onError: () => {
+        onError: (_err, _email, context) => {
+            queryClient.setQueryData<OrganizationMembersResponse>(['get-organization-members'], (prev) => {
+                if (!prev) return prev;
+                return { ...prev, invites: prev.invites.filter(i => i.id !== context?.tempId) };
+            });
             showToast("error", "Failed to send invitation. Please try again.");
         },
     });

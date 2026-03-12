@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { LuUserPlus, LuEllipsis, LuUserMinus, LuSend, LuBan, LuMail } from "react-icons/lu";
 import InviteMemberModal from "./InviteMemberModal";
-import SaysoModal from "../../../components/SaysoModal";
+import DeleteMemberModal from "./DeleteMemberModal";
 import {
     Table,
     TableBody,
@@ -28,7 +28,6 @@ import { OrganizationMembersResponse } from "@/types/user";
 import getOrganizationMembers from "../services/getOrganizationMembers";
 import revokeInvite from "../services/revokeInvite";
 import resendInvite from "../services/resendInvite";
-import removeMember from "../services/removeMember";
 import { AccountStatus } from "@/types/user";
 
 const AVAILABLE_FILTERS: SearchFilterConfig<MemberActiveFilter>[] = [
@@ -59,7 +58,7 @@ export default function TeamMembersTable() {
         });
     };
 
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['get-organization-members'],
         queryFn: getOrganizationMembers
     })
@@ -83,19 +82,6 @@ export default function TeamMembersTable() {
         });
     }, [data, searchText, activeFilters])
     
-    const handleDeleteMember = async () => {
-        if (!deleteMemberId) return;
-        const id = deleteMemberId;
-        setDeleteMemberId(null);
-        queryClient.setQueryData<OrganizationMembersResponse>(['get-organization-members'], (prev) => {
-            if (!prev) return prev;
-            return { ...prev, members: prev.members.filter(m => m.id !== id) };
-        });
-        await removeMember(id);
-        queryClient.invalidateQueries({ queryKey: ['get-organization-members'] });
-        showToast('success', 'Member removed successfully');
-    }
-
     const { mutate: handleRevoke } = useMutation({
         mutationFn: (inviteId: string) => revokeInvite(inviteId),
         onMutate: (inviteId) => updateInviteStatus(inviteId, 'revoked'),
@@ -150,17 +136,7 @@ export default function TeamMembersTable() {
     return (
         <>
         <InviteMemberModal open={inviteModalOpen} onClose={() => setInviteModalOpen(false)} />
-        {deleteMemberId && (
-            <SaysoModal
-                title="Delete Member"
-                text="This action cannot be undone. The member will lose access to the company and their login credentials will be revoked. Are you sure you want to continue?"
-                isDelete={true}
-                primaryText="Yes, Delete"
-                secondaryText="Cancel"
-                onDeny={() => setDeleteMemberId(null)}
-                onConfirm={handleDeleteMember}
-            />
-        )}
+        <DeleteMemberModal memberId={deleteMemberId} onClose={() => setDeleteMemberId(null)} />
         <div className="team-members-table-container">
             <div className="team-members-toolbar">
                 <h3 className="team-members-title">Members</h3>
@@ -199,9 +175,18 @@ export default function TeamMembersTable() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filtered.length === 0 ? (
+                        {isLoading ? (
                             <TableRow>
-                                <TableCell colSpan={5} className="text-center" style={{ color: "var(--sayso-lightgray)", padding: "32px 0" }}>
+                                <TableCell colSpan={5} className="team-members-table-empty-cell">
+                                    <div className="team-members-loading">
+                                        <div className="team-members-loader" />
+                                        Loading members...
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ) : filtered.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={5} className="team-members-table-empty-cell">
                                     No members found.
                                 </TableCell>
                             </TableRow>
@@ -217,7 +202,7 @@ export default function TeamMembersTable() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="team-member-name">
-                                            {name || lastname ? `${name ?? ""} ${lastname ?? ""}`.trim() : <span style={{ color: "var(--sayso-lightgray)" }}>Pending invite</span>}
+                                            {name || lastname ? `${name ?? ""} ${lastname ?? ""}`.trim() : <span className="team-member-pending-invite">Pending invite</span>}
                                         </TableCell>
                                         <TableCell className="team-member-email">
                                             {email}

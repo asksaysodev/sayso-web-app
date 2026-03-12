@@ -56,12 +56,11 @@ export default function AcceptInvite() {
             if (signUpError) throw signUpError;
 
             await acceptInvite({
-                // token,
                 email: invite?.email as string,
                 name: values.name,
                 lastname: values.lastname,
                 company: invite?.companyName
-            });
+            }, token);
         },
         onSuccess: () => {
             navigate("/", { replace: true });

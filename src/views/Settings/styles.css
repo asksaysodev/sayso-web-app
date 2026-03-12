@@ -501,6 +501,37 @@
     color: var(--sayso-lightgray);
 }
 
+.team-members-table-empty-cell {
+    text-align: center;
+    color: var(--sayso-lightgray);
+    padding: 32px 0;
+}
+
+.team-members-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.team-members-loader {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--sayso-border);
+    border-top-color: var(--sayso-lightgray);
+    border-radius: 50%;
+    animation: team-members-spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes team-members-spin {
+    to { transform: rotate(360deg); }
+}
+
+.team-member-pending-invite {
+    color: var(--sayso-lightgray);
+}
+
 .team-member-name {
     font-weight: 500;
 }

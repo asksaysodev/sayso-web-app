@@ -8,8 +8,8 @@ interface AcceptInvitePayload {
     company?: string;
 }
 
-export default async function acceptInvite(payload: AcceptInvitePayload): Promise<unknown> {
-    const response = await apiClient.post(`accounts/company/invite/accept`, payload);
+export default async function acceptInvite(payload: AcceptInvitePayload, token: string): Promise<unknown> {
+    const response = await apiClient.post(`accounts/company/invite/accept?token=${token}`, payload);
 
     if (!response?.data) {
         throw new Error("Failed to accept invite");
