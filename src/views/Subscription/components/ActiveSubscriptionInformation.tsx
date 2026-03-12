@@ -44,6 +44,12 @@ export default function ActiveSubscriptionInformation() {
         return dayjs(billingPeriod.end).format('MMM D, YYYY');
     },[subscription]);
 
+	const includedHours = useMemo(() => { 
+		const  planMinutes = isTrialing ? subscription?.includedMinutes?.trial : subscription?.includedMinutes?.plan;
+		const planHours = Math.floor(planMinutes / 60);
+		return `${planHours} hours`;
+	}, [subscription, isTrialing]);
+
     const activePlanName = useMemo(() => {
         const { name = '', status = '' } = subscription || {};
         if (status === "trialing") return `${name} - Free Trial`;
@@ -75,7 +81,7 @@ export default function ActiveSubscriptionInformation() {
                         <div className="plan-details">
                             <div>
                             <h2 className="plan-name">{activePlanName}</h2>
-                            <p className="plan-billing-period">{billingPeriod}</p>
+                            <p className="plan-billing-period">{billingPeriod } - {includedHours}</p>
                             </div>
 
                             <div>
