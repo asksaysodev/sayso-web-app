@@ -30,7 +30,7 @@ export default function MinutesRemaining({ accountUsage, isRefetching }: Props) 
             <div className='card-content-container'>
                 <div>
                     <p className='card-content-lighter-text'>
-                        <span className='card-content-bold-text'>{hours}</span> h
+                        <span className='card-content-bold-text'>{hours}</span> h{mins === 0 ? 'ours' : ''}
                         {mins > 0 && (
                             <>
                                 {' '}
