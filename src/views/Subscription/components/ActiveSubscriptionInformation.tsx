@@ -45,7 +45,7 @@ export default function ActiveSubscriptionInformation() {
     },[subscription]);
 
 	const includedHours = useMemo(() => { 
-		const  planMinutes = isTrialing ? subscription?.includedMinutes?.trial : subscription?.includedMinutes?.plan;
+		const planMinutes = (isTrialing ? subscription?.includedMinutes?.trial : subscription?.includedMinutes?.plan) ?? 0;
 		const planHours = Math.floor(planMinutes / 60);
 		return `${planHours} hours`;
 	}, [subscription, isTrialing]);
