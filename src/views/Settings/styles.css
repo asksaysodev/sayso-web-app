@@ -426,6 +426,204 @@
     justify-content: start;
 }
 
+/* Team Members Table */
+.team-members-table-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.team-members-title {
+    font-size: 14px;
+    font-weight: 400;
+    /*font-size: 16px;
+    font-weight: 500;*/
+    color: var(--sayso-dark);
+    margin: 0;
+}
+
+.team-members-toolbar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.team-members-toolbar-right {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
+}
+
+
+.team-members-table-wrapper {
+    width: 100%;
+    border: 1px solid var(--sayso-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.team-members-table-wrapper th {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sayso-lightgray);
+    background-color: var(--sayso-white);
+}
+
+.team-members-table-wrapper td {
+    font-size: 14px;
+    color: var(--sayso-dark);
+}
+
+.team-member-avatar {
+    background-color: var(--sayso-indigo);
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #D6E4F0;
+    flex-shrink: 0;
+}
+
+.team-member-avatar--invite {
+    background-color: var(--sayso-white);
+    border: 1px solid var(--sayso-border);
+    color: var(--sayso-lightgray);
+}
+
+.team-members-table-empty-cell {
+    text-align: center;
+    color: var(--sayso-lightgray);
+    padding: 32px 0;
+}
+
+.team-members-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.team-members-loader {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--sayso-border);
+    border-top-color: var(--sayso-lightgray);
+    border-radius: 50%;
+    animation: team-members-spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes team-members-spin {
+    to { transform: rotate(360deg); }
+}
+
+.team-member-pending-invite {
+    color: var(--sayso-lightgray);
+}
+
+.team-member-name {
+    font-weight: 500;
+}
+
+.team-member-email {
+    color: var(--sayso-lightgray) !important;
+}
+
+.team-member-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.badge-active {
+    background-color: #dcfce7;
+    color: var(--sayso-success);
+}
+
+.badge-inactive {
+    background-color: var(--sayso-white);
+    color: var(--sayso-lightgray);
+}
+
+.badge-invited {
+    background-color: #fef9c3;
+    color: #a16207;
+}
+
+.team-member-actions-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--sayso-lightgray);
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.team-member-actions-btn:hover {
+    background-color: var(--sayso-white);
+    color: var(--sayso-dark);
+}
+
+.team-member-action-remove {
+    color: var(--sayso-destructive) !important;
+}
+
+.team-member-action-resend {
+    color: var(--sayso-darkgray);
+}
+
+@media (max-width: 1279px) {
+    .team-members-toolbar-right .sayso-button-label {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-members-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .team-members-toolbar-right {
+        width: 100%;
+    }
+
+    .search-bar {
+        min-width: unset;
+        flex: 1;
+    }
+
+.team-members-toolbar-right .sayso-button.size-sm {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .team-members-toolbar-right .sayso-button.size-sm .sayso-button-icon {
+        font-size: 14px;
+    }
+}
+
 .settings-company-form{
     width: 100%;
     display: grid;

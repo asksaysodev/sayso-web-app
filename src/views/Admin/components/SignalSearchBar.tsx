@@ -1,15 +1,9 @@
-import { Dispatch, SetStateAction, useState } from 'react';
-import { LuSearch } from 'react-icons/lu';
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
-import { ActiveFilter, FilterConfig } from '../types';
+import { Dispatch, SetStateAction } from 'react';
+import SearchBar, { SearchFilterConfig } from '@/components/ui/search-bar';
+import { ActiveFilter } from '../types';
 import FilterPill from './FilterPill';
 
-const AVAILABLE_FILTERS: FilterConfig[] = [
+const AVAILABLE_FILTERS: SearchFilterConfig<ActiveFilter>[] = [
     {
         key: 'stage_fit',
         label: 'stage_fit',
@@ -29,86 +23,19 @@ export default function SignalSearchBar({
     searchText,
     onSearchTextChange,
     activeFilters,
-    setActiveFilters
+    setActiveFilters,
 }: Props) {
-    const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
-
-    const availableFilterOptions = AVAILABLE_FILTERS.filter(
-        config => !activeFilters.some(af => af.key === config.key)
-    );
-
-    const handleAddFilter = (key: ActiveFilter['key']) => {
-        const config = AVAILABLE_FILTERS.find(f => f.key === key);
-        if (config) {
-            setActiveFilters(prev => [...prev, config.defaultValue()]);
-        }
-        setIsFilterDropdownOpen(false);
-    };
-
-    const handleUpdateFilter = (updatedFilter: ActiveFilter) => {
-        setActiveFilters(prev =>
-            prev.map(f => f.key === updatedFilter.key ? updatedFilter : f)
-        );
-    };
-
-    const handleRemoveFilter = (key: ActiveFilter['key']) => {
-        setActiveFilters(prev => prev.filter(f => f.key !== key));
-    };
-
-    const hasActiveFilters = activeFilters.length > 0;
-    const hasAvailableFilters = availableFilterOptions.length > 0;
-
     return (
-        <div className="signal-search-bar">
-            <Popover
-                open={isFilterDropdownOpen}
-                onOpenChange={setIsFilterDropdownOpen}
-            >
-                <PopoverTrigger asChild>
-                    <div className="signal-search-bar-input-wrapper">
-                        <InputGroup className="!h-10">
-                            <InputGroupAddon>
-                                <LuSearch size={16} />
-                            </InputGroupAddon>
-
-                            {activeFilters.map(filter => (
-                                <FilterPill
-                                    key={filter.key}
-                                    filter={filter}
-                                    onUpdate={handleUpdateFilter}
-                                    onRemove={() => handleRemoveFilter(filter.key)}
-                                />
-                            ))}
-
-                            <InputGroupInput
-                                placeholder={hasActiveFilters ? 'Search...' : 'Search signals by name or content'}
-                                value={searchText}
-                                onChange={(e) => onSearchTextChange(e.target.value)}
-                                className="!h-10"
-                            />
-                        </InputGroup>
-                    </div>
-                </PopoverTrigger>
-
-                {hasAvailableFilters && (
-                    <PopoverContent
-                        className="signal-filter-options"
-                        align="start"
-                        onOpenAutoFocus={(e) => e.preventDefault()}
-                    >
-                        {availableFilterOptions.map(config => (
-                            <button
-                                key={config.key}
-                                className="signal-filter-option"
-                                onClick={() => handleAddFilter(config.key)}
-                            >
-                                <span className="signal-filter-option-label">{config.label}</span>
-                                <span className="signal-filter-option-description">{config.description}</span>
-                            </button>
-                        ))}
-                    </PopoverContent>
-                )}
-            </Popover>
-        </div>
+        <SearchBar
+            searchText={searchText}
+            onSearchTextChange={onSearchTextChange}
+            activeFilters={activeFilters}
+            setActiveFilters={setActiveFilters}
+            availableFilters={AVAILABLE_FILTERS}
+            placeholder="Search signals by name or content"
+            renderFilterPill={(filter, onUpdate, onRemove) => (
+                <FilterPill filter={filter} onUpdate={onUpdate} onRemove={onRemove} />
+            )}
+        />
     );
 }
