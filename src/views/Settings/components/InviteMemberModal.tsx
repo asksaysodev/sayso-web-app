@@ -45,7 +45,7 @@ export default function InviteMemberModal({ open, onClose }: Props) {
             });
             return { tempId };
         },
-        onSuccess: (_data, _email, _context) => {
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['get-organization-members'] });
             showToast("success", "Invitation sent successfully.");
             reset();

@@ -14,7 +14,7 @@ import '../styles/SaysoButton.css';
 
 interface Props {
     label: string;
-    onClick: () => void;
+    onClick?: () => void;
     disabled?: boolean;
     loading?: boolean;
     icon?: React.ReactNode;
