@@ -139,8 +139,8 @@ export default function TeamMembersTable() {
         <DeleteMemberModal memberId={deleteMemberId} onClose={() => setDeleteMemberId(null)} />
         <div className="team-members-table-container">
             <div className="team-members-toolbar">
-                <h3 className="team-members-title">Members</h3>
-                <div className="team-members-toolbar-right">
+                {/* <h3 className="team-members-title">Members</h3> */}
+                {/* <div className="team-members-toolbar-right"> */}
                     <SearchBar
                         searchText={searchText}
                         onSearchTextChange={setSearchText}
@@ -160,7 +160,7 @@ export default function TeamMembersTable() {
                         icon={<LuUserPlus />}
                         onClick={() => setInviteModalOpen(true)}
                     />
-                </div>
+                {/* </div> */}
             </div>
 
             <div className="team-members-table-wrapper">
