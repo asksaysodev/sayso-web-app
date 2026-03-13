@@ -79,8 +79,6 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
     const allowEditingOrgName = (globalUser?.role === 'user' && globalUser.account_type === 'individual') || (globalUser?.role === 'admin' && globalUser.account_type === 'team') || globalUser?.role === 'superadmin';
 
 	const isTeamMembersTableVisible = (globalUser?.role === 'admin' || globalUser?.role === 'superadmin') && globalUser.account_type === 'team';
-	console.log('globalUser', globalUser);
-	console.log('isTeamMembersTableVisible', isTeamMembersTableVisible);
     
     return (
         <div className="settings-company">
