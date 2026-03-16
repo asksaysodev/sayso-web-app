@@ -6,15 +6,23 @@ import getAccountUsage from "../services/getAccountUsage";
 
 export default function InformativeCardsContainer() {
 
-    const { data: accountUsage, isRefetching } = useQuery({
+    const { data: accountUsage, isRefetching, isLoading } = useQuery({
         queryKey: ['dashboard-account-usage'],
         queryFn: getAccountUsage,
     });
 
     return (
         <div className='dashboard-cards-container'>
-            <MinutesUsedCard accountUsage={accountUsage!} isRefetching={isRefetching} />
-            <MinutesRemaining accountUsage={accountUsage!} isRefetching={isRefetching} />
+            <MinutesUsedCard 
+                accountUsage={accountUsage!} 
+                isRefetching={isRefetching} 
+                isLoading={isLoading}
+            />
+            <MinutesRemaining 
+                accountUsage={accountUsage!} 
+                isRefetching={isRefetching} 
+                isLoading={isLoading}
+            />
             <WeeklyActivityCard />
         </div>
     )

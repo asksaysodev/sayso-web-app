@@ -1,14 +1,9 @@
 import { LuClock } from "react-icons/lu";
 import InformativeCard from "./InformativeCard";
 import { useMemo } from "react";
-import { AccountUsage } from "@/types/user";
+import { TimeWidgetsSharedProps } from "../types";
 
-interface Props {
-    accountUsage: AccountUsage;
-    isRefetching: boolean;
-}
-
-export default function MinutesUsedCard({ accountUsage, isRefetching }: Props) {
+export default function MinutesUsedCard({ accountUsage, isRefetching, isLoading = false }: TimeWidgetsSharedProps) {
     const { usedMinutes = 0, planMinutes = 0 } = accountUsage || {};
 
     const usedPercentage = useMemo(() => {
@@ -22,7 +17,7 @@ export default function MinutesUsedCard({ accountUsage, isRefetching }: Props) {
             icon={<LuClock />}
             title={'Minutes Used'}
             description={'Total AI Coach time this billing period'}
-            isLoading={isRefetching}
+            isLoading={isRefetching || isLoading}
         >
             <div className='card-content-container'>
                 <div>
