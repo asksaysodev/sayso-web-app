@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams} from 'react-router-dom';
 import { useForm, FieldErrors } from 'react-hook-form';
 import {
   validateStepOneFields,
@@ -28,10 +28,10 @@ export default function useLoginForm() {
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const navigate = useNavigate();
   const { signIn, signUp, checkIfNeedsMFA } = useAuth();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const signupParam = searchParams.get("signup");
   const shouldShowSignUp = signupParam === null ? null : signupParam === "true";
-  
+
   const customResolver = (values: LoginFormData) => {
     let errors = {};
 
@@ -74,6 +74,7 @@ export default function useLoginForm() {
   useEffect(()=>{
       if (!shouldShowSignUp) return;
       handleToggleMode();
+      setSearchParams({}, { replace: true });
   }, [shouldShowSignUp])
 
   const performAuthentication = async (data: LoginFormData) => {
