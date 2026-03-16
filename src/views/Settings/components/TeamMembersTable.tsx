@@ -139,8 +139,6 @@ export default function TeamMembersTable() {
         <DeleteMemberModal memberId={deleteMemberId} onClose={() => setDeleteMemberId(null)} />
         <div className="team-members-table-container">
             <div className="team-members-toolbar">
-                {/* <h3 className="team-members-title">Members</h3> */}
-                {/* <div className="team-members-toolbar-right"> */}
                     <SearchBar
                         searchText={searchText}
                         onSearchTextChange={setSearchText}
@@ -148,9 +146,11 @@ export default function TeamMembersTable() {
                         setActiveFilters={setActiveFilters}
                         availableFilters={AVAILABLE_FILTERS}
                         placeholder="Search members..."
-                        renderFilterPill={(filter, onUpdate, onRemove) => (
-                            <StatusFilterPill filter={filter} onUpdate={onUpdate} onRemove={onRemove} />
-                        )}
+                        filterPillRenderers={{
+                            status: (filter, onUpdate, onRemove) => (
+                                <StatusFilterPill filter={filter} onUpdate={onUpdate} onRemove={onRemove} />
+                            )
+                        }}
                     />
                     <SaysoButton
                         size="sm"
@@ -160,7 +160,6 @@ export default function TeamMembersTable() {
                         icon={<LuUserPlus />}
                         onClick={() => setInviteModalOpen(true)}
                     />
-                {/* </div> */}
             </div>
 
             <div className="team-members-table-wrapper">

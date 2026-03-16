@@ -15,18 +15,33 @@ import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import getInsights from '../services/getInsights';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import SaysoInputGroup from '@/components/forms/SaysoInputGroup';
 import type { LeadTypeFilter, InsightGroup } from '@/types/coach';
+import SearchBar, { SearchFilterConfig } from '@/components/ui/search-bar';
+import FilterPill from '@/components/ui/filter-pill';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrAfter);
 
+type LeadTypeFilterConfig = {
+    key: 'lead_type';
+    value: LeadTypeFilter;
+}
+
+const AVAILABLE_FILTERS: SearchFilterConfig<LeadTypeFilterConfig>[] = [
+    {
+        key: 'lead_type',
+        label: 'Lead type',
+        description: 'Filter by Lead type',
+        defaultValue: () => ({ key: 'lead_type', value: 'all' }),
+    },
+];
+
 export default function InsightsContainer() {
-    const [selectedLeadTypeFilter, setSelectedLeadTypeFilter] = useState<LeadTypeFilter>('all');
     const [searchInsightInputValue, setSearchInsightInputValue] = useState('');
     const [dateRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>(INITIAL_DATE_RANGE);
     const [openedInsights, setOpenedInsights] = useState<string[]>([]);
-
+    const [activeFilters, setActiveFilters] = useState<LeadTypeFilterConfig[]>([]); 
+    
     const {
         data: insightsData,
         isLoading: isLoadingInsights,
@@ -77,14 +92,15 @@ export default function InsightsContainer() {
 
     const filteredInsights = useMemo(() => {
         const searchQuery = searchInsightInputValue.trim().toLowerCase();
-        
+        const leadTypeFilter = activeFilters.find(f => f.key === 'lead_type');
+
         const filtered = insights
             .map(({ date, insights: groupInsights }) => {
                 let filteredGroupInsights = groupInsights;
 
-                if (selectedLeadTypeFilter !== 'all') {
-                    filteredGroupInsights = filteredGroupInsights.filter(insight => 
-                        insight.lead_type === selectedLeadTypeFilter
+                if (leadTypeFilter && leadTypeFilter.value !== 'all') {
+                    filteredGroupInsights = filteredGroupInsights.filter(insight =>
+                        insight.lead_type === leadTypeFilter.value
                     );
                 }
 
@@ -105,7 +121,7 @@ export default function InsightsContainer() {
             .filter(group => group.insights.length > 0);
 
         return filtered;
-    }, [selectedLeadTypeFilter, insights, searchInsightInputValue, dateRangeFilter])
+    }, [activeFilters, insights, searchInsightInputValue, dateRangeFilter])
 
     return (
         <div className='insights-container'>
@@ -114,36 +130,36 @@ export default function InsightsContainer() {
 
                 <div className='insights-header-right-content'>
                     <div className='insights-search-row'>
-                        <SaysoInputGroup
-                            className='h-[40px]'
-                            placeholder='Search Insight...'
-                            value={searchInsightInputValue}
-                            onChange={(e) => setSearchInsightInputValue(e.target.value)}
-                            icon={<LuSearch />}
-                            size={20}
+                        <SearchBar
+                            searchText={searchInsightInputValue}
+                            onSearchTextChange={setSearchInsightInputValue}
+                            activeFilters={activeFilters}
+                            setActiveFilters={setActiveFilters}
+                            availableFilters={AVAILABLE_FILTERS}
+                            placeholder="Search Insight..."
+                            filterPillRenderers={{
+                                lead_type: (filter, onUpdate, onRemove) => (
+                                    <FilterPill
+                                        label="lead type"
+                                        options={['all', 'buyer', 'seller']}
+                                        filter={filter}
+                                        onUpdate={onUpdate}
+                                        onRemove={onRemove}
+                                    />
+                                ),
+                            }}
                         />
                     </div>
 
                     <div className='insights-filters-row'>
-                        <SaysoPopover
-                            popoverContent={<LeadTypeFilterSelector selectedLeadTypeFilter={selectedLeadTypeFilter} setSelectedLeadTypeFilter={setSelectedLeadTypeFilter} />}
-                        >
-                            <LuUsers /> <span className='insights-filter-label'>Lead Type</span>
-                        </SaysoPopover>
-
-                        <InsightsCalendarPopover applyDateRangeFilter={setDateRangeFilter} />
+                        <InsightsCalendarPopover 
+                            applyDateRangeFilter={setDateRangeFilter} 
+                            currentDateRange={dateRangeFilter}
+                            onResetDateRange={() => setDateRangeFilter(INITIAL_DATE_RANGE)}
+                        />
                     </div>
                 </div>
             </div>
-
-            <ActiveFilters 
-                selectedLeadTypeFilter={selectedLeadTypeFilter}
-                searchInsightInputValue={searchInsightInputValue}
-                dateRangeFilter={dateRangeFilter}
-                onClearLeadType={() => setSelectedLeadTypeFilter('all')}
-                onClearSearch={() => setSearchInsightInputValue('')}
-                onClearDateRange={() => setDateRangeFilter(INITIAL_DATE_RANGE)}
-            />
 
             <div className='insights-list-container'>
                 {errorInsights ? (

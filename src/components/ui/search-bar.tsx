@@ -21,22 +21,22 @@ interface Props<TFilter extends { key: string }> {
     activeFilters: TFilter[];
     setActiveFilters: Dispatch<SetStateAction<TFilter[]>>;
     availableFilters: SearchFilterConfig<TFilter>[];
-    renderFilterPill: (filter: TFilter, onUpdate: (filter: TFilter) => void, onRemove: () => void) => ReactNode;
+    filterPillRenderers: Partial<Record<TFilter['key'], (filter: TFilter, onUpdate: (filter: TFilter) => void, onRemove: () => void) => ReactNode>>;
     placeholder?: string;
 }
 
 export default function SearchBar<TFilter extends { key: string }>({
     searchText,
     onSearchTextChange,
-    activeFilters,
+    activeFilters = [],
     setActiveFilters,
     availableFilters,
-    renderFilterPill,
+    filterPillRenderers,
     placeholder = 'Search...',
 }: Props<TFilter>) {
     const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
-    const availableFilterOptions = availableFilters.filter(
+    const availableFilterOptions = (availableFilters ?? []).filter(
         config => !activeFilters.some(af => af.key === config.key)
     );
 
@@ -74,15 +74,15 @@ export default function SearchBar<TFilter extends { key: string }>({
                                 <LuSearch size={16} />
                             </InputGroupAddon>
 
-                            {activeFilters.map(filter => (
-                                <span key={filter.key}>
-                                    {renderFilterPill(
-                                        filter,
-                                        handleUpdateFilter,
-                                        () => handleRemoveFilter(filter.key)
-                                    )}
-                                </span>
-                            ))}
+                            {activeFilters.map(filter => {
+                                const renderer = filterPillRenderers[filter.key as TFilter['key']];
+                                if (!renderer) return null;
+                                return (
+                                    <span key={filter.key}>
+                                        {renderer(filter, handleUpdateFilter, () => handleRemoveFilter(filter.key))}
+                                    </span>
+                                );
+                            })}
 
                             <InputGroupInput
                                 placeholder={hasActiveFilters ? 'Search...' : placeholder}

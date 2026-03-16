@@ -33,9 +33,11 @@ export default function SignalSearchBar({
             setActiveFilters={setActiveFilters}
             availableFilters={AVAILABLE_FILTERS}
             placeholder="Search signals by name or content"
-            renderFilterPill={(filter, onUpdate, onRemove) => (
-                <FilterPill filter={filter} onUpdate={onUpdate} onRemove={onRemove} />
-            )}
+            filterPillRenderers={{
+                stage_fit: (filter, onUpdate, onRemove) => (
+                    <FilterPill filter={filter} onUpdate={onUpdate} onRemove={onRemove} />
+                )
+            }}
         />
     );
 }

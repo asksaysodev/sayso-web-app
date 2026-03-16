@@ -33,6 +33,7 @@
 }
 
 .filter-pill-selector {
+    text-transform: capitalize;
     display: flex;
     align-items: center;
     gap: 2px;
