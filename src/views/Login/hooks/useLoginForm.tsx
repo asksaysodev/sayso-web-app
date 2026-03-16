@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm, FieldErrors } from 'react-hook-form';
 import {
   validateStepOneFields,
@@ -28,7 +28,10 @@ export default function useLoginForm() {
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const navigate = useNavigate();
   const { signIn, signUp, checkIfNeedsMFA } = useAuth();
-
+  const [searchParams] = useSearchParams();
+  const signupParam = searchParams.get("signup");
+  const shouldShowSignUp = signupParam === null ? null : signupParam === "true";
+  
   const customResolver = (values: LoginFormData) => {
     let errors = {};
 
@@ -68,15 +71,10 @@ export default function useLoginForm() {
     reset(INITIAL_VALUES);
   };
 
-  const handleNextStep = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-
-    const isValid = await trigger();
-    if (isValid) {
-      setSignupStep(2);
-    }
-  };
+  useEffect(()=>{
+      if (!shouldShowSignUp) return;
+      handleToggleMode();
+  }, [shouldShowSignUp])
 
   const performAuthentication = async (data: LoginFormData) => {
     if (isLoggingIn) {
