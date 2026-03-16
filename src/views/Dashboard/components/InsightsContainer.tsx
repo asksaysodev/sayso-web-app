@@ -51,8 +51,8 @@ export default function InsightsContainer() {
         fetchNextPage,
         hasNextPage
     } = useInfiniteQuery({
-        queryKey: ['dashboard-insights'],
-        queryFn: ({ pageParam }) => getInsights(pageParam),
+        queryKey: ['dashboard-insights', activeFilters, dateRangeFilter],
+        queryFn: ({ pageParam }) => getInsights(pageParam, activeFilters, dateRangeFilter),
         getNextPageParam: (lastPage, allPages) => lastPage.hasNextPage ? allPages.length : undefined,
         initialPageParam: 0,
     });
@@ -89,39 +89,6 @@ export default function InsightsContainer() {
 
         return dayjs(date).isBetween(dateRange.from, dateRange.to, 'day', '[]');
     }
-
-    const filteredInsights = useMemo(() => {
-        const searchQuery = searchInsightInputValue.trim().toLowerCase();
-        const leadTypeFilter = activeFilters.find(f => f.key === 'lead_type');
-
-        const filtered = insights
-            .map(({ date, insights: groupInsights }) => {
-                let filteredGroupInsights = groupInsights;
-
-                if (leadTypeFilter && leadTypeFilter.value !== 'all') {
-                    filteredGroupInsights = filteredGroupInsights.filter(insight =>
-                        insight.lead_type === leadTypeFilter.value
-                    );
-                }
-
-                if (searchQuery) {
-                    filteredGroupInsights = filteredGroupInsights.filter(insight => 
-                        insight.message.toLowerCase().includes(searchQuery)
-                    );
-                }
-
-                if (dateRangeFilter && dateRangeFilter.from) {
-                    filteredGroupInsights = filteredGroupInsights.filter(insight => 
-                        checkIfDateIsAvailable(insight.timestamp, dateRangeFilter)
-                    );
-                }
-
-                return { date, insights: filteredGroupInsights };
-            })
-            .filter(group => group.insights.length > 0);
-
-        return filtered;
-    }, [activeFilters, insights, searchInsightInputValue, dateRangeFilter])
 
     return (
         <div className='insights-container'>
@@ -168,11 +135,11 @@ export default function InsightsContainer() {
                             Unable to load insights. Please try again later.
                         </p>
                     </div>
-                ) : (isLoadingInsights && filteredInsights.length === 0) || isRefetchingInsights ? (
+                ) : (isLoadingInsights && insights.length === 0) || isRefetchingInsights ? (
                     <InsightsListSkeleton />
-                ) : filteredInsights.length > 0 ? (
+                ) : insights.length > 0 ? (
                     <>
-                        {filteredInsights.map(({ date, insights: groupInsights }) => {
+                        {insights.map(({ date, insights: groupInsights }) => {
                             return (
                                 <InsightCollapsibleTable 
                                     key={date}
