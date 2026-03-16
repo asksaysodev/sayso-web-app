@@ -1,16 +1,11 @@
 import { LuHourglass } from "react-icons/lu";
 import InformativeCard from "./InformativeCard";
 import { useAuth } from "../../../context/AuthContext";
-import { AccountUsage } from "@/types/user";
 import formatMinutesToDuration from "@/utils/formatters/formatMinutesToDuration";
 import { useMemo } from "react";
+import { TimeWidgetsSharedProps } from "../types";
 
-interface Props {
-    accountUsage: AccountUsage;
-    isRefetching: boolean;
-}
-
-export default function MinutesRemaining({ accountUsage, isRefetching }: Props) {
+export default function MinutesRemaining({ accountUsage, isRefetching, isLoading = false }: TimeWidgetsSharedProps) {
     const { globalUser } = useAuth();
 
     const { remainingMinutes = 0, planMinutes = 0 } = accountUsage || {};
@@ -25,7 +20,7 @@ export default function MinutesRemaining({ accountUsage, isRefetching }: Props) 
             icon={<LuHourglass />}
             title={'Time Remaining'}
             description={cardDescription}
-            isLoading={isRefetching}
+            isLoading={isRefetching || isLoading}
         >
             <div className='card-content-container'>
                 <div>
