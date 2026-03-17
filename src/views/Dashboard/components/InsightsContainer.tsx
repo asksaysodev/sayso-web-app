@@ -15,18 +15,33 @@ import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import getInsights from '../services/getInsights';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import SaysoInputGroup from '@/components/forms/SaysoInputGroup';
 import type { LeadTypeFilter, InsightGroup } from '@/types/coach';
+import SearchBar, { SearchFilterConfig } from '@/components/ui/search-bar';
+import FilterPill from '@/components/ui/filter-pill';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrAfter);
 
+type LeadTypeFilterConfig = {
+    key: 'lead_type';
+    value: LeadTypeFilter;
+}
+
+const AVAILABLE_FILTERS: SearchFilterConfig<LeadTypeFilterConfig>[] = [
+    {
+        key: 'lead_type',
+        label: 'Lead type',
+        description: 'Filter by Lead type',
+        defaultValue: () => ({ key: 'lead_type', value: 'all' }),
+    },
+];
+
 export default function InsightsContainer() {
-    const [selectedLeadTypeFilter, setSelectedLeadTypeFilter] = useState<LeadTypeFilter>('all');
     const [searchInsightInputValue, setSearchInsightInputValue] = useState('');
     const [dateRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>(INITIAL_DATE_RANGE);
     const [openedInsights, setOpenedInsights] = useState<string[]>([]);
-
+    const [activeFilters, setActiveFilters] = useState<LeadTypeFilterConfig[]>([]); 
+    
     const {
         data: insightsData,
         isLoading: isLoadingInsights,
@@ -36,8 +51,8 @@ export default function InsightsContainer() {
         fetchNextPage,
         hasNextPage
     } = useInfiniteQuery({
-        queryKey: ['dashboard-insights'],
-        queryFn: ({ pageParam }) => getInsights(pageParam),
+        queryKey: ['dashboard-insights', activeFilters, dateRangeFilter],
+        queryFn: ({ pageParam }) => getInsights(pageParam, activeFilters, dateRangeFilter),
         getNextPageParam: (lastPage, allPages) => lastPage.hasNextPage ? allPages.length : undefined,
         initialPageParam: 0,
     });
@@ -75,38 +90,6 @@ export default function InsightsContainer() {
         return dayjs(date).isBetween(dateRange.from, dateRange.to, 'day', '[]');
     }
 
-    const filteredInsights = useMemo(() => {
-        const searchQuery = searchInsightInputValue.trim().toLowerCase();
-        
-        const filtered = insights
-            .map(({ date, insights: groupInsights }) => {
-                let filteredGroupInsights = groupInsights;
-
-                if (selectedLeadTypeFilter !== 'all') {
-                    filteredGroupInsights = filteredGroupInsights.filter(insight => 
-                        insight.lead_type === selectedLeadTypeFilter
-                    );
-                }
-
-                if (searchQuery) {
-                    filteredGroupInsights = filteredGroupInsights.filter(insight => 
-                        insight.message.toLowerCase().includes(searchQuery)
-                    );
-                }
-
-                if (dateRangeFilter && dateRangeFilter.from) {
-                    filteredGroupInsights = filteredGroupInsights.filter(insight => 
-                        checkIfDateIsAvailable(insight.timestamp, dateRangeFilter)
-                    );
-                }
-
-                return { date, insights: filteredGroupInsights };
-            })
-            .filter(group => group.insights.length > 0);
-
-        return filtered;
-    }, [selectedLeadTypeFilter, insights, searchInsightInputValue, dateRangeFilter])
-
     return (
         <div className='insights-container'>
             <div className='insights-header'>
@@ -114,36 +97,36 @@ export default function InsightsContainer() {
 
                 <div className='insights-header-right-content'>
                     <div className='insights-search-row'>
-                        <SaysoInputGroup
-                            className='h-[40px]'
-                            placeholder='Search Insight...'
-                            value={searchInsightInputValue}
-                            onChange={(e) => setSearchInsightInputValue(e.target.value)}
-                            icon={<LuSearch />}
-                            size={20}
+                        <SearchBar
+                            searchText={searchInsightInputValue}
+                            onSearchTextChange={setSearchInsightInputValue}
+                            activeFilters={activeFilters}
+                            setActiveFilters={setActiveFilters}
+                            availableFilters={AVAILABLE_FILTERS}
+                            placeholder="Search Insight..."
+                            filterPillRenderers={{
+                                lead_type: (filter, onUpdate, onRemove) => (
+                                    <FilterPill
+                                        label="lead type"
+                                        options={['all', 'buyer', 'seller']}
+                                        filter={filter}
+                                        onUpdate={onUpdate}
+                                        onRemove={onRemove}
+                                    />
+                                ),
+                            }}
                         />
                     </div>
 
                     <div className='insights-filters-row'>
-                        <SaysoPopover
-                            popoverContent={<LeadTypeFilterSelector selectedLeadTypeFilter={selectedLeadTypeFilter} setSelectedLeadTypeFilter={setSelectedLeadTypeFilter} />}
-                        >
-                            <LuUsers /> <span className='insights-filter-label'>Lead Type</span>
-                        </SaysoPopover>
-
-                        <InsightsCalendarPopover applyDateRangeFilter={setDateRangeFilter} />
+                        <InsightsCalendarPopover 
+                            applyDateRangeFilter={setDateRangeFilter} 
+                            currentDateRange={dateRangeFilter}
+                            onResetDateRange={() => setDateRangeFilter(INITIAL_DATE_RANGE)}
+                        />
                     </div>
                 </div>
             </div>
-
-            <ActiveFilters 
-                selectedLeadTypeFilter={selectedLeadTypeFilter}
-                searchInsightInputValue={searchInsightInputValue}
-                dateRangeFilter={dateRangeFilter}
-                onClearLeadType={() => setSelectedLeadTypeFilter('all')}
-                onClearSearch={() => setSearchInsightInputValue('')}
-                onClearDateRange={() => setDateRangeFilter(INITIAL_DATE_RANGE)}
-            />
 
             <div className='insights-list-container'>
                 {errorInsights ? (
@@ -152,11 +135,11 @@ export default function InsightsContainer() {
                             Unable to load insights. Please try again later.
                         </p>
                     </div>
-                ) : (isLoadingInsights && filteredInsights.length === 0) || isRefetchingInsights ? (
+                ) : (isLoadingInsights && insights.length === 0) || isRefetchingInsights ? (
                     <InsightsListSkeleton />
-                ) : filteredInsights.length > 0 ? (
+                ) : insights.length > 0 ? (
                     <>
-                        {filteredInsights.map(({ date, insights: groupInsights }) => {
+                        {insights.map(({ date, insights: groupInsights }) => {
                             return (
                                 <InsightCollapsibleTable 
                                     key={date}

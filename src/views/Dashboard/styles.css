@@ -657,7 +657,7 @@
     }
 
     .insights-filter-label {
-        display: none;
+        display: inline;
     }
 
     .insights-filters-row .sayso-outlined-button {
