@@ -5,11 +5,11 @@ import './styles.css';
 import LoginLayout from '@/components/layouts/LoginLayout';
 import { useForm } from 'react-hook-form';
 import ControlledInputField from '@/components/forms/ControlledInputField';
-import { supabase } from '@/config/supabase';
 import SaysoButton from '@/components/SaysoButton';
 import { useMutation } from '@tanstack/react-query';
 import { useToast } from '@/context/ToastContext';
 import { PasswordRecoveryFormData } from '../Login/types';
+import sendPasswordRecoveryEmail from './services/sendPasswordRecoveryEmail';
 
 const PasswordRecovery = () => {
   const navigate = useNavigate();
@@ -23,17 +23,10 @@ const PasswordRecovery = () => {
   });
   
   const {mutate: resetPasswordMutation, isPending: isResetPasswordPending} = useMutation({
-    mutationFn: async (email: string) => {
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: process.env.NODE_ENV === 'development' 
-          ? 'http://localhost:5173' 
-          : 'sayso://'
-      });
-      if (error) throw error;
-      return data;
-    },
+    mutationFn: sendPasswordRecoveryEmail,
+    mutationKey: ['send-password-recovery-email'],
     onSuccess: () => {
-      showToast('success', 'Reset link sent! Check your email');
+      showToast('success', 'If that email exists, a recovery link has been sent.');
       reset();
       setCountdown(60);
     },
