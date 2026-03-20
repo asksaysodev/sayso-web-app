@@ -33,6 +33,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const { globalUser, handleSignOut } = useAuth();
     const hasSubscription = useHasSubscription();
 
+    const subjectValue = encodeURIComponent(`Sayso App Support Request - ${globalUser?.email ?? '{user email}'}`);
+    const bodyValue = encodeURIComponent(`Describe the error and include any attachments or video links. All context or additional information will help us reproducing the error scenario`);
+    
     return (
         <>
         {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
@@ -106,7 +109,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     </div>
                 </div>
                 <Divider />
-                <div className='sidebar-footer-button' onClick={() => openExternal('mailto:dev@asksayso.com')}>
+                <div className='sidebar-footer-button' onClick={() => openExternal(`mailto:support@asksayso.com?subject=${subjectValue}&body=${bodyValue}`)}>
                     <LuCircleHelp />
                     <p>Support</p>
                 </div>
