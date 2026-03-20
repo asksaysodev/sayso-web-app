@@ -8,13 +8,19 @@ import { TimeWidgetsSharedProps } from "../types";
 export default function MinutesRemaining({ accountUsage, isRefetching, isLoading = false }: TimeWidgetsSharedProps) {
     const { globalUser } = useAuth();
 
-    const { remainingMinutes = 0, planMinutes = 0 } = accountUsage || {};
+    const { remainingMinutes = 0, planMinutes = 0, usedMinutes = 0 } = accountUsage || {};
 
+    const usedPercentage = useMemo(() => {
+        if (planMinutes === 0) return 0;
+        const percentage = (usedMinutes / planMinutes) * 100;
+        return Math.min(Number(percentage.toFixed(2)), 100);
+    }, [usedMinutes, planMinutes]);
+    
     const isTrialing = globalUser?.subscription_status === "trialing";
     const planHours = Math.floor(planMinutes / 60);
-    const cardDescription = `${planHours} ${isTrialing ? 'trial' : 'plan'} hour${planHours > 1 ? 's' : ''}`;
+    const cardDescription = `${usedPercentage}% used of your ${planHours} ${isTrialing ? 'trial' : 'plan'} hours`;
     const { hours, mins } = useMemo(()=> formatMinutesToDuration(remainingMinutes), [remainingMinutes]);
-
+    
     return (
         <InformativeCard
             icon={<LuHourglass />}
@@ -33,6 +39,9 @@ export default function MinutesRemaining({ accountUsage, isRefetching, isLoading
                             </>
                         )}
                     </p>
+                </div>
+                <div className='progress-bar-container'>
+                    <div className='progress-bar-fill' style={{ width: `${usedPercentage}%` }}/>
                 </div>
             </div>
         </InformativeCard>
