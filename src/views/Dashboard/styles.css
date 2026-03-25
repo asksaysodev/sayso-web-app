@@ -27,8 +27,115 @@
 
 .dashboard-cards-container {
     width: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 35%;
     gap: 20px;
+}
+
+.dashboard-cards-right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ===== Tips card/widget ===== */
+
+.dashboard-cards-left-column {
+    flex: unset;
+    display: flex;
+    align-items: center !important;
+}
+
+.tips-carousel {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    position: relative;
+    align-items: center;
+    padding-bottom: 30px;
+}
+
+.tips-carousel-btn {
+    border: 1px solid var(--sayso-border);
+    border-radius: 100px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.tips-carousel-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+    padding: 0 20px;
+    gap: 16px;
+}
+
+.tips-carousel-content.tips-carousel-content--paged {
+    align-items: start;
+    justify-items: start;
+    text-align: left;
+}
+
+.tips-carousel-content.tips-carousel-content--two {
+    grid-template-columns: 1fr 1fr;
+}
+
+.tips-slide {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tips-slide-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--sayso-darkgray);
+    margin: 0;
+}
+
+.tips-slide-text {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--sayso-lightgray);
+    margin: 0;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.tips-carousel-dots {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.tips-carousel-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--sayso-border);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.tips-carousel-dot.active {
+    background-color: var(--sayso-lightgray);
+    transform: scale(1.35);
+}
+
+.tips-report-tabs {
+    display: flex;
+    gap: 14px;
 }
 
 /* ===== Informative Card ===== */
@@ -578,18 +685,17 @@
 
 @media (max-width: 1280px) {
     .dashboard-cards-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 12px;
-    }
-
-    .dashboard-cards-container > :last-child {
-        grid-column: 1 / -1;
     }
 
     .informative-card-container {
         padding: 16px;
         gap: 12px;
+    }
+
+    .tips-carousel-content.tips-carousel-content--two {
+        grid-template-columns: 1fr;
     }
 
     .informative-card-header-title p {

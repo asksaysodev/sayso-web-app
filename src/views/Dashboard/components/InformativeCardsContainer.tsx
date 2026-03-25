@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import MinutesRemaining from "./MinutesRemaining";
 import WeeklyActivityCard from "./WeeklyActivityCard";
 import getAccountUsage from "../services/getAccountUsage";
+import Tips from "./Tips";
 
 export default function InformativeCardsContainer() {
 
@@ -12,12 +13,16 @@ export default function InformativeCardsContainer() {
 
     return (
         <div className='dashboard-cards-container'>
-            <MinutesRemaining 
-                accountUsage={accountUsage!} 
-                isRefetching={isRefetching} 
-                isLoading={isLoading}
-            />
-            <WeeklyActivityCard />
+            <Tips />
+
+            <div className='dashboard-cards-right-column'>
+                <MinutesRemaining
+                    accountUsage={accountUsage!}
+                    isRefetching={isRefetching}
+                    isLoading={isLoading}
+                />
+                <WeeklyActivityCard />
+            </div>
         </div>
     )
 }

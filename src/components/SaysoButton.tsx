@@ -21,27 +21,29 @@ interface Props {
     variant?: 'sayso-indigo' | 'error' | 'outlined' | 'blue' | 'black';
     fullWidth?: boolean;
     type?: 'button' | 'submit' | 'reset';
-    size?: 'sm' | 'lg'
+    size?: 'sm' | 'lg';
+    active?: boolean;
 }
 
-export default function SaysoButton({ 
-    label, 
-    onClick, 
-    disabled = false, 
+export default function SaysoButton({
+    label,
+    onClick,
+    disabled = false,
     loading = false,
     icon,
     variant = 'sayso-indigo',
     fullWidth = false,
     type = 'button',
-    size = 'lg'
+    size = 'lg',
+    active = false
 }: Props) {
     const spinnerColor = variant === 'outlined' ? '#000' : 'white';
-    
+
     return (
         <button
             type={type}
-            disabled={disabled || loading} 
-            className={`sayso-button variant-${variant} size-${size} ${loading ? 'loading' : ''} ${fullWidth ? 'full-width' : ''}`}
+            disabled={disabled || loading}
+            className={`sayso-button variant-${variant} size-${size} ${loading ? 'loading' : ''} ${fullWidth ? 'full-width' : ''} ${active ? 'is-active' : ''}`}
             onClick={onClick}
         >
             {loading ? (
