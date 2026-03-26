@@ -43,99 +43,189 @@
 .dashboard-cards-left-column {
     flex: unset;
     display: flex;
-    align-items: center !important;
 }
 
-.tips-carousel {
-    display: flex;
-    flex: 1;
+.tips-widget-container {
+    overflow: hidden;
+    background-color: #F2F5FF !important;
+    /*background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c7d2f0' fill-opacity='0.18'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") !important;*/
+    border-color: #D8E0F5 !important;
+    box-shadow: 0 4px 24px rgba(99, 120, 200, 0.10), 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+    justify-content: space-between;
+}
+
+.tips-widget-header {
     width: 100%;
-    position: relative;
-    align-items: center;
-    padding-bottom: 30px;
-}
-
-.tips-carousel-btn {
-    border: 1px solid var(--sayso-border);
-    border-radius: 100px;
-    padding: 6px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    justify-content: space-between;
+}
+
+.tips-widget-header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tips-widget-header-title h3 {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--sayso-darkgray);
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+.tips-widget-logo {
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
 }
 
-.tips-carousel-content {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr;
+/*.tips-widget-nav {
+    display: flex;
+    gap: 8px;
+}*/
+
+/*.tips-widget-nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #E2E6EE;
+    border: none;
+    cursor: pointer;
+    display: flex;
     align-items: center;
-    justify-items: center;
-    text-align: center;
-    padding: 0 20px;
-    gap: 16px;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--sayso-lightgray);
+    transition: background-color 0.15s ease;
+    flex-shrink: 0;
+}*/
+
+/*.tips-widget-nav-btn:hover {
+    background-color: #D2D8E8;
+}*/
+
+.tips-widget-viewport {
+    overflow: hidden;
+    flex: 1;
+    width: 100%;
 }
 
-.tips-carousel-content.tips-carousel-content--paged {
-    align-items: start;
-    justify-items: start;
+.tips-widget-track {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+    height: 100%;
+}
+
+.tips-widget-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     text-align: left;
 }
 
-.tips-carousel-content.tips-carousel-content--two {
-    grid-template-columns: 1fr 1fr;
-}
-
-.tips-slide {
+.tips-widget-card-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: #DDE6FA;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--sayso-indigo);
+    flex-shrink: 0;
 }
 
-.tips-slide-title {
+.tips-widget-card-title {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--sayso-darkgray);
-    margin: 0;
+    margin: 14px 0 0 0;
+    letter-spacing: -0.1px;
 }
 
-.tips-slide-text {
+.tips-widget-card-text {
     font-size: 13px;
-    font-weight: 400;
     color: var(--sayso-lightgray);
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.65;
     white-space: pre-line;
 }
 
-.tips-carousel-dots {
+/* Line paginator */
+.tips-widget-lines {
     display: flex;
-    flex-direction: row;
-    gap: 6px;
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 7px;
+    flex-shrink: 0;
 }
 
-.tips-carousel-dot {
-    width: 6px;
-    height: 6px;
-    background-color: var(--sayso-border);
-    border-radius: 100px;
+.tips-widget-line {
+    height: 4px;
+    width: 18px;
+    border-radius: 2px;
+    border: none;
+    padding: 0;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    background-color: #C5CFEA;
+    transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                background-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                height 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                border-radius 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.tips-carousel-dot.active {
-    background-color: var(--sayso-lightgray);
-    transform: scale(1.35);
+.tips-widget-line:hover {
+    height: 7px;
+    border-radius: 3px;
 }
 
-.tips-report-tabs {
+.tips-widget-line.active {
+    width: 32px;
+    background-color: var(--sayso-indigo);
+}
+
+/* Segmented control tabs */
+.tips-widget-tabs {
     display: flex;
-    gap: 14px;
+    justify-content: center;
+    align-self: center;
+    background-color: #DDE3F0;
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+}
+
+.tips-widget-tab {
+    padding: 7px 16px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    color: #7A87A8;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+    font-weight: 500;
+}
+
+.tips-widget-tab.active {
+    background-color: #fff;
+    color: var(--sayso-indigo);
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
 }
 
 /* ===== Informative Card ===== */
@@ -143,8 +233,8 @@
     border: 1px solid var(--sayso-border);
     flex: 1;
     border-radius: 12px;
-    padding: 24px;
-    /*box-shadow: 0px 1px 2px 0px #0000000D;*/
+    padding: 24px 0 24px 24px;
+    box-shadow: var(--sayso-card-shadow);
     background-color: #FFFFFF;
     display: flex;
     flex-direction: column;
@@ -457,6 +547,7 @@
     display: flex;
     flex-direction: column;
     border-radius: 12px;
+    box-shadow: var(--sayso-card-shadow);
 }
 .empty-insights-text {
     font-weight: 500;
@@ -694,11 +785,7 @@
         gap: 12px;
     }
 
-    .tips-carousel-content.tips-carousel-content--two {
-        grid-template-columns: 1fr;
-    }
-
-    .informative-card-header-title p {
+.informative-card-header-title p {
         font-size: 13px;
     }
 

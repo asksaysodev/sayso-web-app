@@ -29,4 +29,5 @@
   --sayso-error: #EF4444;
   --sayso-warning: #fba30b;
   --sayso-success: #219e66;
+  --sayso-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
