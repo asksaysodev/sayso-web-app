@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import AuthGuard from './components/guards/AuthGuard';
 import GuestGuard from './components/guards/GuestGuard';
@@ -20,9 +20,12 @@ const AcceptInvite = lazy(() => import('./views/AcceptInvite'));
 
 import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
+import useUserNotAdminOnTeams from './hooks/useUserNotAdminOnTeams';
+
 
 export default function AppRoutes() {
     const hasSubscription = useHasSubscription();
+    const userNotAdminOnTeams = useUserNotAdminOnTeams();
 
     return (
         <Suspense fallback={<SaysoLoader />}>
@@ -93,9 +96,11 @@ export default function AppRoutes() {
                     path="/subscription"
                     element={
                         <AuthGuard>
-                            {hasSubscription
-                                ? <Layout><Subscription /></Layout>
-                                : <Subscription />
+                            {userNotAdminOnTeams
+                                ? <Navigate to="/" replace />
+                                : hasSubscription
+                                    ? <Layout><Subscription /></Layout>
+                                    : <Subscription />
                             }
                         </AuthGuard>
                     }
