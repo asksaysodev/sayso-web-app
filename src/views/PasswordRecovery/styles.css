@@ -31,3 +31,33 @@
   color: #64748b;
   text-align: center;
 }
+
+@keyframes password-recovery-fadein {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.password-recovery-success {
+  margin-top: 16px;
+  padding: 12px 14px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #166534;
+  text-align: center;
+  line-height: 1.5;
+  animation: password-recovery-fadein 0.3s ease;
+}
+
+.password-recovery-success a {
+  color: #166534;
+  font-weight: 600;
+  text-decoration: underline;
+}
