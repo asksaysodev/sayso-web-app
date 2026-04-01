@@ -1,75 +1,40 @@
 import { useState, useRef, useEffect } from 'react';
 import saysoLogo from '/assets/sayso.svg';
-import {
-    LuCalendarDays,
-    LuAlignJustify,
-    LuTarget,
-} from 'react-icons/lu';
-
-interface Tip {
-    title?: string;
-    text: string;
-    icon?: React.ReactNode;
-}
-
-interface ReportTab {
-    id: string;
-    label: string;
-    tips: Tip[];
-}
-
-const reportTabs: ReportTab[] = [
-    {
-        id: 'coach-tips',
-        label: 'Coach tips',
-        tips: [
-            {
-                icon: <LuCalendarDays />,
-                title: 'Appointment Control',
-                text: "You're not asking for the appointment enough. The average appointment is booked after the 4th or 5th unique ask. You're stopping after the first or second attempt, even when the conversation is still moving.\nStay with it longer. Ask again after new information comes up."
-            },
-            {
-                icon: <LuAlignJustify />,
-                title: 'Staying Surface Level',
-                text: "You're moving on too quickly after initial answers. This keeps the conversation shallow and makes the meeting feel optional.\nGo one level deeper before moving forward."
-            },
-            {
-                icon: <LuTarget />,
-                title: 'Missed Openings',
-                text: "You're hearing signals but not acting on them. There were moments where the prospect showed interest and the conversation didn't move forward. When interest shows up, shift and move toward the meeting."
-            },
-            {
-                icon: <LuTarget />,
-                title: 'Missed Openings',
-                text: "You're hearing signals but not acting on them. There were moments where the prospect showed interest and the conversation didn't move forward. When interest shows up, shift and move toward the meeting."
-            },
-            {
-                icon: <LuTarget />,
-                title: 'Missed Openings',
-                text: "You're hearing signals but not acting on them. There were moments where the prospect showed interest and the conversation didn't move forward. When interest shows up, shift and move toward the meeting."
-            },
-        ]
-    },
-];
+import { useQuery } from '@tanstack/react-query';
+import getCoachTips from '../../services/getCoachTips';
+import TipCardSkeleton from './TipCardSkeleton';
 
 const CARD_GAP = 10;
+const MOBILE_BREAKPOINT = 520;
 
 export default function Tips() {
     const [activePage, setActivePage] = useState(0);
-    const [activeReport, setActiveReport] = useState(reportTabs[0].id);
     const viewportRef = useRef<HTMLDivElement>(null);
     const [cardWidth, setCardWidth] = useState(0);
+    const [cardsPerPage, setCardsPerPage] = useState(2);
+    const touchStartX = useRef(0);
+    const prevCppRef = useRef(2);
 
-    const currentReport = reportTabs.find(r => r.id === activeReport)!;
-    const tips = currentReport.tips;
-    const totalPages = Math.ceil(tips.length / 2);
+    const { data, isLoading } = useQuery({
+        queryKey: ['coach-tips'],
+        queryFn: getCoachTips,
+    });
+
+    const tips = data?.tips ?? [];
+    const totalPages = Math.ceil(tips.length / cardsPerPage);
     const multiPage = totalPages > 1;
 
     useEffect(() => {
         const measure = () => {
             if (!viewportRef.current) return;
             const vw = viewportRef.current.offsetWidth;
-            setCardWidth((vw - 2 * CARD_GAP) / 2);
+            const cpp = vw < MOBILE_BREAKPOINT ? 1 : 2;
+            if (cpp !== prevCppRef.current) {
+                prevCppRef.current = cpp;
+                setActivePage(0);
+            }
+            setCardsPerPage(cpp);
+            setCardWidth((vw - cpp * CARD_GAP) / cpp);
         };
         measure();
         const ro = new ResizeObserver(measure);
@@ -77,18 +42,28 @@ export default function Tips() {
         return () => ro.disconnect();
     }, []);
 
-    const trackOffset = activePage * (2 * cardWidth + 2 * CARD_GAP);
-
-    // function handleReportChange(id: string) {
-    //     setActiveReport(id);
-    //     setActivePage(0);
-    // }
+    const trackOffset = activePage * cardsPerPage * (cardWidth + CARD_GAP);
 
     function handlePageLinePress(i: number) {
         if (i === activePage) return;
-        setActivePage(i)
+        setActivePage(i);
     }
-    
+
+    function navigateOnPressCard(cardIndex: number) {
+        const page = Math.floor(cardIndex / cardsPerPage);
+        if (page !== activePage) setActivePage(page);
+    }
+
+    function handleTouchStart(e: React.TouchEvent) {
+        touchStartX.current = e.touches[0].clientX;
+    }
+
+    function handleTouchEnd(e: React.TouchEvent) {
+        const delta = touchStartX.current - e.changedTouches[0].clientX;
+        if (Math.abs(delta) < 40) return;
+        if (delta > 0) setActivePage(p => Math.min(totalPages - 1, p + 1));
+        else setActivePage(p => Math.max(0, p - 1));
+    }
     
     return (
         <div className="informative-card-container dashboard-cards-left-column tips-widget-container">
@@ -99,7 +74,12 @@ export default function Tips() {
                 </div>
             </div>
 
-            <div ref={viewportRef} className="tips-widget-viewport">
+            <div
+                ref={viewportRef}
+                className="tips-widget-viewport"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+            >
                 <div
                     className="tips-widget-track"
                     style={{
@@ -107,22 +87,30 @@ export default function Tips() {
                         visibility: cardWidth === 0 ? 'hidden' : 'visible',
                     }}
                 >
-                    {tips.map((tip, i) => (
+                    {isLoading
+                        ? Array.from({ length: cardsPerPage }).map((_, i) => (
+                            <TipCardSkeleton key={i} width={cardWidth} />
+                        ))
+                        : tips.map((tip, i) => (
                         <div
                             key={i}
                             className="tips-widget-card"
                             style={{ flex: `0 0 ${cardWidth}px` }}
+                            onClick={() => navigateOnPressCard(i)}
                         >
-                            {tip.icon && (
-                                <div className="tips-widget-card-icon-wrap">
-                                    {tip.icon}
-                                </div>
-                            )}
+                            <div className="tips-widget-card-icon-wrap">
+                                {i + 1}
+                            </div>
                             {tip.title && <h4 className="tips-widget-card-title">{tip.title}</h4>}
-                            <p className="tips-widget-card-text">{tip.text}</p>
+                            {tip.body.map(({ text, type }) => (
+                                <p key={text} className="tips-widget-card-text">
+                                    {text}{type === 'paragraph' && <br />}
+                                </p>
+                            ))}
                         </div>
                     ))}
                 </div>
+
             </div>
 
             {multiPage && (
@@ -137,18 +125,6 @@ export default function Tips() {
                     ))}
                 </div>
             )}
-
-            {/*<div className="tips-widget-tabs">
-                {reportTabs.map(({ id, label }) => (
-                    <button
-                        key={id}
-                        className={`tips-widget-tab ${id === activeReport ? 'active' : ''}`}
-                        onClick={() => handleReportChange(id)}
-                    >
-                        {label}
-                    </button>
-                ))}
-            </div>*/}
         </div>
     );
 }

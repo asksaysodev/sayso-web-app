@@ -129,6 +129,45 @@
     border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     text-align: left;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.tips-widget-card:hover:not(.tips-widget-card-skeleton) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(99, 120, 200, 0.12), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.tips-widget-card-skeleton {
+    cursor: default;
+    pointer-events: none;
+    gap: 20px;
+}
+
+.tips-skeleton-icon,
+.tips-skeleton-title,
+.tips-skeleton-line {
+    border-radius: 6px;
+    background: linear-gradient(90deg, #f5f5f5 0%, #fafafa 50%, #f5f5f5 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+.tips-skeleton-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.tips-skeleton-title {
+    height: 24px;
+    width: 55%;
+    margin-top: 4px;
+}
+
+.tips-skeleton-line {
+    height: 50px;
+    width: 100%;
 }
 
 .tips-widget-card-icon-wrap {
