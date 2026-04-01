@@ -1,10 +1,5 @@
 import { useMemo, useState } from 'react';
-import { LuUsers, LuSearch } from 'react-icons/lu';
-import SaysoPopover from '@/components/SaysoPopover';
-
-import LeadTypeFilterSelector from './LeadTypeFilterSelector';
 import InsightsCalendarPopover, { INITIAL_DATE_RANGE } from './InsightsCalendarPopover';
-import ActiveFilters from "./ActiveFilters";
 
 import dayjs from "dayjs";
 import InsightCollapsibleTable from './InsightCollapsibleTable';
@@ -77,18 +72,6 @@ export default function InsightsContainer() {
 
         return Array.from(dateMap.values()).sort((a, b) => b.date.localeCompare(a.date));
     }, [insightsData]);
-
-    /**
-     * Checks if a date falls within the specified date range (inclusive)
-     * If 'to' is not provided, it only checks if the date matches the 'from' date
-     */
-    function checkIfDateIsAvailable(date: string | Date, dateRange: DateRange): boolean {
-        if (!dateRange.to) {
-            return dayjs(date).isSameOrAfter(dayjs(dateRange.from), 'day');
-        }
-
-        return dayjs(date).isBetween(dateRange.from, dateRange.to, 'day', '[]');
-    }
 
     return (
         <div className='insights-container'>
