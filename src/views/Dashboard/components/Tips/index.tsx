@@ -4,10 +4,6 @@ import {
     LuCalendarDays,
     LuAlignJustify,
     LuTarget,
-    LuThumbsUp,
-    LuTrendingUp,
-    LuChevronLeft,
-    LuChevronRight,
 } from 'react-icons/lu';
 
 interface Tip {
@@ -42,32 +38,21 @@ const reportTabs: ReportTab[] = [
                 title: 'Missed Openings',
                 text: "You're hearing signals but not acting on them. There were moments where the prospect showed interest and the conversation didn't move forward. When interest shows up, shift and move toward the meeting."
             },
+            {
+                icon: <LuTarget />,
+                title: 'Missed Openings',
+                text: "You're hearing signals but not acting on them. There were moments where the prospect showed interest and the conversation didn't move forward. When interest shows up, shift and move toward the meeting."
+            },
+            {
+                icon: <LuTarget />,
+                title: 'Missed Openings',
+                text: "You're hearing signals but not acting on them. There were moments where the prospect showed interest and the conversation didn't move forward. When interest shows up, shift and move toward the meeting."
+            },
         ]
     },
-    // {
-    //     id: 'whats-working',
-    //     label: "What's working",
-    //     tips: [
-    //         {
-    //             icon: <LuThumbsUp />,
-    //             text: "You're getting into conversations and keeping people engaged early."
-    //         }
-    //     ]
-    // },
-    // {
-    //     id: 'trends',
-    //     label: 'Trends',
-    //     tips: [
-    //         {
-    //             icon: <LuTrendingUp />,
-    //             text: 'Not asking for the appointment showed up in most calls yesterday.'
-    //         }
-    //     ]
-    // },
 ];
 
-const CARD_GAP = 12;
-const PEEK = 24;
+const CARD_GAP = 10;
 
 export default function Tips() {
     const [activePage, setActivePage] = useState(0);
@@ -84,32 +69,27 @@ export default function Tips() {
         const measure = () => {
             if (!viewportRef.current) return;
             const vw = viewportRef.current.offsetWidth;
-            // With peek: 2 cards + 2 gaps + peek = vw → card = (vw - 2*gap - peek) / 2
-            // Without peek (single page): 2 cards + 1 gap = vw → card = (vw - gap) / 2
-            setCardWidth(multiPage ? (vw - 2 * CARD_GAP - PEEK) / 2 : (vw - CARD_GAP) / 2);
+            setCardWidth((vw - 2 * CARD_GAP) / 2);
         };
         measure();
         const ro = new ResizeObserver(measure);
         if (viewportRef.current) ro.observe(viewportRef.current);
         return () => ro.disconnect();
-    }, [multiPage]);
+    }, []);
 
-    // Each page = 2 cards + 2 gaps (the gap before the next page's first card is included)
     const trackOffset = activePage * (2 * cardWidth + 2 * CARD_GAP);
 
-    function handlePrev() {
-        setActivePage(p => Math.max(0, p - 1));
-    }
+    // function handleReportChange(id: string) {
+    //     setActiveReport(id);
+    //     setActivePage(0);
+    // }
 
-    function handleNext() {
-        setActivePage(p => Math.min(totalPages - 1, p + 1));
+    function handlePageLinePress(i: number) {
+        if (i === activePage) return;
+        setActivePage(i)
     }
-
-    function handleReportChange(id: string) {
-        setActiveReport(id);
-        setActivePage(0);
-    }
-
+    
+    
     return (
         <div className="informative-card-container dashboard-cards-left-column tips-widget-container">
             <div className="tips-widget-header">
@@ -151,7 +131,7 @@ export default function Tips() {
                         <button
                             key={i}
                             className={`tips-widget-line ${i === activePage ? 'active' : ''}`}
-                            onClick={i > activePage ? handleNext : handlePrev}
+                            onClick={() => handlePageLinePress(i)}
                             aria-label={`Go to page ${i + 1}`}
                         />
                     ))}
