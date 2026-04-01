@@ -22,5 +22,5 @@ export default async function getCoachTips(): Promise<CoachTips> {
         throw new Error('Failed to fetch coach tips');
     }
 
-    return response?.data
+    return response?.data;
 }

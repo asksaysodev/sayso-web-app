@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import getCoachTips from '../../services/getCoachTips';
 import TipCardSkeleton from './TipCardSkeleton';
 
-const CARD_GAP = 10;
+const CARD_GAP = 12;
 const MOBILE_BREAKPOINT = 520;
 
 export default function Tips() {
@@ -15,7 +15,7 @@ export default function Tips() {
     const touchStartX = useRef(0);
     const prevCppRef = useRef(2);
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['coach-tips'],
         queryFn: getCoachTips,
     });
@@ -34,7 +34,7 @@ export default function Tips() {
                 setActivePage(0);
             }
             setCardsPerPage(cpp);
-            setCardWidth((vw - cpp * CARD_GAP) / cpp);
+            setCardWidth((vw - (cpp - 1) * CARD_GAP) / cpp);
         };
         measure();
         const ro = new ResizeObserver(measure);
@@ -91,6 +91,12 @@ export default function Tips() {
                         ? Array.from({ length: cardsPerPage }).map((_, i) => (
                             <TipCardSkeleton key={i} width={cardWidth} />
                         ))
+                        : isError
+                        ? (
+                            <div className="tips-widget-card" style={{ flex: '1' }}>
+                                <p className="tips-widget-card-text">Unable to load tips. Please try again later.</p>
+                            </div>
+                        )
                         : tips.map((tip, i) => (
                         <div
                             key={i}
@@ -102,8 +108,8 @@ export default function Tips() {
                                 {i + 1}
                             </div>
                             {tip.title && <h4 className="tips-widget-card-title">{tip.title}</h4>}
-                            {tip.body.map(({ text, type }) => (
-                                <p key={text} className="tips-widget-card-text">
+                            {tip.body.map(({ text, type }, j) => (
+                                <p key={j} className="tips-widget-card-text">
                                     {text}{type === 'paragraph' && <br />}
                                 </p>
                             ))}

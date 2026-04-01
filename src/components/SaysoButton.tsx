@@ -22,7 +22,6 @@ interface Props {
     fullWidth?: boolean;
     type?: 'button' | 'submit' | 'reset';
     size?: 'sm' | 'lg';
-    active?: boolean;
 }
 
 export default function SaysoButton({
@@ -35,7 +34,6 @@ export default function SaysoButton({
     fullWidth = false,
     type = 'button',
     size = 'lg',
-    active = false
 }: Props) {
     const spinnerColor = variant === 'outlined' ? '#000' : 'white';
 
@@ -43,7 +41,7 @@ export default function SaysoButton({
         <button
             type={type}
             disabled={disabled || loading}
-            className={`sayso-button variant-${variant} size-${size} ${loading ? 'loading' : ''} ${fullWidth ? 'full-width' : ''} ${active ? 'is-active' : ''}`}
+            className={`sayso-button variant-${variant} size-${size} ${loading ? 'loading' : ''} ${fullWidth ? 'full-width' : ''}`}
             onClick={onClick}
         >
             {loading ? (
