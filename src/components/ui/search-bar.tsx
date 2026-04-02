@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, useMemo, useState } from 'react';
 import { LuSearch } from 'react-icons/lu';
 import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group';
 import {
@@ -36,8 +36,11 @@ export default function SearchBar<TFilter extends { key: string }>({
 }: Props<TFilter>) {
     const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
-    const availableFilterOptions = (availableFilters ?? []).filter(
-        config => !activeFilters.some(af => af.key === config.key)
+    const availableFilterOptions = useMemo(
+        () => (availableFilters ?? []).filter(
+            config => !activeFilters.some(af => af.key === config.key)
+        ),
+        [availableFilters, activeFilters]
     );
 
     const handleAddFilter = (key: string) => {
@@ -46,6 +49,7 @@ export default function SearchBar<TFilter extends { key: string }>({
             setActiveFilters(prev => [...prev, config.defaultValue()]);
         }
         setIsFilterDropdownOpen(false);
+        if (searchText !== '') onSearchTextChange('')
     };
 
     const handleUpdateFilter = (updatedFilter: TFilter) => {
@@ -59,8 +63,15 @@ export default function SearchBar<TFilter extends { key: string }>({
     };
 
     const hasActiveFilters = activeFilters.length > 0;
-    const hasAvailableFilters = availableFilterOptions.length > 0;
 
+    const filteredFiltersOptions = useMemo(() => {
+        if (!searchText) return availableFilterOptions;
+        const fif = availableFilterOptions.filter((op) => op.label.toLowerCase().includes(searchText.toLowerCase()))
+        return fif
+    }, [searchText,availableFilterOptions])
+    
+    const hasAvailableFilters = filteredFiltersOptions.length > 0;
+    
     return (
         <div className="search-bar">
             <Popover
@@ -100,7 +111,7 @@ export default function SearchBar<TFilter extends { key: string }>({
                         align="start"
                         onOpenAutoFocus={(e) => e.preventDefault()}
                     >
-                        {availableFilterOptions.map(config => (
+                        {filteredFiltersOptions.map(config => (
                             <button
                                 key={config.key}
                                 className="search-filter-option"

@@ -37,7 +37,7 @@ export default function InsightsContainer() {
     const [dateRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>(INITIAL_DATE_RANGE);
     const [openedInsights, setOpenedInsights] = useState<string[]>([]);
     const [activeFilters, setActiveFilters] = useState<LeadTypeFilterConfig[]>([]); 
-    const debouncedSearchInputValue = useDebounce(searchInsightInputValue, 1500);
+    const debouncedSearchInputValue = useDebounce(searchInsightInputValue, 500);
     
     const {
         data: insightsData,
