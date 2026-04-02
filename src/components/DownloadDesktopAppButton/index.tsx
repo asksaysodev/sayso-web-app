@@ -4,8 +4,8 @@ import { useSearchParams } from 'react-router-dom';
 import { LuX, LuDownload, LuCircleHelp } from 'react-icons/lu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useDownloadGithubRelease } from './hooks/useDownloadGithubRelease';
-import SaysoButton from "../SaysoButton";
 import './DownloadDesktopAppButton.css';
+import { Download } from 'lucide-react';
 
 export default function DownloadDesktopAppButton() {
     const [searchParams] = useSearchParams();
@@ -15,17 +15,19 @@ export default function DownloadDesktopAppButton() {
         if (searchParams.get("success") === "true") {
             window.history.replaceState(null, '', window.location.pathname);
         }
-    }, []);
+    }, [searchParams]);
     const { siliconUrl, intelUrl, handleDownload, isLoadingUrls } = useDownloadGithubRelease(showModal);
 
     return (
         <>
-            <SaysoButton
-                fullWidth
-                variant="blue"
-                label="Get Sayso for Mac"
+            <button 
+                className='download-for-mac-button'
                 onClick={() => setShowModal(true)}
-            />
+            >
+                <Download size={15} />
+                Download for Mac
+            </button>
+            
             {showModal && createPortal(
                 <div className="dda-overlay" onClick={() => setShowModal(false)}>
                     <div className="dda-modal" onClick={e => e.stopPropagation()}>
