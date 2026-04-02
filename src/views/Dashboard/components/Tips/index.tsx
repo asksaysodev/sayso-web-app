@@ -15,7 +15,7 @@ export default function Tips() {
     const touchStartX = useRef(0);
     const prevCppRef = useRef(2);
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError, isRefetching } = useQuery({
         queryKey: ['coach-tips'],
         queryFn: getCoachTips,
     });
@@ -87,7 +87,7 @@ export default function Tips() {
                         visibility: cardWidth === 0 ? 'hidden' : 'visible',
                     }}
                 >
-                    {isLoading
+                    {(isLoading || isRefetching)
                         ? Array.from({ length: cardsPerPage }).map((_, i) => (
                             <TipCardSkeleton key={i} width={cardWidth} />
                         ))
