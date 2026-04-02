@@ -5,16 +5,15 @@ import './styles.css';
 import LoginLayout from '@/components/layouts/LoginLayout';
 import { useForm } from 'react-hook-form';
 import ControlledInputField from '@/components/forms/ControlledInputField';
-import { supabase } from '@/config/supabase';
 import SaysoButton from '@/components/SaysoButton';
 import { useMutation } from '@tanstack/react-query';
-import { useToast } from '@/context/ToastContext';
 import { PasswordRecoveryFormData } from '../Login/types';
+import sendPasswordRecoveryEmail from './services/sendPasswordRecoveryEmail';
 
 const PasswordRecovery = () => {
   const navigate = useNavigate();
-  const { showToast } = useToast();
   const [countdown, setCountdown] = useState(0);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   const { control, handleSubmit, setError, reset } = useForm<PasswordRecoveryFormData>({
     defaultValues: {
@@ -23,18 +22,11 @@ const PasswordRecovery = () => {
   });
   
   const {mutate: resetPasswordMutation, isPending: isResetPasswordPending} = useMutation({
-    mutationFn: async (email: string) => {
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: process.env.NODE_ENV === 'development' 
-          ? 'http://localhost:5173' 
-          : 'sayso://'
-      });
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      showToast('success', 'Reset link sent! Check your email');
+    mutationFn: sendPasswordRecoveryEmail,
+    mutationKey: ['send-password-recovery-email'],
+    onSuccess: ({ message }) => {
       reset();
+      setSuccessMessage(message);
       setCountdown(60);
     },
     onError: (error) => {
@@ -86,6 +78,11 @@ const PasswordRecovery = () => {
             disabled={countdown > 0 || isResetPasswordPending}
             fullWidth
           />
+          {successMessage && countdown > 0 && (
+            <div className="password-recovery-success">
+              <p>{successMessage} If not, please contact <a href="mailto:support@asksayso.com">support@asksayso.com</a>.</p>
+            </div>
+          )}
           {countdown > 0 && (
             <p className="password-recovery-countdown">
               You can request again in {countdown} second{countdown !== 1 ? 's' : ''}

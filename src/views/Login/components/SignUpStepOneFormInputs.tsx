@@ -1,6 +1,6 @@
 import LoginBtn from '@/components/LoginBtn';
 import ControlledInputField from '@/components/forms/ControlledInputField';
-import { Control, FieldValues } from 'react-hook-form';
+import { Control } from 'react-hook-form';
 import { LoginFormData } from '../types';
 
 interface Props {
@@ -13,7 +13,7 @@ export default function SignUpStepOneFormInputs({ control }: Props) {
             <ControlledInputField
                 control={control}
                 name="name"
-                label="Name"
+                label="First Name"
                 labelCn='loginInFormInputLabel'
             />
             <ControlledInputField
@@ -25,7 +25,7 @@ export default function SignUpStepOneFormInputs({ control }: Props) {
             <ControlledInputField
                 control={control}
                 name="company"
-                label="Company"
+                label="Broker/Team"
                 labelCn='loginInFormInputLabel'
             />
             <div className="formActions">

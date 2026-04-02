@@ -22,6 +22,7 @@ import logoHorizontal from '/assets/logo-pos-horizontal.png';
 import '../styles/Sidebar.css';
 import useHasSubscription from '@/hooks/useHasSubscription';
 import DownloadDesktopAppButton from './DownloadDesktopAppButton';
+import useUserNotAdminOnTeams from '@/hooks/useUserNotAdminOnTeams';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -33,6 +34,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const { globalUser, handleSignOut } = useAuth();
     const hasSubscription = useHasSubscription();
 
+    const subjectValue = encodeURIComponent(`Sayso App Support Request - ${globalUser?.email ?? '{user email}'}`);
+    const bodyValue = encodeURIComponent(`Describe the error and include any attachments or video links. All context or additional information will help us reproducing the error scenario`);
+    const userNotAdminOnTeams = useUserNotAdminOnTeams()
+    
     return (
         <>
         {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
@@ -65,13 +70,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         </NavLink>
                     }
                     {globalUser?.isAdmin && (
-                    <NavLink to="/admin" onClick={onClose}>
-                        <div className="outline"></div>
-                        <div className='sidebar-nav-item'>
-                            <LuShield />
-                            <p>Admin</p>
-                        </div>
-                    </NavLink>
+                        <NavLink to="/admin" onClick={onClose}>
+                            <div className="outline"></div>
+                            <div className='sidebar-nav-item'>
+                                <LuShield />
+                                <p>Admin</p>
+                            </div>
+                        </NavLink>
                     )}
                     <NavLink to="/settings" onClick={onClose}>
                         <div className="outline"></div>
@@ -80,13 +85,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                             <p>Settings</p>
                         </div>
                     </NavLink>
-                    <NavLink to="/subscription" onClick={onClose}>
-                        <div className="outline"></div>
-                        <div className='sidebar-nav-item'>
-                            <LuCreditCard />
-                            <p>Subscription</p>
-                        </div>
-                    </NavLink>
+                    {!userNotAdminOnTeams && 
+                        <NavLink to="/subscription" onClick={onClose}>
+                            <div className="outline"></div>
+                            <div className='sidebar-nav-item'>
+                                <LuCreditCard />
+                                <p>Subscription</p>
+                            </div>
+                        </NavLink>
+                    }
                 </div>
             </div>
             <div className="sidebar-footer">
@@ -106,7 +113,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     </div>
                 </div>
                 <Divider />
-                <div className='sidebar-footer-button' onClick={() => openExternal('mailto:dev@asksayso.com')}>
+                <div className='sidebar-footer-button' onClick={() => openExternal(`mailto:support@asksayso.com?subject=${subjectValue}&body=${bodyValue}`)}>
                     <LuCircleHelp />
                     <p>Support</p>
                 </div>

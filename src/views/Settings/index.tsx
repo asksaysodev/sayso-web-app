@@ -11,7 +11,7 @@ export default function Settings() {
     const [selectedPanel, setSelectedPanel] = useState<SettingsPanel>(SettingsPanelEnum.PERSONAL);
     const [nextPanel, setNextPanel] = useState<SettingsPanel | null>(null);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
-
+    
     const handleSelectPanel = (panel: SettingsPanel) => { 
         if(unsavedChanges) {
             setNextPanel(panel);
