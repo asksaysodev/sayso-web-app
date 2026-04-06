@@ -23,6 +23,7 @@ import '../styles/Sidebar.css';
 import useHasSubscription from '@/hooks/useHasSubscription';
 import DownloadDesktopAppButton from './DownloadDesktopAppButton';
 import useUserNotAdminOnTeams from '@/hooks/useUserNotAdminOnTeams';
+import LaunchCoachButton from './LaunchCoachButton';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -97,7 +98,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </div>
             </div>
             <div className="sidebar-footer">
-                <DownloadDesktopAppButton />
+                <div className='flex gap-3 flex-col'>
+                    <LaunchCoachButton />
+                    <DownloadDesktopAppButton />
+                </div>
+                
                 <Divider />
                 <div className='account-widget'>
                     <div className='account-widget-active-container'>

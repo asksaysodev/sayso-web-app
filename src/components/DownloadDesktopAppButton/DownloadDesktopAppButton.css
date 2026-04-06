@@ -150,3 +150,19 @@
 .dda-option:hover .dda-option-download {
     color: var(--sayso-indigo);
 }
+
+.download-for-mac-button {
+    color: var(--sayso-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 6px;
+    font-size: 15px;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+}
+
+.download-for-mac-button:hover {
+    background-color: var(--sayso-white);
+}
