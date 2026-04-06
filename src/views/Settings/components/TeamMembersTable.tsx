@@ -31,6 +31,7 @@ import revokeInvite from "../services/revokeInvite";
 import resendInvite from "../services/resendInvite";
 import { AccountStatus } from "@/types/user";
 import { RefreshCcw } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const AVAILABLE_FILTERS: SearchFilterConfig<MemberActiveFilter>[] = [
     {
@@ -46,7 +47,7 @@ export default function TeamMembersTable() {
     const [activeFilters, setActiveFilters] = useState<MemberActiveFilter[]>([]);
     const [inviteModalOpen, setInviteModalOpen] = useState(false);
     const [deleteMemberId, setDeleteMemberId] = useState<string | null>(null);
-
+    const { globalUser } = useAuth();
     const queryClient = useQueryClient();
     const { showToast } = useToast();
     const { refreshTeamMembersData } = useRefreshTeamMembersData();
@@ -201,7 +202,8 @@ export default function TeamMembersTable() {
                         ) : (
                             filtered.map(({name, lastname, id, email, status}) => {
                                 const hasName = !!(name || lastname);
-
+                                const hideEllipsis: boolean = id === globalUser?.id;
+                                
                                 return (
                                     <TableRow key={id}>
                                         <TableCell>
@@ -218,18 +220,20 @@ export default function TeamMembersTable() {
                                         <TableCell>
                                             <StatusBadge status={status} />
                                         </TableCell>
-                                        <TableCell>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <button className="team-member-actions-btn">
-                                                        <LuEllipsis />
-                                                    </button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    {renderDropdownContent(status, id)}
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
+                                        {!hideEllipsis &&
+                                            <TableCell>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <button className="team-member-actions-btn">
+                                                            <LuEllipsis />
+                                                        </button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        {renderDropdownContent(status, id)}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        }
                                     </TableRow>
                                 );
                             })

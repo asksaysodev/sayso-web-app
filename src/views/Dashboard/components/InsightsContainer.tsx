@@ -13,6 +13,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import type { LeadTypeFilter, InsightGroup } from '@/types/coach';
 import SearchBar, { SearchFilterConfig } from '@/components/ui/search-bar';
 import FilterPill from '@/components/ui/filter-pill';
+import useDebounce from '@/hooks/useDebounce';
 
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrAfter);
@@ -36,6 +37,7 @@ export default function InsightsContainer() {
     const [dateRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>(INITIAL_DATE_RANGE);
     const [openedInsights, setOpenedInsights] = useState<string[]>([]);
     const [activeFilters, setActiveFilters] = useState<LeadTypeFilterConfig[]>([]); 
+    const debouncedSearchInputValue = useDebounce(searchInsightInputValue, 500);
     
     const {
         data: insightsData,
@@ -46,8 +48,8 @@ export default function InsightsContainer() {
         fetchNextPage,
         hasNextPage
     } = useInfiniteQuery({
-        queryKey: ['dashboard-insights', activeFilters, dateRangeFilter],
-        queryFn: ({ pageParam }) => getInsights(pageParam, activeFilters, dateRangeFilter),
+        queryKey: ['dashboard-insights', activeFilters, dateRangeFilter, debouncedSearchInputValue],
+        queryFn: ({ pageParam }) => getInsights(pageParam, activeFilters, dateRangeFilter, debouncedSearchInputValue),
         getNextPageParam: (lastPage, allPages) => lastPage.hasNextPage ? allPages.length : undefined,
         initialPageParam: 0,
     });
