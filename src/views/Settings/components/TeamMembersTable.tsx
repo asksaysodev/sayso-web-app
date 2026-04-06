@@ -23,12 +23,14 @@ import StatusBadge from "./TeamMemberStatusBadge";
 import StatusFilterPill from "./StatusFilterPill";
 import { MemberActiveFilter } from "../types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useRefreshTeamMembersData from "../hooks/useRefreshTeamMembersData";
 import { useToast } from "@/context/ToastContext";
 import { OrganizationMembersResponse } from "@/types/user";
 import getOrganizationMembers from "../services/getOrganizationMembers";
 import revokeInvite from "../services/revokeInvite";
 import resendInvite from "../services/resendInvite";
 import { AccountStatus } from "@/types/user";
+import { RefreshCcw } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 const AVAILABLE_FILTERS: SearchFilterConfig<MemberActiveFilter>[] = [
@@ -48,6 +50,7 @@ export default function TeamMembersTable() {
     const { globalUser } = useAuth();
     const queryClient = useQueryClient();
     const { showToast } = useToast();
+    const { refreshTeamMembersData } = useRefreshTeamMembersData();
 
     const updateInviteStatus = (id: string, status: OrganizationMembersResponse['invites'][number]['status']) => {
         queryClient.setQueryData<OrganizationMembersResponse>(['get-organization-members'], (prev) => {
@@ -59,7 +62,7 @@ export default function TeamMembersTable() {
         });
     };
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isRefetching } = useQuery({
         queryKey: ['get-organization-members'],
         queryFn: getOrganizationMembers
     })
@@ -140,6 +143,7 @@ export default function TeamMembersTable() {
         <DeleteMemberModal memberId={deleteMemberId} onClose={() => setDeleteMemberId(null)} />
         <div className="team-members-table-container">
             <div className="team-members-toolbar">
+                <div className="flex gap-4 items-center">
                     <SearchBar
                         searchText={searchText}
                         onSearchTextChange={setSearchText}
@@ -153,14 +157,19 @@ export default function TeamMembersTable() {
                             )
                         }}
                     />
-                    <SaysoButton
-                        size="sm"
-                        label="Add Member"
-                        variant="sayso-indigo"
-                        fullWidth={false}
-                        icon={<LuUserPlus />}
-                        onClick={() => setInviteModalOpen(true)}
-                    />
+                    <div className="view-layout-refresh-button" onClick={refreshTeamMembersData}>
+                        <RefreshCcw size={18} strokeWidth={2}/>
+                    </div>
+                </div>
+                    
+                <SaysoButton
+                    size="sm"
+                    label="Add Member"
+                    variant="sayso-indigo"
+                    fullWidth={false}
+                    icon={<LuUserPlus />}
+                    onClick={() => setInviteModalOpen(true)}
+                />
             </div>
 
             <div className="team-members-table-wrapper">
@@ -175,7 +184,7 @@ export default function TeamMembersTable() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {isLoading ? (
+                        {isLoading || isRefetching ? (
                             <TableRow>
                                 <TableCell colSpan={5} className="team-members-table-empty-cell">
                                     <div className="team-members-loading">
