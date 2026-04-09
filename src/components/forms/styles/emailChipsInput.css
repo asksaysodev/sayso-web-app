@@ -1,0 +1,89 @@
+.email-chips-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.email-chips-input-label {
+    display: block;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--sayso-darkgray);
+}
+
+.email-chips-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1px solid var(--sayso-border);
+    border-radius: 6px;
+    background-color: white;
+    cursor: text;
+    min-height: 44px;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.email-chips-input-container:focus-within {
+    border-color: var(--sayso-indigo);
+}
+
+.email-chips-input-container.error {
+    border-color: var(--sayso-error);
+}
+
+.email-chips-input-container.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.email-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background-color: var(--sayso-active-lightblue);
+    color: var(--sayso-indigo);
+    border: 1px solid var(--sayso-lightblue);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.email-chip-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    transition: color 0.15s ease;
+}
+
+.email-chip-remove:hover {
+    color: var(--sayso-darkgray);
+}
+
+.email-chips-input {
+    flex: 1;
+    min-width: 140px;
+    outline: none;
+    border: none;
+    background: transparent;
+    font-size: 0.95em;
+    color: var(--sayso-darkgray);
+    padding: 0;
+}
+
+.email-chips-input::placeholder {
+    color: #9ca3af;
+}
+
+.email-chips-input-error {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--sayso-error);
+}
