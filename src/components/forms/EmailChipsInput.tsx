@@ -1,6 +1,7 @@
 import { useRef, useState, KeyboardEvent } from "react";
 import { LuX } from "react-icons/lu";
 import "./styles/emailChipsInput.css";
+import { useAuth } from "@/context/AuthContext";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -16,7 +17,8 @@ export default function EmailChipsInput({ chips, onChange, disabled, placeholder
     const [inputValue, setInputValue] = useState("");
     const [error, setError] = useState<string | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-
+    const { globalUser } = useAuth();
+    
     const tryAddChip = (raw: string) => {
         const email = raw.trim().toLowerCase();
         if (!email) return;
@@ -30,7 +32,12 @@ export default function EmailChipsInput({ chips, onChange, disabled, placeholder
             setError("Email already added");
             return;
         }
-
+        
+        if (globalUser?.email && email === globalUser.email.trim().toLowerCase()) {
+            setError("You can't invite yourself");
+            return;
+        }
+        
         onChange([...chips, email]);
         setInputValue("");
         setError(null);
@@ -41,7 +48,7 @@ export default function EmailChipsInput({ chips, onChange, disabled, placeholder
     };
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" || e.key === " " || e.key === ",") {
+        if (e.key === "Enter" || e.key === " " || e.key === "," || e.key === "Tab") {
             e.preventDefault();
             tryAddChip(inputValue);
         } else if (e.key === "Backspace" && inputValue === "") {

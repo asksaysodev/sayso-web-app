@@ -92,7 +92,7 @@ export default function InviteMemberModal({ open, onClose }: Props) {
                         label="Email addresses"
                         placeholder="colleague@company.com"
                     />
-                    <p style={{ fontSize: "12px", color: "#9ca3af" }}>Press Enter, Space, or comma to add each email.</p>
+                    <p style={{ fontSize: "12px", color: "#9ca3af" }}>Press Enter, Space, Tab or comma to add each email.</p>
                 </div>
 
                 <DialogFooter className="mt-4">
