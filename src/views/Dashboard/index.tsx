@@ -4,7 +4,7 @@ import InformativeCardsContainer from "./components/InformativeCardsContainer";
 import InsightsContainer from "./components/InsightsContainer";
 import ViewLayoutRefreshButton from "@/components/layouts/components/ViewLayoutRefreshButton";
 import useRefreshDashboardData from "./hooks/useRefreshDashboardData";
-import SpotlightWidget from "@/components/SpotlightWidget";
+import NotificationWidget from "@/components/NotificationWidget";
 
 export default function Dashboard() {
     const { refreshDashboardData } = useRefreshDashboardData();
@@ -20,7 +20,7 @@ export default function Dashboard() {
     			<InformativeCardsContainer />
     			<InsightsContainer />
     		</ViewLayout>
-		    <SpotlightWidget />
+		    <NotificationWidget />
 		</>
   	)
 }
