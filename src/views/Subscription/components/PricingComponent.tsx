@@ -28,13 +28,11 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
     } = plan || {};
     
     const [packageSelected, setPackageSelected] = useState<null | PricingOption>(null);
-    const [pendingPackage, setPendingPackage] = useState<null | PricingOption>(null);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
     useEffect(() => {
         const resetPackages = () =>{
             setPackageSelected(null);
-            setPendingPackage(null);
         }
         resetPackages();
     }, [selectedBillingTab]);
@@ -62,15 +60,13 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
     }, [hasPackages, availablePackages]);
 
     const openOverlay = () => {
-        setPendingPackage(packageSelected);
         setIsOverlayOpen(true);
     };
 
     const closeOverlay = () => setIsOverlayOpen(false);
 
     const confirmPackage = (pricingPackage: PricingOption) => {
-        if (pendingPackage && pricingPackage.stripePriceId === pendingPackage?.stripePriceId) return;
-        setPendingPackage(pricingPackage)
+        if (packageSelected && pricingPackage.stripePriceId === packageSelected?.stripePriceId) return;
         setPackageSelected(pricingPackage);
         closeOverlay();
     };
@@ -171,8 +167,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                     {availablePackages.map((opt) => (
                         <div
                             key={opt.stripePriceId}
-                            className={`tier-card${pendingPackage?.stripePriceId === opt.stripePriceId ? ' active' : ''}`}
-                            // onClick={() => setPendingPackage(opt)}
+                            className={`tier-card${packageSelected?.stripePriceId === opt.stripePriceId ? ' active' : ''}`}
                             onClick={() => confirmPackage(opt)}
                         >
                             <div className="tier-left">
