@@ -68,9 +68,10 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
 
     const closeOverlay = () => setIsOverlayOpen(false);
 
-    const confirmPackage = () => {
-        if (!pendingPackage) return;
-        setPackageSelected(pendingPackage);
+    const confirmPackage = (pricingPackage: PricingOption) => {
+        if (pendingPackage && pricingPackage.stripePriceId === pendingPackage?.stripePriceId) return;
+        setPendingPackage(pricingPackage)
+        setPackageSelected(pricingPackage);
         closeOverlay();
     };
 
@@ -171,7 +172,8 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                         <div
                             key={opt.stripePriceId}
                             className={`tier-card${pendingPackage?.stripePriceId === opt.stripePriceId ? ' active' : ''}`}
-                            onClick={() => setPendingPackage(opt)}
+                            // onClick={() => setPendingPackage(opt)}
+                            onClick={() => confirmPackage(opt)}
                         >
                             <div className="tier-left">
                                 <div className="tier-dot"></div>
@@ -184,18 +186,6 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                             <div className="tier-price-tag">${formatPrice(centsToDollars(opt.priceInCents))}</div>
                         </div>
                     ))}
-                </div>
-
-                <div className="overlay-footer">
-                    <button
-                        className={`confirm-btn${pendingPackage && pendingPackage.stripePriceId !== packageSelected?.stripePriceId ? ' ready' : ''}`}
-                        onClick={confirmPackage}
-                    >
-                        {pendingPackage
-                            ? `Confirm — $${formatPrice(centsToDollars(pendingPackage.priceInCents))} / ${selectedBillingTab}`
-                            : 'Confirm package'
-                        }
-                    </button>
                 </div>
             </div>
     
