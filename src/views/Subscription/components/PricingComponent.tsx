@@ -28,13 +28,11 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
     } = plan || {};
     
     const [packageSelected, setPackageSelected] = useState<null | PricingOption>(null);
-    const [pendingPackage, setPendingPackage] = useState<null | PricingOption>(null);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
     useEffect(() => {
         const resetPackages = () =>{
             setPackageSelected(null);
-            setPendingPackage(null);
         }
         resetPackages();
     }, [selectedBillingTab]);
@@ -62,15 +60,14 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
     }, [hasPackages, availablePackages]);
 
     const openOverlay = () => {
-        setPendingPackage(packageSelected);
         setIsOverlayOpen(true);
     };
 
     const closeOverlay = () => setIsOverlayOpen(false);
 
-    const confirmPackage = () => {
-        if (!pendingPackage) return;
-        setPackageSelected(pendingPackage);
+    const confirmPackage = (pricingPackage: PricingOption) => {
+        if (packageSelected && pricingPackage.stripePriceId === packageSelected?.stripePriceId) return;
+        setPackageSelected(pricingPackage);
         closeOverlay();
     };
 
@@ -170,8 +167,8 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                     {availablePackages.map((opt) => (
                         <div
                             key={opt.stripePriceId}
-                            className={`tier-card${pendingPackage?.stripePriceId === opt.stripePriceId ? ' active' : ''}`}
-                            onClick={() => setPendingPackage(opt)}
+                            className={`tier-card${packageSelected?.stripePriceId === opt.stripePriceId ? ' active' : ''}`}
+                            onClick={() => confirmPackage(opt)}
                         >
                             <div className="tier-left">
                                 <div className="tier-dot"></div>
@@ -184,18 +181,6 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                             <div className="tier-price-tag">${formatPrice(centsToDollars(opt.priceInCents))}</div>
                         </div>
                     ))}
-                </div>
-
-                <div className="overlay-footer">
-                    <button
-                        className={`confirm-btn${pendingPackage && pendingPackage.stripePriceId !== packageSelected?.stripePriceId ? ' ready' : ''}`}
-                        onClick={confirmPackage}
-                    >
-                        {pendingPackage
-                            ? `Confirm — $${formatPrice(centsToDollars(pendingPackage.priceInCents))} / ${selectedBillingTab}`
-                            : 'Confirm package'
-                        }
-                    </button>
                 </div>
             </div>
     
