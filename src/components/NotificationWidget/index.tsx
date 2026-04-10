@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { LuBellRing, LuX, LuExpand, LuShrink } from 'react-icons/lu';
+import { LuBellRing, LuX, LuExpand, LuShrink, } from 'react-icons/lu';
 import './styles.css';
 import SaysoButton from '../SaysoButton';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { NotificationBottomSheet } from './NotificationBottomSheet';
 
 interface Props {
     children?: React.ReactNode;
@@ -10,10 +12,16 @@ interface Props {
 
 export default function NotificationWidget({ displayType = 'collapsed', children = null }: Props) {
     const [isCollapsed, setIsCollapsed] = useState(displayType === 'collapsed');
+    const isMobile = useMediaQuery('(max-width: 768px)');
+
+    if (isMobile) {
+        return <NotificationBottomSheet>{children}</NotificationBottomSheet>;
+    }
 
     return (
         <div className={`nw-overlay ${isCollapsed ? 'nw-overlay--collapsed' : 'nw-overlay--expanded'}`}>
             <div className={`notification-widget ${isCollapsed ? 'notification-widget--collapsed' : 'notification-widget--expanded'}`}>
+
                 {/* Header */}
                 <div className='nw-header'>
                     <div className='nw-header-left-container'>
@@ -42,12 +50,13 @@ export default function NotificationWidget({ displayType = 'collapsed', children
                 {/* Footer */}
                 <div className='nw-footer'>
                     <SaysoButton
-                        label={'Remind Me Later'}
+                        label='Remind Me Later'
                         icon={<LuBellRing />}
                         variant='outlined'
                     />
                 </div>
+
             </div>
         </div>
-    )
+    );
 }

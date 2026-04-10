@@ -130,4 +130,32 @@
     gap: 8px;
     padding: 24px;
     border-top: 1px solid #E5E7EB;
+    flex-shrink: 0;
+}
+
+
+/* ===== Shimmer animation ===== */
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+
+/* ===== Mobile: Bottom sheet ===== */
+.nw-mobile-drawer {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nw-mobile-content-container {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 16px;
+    min-height: 0;
+}
+
+.nw-mobile-content {
+    min-height: 240px !important;
+    max-height: 50vh !important;
 }
