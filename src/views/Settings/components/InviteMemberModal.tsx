@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { LuLoader } from "react-icons/lu";
 import {
     Dialog,
@@ -11,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import SaysoButton from "@/components/SaysoButton";
 import EmailChipsInput from "@/components/forms/EmailChipsInput";
-import sendTeamInvite from "../services/sendTeamInvite";
+import sendTeamInvite, { SkippedInvite, SendTeamInviteResponse } from "../services/sendTeamInvite";
 import { useToast } from "@/context/ToastContext";
 import { OrganizationMembersResponse } from "@/types/user";
 
@@ -24,6 +25,7 @@ export default function InviteMemberModal({ open, onClose }: Props) {
     const { showToast } = useToast();
     const queryClient = useQueryClient();
     const [emails, setEmails] = useState<string[]>([]);
+    const [skipped, setSkipped] = useState<SkippedInvite[]>([]);
 
     const { mutate, isPending } = useMutation({
         mutationFn: (emails: string[]) => sendTeamInvite(emails),
@@ -46,31 +48,42 @@ export default function InviteMemberModal({ open, onClose }: Props) {
             });
             return { tempIds };
         },
-        onSuccess: () => {
+        onSuccess: (data: SendTeamInviteResponse) => {
             queryClient.invalidateQueries({ queryKey: ['get-organization-members'] });
-            const count = emails.length;
-            showToast("success", count === 1 ? "Invitation sent successfully." : `${count} invitations sent successfully.`);
             setEmails([]);
-            onClose();
+            if (data.skipped.length > 0) {
+                setSkipped(data.skipped);
+            } else {
+                const count = data.invites.length;
+                showToast("success", count === 1 ? "Invitation sent successfully." : `${count} invitations sent successfully.`);
+                onClose();
+            }
         },
-        onError: (_err, _emails, context) => {
+        onError: (err: AxiosError<{ error: string; skipped?: SkippedInvite[] }>, _emails, context) => {
             queryClient.setQueryData(['get-organization-members'], (prev: OrganizationMembersResponse | undefined) => {
                 if (!prev) return prev;
                 const tempIdSet = new Set(context?.tempIds.map((t) => t.id));
                 return { ...prev, invites: prev.invites.filter((i) => !tempIdSet.has(i.id)) };
             });
-            showToast("error", "Failed to send invitation(s). Please try again.");
+            const skippedFromError = err.response?.data?.skipped;
+            if (skippedFromError && skippedFromError.length > 0) {
+                setSkipped(skippedFromError);
+            } else {
+                showToast("error", "Failed to send invitation(s). Please try again.");
+            }
         },
     });
 
     const handleSubmit = () => {
         if (emails.length === 0) return;
+        setSkipped([]);
         mutate(emails);
     };
 
     const handleClose = () => {
         if (isPending) return;
         setEmails([]);
+        setSkipped([]);
         onClose();
     };
 
@@ -92,8 +105,21 @@ export default function InviteMemberModal({ open, onClose }: Props) {
                         label="Email addresses"
                         placeholder="colleague@company.com"
                     />
-                    <p style={{ fontSize: "12px", color: "#9ca3af" }}>Press Enter, Space, Tab or comma to add each email.</p>
+                    <p style={{ fontSize: "12px", color: "#9ca3af" }}>Press Enter, Space, Tab or Comma to add each email.</p>
                 </div>
+
+                {skipped.length > 0 && (
+                    <div className="rounded-md bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800">
+                        <p className="font-medium mb-1.5">Some invites were sent successfully, but others failed. Please review the list below and try again for the ones that didn't go through:</p>
+                        <ul className="list-disc list-inside space-y-0.5">
+                            {skipped.map(({ email, reason }) => (
+                                <li key={email}>
+                                    <span className="font-medium">{email}</span> — {reason}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
                 <DialogFooter className="mt-4">
                     <SaysoButton

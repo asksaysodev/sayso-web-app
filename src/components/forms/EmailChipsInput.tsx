@@ -1,4 +1,4 @@
-import { useRef, useState, KeyboardEvent } from "react";
+import { useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
 import { LuX } from "react-icons/lu";
 import "./styles/emailChipsInput.css";
 import { useAuth } from "@/context/AuthContext";
@@ -58,6 +58,37 @@ export default function EmailChipsInput({ chips, onChange, disabled, placeholder
         }
     };
 
+    const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+        const pasted = e.clipboardData.getData("text");
+        const parts = pasted.split(/[\n\r\t,;]+/).map((p) => p.trim()).filter(Boolean);
+
+        if (parts.length <= 1 && !pasted.includes(",")) return;
+
+        e.preventDefault();
+        const newChips = [...chips];
+        let firstError: string | null = null;
+
+        for (const part of parts) {
+            const email = part.toLowerCase();
+            if (!EMAIL_REGEX.test(email)) {
+                if (!firstError) firstError = `"${email}" is not a valid email`;
+                continue;
+            }
+            if (newChips.includes(email)) continue;
+            if (globalUser?.email && email === globalUser.email.trim().toLowerCase()) {
+                if (!firstError) firstError = "You can't invite yourself";
+                continue;
+            }
+            newChips.push(email);
+        }
+
+        if (newChips.length > chips.length) {
+            onChange(newChips);
+            setInputValue("");
+        }
+        setError(firstError);
+    };
+
     const handleBlur = () => {
         if (inputValue.trim()) {
             tryAddChip(inputValue);
@@ -93,6 +124,7 @@ export default function EmailChipsInput({ chips, onChange, disabled, placeholder
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
+                    onPaste={handlePaste}
                     onBlur={handleBlur}
                     placeholder={chips.length === 0 ? placeholder : ""}
                     disabled={disabled}
