@@ -1,4 +1,4 @@
-import { useRef, useState, KeyboardEvent, ClipboardEvent } from "react";
+import { useRef, useState, useMemo, KeyboardEvent, ClipboardEvent } from "react";
 import { LuX } from "react-icons/lu";
 import "./styles/emailChipsInput.css";
 import { useAuth } from "@/context/AuthContext";
@@ -18,7 +18,8 @@ export default function EmailChipsInput({ chips, onChange, disabled, placeholder
     const [error, setError] = useState<string | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const { globalUser } = useAuth();
-    
+    const currentUserEmail = useMemo(() => globalUser?.email?.trim().toLowerCase(), [globalUser?.email]);
+
     const tryAddChip = (raw: string) => {
         const email = raw.trim().toLowerCase();
         if (!email) return;
@@ -32,8 +33,8 @@ export default function EmailChipsInput({ chips, onChange, disabled, placeholder
             setError("Email already added");
             return;
         }
-        
-        if (globalUser?.email && email === globalUser.email.trim().toLowerCase()) {
+
+        if (currentUserEmail && email === currentUserEmail) {
             setError("You can't invite yourself");
             return;
         }
@@ -75,7 +76,7 @@ export default function EmailChipsInput({ chips, onChange, disabled, placeholder
                 continue;
             }
             if (newChips.includes(email)) continue;
-            if (globalUser?.email && email === globalUser.email.trim().toLowerCase()) {
+            if (currentUserEmail && email === currentUserEmail) {
                 if (!firstError) firstError = "You can't invite yourself";
                 continue;
             }

@@ -79,7 +79,7 @@
 }
 
 .email-chips-input::placeholder {
-    color: #9ca3af;
+    color: var(--sayso-placeholder);
 }
 
 .email-chips-input-error {
