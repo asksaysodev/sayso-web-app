@@ -1,5 +1,6 @@
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { LuLoader } from "react-icons/lu";
 import {
     Dialog,
@@ -9,15 +10,11 @@ import {
     DialogDescription,
     DialogFooter,
 } from "@/components/ui/dialog";
-import ControlledInputField from "@/components/forms/ControlledInputField";
 import SaysoButton from "@/components/SaysoButton";
-import sendTeamInvite from "../services/sendTeamInvite";
+import EmailChipsInput from "@/components/forms/EmailChipsInput";
+import sendTeamInvite, { SkippedInvite, SendTeamInviteResponse } from "../services/sendTeamInvite";
 import { useToast } from "@/context/ToastContext";
 import { OrganizationMembersResponse } from "@/types/user";
-
-interface FormValues {
-    email: string;
-}
 
 interface Props {
     open: boolean;
@@ -27,46 +24,66 @@ interface Props {
 export default function InviteMemberModal({ open, onClose }: Props) {
     const { showToast } = useToast();
     const queryClient = useQueryClient();
-
-    const { control, handleSubmit, reset } = useForm<FormValues>({
-        defaultValues: { email: "" },
-    });
+    const [emails, setEmails] = useState<string[]>([]);
+    const [skipped, setSkipped] = useState<SkippedInvite[]>([]);
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (email: string) => sendTeamInvite(email),
-        onMutate: (email) => {
-            const tempId = `optimistic-${Date.now()}`;
-            queryClient.setQueryData<OrganizationMembersResponse>(['get-organization-members'], (prev) => {
+        mutationFn: (emails: string[]) => sendTeamInvite(emails),
+        onMutate: (emails) => {
+            const tempIds = emails.map((email) => ({
+                email,
+                id: `optimistic-${Date.now()}-${email}`,
+            }));
+            queryClient.setQueryData(['get-organization-members'], (prev: OrganizationMembersResponse | undefined) => {
                 if (!prev) return prev;
                 return {
                     ...prev,
-                    invites: [...prev.invites, { id: tempId, email, name: '', lastname: '', status: 'pending', invited_by: '', expires_at: '' }],
+                    invites: [
+                        ...prev.invites,
+                        ...tempIds.map(({ id, email }) => ({
+                            id, email, name: '', lastname: '', status: 'pending' as const, invited_by: '', expires_at: '',
+                        })),
+                    ],
                 };
             });
-            return { tempId };
+            return { tempIds };
         },
-        onSuccess: () => {
+        onSuccess: (data: SendTeamInviteResponse) => {
             queryClient.invalidateQueries({ queryKey: ['get-organization-members'] });
-            showToast("success", "Invitation sent successfully.");
-            reset();
-            onClose();
+            setEmails([]);
+            if (data.skipped.length > 0) {
+                setSkipped(data.skipped);
+            } else {
+                const count = data.invites.length;
+                showToast("success", count === 1 ? "Invitation sent successfully." : `${count} invitations sent successfully.`);
+                onClose();
+            }
         },
-        onError: (_err, _email, context) => {
-            queryClient.setQueryData<OrganizationMembersResponse>(['get-organization-members'], (prev) => {
+        onError: (err: AxiosError<{ error: string; skipped?: SkippedInvite[] }>, _emails, context) => {
+            queryClient.setQueryData(['get-organization-members'], (prev: OrganizationMembersResponse | undefined) => {
                 if (!prev) return prev;
-                return { ...prev, invites: prev.invites.filter(i => i.id !== context?.tempId) };
+                const tempIdSet = new Set(context?.tempIds.map((t) => t.id));
+                return { ...prev, invites: prev.invites.filter((i) => !tempIdSet.has(i.id)) };
             });
-            showToast("error", "Failed to send invitation. Please try again.");
+            const skippedFromError = err.response?.data?.skipped;
+            if (skippedFromError && skippedFromError.length > 0) {
+                setSkipped(skippedFromError);
+            } else {
+                showToast("error", "Failed to send invitation(s). Please try again.");
+            }
         },
     });
 
-    const onSubmit = ({ email }: FormValues) => {
-        mutate(email);
+    const handleSubmit = () => {
+        if (emails.length === 0) return;
+        setSkipped([]);
+        mutate(emails);
     };
 
     const handleClose = () => {
         if (isPending) return;
-        reset();
+        setEmails([]);
+        setSkipped([]);
         onClose();
     };
 
@@ -74,52 +91,57 @@ export default function InviteMemberModal({ open, onClose }: Props) {
         <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Invite Team Member</DialogTitle>
+                    <DialogTitle>Invite Team Member{emails.length > 1 ? "s" : ""}</DialogTitle>
                     <DialogDescription>
-                        Enter an email address to send an invitation to your organization.
+                        Enter one or more email addresses to invite to your organization.
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="py-2">
-                        <ControlledInputField
-                            name="email"
-                            control={control}
-                            label="Email address"
-                            placeholder="colleague@company.com"
-                            type="email"
-                            rules={{
-                                required: "Email is required",
-                                pattern: {
-                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                    message: "Please enter a valid email address",
-                                },
-                            }}
-                            disabled={isPending}
-                        />
-                    </div>
+                <div className="py-2 flex flex-col gap-1.5">
+                    <EmailChipsInput
+                        chips={emails}
+                        onChange={setEmails}
+                        disabled={isPending}
+                        label="Email addresses"
+                        placeholder="colleague@company.com"
+                    />
+                    <p style={{ fontSize: "12px", color: "#9ca3af" }}>Press Enter, Space, Tab or Comma to add each email.</p>
+                </div>
 
-                    <DialogFooter className="mt-4">
-                        <SaysoButton
-                            type="button"
-                            label="Cancel"
-                            variant="outlined"
-                            size="sm"
-                            fullWidth={false}
-                            onClick={handleClose}
-                            disabled={isPending}
-                        />
-                        <SaysoButton
-                            type="submit"
-                            label={isPending ? "Sending..." : "Send Invite"}
-                            variant="sayso-indigo"
-                            size="sm"
-                            fullWidth={false}
-                            icon={isPending ? <LuLoader className="animate-spin" /> : undefined}
-                            disabled={isPending}
-                        />
-                    </DialogFooter>
-                </form>
+                {skipped.length > 0 && (
+                    <div className="rounded-md bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800">
+                        <p className="font-medium mb-1.5">Some invites were sent successfully, but others failed. Please review the list below and try again for the ones that didn't go through:</p>
+                        <ul className="list-disc list-inside space-y-0.5">
+                            {skipped.map(({ email, reason }) => (
+                                <li key={email}>
+                                    <span className="font-medium">{email}</span> — {reason}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+                <DialogFooter className="mt-4">
+                    <SaysoButton
+                        type="button"
+                        label="Cancel"
+                        variant="outlined"
+                        size="sm"
+                        fullWidth={false}
+                        onClick={handleClose}
+                        disabled={isPending}
+                    />
+                    <SaysoButton
+                        type="button"
+                        label={isPending ? "Sending..." : emails.length > 1 ? `Send ${emails.length} Invites` : "Send Invite"}
+                        variant="sayso-indigo"
+                        size="sm"
+                        fullWidth={false}
+                        icon={isPending ? <LuLoader className="animate-spin" /> : undefined}
+                        disabled={isPending || emails.length === 0}
+                        onClick={handleSubmit}
+                    />
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     );
