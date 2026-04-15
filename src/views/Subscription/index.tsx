@@ -18,7 +18,7 @@ export default function Subscription() {
 		queryKey: ['subscription-plans'],
 		queryFn: getSubscriptionPlans
 	})
-	console.log(subscriptionPlans, 'plan')
+	
 	return (
 		<ViewLayout title={hasSubscription ? "Subscription" : undefined} scrollable>
 			{hasSubscription
