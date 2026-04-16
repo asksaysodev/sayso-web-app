@@ -53,7 +53,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: Props) 
             TaskList,
             TaskItem.configure({ nested: true }),
             Link.configure({ openOnClick: false }),
-            Youtube.configure({ width: '100%', height: 'auto', nocookie: true }),
+            Youtube.configure({ width: 640, height: 360, nocookie: true }),
         ],
         content: value || '',
         editorProps: {
