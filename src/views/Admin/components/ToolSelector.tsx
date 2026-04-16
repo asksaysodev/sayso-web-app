@@ -27,6 +27,10 @@ const tools: { value: Tool, label: string }[] = [
       value: "subscription",
       label: "Subscription Admin",
     },
+    {
+      value: "notifications",
+      label: "Notifications",
+    },
     // {
     //   value: "cue-main-instructions",
     //   label: "Cue Main Instructions",
@@ -46,7 +50,7 @@ export default function ToolSelector({ selectedTool, setSelectedTool }: Props) {
                 variant="outline"
                 role="combobox"
                 aria-expanded={open}
-                className="w-full lg:w-[200px] justify-between !h-10"
+                className="w-full justify-between !h-10"
                 style={{ border: '1px solid var(--sayso-border)' }}
                 >
                 {selectedTool
@@ -55,7 +59,7 @@ export default function ToolSelector({ selectedTool, setSelectedTool }: Props) {
                 <ChevronsUpDown className="opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full lg:w-[200px] p-0">
+            <PopoverContent className="w-full p-0" align='start'>
                 <Command>
                 <CommandInput placeholder="Search a Tool..." className="h-9" />
                 <CommandList>
