@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LuPanelLeft } from 'react-icons/lu';
 import Sidebar from './Sidebar';
+import NotificationWidget from './NotificationWidget';
 
 import '../styles/Layout.css';
 
@@ -24,6 +25,7 @@ export default function Layout({ children }: Props) {
       </div>
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       {children}
+      <NotificationWidget />
     </div>
   );
 }

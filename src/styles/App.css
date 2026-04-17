@@ -46,7 +46,7 @@ code {
 
 button {
   background-color: transparent;
-  border: none;
+  /*border: none;*/
   cursor: pointer;
   padding: 0;
 }

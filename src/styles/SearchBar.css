@@ -1,8 +1,12 @@
 .search-bar {
     position: relative;
-    min-width: 400px;
+    min-width: 240px;
 }
-
+@media (min-width: 1023px) {
+    .search-bar {
+        min-width: 400px !important;
+    }
+}
 .search-bar-input-wrapper {
     width: 100%;
 }

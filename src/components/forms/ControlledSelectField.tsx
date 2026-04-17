@@ -13,24 +13,26 @@ interface Props {
     control: UseFormReturn<any>['control'];
     rules?: RegisterOptions;
     label?: string;
+    labelRequired?: boolean;
     placeholder?: string;
     options: SelectOption[];
     className?: string;
     disabled?: boolean;
 }
 
-export default function ControlledSelectField({ 
-    name, 
-    control, 
-    rules, 
-    label, 
+export default function ControlledSelectField({
+    name,
+    control,
+    rules,
+    label,
+    labelRequired,
     placeholder = "Select an option",
     options,
     className,
     disabled
 }: Props) {
     return (
-        <ControlledCustomFormField name={name} control={control} rules={rules} label={label}>
+        <ControlledCustomFormField name={name} control={control} rules={rules} label={label} required={labelRequired}>
             {({ field, fieldState: { error } }) => (
                 <Select
                     onValueChange={field.onChange}
