@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CreatedNotification } from "../../types";
+import { CreatedNotification } from "@/types/notifications";
 import { STATUS_CONFIG } from "./helpers/adminConfig";
 import { getStatus } from "./helpers/getStatus";
 import { deleteNotification, updateNotification } from "../../services/notificationService";
 import { MoreHorizontal, Trash2, PauseCircle, PlayCircle, Eye } from 'lucide-react';
+import DOMPurify from 'dompurify';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import {
@@ -14,12 +15,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { getYouTubeEmbedUrl } from "./helpers/getYoutubeEmbedUrl";
-import { isFileVideo } from "./helpers/isFileVideo";
+import NotificationMediaItem from '@/components/NotificationWidget/components/NotificationMediaItem';
 import NotificationExpandedViewer from "@/components/NotificationWidget/components/NotificationExpandedViewer";
 
 export default function NotificationCard({ notification }: { notification: CreatedNotification }) {
-    const { title, description, type, media_url } = notification;
+    const { title, description, type, media_url, body } = notification;
     const status = getStatus(notification);
     const { label, dot, badge } = STATUS_CONFIG[status];
     const isInactive = status !== 'active';
@@ -41,22 +41,6 @@ export default function NotificationCard({ notification }: { notification: Creat
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['get-notifications-bulk'] }),
     });
 
-    const renderMedia = () => {
-        if (!media_url || media_url.length === 0) return null;
-        const firstUrl = media_url[0];
-        const youtubeEmbed = getYouTubeEmbedUrl(firstUrl);
-        if (youtubeEmbed) return (
-            <iframe
-                src={youtubeEmbed}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-            />
-        );
-        if (isFileVideo(firstUrl)) return (
-            <video src={firstUrl} muted playsInline />
-        );
-        return <img src={firstUrl} alt={title} referrerPolicy="no-referrer" />;
-    }
 
     return (
         <>
@@ -124,7 +108,7 @@ export default function NotificationCard({ notification }: { notification: Creat
 
                 {type === 'media' && media_url && media_url.length > 0 && (
                     <div className="nc-media">
-                        {renderMedia()}
+                        <NotificationMediaItem url={media_url[0]} title={title} />
                         {media_url.length > 1 && (
                             <span className="nc-media-count">{media_url.length} items</span>
                         )}
@@ -133,8 +117,8 @@ export default function NotificationCard({ notification }: { notification: Creat
 
                 {type === 'article' && (
                     <div className="nc-article">
-                        {notification.body
-                            ? <div className="nc-article-body" dangerouslySetInnerHTML={{ __html: notification.body }} />
+                        {body
+                            ? <div className="nc-article-body" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(body) }} />
                             : <p className="nc-article-empty">No content yet.</p>
                         }
                     </div>

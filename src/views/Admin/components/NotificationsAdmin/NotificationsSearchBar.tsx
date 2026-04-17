@@ -1,5 +1,5 @@
 import SearchBar, { SearchFilterConfig } from '@/components/ui/search-bar';
-import { NotificationActiveFilter } from '../../types';
+import { NotificationActiveFilter } from '@/types/notifications';
 import { useNotificationsAdmin } from './NotificationsAdminContext';
 import NotificationFilterPill from './NotificationFilterPill';
 

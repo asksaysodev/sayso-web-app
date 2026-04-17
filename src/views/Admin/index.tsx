@@ -9,10 +9,10 @@ import CueSignals from './components/CueSignals';
 import ImportSheetButton from './components/ImportSheetButton';
 import SheetVersionSelector from './components/SheetVersionSelector';
 import SubscriptionAdmin from './components/SubscriptionAdmin';
-import CreateNotificationButton from './components/NotificactionsAdmin/CreateNotificationButton';
-import { NotificationsAdminProvider } from './components/NotificactionsAdmin/NotificationsAdminContext';
-import NotificationsSearchBar from './components/NotificactionsAdmin/NotificationsSearchBar';
-import NotificationsAdmin from './components/NotificactionsAdmin';
+import CreateNotificationButton from './components/NotificationsAdmin/CreateNotificationButton';
+import { NotificationsAdminProvider } from './components/NotificationsAdmin/NotificationsAdminContext';
+import NotificationsSearchBar from './components/NotificationsAdmin/NotificationsSearchBar';
+import NotificationsAdmin from './components/NotificationsAdmin';
 
 export default function Admin() {
     const selectedTool = useAdminStore(state => state.selectedTool);

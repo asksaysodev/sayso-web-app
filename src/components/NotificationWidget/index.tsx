@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { CreatedNotification } from '@/views/Admin/types';
+import { CreatedNotification } from '@/types/notifications';
 import { LuBellRing, LuX, LuExpand, LuShrink, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import './styles.css';
 import SaysoButton from '../SaysoButton';
@@ -15,10 +15,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import NotificationsHistoryBtnMenubar from './components/NotificationsHistoryBtnMenubar';
 
 export default function NotificationWidget() {
-    const { globalUser, isSuperAdmin } = useAuth();
-    const isAdmin = false;
+    const { globalUser } = useAuth();
     const isMobile = useMediaQuery('(max-width: 768px)');
-    const { userNotifications, isLoading, mutateDismissNotification } = useNotificationWidget();
+    const { userNotifications, isLoading, mutateDismissNotification } = useNotificationWidget({
+        onDismissError: (id) => setLocalDismissedIds(prev => prev.filter(i => i !== id)),
+    });
 
     const [isCollapsed, setIsCollapsed] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -73,8 +74,6 @@ export default function NotificationWidget() {
 
     const hideFooter = useMemo(() => !(notification?.remindable) && total <= 1, [notification, total])
     
-    if (isAdmin) return null;
-
     if (isLoading || visibleNotifications.length === 0) {
         if (historyNotification) {
             if (isMobile) {

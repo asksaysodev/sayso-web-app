@@ -1,7 +1,7 @@
 import { LuX, LuChevronDown } from 'react-icons/lu';
 import { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { NotificationActiveFilter, NotificationStatus, NotificationType } from '../../types';
+import { NotificationActiveFilter, NotificationStatus, NotificationType } from '@/types/notifications';
 
 const STATUS_OPTIONS: (NotificationStatus | 'all')[] = ['all', 'active', 'paused', 'expired'];
 const TYPE_OPTIONS: NotificationType[] = ['media', 'article'];

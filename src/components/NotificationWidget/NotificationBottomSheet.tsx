@@ -4,7 +4,7 @@ import { Drawer, DrawerContent, DrawerPortal } from '@/components/ui/drawer';
 import SaysoButton from "../SaysoButton";
 import { DialogTitle } from "@/components/ui/dialog";
 import NotificationContent from "./components/NotificationContent";
-import { CreatedNotification } from "@/views/Admin/types";
+import { CreatedNotification } from "@/types/notifications";
 
 interface Props {
     notification: CreatedNotification;
@@ -28,6 +28,11 @@ export function NotificationBottomSheet({ notification, currentIndex, total, onD
     const handleDismiss = () => {
         setOpen(false);
         onDismiss();
+    };
+
+    const handleRemindLater = () => {
+        setOpen(false);
+        onRemindLater();
     };
 
     return (
@@ -60,7 +65,7 @@ export function NotificationBottomSheet({ notification, currentIndex, total, onD
                                 icon={<LuBellRing />}
                                 variant='outlined'
                                 fullWidth
-                                onClick={onRemindLater}
+                                onClick={handleRemindLater}
                             />
                         )}
                         {total > 1 && (

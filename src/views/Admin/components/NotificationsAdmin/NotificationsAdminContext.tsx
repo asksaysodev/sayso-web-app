@@ -1,12 +1,7 @@
 import { createContext, useContext, useState, useMemo, Dispatch, SetStateAction, ReactNode } from 'react';
-import { CreatedNotification, NotificationActiveFilter, NotificationStatus } from '../../types';
+import { CreatedNotification, NotificationActiveFilter } from '@/types/notifications';
+import { getStatus } from './helpers/getStatus';
 import useAdminNotifications from '../../hooks/useAdminNotifications';
-
-function getStatus(n: CreatedNotification): NotificationStatus {
-    if (n.expires_at && new Date(n.expires_at) < new Date()) return 'expired';
-    if (!n.active) return 'paused';
-    return 'active';
-}
 
 interface NotificationsAdminContextValue {
     searchText: string;
@@ -21,12 +16,12 @@ interface NotificationsAdminContextValue {
 const NotificationsAdminContext = createContext<NotificationsAdminContextValue | null>(null);
 
 export function NotificationsAdminProvider({ children }: { children: ReactNode }) {
-    const { notificationsbulk, isLoading, isRefetching } = useAdminNotifications();
+    const { notifications, isLoading, isRefetching } = useAdminNotifications();
     const [searchText, setSearchText] = useState('');
     const [activeFilters, setActiveFilters] = useState<NotificationActiveFilter[]>([]);
 
     const filteredNotifications = useMemo(() => {
-        let result = notificationsbulk ?? [];
+        let result = notifications ?? [];
 
         if (searchText.trim()) {
             const q = searchText.toLowerCase();
@@ -46,7 +41,7 @@ export function NotificationsAdminProvider({ children }: { children: ReactNode }
         }
 
         return result;
-    }, [notificationsbulk, searchText, activeFilters]);
+    }, [notifications, searchText, activeFilters]);
 
     return (
         <NotificationsAdminContext.Provider value={{

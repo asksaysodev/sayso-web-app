@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -23,7 +23,7 @@ import ControlledCustomFormField from "@/components/forms/ControlledCustomFormFi
 import RichTextEditor from "@/components/RichTextEditor";
 
 import { createNotification } from "../../services/notificationService";
-import { NotificationType } from "../../types";
+import { NotificationType } from "@/types/notifications";
 import { cn } from "@/lib/utils";
 
 interface CreateNotificationForm {
@@ -52,7 +52,8 @@ const DEFAULT_VALUES: CreateNotificationForm = {
 
 export default function CreateNotificationButton() {
     const [open, setOpen] = useState(false);
-    const [extraUrls, setExtraUrls] = useState<string[]>([]);
+    const [extraUrls, setExtraUrls] = useState<{ id: number; value: string }[]>([]);
+    const nextIdRef = useRef(0);
     const queryClient = useQueryClient();
 
     const { control, handleSubmit, watch, reset, setValue } = useForm<CreateNotificationForm>({
@@ -64,7 +65,7 @@ export default function CreateNotificationButton() {
     const { mutate: create, isPending } = useMutation({
         mutationFn: (data: CreateNotificationForm) => {
             const allUrls = data.type === 'media'
-                ? [data.media_url, ...extraUrls].map(u => u.trim()).filter(Boolean)
+                ? [data.media_url, ...extraUrls.map(e => e.value)].map(u => u.trim()).filter(Boolean)
                 : null;
             return createNotification({
                 title: data.title,
@@ -144,18 +145,18 @@ export default function CreateNotificationButton() {
                                     placeholder="YouTube link, video or image URL"
                                     rules={{ required: 'Media URL is required' }}
                                 />
-                                {extraUrls.map((url, i) => (
-                                    <div key={i} className="flex items-center gap-2">
+                                {extraUrls.map((entry) => (
+                                    <div key={entry.id} className="flex items-center gap-2">
                                         <input
                                             type="text"
-                                            value={url}
-                                            onChange={e => setExtraUrls(prev => prev.map((u, j) => j === i ? e.target.value : u))}
+                                            value={entry.value}
+                                            onChange={e => setExtraUrls(prev => prev.map(u => u.id === entry.id ? { ...u, value: e.target.value } : u))}
                                             placeholder="YouTube link, video or image URL"
                                             className="flex-1 px-3 py-[10px] border border-[var(--sayso-border)] rounded-md text-sm bg-white transition-colors hover:border-[var(--sayso-indigo)] focus:border-[var(--sayso-indigo)] focus:outline-none"
                                         />
                                         <button
                                             type="button"
-                                            onClick={() => setExtraUrls(prev => prev.filter((_, j) => j !== i))}
+                                            onClick={() => setExtraUrls(prev => prev.filter(u => u.id !== entry.id))}
                                             className="p-1 text-zinc-400 hover:text-zinc-700 transition-colors"
                                         >
                                             <X size={15} />
@@ -164,7 +165,7 @@ export default function CreateNotificationButton() {
                                 ))}
                                 <button
                                     type="button"
-                                    onClick={() => setExtraUrls(prev => [...prev, ''])}
+                                    onClick={() => setExtraUrls(prev => [...prev, { id: ++nextIdRef.current, value: '' }])}
                                     className="flex items-center gap-1 text-xs text-[var(--sayso-indigo)] hover:opacity-80 transition-opacity w-fit"
                                 >
                                     <Plus size={13} /> Add another URL

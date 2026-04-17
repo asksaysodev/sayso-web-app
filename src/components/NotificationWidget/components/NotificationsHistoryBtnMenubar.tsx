@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/menubar"
 import useDismissedNotifications from "../hooks/useDismissedNotifications";
 import { BookOpen } from 'lucide-react'
-import { CreatedNotification } from '@/views/Admin/types';
+import { CreatedNotification } from '@/types/notifications';
 
 interface Props {
     onOpen: (notification: CreatedNotification) => void;

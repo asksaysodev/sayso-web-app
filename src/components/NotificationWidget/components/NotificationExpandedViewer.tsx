@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { CreatedNotification } from '@/views/Admin/types';
+import { CreatedNotification } from '@/types/notifications';
 import NotificationContent from './NotificationContent';
 
 interface Props {

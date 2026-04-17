@@ -1,5 +1,5 @@
 import apiClient from "@/config/axios";
-import { CreatedNotification } from "@/views/Admin/types";
+import { CreatedNotification } from "@/types/notifications";
 
 export default async function getDismissedNotifications(): Promise<CreatedNotification[]> {
     const response = await apiClient.get(`/notifications/dismissed`);

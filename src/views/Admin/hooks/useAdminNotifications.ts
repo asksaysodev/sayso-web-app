@@ -3,13 +3,13 @@ import { getNotificationsAdmin } from "../services/notificationService"
 
 export default function useAdminNotifications() {
     
-    const { data: notificationsbulk, isLoading, isRefetching } = useQuery({
+    const { data: notifications, isLoading, isRefetching } = useQuery({
         queryKey: ['get-notifications-bulk'],
         queryFn: getNotificationsAdmin
     })
-    
+
     return {
-        notificationsbulk,
+        notifications,
         isLoading,
         isRefetching,
     }

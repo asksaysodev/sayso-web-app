@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
-import { CreatedNotification } from '@/views/Admin/types';
-import { getYouTubeEmbedUrl } from '@/views/Admin/components/NotificactionsAdmin/helpers/getYoutubeEmbedUrl';
-import { isFileVideo } from '@/views/Admin/components/NotificactionsAdmin/helpers/isFileVideo';
+import { CreatedNotification } from '@/types/notifications';
+import NotificationMediaItem from './NotificationMediaItem';
 
 export default function NotificationContent({ notification }: { notification: CreatedNotification }) {
     const { type, media_url, title, body } = notification;
@@ -13,25 +13,10 @@ export default function NotificationContent({ notification }: { notification: Cr
     if (type === 'media' && media_url && media_url.length > 0) {
         const currentUrl = media_url[mediaIndex];
         const total = media_url.length;
-        const youtubeEmbed = getYouTubeEmbedUrl(currentUrl);
-
-        const renderItem = () => {
-            if (youtubeEmbed) return (
-                <iframe
-                    src={youtubeEmbed}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                />
-            );
-            if (isFileVideo(currentUrl)) return (
-                <video src={currentUrl} muted playsInline controls />
-            );
-            return <img src={currentUrl} alt={title} referrerPolicy="no-referrer" />;
-        };
 
         return (
             <div className="nw-media">
-                {renderItem()}
+                <NotificationMediaItem url={currentUrl} title={title} />
                 {total > 1 && (
                     <div className="nw-pagination nw-media-pagination">
                         <button
@@ -59,7 +44,7 @@ export default function NotificationContent({ notification }: { notification: Cr
         return (
             <div className="nw-article">
                 {body
-                    ? <div className="nw-article-body" dangerouslySetInnerHTML={{ __html: body }} />
+                    ? <div className="nw-article-body" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(body) }} />
                     : <p className="nw-article-empty">No content yet.</p>
                 }
             </div>

@@ -1,4 +1,4 @@
-import { CreatedNotification } from '@/views/Admin/types';
+import { CreatedNotification } from '@/types/notifications';
 
 const WELCOME_DONE_KEY = 'nw_welcome_done_at';
 const WELCOME_DELAY_MS = 24 * 60 * 60 * 1000; // 24 hours
