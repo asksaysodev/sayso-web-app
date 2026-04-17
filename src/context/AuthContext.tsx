@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useRef } from 'react'
+import { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react'
 import { supabase } from '../config/supabase'
 import { useAccounts } from '../hooks/useAccounts'
 import { useLocation } from 'react-router-dom'
@@ -25,6 +25,7 @@ interface AuthContextValue {
   verifyMFA: (code: string) => Promise<{ success: boolean; error: MFAServiceError | null }>;
   clearMFARequired: () => void;
   checkIfNeedsMFA: (currentLevel: AALLevel | null | undefined, nextLevel: AALLevel | null | undefined) => boolean;
+  isSuperAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextValue>({} as AuthContextValue)
@@ -32,7 +33,7 @@ const AuthContext = createContext<AuthContextValue>({} as AuthContextValue)
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const [globalUser, setGlobalUser] = useState(null)
+  const [globalUser, setGlobalUser] = useState<Account | null>(null)
   const [authToken, setAuthToken] = useState<string | null>(null)
   const [userLoading, setUserLoading] = useState(true)
   const prevUserRef = useRef<User | null>(null)
@@ -244,7 +245,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signIn = async (data: SignInData): Promise<AuthResult> => {
     return await supabase.auth.signInWithPassword(data) as AuthResult
   }
-
+  
+  const isSuperAdmin = useMemo(() => globalUser ? globalUser?.role === 'superadmin' : false ,[globalUser]);
+  
   const values = {
     signUp,
     signIn,
@@ -262,6 +265,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     verifyMFA,
     clearMFARequired,
     checkIfNeedsMFA,
+    isSuperAdmin
   } as AuthContextValue;
 
   return (

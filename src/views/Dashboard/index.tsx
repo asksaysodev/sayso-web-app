@@ -7,16 +7,14 @@ import useRefreshDashboardData from "./hooks/useRefreshDashboardData";
 
 export default function Dashboard() {
     const { refreshDashboardData } = useRefreshDashboardData();
-    
     return (
-		<ViewLayout
-	        title='My Dashboard' 
-			scrollable 
-			right={<ViewLayoutRefreshButton 
-			onClick={refreshDashboardData}/>}
-		>
-			<InformativeCardsContainer />
-			<InsightsContainer />
-		</ViewLayout>
-  	)
+        <ViewLayout
+            title='My Dashboard'
+            scrollable
+            right={<ViewLayoutRefreshButton onClick={refreshDashboardData}/>}
+        >
+            <InformativeCardsContainer />
+            <InsightsContainer />
+        </ViewLayout>
+    )
 }

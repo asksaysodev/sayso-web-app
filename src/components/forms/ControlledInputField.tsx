@@ -11,6 +11,7 @@ interface Props extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>,
     label?: string;
     labelCn?: string;
     labelColor?: string;
+    labelRequired?: boolean;
     placeholder?: string;
     type?: HTMLInputTypeAttribute;
     step?: string | number;
@@ -25,6 +26,7 @@ export default function ControlledInputField({
     label,
     labelCn,
     labelColor,
+    labelRequired,
     placeholder,
     type = 'text',
     step,
@@ -35,7 +37,7 @@ export default function ControlledInputField({
     const isNumberInput = type === 'number';
 
     return (
-        <ControlledCustomFormField name={name} control={control} rules={rules} label={label} labelCn={labelCn} labelColor={labelColor}>
+        <ControlledCustomFormField name={name} control={control} rules={rules} label={label} labelCn={labelCn} labelColor={labelColor} required={labelRequired}>
             {({ field, fieldState: {error: fieldError} }) => (
                 <div className="controlledInputFieldGroup">
                     {rightChildren ? (

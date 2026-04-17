@@ -32,7 +32,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const [showSignOutModal, setShowSignOutModal] = useState(false);
-    const { globalUser, handleSignOut } = useAuth();
+    const { globalUser, handleSignOut, isSuperAdmin } = useAuth();
     const hasSubscription = useHasSubscription();
 
     const subjectValue = encodeURIComponent(`Sayso App Support Request - ${globalUser?.email ?? '{user email}'}`);
@@ -70,7 +70,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                             </div>
                         </NavLink>
                     }
-                    {globalUser?.isAdmin && (
+                    {isSuperAdmin && (
                         <NavLink to="/admin" onClick={onClose}>
                             <div className="outline"></div>
                             <div className='sidebar-nav-item'>
