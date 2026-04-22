@@ -21,6 +21,7 @@ const AcceptInvite = lazy(() => import('./views/AcceptInvite'));
 import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
 import useUserNotAdminOnTeams from './hooks/useUserNotAdminOnTeams';
+import Download from './views/Download';
 
 
 export default function AppRoutes() {
@@ -103,6 +104,12 @@ export default function AppRoutes() {
                                     : <Subscription />
                             }
                         </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/download"
+                    element={
+                        <Download />
                     }
                 />
                 <Route
