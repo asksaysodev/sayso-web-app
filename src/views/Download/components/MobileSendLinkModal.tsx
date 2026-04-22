@@ -92,7 +92,7 @@ export default function MobileSendLinkModal({ open, onOpenChange, defaultEmail =
                         className="h-11 text-base rounded-lg focus-visible:ring-2 focus-visible:ring-[#2367EE] focus-visible:ring-offset-2"
                         disabled={status === 'loading'}
                     />
-                    {status === 'success' && (
+                    {status === 'success' && cooldown > 0 && (
                         <p className="text-xs text-muted-foreground">
                             Link sent! Check your inbox. You can try again in {cooldown}s.
                         </p>
@@ -106,12 +106,7 @@ export default function MobileSendLinkModal({ open, onOpenChange, defaultEmail =
                         className="w-full h-12 rounded-xl text-white text-[15px] font-semibold flex items-center justify-center transition-colors disabled:cursor-not-allowed"
                         style={{ backgroundColor: isDisabled ? '#9ca3af' : '#2367EE' }}
                     >
-                        {status === 'loading'
-                            ? <ButtonSpinner size={18} />
-                            : cooldown > 0
-                                ? `Try again in ${cooldown}s`
-                                : 'Send me the Link'
-                        }
+                        {status === 'loading' ? <ButtonSpinner size={18} /> : 'Send me the Link'}
                     </button>
                     <DialogClose asChild>
                         <button className="w-full text-sm text-muted-foreground py-1">
