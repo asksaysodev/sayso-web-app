@@ -8,7 +8,7 @@ export default function useUserNotAdminOnTeams(): boolean {
     const { globalUser } = useAuth();
     return useMemo(() =>
         globalUser?.account_type === 'team' &&
-        (globalUser?.role !== 'admin' && globalUser?.role !== 'superadmin'),
+        (globalUser?.role !== 'admin' && globalUser?.role !== 'superadmin'), 
         [globalUser]
     );
 }
