@@ -49,9 +49,3 @@
     line-height: 1.5;
 }
 
-.checkout-redirect-text {
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--sayso-lightgray);
-    margin: 0 0 8px 0;
-}
