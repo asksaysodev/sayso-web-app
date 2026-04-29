@@ -3,11 +3,13 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { LuX } from "react-icons/lu";
 import SaysoLoader from "../../components/SaysoLoader";
 import SaysoButton from "../../components/SaysoButton";
+import useIsTeamAdmin from "@/hooks/useIsTeamAdmin";
 import "./styles.css";
 
 export default function Checkout() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const isTeamAdmin = useIsTeamAdmin();
 
     const successParam = searchParams.get("success");
     const success = successParam === null ? null : successParam === "true";
@@ -16,9 +18,9 @@ export default function Checkout() {
         if (success === null) {
             navigate("/", { replace: true });
         } else if (success === true) {
-            navigate("/download", { replace: true });
+            navigate(isTeamAdmin ? "/settings?tab=company" : "/download", { replace: true });
         }
-    }, [success, navigate]);
+    }, [success, isTeamAdmin, navigate]);
 
     if (success !== false) {
         return (

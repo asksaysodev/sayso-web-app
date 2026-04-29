@@ -1,14 +1,22 @@
 import SaysoModal from "@/components/SaysoModal";
 import SettingsTabs from "./components/SettingsTabs";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ViewLayout from "@/components/layouts/ViewLayout";
 import "./styles.css";
 import { SettingsPanel, SettingsPanelEnum } from "./types";
 import SettingsActivePanelContainer from "./components/SettingsActivePanelContainer";
 
+const VALID_PANELS = Object.values(SettingsPanelEnum) as string[];
+
 export default function Settings() {
+	const [searchParams] = useSearchParams();
 	const [showUnsavedChangesModal, setShowUnsavedChangesModal] = useState(false);
-    const [selectedPanel, setSelectedPanel] = useState<SettingsPanel>(SettingsPanelEnum.PERSONAL);
+    const tabParam = searchParams.get("tab");
+    const initialPanel = tabParam && VALID_PANELS.includes(tabParam)
+        ? tabParam as SettingsPanel
+        : SettingsPanelEnum.PERSONAL;
+    const [selectedPanel, setSelectedPanel] = useState<SettingsPanel>(initialPanel);
     const [nextPanel, setNextPanel] = useState<SettingsPanel | null>(null);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     
