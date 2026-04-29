@@ -40,7 +40,7 @@ export default function Download() {
                 }
 
                 <div className='download-vh-title'>
-                    <img src='/assets/tray-icon44Template.png' alt="Sayso Icon" className='download-vh-icon' />
+                    <img src='/assets/white_iso.svg' alt="Sayso Icon" className='download-vh-icon' />
                     <span>Download Sayso for Mac</span>
                 </div>
             </div>

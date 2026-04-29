@@ -22,7 +22,7 @@ export default function DownloadOptionCard({ title, description, icon, recommend
     return (
         <div className={`download-option${recommended ? ' download-option--recommended' : ''}`}>
             {recommended && (
-                <span className='chip-recommended-badge'>Recommended for your Mac</span>
+                <span className='chip-recommended-badge'>Recommended for your Mac</span> 
             )}
 
             <div className='chip-card-header'>
