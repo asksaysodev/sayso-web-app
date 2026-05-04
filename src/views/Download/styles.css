@@ -60,7 +60,7 @@
 /* Cards */
 .download-options-container {
     display: flex;
-    gap: 24px;
+    gap: 52px;
     justify-content: center;
     margin-top: -60px;
     padding: 0 20px;
