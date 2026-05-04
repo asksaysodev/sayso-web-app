@@ -1,0 +1,326 @@
+.download-view-wrapper {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Blue header */
+.download-vh {
+    background-color: var(--sayso-blue);
+    width: 100%;
+    height: 38vh;
+    border-radius: 0 0 28px 28px;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 20px 60px;
+}
+
+.download-vh-dashboard-btn {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-left: -10px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.download-vh-dashboard-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+.download-vh-title {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #fff;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.download-vh-icon {
+    width: 64px;
+    height: 64px;
+    filter: brightness(0) invert(1);
+}
+
+/* Cards */
+.download-options-container {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-top: -60px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.download-option {
+    background-color: #fff;
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 16px;
+    padding: 28px 20px 22px;
+    gap: 30px;
+    box-shadow: var(--sayso-card-shadow);
+    border: 1px solid var(--sayso-border);
+    position: relative;
+}
+
+.download-option--recommended {
+    border-color: var(--sayso-blue);
+}
+
+.chip-recommended-badge {
+    position: absolute;
+    top: -10px;
+	right: 20px;
+    display: inline-flex;
+    align-items: center;
+    background-color: #eff6ff;
+    color: var(--sayso-blue);
+    border: 1px solid #bfdbfe;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+}
+
+.chip-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.chip-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    background-color: #f3f4f6;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.download-option .chip-title {
+    color: var(--sayso-dark);
+    font-weight: 700;
+    font-size: 19px;
+    text-align: center;
+}
+
+.download-option .chip-description {
+    color: #4b5563;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.6;
+    flex: 1;
+}
+
+.download-option .chip-download-btn {
+    width: 100%;
+    background-color: var(--sayso-blue);
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.15s ease;
+}
+
+.download-option .chip-download-btn:hover {
+    opacity: 0.88;
+}
+
+/* Body */
+.download-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 52px;
+    padding: 60px 20px 40px;
+}
+
+.download-unsure-link {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--sayso-dark);
+    margin: 0;
+    text-align: center;
+}
+
+.download-unsure-link span {
+    color: var(--sayso-blue);
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.download-meta {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.download-meta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0 32px;
+}
+
+.download-meta-label {
+    font-size: 13px;
+    color: #9ca3af;
+    font-weight: 400;
+}
+
+.download-meta-value {
+    font-size: 15px;
+    color: var(--sayso-dark);
+    font-weight: 500;
+}
+
+.download-meta-divider {
+    width: 1px;
+    height: 36px;
+    background-color: var(--sayso-border);
+}
+
+.download-support {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #9ca3af;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Mobile card row — hidden on desktop */
+.chip-mobile-header {
+    display: none;
+}
+
+.chip-mobile-download-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--sayso-dark);
+    display: flex;
+    align-items: center;
+}
+
+/* ── 768px and below ── */
+@media (max-width: 768px) {
+    .download-vh {
+        height: auto;
+        padding: 16px 16px 80px;
+        border-radius: 0 0 0px 0px;
+    }
+
+    .download-vh-title {
+        font-size: 24px;
+        padding: 16px 0 8px;
+        text-align: center;
+    }
+
+    .download-options-container {
+        flex-direction: column;
+        align-items: stretch;
+        margin-top: -60px;
+        padding: 0 16px;
+        gap: 16px;
+    }
+
+    .download-option {
+        width: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    /* hide desktop-only elements */
+    .chip-icon-wrapper,
+    .chip-title-desktop,
+    .chip-download-btn {
+        display: none;
+    }
+
+    /* show mobile header row */
+    .chip-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .chip-mobile-header .chip-title {
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .download-option .chip-description {
+        text-align: left;
+        font-size: 15px;
+        color: #4b5563;
+    }
+
+    .download-unsure-link {
+        display: none;
+    }
+
+    .download-meta {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        padding: 0 16px;
+        gap: 12px;
+    }
+
+    .download-meta-divider {
+        display: none;
+    }
+
+    .download-meta-item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0;
+    }
+
+    .download-meta-label {
+        font-size: 14px;
+    }
+
+    .download-meta-value {
+        font-size: 15px;
+        font-weight: 500;
+    }
+}
