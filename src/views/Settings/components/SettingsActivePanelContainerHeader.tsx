@@ -27,9 +27,9 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
             title: 'Security',
             description: 'Manage security settings for your account'
         },
-        [SettingsPanelEnum.COACH]: {
-            title: 'Coach',
-            description: 'Customize Coach sessions'
+        [SettingsPanelEnum.REFERRAL]: {
+            title: 'Referrals',
+            description: 'Share Sayso with friends and earn rewards'
         }
     }
 
