@@ -811,6 +811,17 @@
     font-size: 14px;
 }
 
+.settings-referral-link-wrapper {
+    width: 100%;
+    max-width: 480px;
+}
+
+@media (max-width: 1023px) {
+    .settings-referral-link-wrapper {
+        max-width: 100%;
+    }
+}
+
 .settings-referral-retry-btn {
     background: none;
     border: none;

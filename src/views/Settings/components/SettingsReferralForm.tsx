@@ -37,6 +37,7 @@ export default function SettingsReferralForm() {
                 </div>
             )}
             {!isLoading && !isError && referralLink && (
+                <div className='settings-referral-link-wrapper'>
                 <div className='form-line-input-container editable'>
                     <input
                         type='text'
@@ -52,6 +53,7 @@ export default function SettingsReferralForm() {
                     >
                         {copied ? <LuCheck size={16} /> : <LuCopy size={16} />}
                     </button>
+                </div>
                 </div>
             )}
         </div>
