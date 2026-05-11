@@ -6,7 +6,7 @@ import SettingsFilesForm from "./SettingsFilesForm"
 import SettingsPersonalForm from "./SettingsPersonalForm";
 import SettingsActivePanelContainerHeader from "./SettingsActivePanelContainerHeader";
 import SettingsSecurity from "./SettingsSecurity";
-import SettingsCoachForm from "./SettingsCoachForm";
+import SettingsReferralForm from "./SettingsReferralForm";
 
 interface Props {
     selectedPanel: SettingsPanel;
@@ -34,8 +34,8 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
             case "security": return (
                 <SettingsSecurity />
             )
-            case "coach": return (
-                <SettingsCoachForm />
+            case "referral": return (
+                <SettingsReferralForm />
             )
         }
     }
