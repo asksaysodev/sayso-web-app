@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/react"
 import { Account, AuthResult, SignInData, SignUpData, User } from '@/types/user'
 import { AALLevel, MFAServiceError } from '@/types/supabaseMFA'
 import { getAAL, listFactors, verifyTOTPCode } from '@/services/mfaServices'
+import { enrollReferralParticipant } from '@/services/referralRocket'
 import type { Factor } from '@supabase/supabase-js'
 
 interface AuthContextValue {
@@ -38,6 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userLoading, setUserLoading] = useState(true)
   const prevUserRef = useRef<User | null>(null)
   const accountCreationRef = useRef<Promise<void> | null>(null)
+  const enrolledEmailRef = useRef<string | null>(null)
   const location = useLocation()
   const [mfaRequired, setMfaRequired] = useState(false)
   const [currentAAL, setCurrentAAL] = useState<AALLevel | null>(null)
@@ -192,6 +194,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
           const account = await getAccount(user.email)
           updateGlobalUserState(account)
+          if (account.email !== enrolledEmailRef.current) {
+            enrolledEmailRef.current = account.email;
+            enrollReferralParticipant({ email: account.email, fName: account.name ?? undefined, lName: account.lastname ?? undefined }).catch(err => Sentry.captureException(err));
+          }
           Sentry.setUser({
             id: account?.id,
             email: account?.email,
@@ -238,6 +244,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } finally {
           accountCreationRef.current = null;
       }
+      enrollReferralParticipant({ email, fName: name, lName: lastname }).catch(err => Sentry.captureException(err));
     }
     return result
   }

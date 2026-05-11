@@ -30,7 +30,7 @@ export default function useLoginForm() {
   const { signIn, signUp, checkIfNeedsMFA } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const signupParam = searchParams.get("signup");
-  const shouldShowSignUp = signupParam === null ? null : signupParam === "true";
+  const shouldShowSignUp = signupParam === "true" || !!searchParams.get("referralCode");
 
   const customResolver = (values: LoginFormData) => {
     let errors = {};

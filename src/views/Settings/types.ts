@@ -1,6 +1,6 @@
 import { AccountStatus } from "@/types/user";
 
-export type SettingsPanel = 'personal' | 'company' | 'files' | 'connections' | 'security' | 'coach';
+export type SettingsPanel = 'personal' | 'company' | 'files' | 'connections' | 'security' | 'referral';
 
 export type MemberStatusFilterValue = AccountStatus;
 export type MemberStatusFilter = { key: 'status'; value: MemberStatusFilterValue };
@@ -11,15 +11,5 @@ export enum SettingsPanelEnum {
     FILES = 'files',
     CONNECTIONS = 'connections',
     SECURITY = 'security',
-    COACH = 'coach'
-}
-
-export interface PostBufferTimeResponse {
-    success: true;
-    insight_buffer_time_ms: number;
-}
-
-export interface GetCoachSettingsResponse {
-    account_id: string;
-    insight_buffer_time_ms: number;
+    REFERRAL = 'referral'
 }

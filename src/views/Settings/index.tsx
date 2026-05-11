@@ -6,15 +6,19 @@ import ViewLayout from "@/components/layouts/ViewLayout";
 import "./styles.css";
 import { SettingsPanel, SettingsPanelEnum } from "./types";
 import SettingsActivePanelContainer from "./components/SettingsActivePanelContainer";
+import useCanAccessReferrals from "@/hooks/useCanAccessReferrals";
 
 const VALID_PANELS = Object.values(SettingsPanelEnum) as string[];
 
 export default function Settings() {
 	const [searchParams] = useSearchParams();
 	const [showUnsavedChangesModal, setShowUnsavedChangesModal] = useState(false);
+    const canAccessReferrals = useCanAccessReferrals();
     const tabParam = searchParams.get("tab");
     const initialPanel = tabParam && VALID_PANELS.includes(tabParam)
-        ? tabParam as SettingsPanel
+        ? (tabParam === SettingsPanelEnum.REFERRAL && !canAccessReferrals
+            ? SettingsPanelEnum.PERSONAL
+            : tabParam as SettingsPanel)
         : SettingsPanelEnum.PERSONAL;
     const [selectedPanel, setSelectedPanel] = useState<SettingsPanel>(initialPanel);
     const [nextPanel, setNextPanel] = useState<SettingsPanel | null>(null);

@@ -1,7 +1,8 @@
-import { LuUser, LuFileScan, LuBuilding, LuUnplug, LuLock, LuBot } from 'react-icons/lu';
+import { LuUser, LuFileScan, LuBuilding, LuUnplug, LuLock, LuGift } from 'react-icons/lu';
 import TabSelector from '../../../components/TabSelector';
 import '../../../components/TabSelector.css';
 import { SettingsPanel, SettingsPanelEnum } from '../types';
+import useCanAccessReferrals from '@/hooks/useCanAccessReferrals';
 
 const ICON_SIZE = 18;
 
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function SettingsTabs({ onSelectPanel, selectedPanel }: Props) {
+    const canAccessReferrals = useCanAccessReferrals();
     const tabs = [
         {
             icon: <LuUser size={ICON_SIZE} />,
@@ -40,9 +42,10 @@ export default function SettingsTabs({ onSelectPanel, selectedPanel }: Props) {
             value: SettingsPanelEnum.SECURITY,
         },
         {
-            icon: <LuBot size={ICON_SIZE} />,
-            label: 'Coach',
-            value: SettingsPanelEnum.COACH,
+            icon: <LuGift size={ICON_SIZE} />,
+            label: 'Referrals',
+            value: SettingsPanelEnum.REFERRAL,
+            hidden: !canAccessReferrals,
         },
     ];
 
