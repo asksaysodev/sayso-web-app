@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/react';
+
 const POLL_INTERVAL_MS = 100;
 const POLL_MAX_ATTEMPTS = 50; // 5 seconds
 
@@ -16,20 +18,24 @@ function waitForRocketSDK(): Promise<void> {
   });
 }
 
+export async function getCampaign(): Promise<ReferralRocketCampaign> {
+  await waitForRocketSDK();
+  return window.Rocket!.getCampaign();
+}
+
 export async function enrollReferralParticipant(params: {
   email: string;
   fName?: string;
   lName?: string;
 }): Promise<void> {
-  await waitForRocketSDK();
-  const campaign = await window.Rocket!.getCampaign();
+  const campaign = await getCampaign();
   try {
     await campaign.addParticipant({
       email: params.email,
       fName: params.fName,
       lName: params.lName,
     });
-  } catch {
-    // participant already enrolled — not a real error
+  } catch (err) {
+    Sentry.captureException(err);
   }
 }
