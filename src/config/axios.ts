@@ -6,9 +6,18 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 	_retryCount?: number;
 	_retry?: boolean;
 }
-interface QueuedRequest {
-	resolve: (token: string | null) => void;
-	reject: (error: unknown) => void;
+
+// Returns true only when Supabase explicitly rejects the refresh token.
+// Network errors, 5xx, timeouts, and aborted requests return false — those
+// are transient and should never force a logout.
+function isTerminalAuthError(err: unknown): boolean {
+	if (!err || typeof err !== 'object') return false;
+	const e = err as Record<string, unknown>;
+	// AuthApiError from the Supabase SDK — explicit 400/401 from the auth server
+	if (e['name'] === 'AuthApiError' && (e['status'] === 400 || e['status'] === 401)) return true;
+	// AuthSessionMissingError — there was genuinely no session to refresh
+	if (e['name'] === 'AuthSessionMissingError') return true;
+	return false;
 }
 
 // Create axios instance with base configuration
@@ -22,14 +31,12 @@ apiClient.interceptors.request.use(
 	async (config) => {
 		const customConfig = config as CustomAxiosRequestConfig;
 
-		// Get the current session
 		const { data: { session } } = await supabase.auth.getSession();
 
 		if (session?.access_token) {
 			customConfig.headers.Authorization = `Bearer ${session.access_token}`;
 		}
 
-		// Add retry tracking
 		customConfig._retryCount = customConfig._retryCount || 0;
 
 		Sentry.addBreadcrumb({
@@ -50,22 +57,6 @@ apiClient.interceptors.request.use(
 		return Promise.reject(error);
 	}
 );
-
-// Queue to hold requests while refreshing token
-let isRefreshing = false;
-let failedQueue: QueuedRequest[] = [];
-
-const processQueue = (error: unknown, token: string | null = null): void => {
-	failedQueue.forEach((prom) => {
-		if (error) {
-			prom.reject(error);
-		} else {
-			prom.resolve(token);
-		}
-	});
-  
-	failedQueue = [];
-};
 
 // Response interceptor to handle 401 errors and retry logic
 apiClient.interceptors.response.use(
@@ -90,8 +81,8 @@ apiClient.interceptors.response.use(
 
 		return response;
 	},
-	async (error) => {
-		const originalRequest = error.config;
+	async (error: AxiosError) => {
+		const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
 
 		console.error('🌐 [API Error]', {
 			url: originalRequest?.url,
@@ -116,48 +107,38 @@ apiClient.interceptors.response.use(
 			}
 		});
 
-		// Handle 401 Unauthorized errors
-		if (error.response?.status === 401 && !originalRequest._retry) {
-			if (isRefreshing) {
-				return new Promise(function(resolve, reject) {
-					failedQueue.push({ resolve, reject });
-				}).then(token => {
-					originalRequest.headers['Authorization'] = 'Bearer ' + token;
-					return apiClient(originalRequest);
-				}).catch(err => {
-					return Promise.reject(err);
-				});
-			}
-
+		// Handle 401 — attempt a single token refresh, then retry the request.
+		// The Supabase SDK serializes concurrent refresh calls via navigator.locks,
+		// so we don't need a local isRefreshing queue here.
+		if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
 			originalRequest._retry = true;
-			isRefreshing = true;
 
 			try {
 				const { data, error: refreshError } = await supabase.auth.refreshSession();
-        
-				if (refreshError || !data.session) {
-					throw refreshError || new Error('No session returned after refresh');
-				}
 
-				const newToken = data.session.access_token;
-        
-				// Update the header for the original request
-				originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-        
-				// Process any queued requests
-				processQueue(null, newToken);
-        
+				if (refreshError) throw refreshError;
+				if (!data.session) throw new Error('No session returned after refresh');
+
+				originalRequest.headers['Authorization'] = `Bearer ${data.session.access_token}`;
 				return apiClient(originalRequest);
 			} catch (refreshError) {
-				processQueue(refreshError, null);
-        
-				// Dispatch session expired event so AuthContext can handle it
-				const event = new CustomEvent('auth:session-expired');
-				window.dispatchEvent(event);
-        
+				if (isTerminalAuthError(refreshError)) {
+					// The session is genuinely dead — tell the app to log out.
+					Sentry.captureException(refreshError);
+					window.dispatchEvent(new CustomEvent('auth:session-expired'));
+				} else {
+					// Transient error (network blip, 5xx, timeout). The session is
+					// likely still valid — don't log the user out, just surface the error.
+					Sentry.addBreadcrumb({
+						category: 'auth.refresh',
+						message: 'Token refresh failed (transient)',
+						level: 'warning',
+						data: {
+							error: refreshError instanceof Error ? refreshError.message : String(refreshError)
+						}
+					});
+				}
 				return Promise.reject(refreshError);
-			} finally {
-				isRefreshing = false;
 			}
 		}
 
@@ -165,9 +146,10 @@ apiClient.interceptors.response.use(
 		if (
 			(error.code === 'ERR_NETWORK' || error.code === 'ERR_EMPTY_RESPONSE') &&
 			originalRequest &&
+			originalRequest._retryCount !== undefined &&
 			originalRequest._retryCount < 3
 		) {
-			originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
+			originalRequest._retryCount += 1;
 
 			console.log(`🔄 [API Retry] Attempt ${originalRequest._retryCount}/3 for ${originalRequest.url}`);
 
@@ -183,9 +165,7 @@ apiClient.interceptors.response.use(
 				}
 			});
 
-			// Wait before retrying (exponential backoff)
-			await new Promise(resolve => setTimeout(resolve, 1000 * originalRequest._retryCount));
-
+			await new Promise(resolve => setTimeout(resolve, 1000 * originalRequest._retryCount!));
 			return apiClient(originalRequest);
 		}
 
