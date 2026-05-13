@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useRef, useMemo } from 
 import { supabase } from '../config/supabase'
 import { useAccounts } from '../hooks/useAccounts'
 import { useLocation } from 'react-router-dom'
+import { useSessionRevalidation } from '../hooks/useSessionRevalidation'
 import * as Sentry from "@sentry/react"
 import { Account, AuthResult, SignInData, SignUpData, User } from '@/types/user'
 import { AALLevel, MFAServiceError } from '@/types/supabaseMFA'
@@ -46,6 +47,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [mfaFactors, setMfaFactors] = useState<Factor[]>([])
 
   const { createAccount, getAccount } = useAccounts()
+
+  useSessionRevalidation()
 
   // Wrapper function to handle localStorage updates
   const updateGlobalUserState = (newGlobalUser: any) => { // $FixTS
@@ -152,21 +155,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return
     }
 
-    // Check active sessions and sets the user
+    // Belt-and-suspenders bootstrap — also handled by INITIAL_SESSION below,
+    // but this ensures loading=false even if the event fires before the
+    // subscription is set up.
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user as User | null)
       prevUserRef.current = session?.user as User | null
       setLoading(false)
     })
 
-    // Listen for changes on auth state (sign in, sign out, etc.)
+    // Subscribed once on mount and never re-subscribed. Re-subscribing on every
+    // navigation created a gap where SDK events (TOKEN_REFRESHED, SIGNED_OUT)
+    // could fire between unsubscribe and resubscribe and be silently dropped.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-
-      // Only update state for actual auth events
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
-        // Prevent unnecessary state updates if the user hasn't actually changed
+      // INITIAL_SESSION always sets loading=false regardless of user change,
+      // since it is the SDK's boot event and loading must unblock.
+      if (event === 'INITIAL_SESSION') {
         const newUser = session?.user as User | null
-        // For token refresh, we might just need to update the token even if user is same
+        setUser(newUser)
+        prevUserRef.current = newUser
+        setAuthToken(session?.access_token ?? null)
+        setLoading(false)
+        return
+      }
+
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
+        const newUser = session?.user as User | null
         if (event === 'TOKEN_REFRESHED' || JSON.stringify(newUser) !== JSON.stringify(prevUserRef.current)) {
           setUser(newUser)
           prevUserRef.current = newUser
@@ -177,7 +191,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     })
 
     return () => subscription.unsubscribe()
-  }, [location])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | undefined;
