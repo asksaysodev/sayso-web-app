@@ -18,9 +18,6 @@ export default function SettingsReferralForm() {
 
     return (
         <div className='settings-referral'>
-            <p className='settings-referral-description'>
-                Share your unique link and earn rewards when friends subscribe to Sayso.
-            </p>
             {isLoading && (
                 <div className='settings-referral-loading'>
                     <div className='team-members-loader' />

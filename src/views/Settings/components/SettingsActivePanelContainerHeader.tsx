@@ -29,7 +29,7 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
         },
         [SettingsPanelEnum.REFERRAL]: {
             title: 'Referrals',
-            description: 'Share Sayso with friends and earn rewards'
+            description: 'Share your unique link and earn rewards when friends subscribe to Sayso.'
         }
     }
 
