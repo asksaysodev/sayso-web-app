@@ -24,6 +24,7 @@ import useHasSubscription from '@/hooks/useHasSubscription';
 import DownloadDesktopAppButton from './DownloadDesktopAppButton';
 import useUserNotAdminOnTeams from '@/hooks/useUserNotAdminOnTeams';
 import LaunchCoachButton from './LaunchCoachButton';
+import { Store } from 'lucide-react';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -70,6 +71,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                             </div>
                         </NavLink>
                     }
+                    <NavLink to="/marketplace" onClick={onClose}>
+                        <div className="outline"></div>
+                        <div className='sidebar-nav-item'>
+                            <Store />
+                            <p>Marketplace</p>
+                        </div>
+                    </NavLink>
                     {isSuperAdmin && (
                         <NavLink to="/admin" onClick={onClose}>
                             <div className="outline"></div>
