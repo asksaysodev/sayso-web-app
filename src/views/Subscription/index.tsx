@@ -21,8 +21,7 @@ export default function Subscription() {
 		queryFn: getSubscriptionPlans
 	})
 
-	// const showSkeleton = isLoadingSubscriptionPlans || attributionPending;
-	const showSkeleton = true;
+	const showSkeleton = isLoadingSubscriptionPlans || attributionPending;
 
 	return (
 		<ViewLayout title={hasSubscription ? "Subscription" : undefined} scrollable>
