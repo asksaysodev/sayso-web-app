@@ -11,7 +11,7 @@ export default function SubscriptionPlansSkeleton() {
                 <div className="skeleton plans-skeleton-tab" />
             </div>
 
-            <div className="pricing-components-grid">
+            <div className="pricing-components-grid with-gap">
                 {[1, 2, 3].map((i) => (
                     <div key={i} className="pricing-card">
                         <div className="pricing-card-header">

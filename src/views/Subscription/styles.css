@@ -55,9 +55,11 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    /*gap: 24px;*/
     margin-top: 32px;
     width: 100%;
+}
+.pricing-components-grid.with-gap {
+    gap: 24px;
 }
 
 .pricing-components-grid > * {
