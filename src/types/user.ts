@@ -49,6 +49,7 @@ export interface Account {
   subscription_current_period_start?: string | null;
   account_type: AccountType;
   status: AccountStatus;
+  has_referral_discount?: boolean;
 }
 export interface OrgMemberInvite {
     email: string;

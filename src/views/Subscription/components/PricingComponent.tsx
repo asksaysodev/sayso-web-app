@@ -1,5 +1,6 @@
 import useHasSubscription from "@/hooks/useHasSubscription";
 import useStripeCheckout from "../hooks/useStripeCheckout";
+import { useAuth } from "@/context/AuthContext";
 import { BillingInterval, BillingIntervalEnum, PricingOption, PricingPlan } from "../types";
 import '../styles/PricingComponent.css';
 import { useEffect, useMemo, useState } from "react";
@@ -38,6 +39,8 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
     }, [selectedBillingTab]);
 
     const hasSubscription = useHasSubscription();
+    const { globalUser } = useAuth();
+    const hasReferralDiscount = !!globalUser?.has_referral_discount && !hasSubscription;
     const {  isPendingGetStripeCheckoutPageUrl, mutateGetStripeCheckoutPageUrl } = useStripeCheckout();
 
     const availablePackages = useMemo(() =>
@@ -101,6 +104,11 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                                     : `${includedHoursPerMonth} hours included`
                                 }
                             </div>
+                            {hasReferralDiscount && (
+                                <div className="referral-discount-badge">
+                                    🎉 $25 referral discount applied at checkout
+                                </div>
+                            )}
                         </>
                     )}
                 </div>
