@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../config/supabase'
 import { useAccounts } from '../hooks/useAccounts'
 import { useLocation } from 'react-router-dom'
@@ -48,6 +49,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [mfaFactors, setMfaFactors] = useState<Factor[]>([])
 
   const { createAccount, getAccount } = useAccounts()
+  const queryClient = useQueryClient()
 
   useSessionRevalidation()
 
@@ -267,6 +269,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const { referredByCode, referrerEmail } = await getParticipantReferrer(email);
           if (referredByCode && referrerEmail) {
             await setReferralAttribution({ referralCodeUsed: referredByCode, referrerEmail });
+            // Attribution saved — refresh account so has_referral_discount is true,
+            // then bust the plans cache so discountInCents re-fetches immediately.
+            await updateGlobalUser(email);
+            queryClient.invalidateQueries({ queryKey: ['subscription-plans'] });
           }
         } catch (err) {
           Sentry.captureException(err);
