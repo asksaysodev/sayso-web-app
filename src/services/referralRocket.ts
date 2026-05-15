@@ -23,6 +23,19 @@ export async function getCampaign(): Promise<ReferralRocketCampaign> {
   return window.Rocket!.getCampaign();
 }
 
+export async function getParticipantReferrer(email: string): Promise<{ referredByCode: string | null; referrerEmail: string | null }> {
+  try {
+    const campaign = await getCampaign();
+    const participant = await campaign.getParticipantDetail({ email });
+    const referredByCode = participant.referredByCode ?? null;
+    const referrerEmail = participant.referrerEmail || null;
+    return { referredByCode, referrerEmail };
+  } catch (err) {
+    Sentry.captureException(err);
+    return { referredByCode: null, referrerEmail: null };
+  }
+}
+
 export async function enrollReferralParticipant(params: {
   email: string;
   fName?: string;

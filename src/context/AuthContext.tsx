@@ -7,7 +7,8 @@ import * as Sentry from "@sentry/react"
 import { Account, AuthResult, SignInData, SignUpData, User } from '@/types/user'
 import { AALLevel, MFAServiceError } from '@/types/supabaseMFA'
 import { getAAL, listFactors, verifyTOTPCode } from '@/services/mfaServices'
-import { enrollReferralParticipant } from '@/services/referralRocket'
+import { enrollReferralParticipant, getParticipantReferrer } from '@/services/referralRocket'
+import { setReferralAttribution } from '@/services/setReferralAttribution'
 import type { Factor } from '@supabase/supabase-js'
 
 interface AuthContextValue {
@@ -258,7 +259,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } finally {
           accountCreationRef.current = null;
       }
-      enrollReferralParticipant({ email, fName: name, lName: lastname }).catch(err => Sentry.captureException(err));
+      // Fire-and-forget: enroll in RR then persist referral attribution if user was referred.
+      // Must not block signup or throw — failures are captured in Sentry.
+      (async () => {
+        try {
+          await enrollReferralParticipant({ email, fName: name, lName: lastname });
+          const { referredByCode, referrerEmail } = await getParticipantReferrer(email);
+          if (referredByCode && referrerEmail) {
+            await setReferralAttribution({ referralCodeUsed: referredByCode, referrerEmail });
+          }
+        } catch (err) {
+          Sentry.captureException(err);
+        }
+      })();
     }
     return result
   }

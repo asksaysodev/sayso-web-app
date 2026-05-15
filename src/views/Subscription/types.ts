@@ -75,6 +75,7 @@ export interface PricingPlan {
 export interface PricingOption {
   stripePriceId: string;
   priceInCents: number;
+  discountInCents: number;
   currency: string;
   interval: string;
   includedMinutesPerMonth: number;
