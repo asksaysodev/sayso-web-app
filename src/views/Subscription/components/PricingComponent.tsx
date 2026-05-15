@@ -62,6 +62,16 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
         return centsToDollars(Math.min(...availablePackages.map(opt => opt.priceInCents)));
     }, [hasPackages, availablePackages]);
 
+    // Discount comes from the server (Stripe coupon amount_off), never hardcoded
+    const discountDollars = useMemo(() => {
+        if (!hasReferralDiscount) return 0;
+        const option = effectivePricingOption ?? pricingOptionSelected ?? availablePackages[0];
+        return (option?.discountInCents ?? 0) / 100;
+    }, [hasReferralDiscount, effectivePricingOption, pricingOptionSelected, availablePackages]);
+
+    const baseDisplayPrice = hasPackages && !packageSelected ? (startingPriceInDollars ?? 0) : priceInDollars;
+    const finalDisplayPrice = discountDollars > 0 ? Math.max(0, baseDisplayPrice - discountDollars) : baseDisplayPrice;
+
     const openOverlay = () => {
         setIsOverlayOpen(true);
     };
@@ -95,23 +105,38 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                     {purchasable && (
                         <>
                             <div className="price-row">
-                                <span className="price-amount">${formatPrice(hasPackages && !packageSelected ? startingPriceInDollars ?? 0 : priceInDollars)}</span>
+                                <span className="price-amount">${formatPrice(finalDisplayPrice)}</span>
                                 <span className="price-period">/ {selectedBillingTab}{hasPackages && !packageSelected ? '*' : ''}</span>
+                                {hasReferralDiscount && (
+                                    <span className="price-strike">${formatPrice(baseDisplayPrice)}</span>
+                                )}
                             </div>
                             <div className="hours-sub">
                                 {hasPackages && !packageSelected
-                                    ? `*plans start at $${formatPrice(startingPriceInDollars ?? 0)} / ${selectedBillingTab}`
+                                    ? `*plans start at $${formatPrice(finalDisplayPrice)} / ${selectedBillingTab}`
                                     : `${includedHoursPerMonth} hours included`
                                 }
                             </div>
-                            {hasReferralDiscount && (
-                                <div className="referral-discount-badge">
-                                    🎉 $25 referral discount applied at checkout
-                                </div>
-                            )}
                         </>
                     )}
                 </div>
+
+            {purchasable && discountDollars > 0 && (
+                <div className="savings-strip" role="status" aria-label={`${formatPrice(discountDollars)} dollars off applied at checkout`}>
+                    <div className="savings-strip-left">
+                        <div className="savings-strip-icon">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M3 7.2 5.8 10l5.2-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div className="savings-strip-title">Referral credit active</div>
+                            <div className="savings-strip-sub">${formatPrice(discountDollars)} off applied at checkout</div>
+                        </div>
+                    </div>
+                    <div className="savings-strip-amount">−${formatPrice(discountDollars)}</div>
+                </div>
+            )}
 
             {hasPackages
                 ? <div className="pkg-trigger-wrapper">
@@ -130,7 +155,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                             </div>
                             <div className="pkg-trigger-right">
                                 <span className="pkg-trigger-price">
-                                    {packageSelected ? `$${formatPrice(priceInDollars)}` : ''}
+                                    {packageSelected ? `$${formatPrice(priceInDollars - discountDollars)}` : ''}
                                 </span>
                                 <svg className="chevron" viewBox="0 0 18 18" fill="none">
                                     <path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -171,6 +196,20 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                     </button>
                 </div>
 
+                {hasReferralDiscount && (
+                    <div className="overlay-credit-bar">
+                        <div className="overlay-credit-bar-left">
+                            <div className="overlay-credit-icon">
+                                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                                    <path d="M3 7.2 5.8 10l5.2-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            </div>
+                            <span className="overlay-credit-text">Referral credit applied to every package</span>
+                        </div>
+                        <span className="overlay-credit-amount">−${formatPrice(discountDollars)}/mo</span>
+                    </div>
+                )}
+
                 <div className="tier-list">
                     {availablePackages.map((opt) => (
                         <div
@@ -186,7 +225,12 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                                     <div className="tier-hours">{opt.teamSize}</div>
                                 </div>
                             </div>
-                            <div className="tier-price-tag">${formatPrice(centsToDollars(opt.priceInCents))}</div>
+                            <div className="tier-price-col">
+                                <span className="tier-price-now">${formatPrice(centsToDollars(opt.priceInCents) - discountDollars)}</span>
+                                {discountDollars > 0 && (
+                                    <span className="tier-price-was">${formatPrice(centsToDollars(opt.priceInCents))}</span>
+                                )}
+                            </div>
                         </div>
                     ))}
                 </div>

@@ -321,7 +321,6 @@ body {
 
 .tier-agents { font-size: 13px; font-weight: 600; color: #0f172a; line-height: 1.2; margin-bottom: 4px; }
 .tier-hours { font-size: 12px; color: #8892a4; font-family: 'DM Mono', monospace;  }
-.tier-price-tag { font-size: 15px; font-weight: 700; color: #2e4a8f; font-family: 'DM Mono', monospace; }
 
 .overlay-footer {
   padding: 14px 16px;
@@ -428,15 +427,134 @@ body {
 }
 .minus-icon svg { width: 10px; height: 10px; }
 
-/* ── REFERRAL DISCOUNT BADGE ── */
-.referral-discount-badge {
-  margin-top: 10px;
-  padding: 7px 12px;
-  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-  border: 1.5px solid #86efac;
+/* ── PRICE STRIKE (inline strikethrough in price row) ── */
+.price-strike {
+  font-size: 20px;
+  font-weight: 500;
+  color: #b0bac8;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  align-self: flex-end;
+  padding-bottom: 8px;
+  margin-left: 2px;
+}
+
+/* ── SAVINGS STRIP (V3 inset green strip) ── */
+.savings-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 24px 0;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, #f4faf6 0%, #eef7f1 100%);
+  border: 1px solid #d8ebde;
+  border-radius: 12px;
+}
+
+.savings-strip-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.savings-strip-icon {
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
+  background: #0f7a4c;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.savings-strip-title {
   font-size: 13px;
   font-weight: 600;
-  color: #15803d;
-  text-align: center;
+  color: #0b1230;
+  line-height: 1.3;
+}
+
+.savings-strip-sub {
+  font-size: 12px;
+  color: #5a7a68;
+  margin-top: 1px;
+}
+
+.savings-strip-amount {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f7a4c;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+/* ── OVERLAY CREDIT BAR (package picker, team) ── */
+.overlay-credit-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 24px;
+  background: linear-gradient(180deg, #f4faf6 0%, #eef7f1 100%);
+  border-bottom: 1px solid #d8ebde;
+}
+
+.overlay-credit-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.overlay-credit-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #0f7a4c;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.overlay-credit-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0b1230;
+}
+
+.overlay-credit-amount {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f7a4c;
+  flex-shrink: 0;
+}
+
+/* ── TIER PRICE COLUMN (package rows with referral discount) ── */
+.tier-price-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.tier-price-now {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2e4a8f;
+  font-family: 'DM Mono', monospace;
+}
+
+.tier-price-was {
+  font-size: 11px;
+  font-weight: 500;
+  color: #b0bac8;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  font-family: 'DM Mono', monospace;
 }
