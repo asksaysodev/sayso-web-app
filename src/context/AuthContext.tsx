@@ -30,6 +30,7 @@ interface AuthContextValue {
   clearMFARequired: () => void;
   checkIfNeedsMFA: (currentLevel: AALLevel | null | undefined, nextLevel: AALLevel | null | undefined) => boolean;
   isSuperAdmin: boolean;
+  attributionPending: boolean;
 }
 
 const AuthContext = createContext<AuthContextValue>({} as AuthContextValue)
@@ -47,6 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [mfaRequired, setMfaRequired] = useState(false)
   const [currentAAL, setCurrentAAL] = useState<AALLevel | null>(null)
   const [mfaFactors, setMfaFactors] = useState<Factor[]>([])
+  const [attributionPending, setAttributionPending] = useState(false)
 
   const { createAccount, getAccount } = useAccounts()
   const queryClient = useQueryClient()
@@ -263,6 +265,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       // Fire-and-forget: enroll in RR then persist referral attribution if user was referred.
       // Must not block signup or throw — failures are captured in Sentry.
+      // attributionPending gates the subscription page so it shows skeletons until we know
+      // whether a discount applies, preventing a jarring card-to-discount-card flash.
+      setAttributionPending(true);
       (async () => {
         try {
           await enrollReferralParticipant({ email, fName: name, lName: lastname });
@@ -276,6 +281,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
         } catch (err) {
           Sentry.captureException(err);
+        } finally {
+          setAttributionPending(false);
         }
       })();
     }
@@ -305,7 +312,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     verifyMFA,
     clearMFARequired,
     checkIfNeedsMFA,
-    isSuperAdmin
+    isSuperAdmin,
+    attributionPending
   } as AuthContextValue;
 
   return (
