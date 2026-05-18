@@ -31,6 +31,8 @@ interface SidebarProps {
     onClose: () => void;
 }
 
+const SVG_FONT_SIZE = 18;
+
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const [showSignOutModal, setShowSignOutModal] = useState(false);
     const { globalUser, handleSignOut, isSuperAdmin } = useAuth();
@@ -58,7 +60,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <div className="sidebar-header">
                     <img src={logoHorizontal} alt="Sayso Logo" />
                     <button className="sidebar-close-btn" onClick={onClose} aria-label="Close menu">
-                        <LuPanelLeft size={18}/>
+                        <LuPanelLeft size={SVG_FONT_SIZE}/>
                     </button>
                 </div>
                 <div className='sidebar-nav-container'>
@@ -66,7 +68,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         <NavLink to="/" onClick={onClose}>
                             <div className="outline"></div>
                             <div className='sidebar-nav-item'>
-                                <LuUsers />
+                                <LuUsers size={SVG_FONT_SIZE}/>
                                 <p>Dashboard</p>
                             </div>
                         </NavLink>
@@ -74,7 +76,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <NavLink to="/marketplace" onClick={onClose}>
                         <div className="outline"></div>
                         <div className='sidebar-nav-item'>
-                            <Store />
+                            <Store size={SVG_FONT_SIZE}/>
                             <p>Marketplace</p>
                         </div>
                     </NavLink>
@@ -82,7 +84,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         <NavLink to="/admin" onClick={onClose}>
                             <div className="outline"></div>
                             <div className='sidebar-nav-item'>
-                                <LuShield />
+                                <LuShield size={SVG_FONT_SIZE}/>
                                 <p>Admin</p>
                             </div>
                         </NavLink>
@@ -90,7 +92,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <NavLink to="/settings" onClick={onClose}>
                         <div className="outline"></div>
                         <div className='sidebar-nav-item'>
-                            <LuSettings />
+                            <LuSettings size={SVG_FONT_SIZE}/>
                             <p>Settings</p>
                         </div>
                     </NavLink>
@@ -98,7 +100,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         <NavLink to="/subscription" onClick={onClose}>
                             <div className="outline"></div>
                             <div className='sidebar-nav-item'>
-                                <LuCreditCard />
+                                <LuCreditCard size={SVG_FONT_SIZE}/>
                                 <p>Subscription</p>
                             </div>
                         </NavLink>
