@@ -116,13 +116,22 @@ export default function TeamMembersTable() {
                 </DropdownMenuItem>
             )
             case "expired": return (
-                <DropdownMenuItem 
-                    className="team-member-action-resend" 
-                    onClick={() => handleResend(id)}
-                >
-                    <LuSend />
-                    Resend Invite
-                </DropdownMenuItem>
+                <>
+                    <DropdownMenuItem
+                        className="team-member-action-resend"
+                        onClick={() => handleResend(id)}
+                    >
+                        <LuSend />
+                        Resend Invite
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        className="team-member-action-remove"
+                        onClick={() => handleRevoke(id)}
+                    >
+                        <LuUserMinus />
+                        Remove
+                    </DropdownMenuItem>
+                </>
             )
             case "pending": return (
                 <DropdownMenuItem 
