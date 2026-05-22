@@ -5,6 +5,7 @@ import App from './App';
 import './index.css';
 import './styles/App.css';
 import './styles/Colors.css';
+import './styles/Skeleton.css';
 import * as Sentry from "@sentry/react";
 import { sentryConfig } from '@/config/sentry';
 
