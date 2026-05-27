@@ -34,7 +34,6 @@ export default function SettingsTabs({ onSelectPanel, selectedPanel }: Props) {
             icon: <LuUnplug size={ICON_SIZE} />,
             label: 'Connections',
             value: SettingsPanelEnum.CONNECTIONS,
-            hidden: true
         },
         {
             icon: <LuLock size={ICON_SIZE} />,

@@ -36,6 +36,7 @@ export interface Account {
   isAdmin?: boolean;
   role?: UserRole;
   slack_connected?: boolean;
+  fub_connected?: boolean;
   zoom_connected?: boolean;
   stripe_customer_id?: string | null;
   stripe_subscription_id?: string | null;

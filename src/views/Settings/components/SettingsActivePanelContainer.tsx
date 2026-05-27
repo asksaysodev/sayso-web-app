@@ -1,12 +1,12 @@
 import { useAuth } from "../../../context/AuthContext";
 import { SettingsPanel } from "../types";
 import SettingsCompanyForm from "./SettingsCompanyForm"
-import SettingsConnectionsForm from "./SettingsConnectionsForm"
 import SettingsFilesForm from "./SettingsFilesForm"
 import SettingsPersonalForm from "./SettingsPersonalForm";
 import SettingsActivePanelContainerHeader from "./SettingsActivePanelContainerHeader";
 import SettingsSecurity from "./SettingsSecurity";
 import SettingsReferralForm from "./SettingsReferralForm";
+import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsForm";
 
 interface Props {
     selectedPanel: SettingsPanel;
