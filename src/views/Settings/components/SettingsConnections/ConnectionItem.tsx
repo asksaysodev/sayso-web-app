@@ -15,7 +15,7 @@ interface Props {
     connected: boolean;
     connectedMeta?: string;
     handleConnection: () => void;
-    handleDisconnect?: () => void;
+    handleManage?: () => void;
 }
 
 export default function ConnectionItem({
@@ -27,6 +27,7 @@ export default function ConnectionItem({
     connected,
     connectedMeta,
     handleConnection,
+    handleManage,
 }: Props) {
     return (
         <div className={`connection-card${connected ? ' connection-card--connected' : ''}`}>
@@ -54,7 +55,7 @@ export default function ConnectionItem({
                                 <span className="connection-meta-hash">{connectedMeta}</span>
                             </span>
                         ) : <span />}
-                        <button className="connection-btn" onClick={() => {}}>
+                        <button className="connection-btn" onClick={handleManage}>
                             Manage
                             <span className="connection-btn-arr"><ArrowIcon /></span>
                         </button>
