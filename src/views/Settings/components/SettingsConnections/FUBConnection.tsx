@@ -1,6 +1,6 @@
 import ConnectionItem from "./ConnectionItem";
 import ManageConnectionModal from "./ManageConnectionModal";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { useFUB } from "@/hooks/useFUB";
@@ -55,27 +55,33 @@ export default function FUBConnection() {
         setFubConnected(globalUser?.fub_connected || false);
     }, [globalUser]);
 
-    // Handle the post-OAuth redirect: /settings?fub=connected|denied|error
+    // Handle the post-OAuth redirect: /settings?fub=connected|denied|error.
+    // Depends on globalUser so the updateGlobalUser call isn't skipped if
+    // AuthContext hasn't finished loading on first mount. The ref ensures
+    // we only process and clean the URL once.
+    const oauthHandled = useRef(false);
     useEffect(() => {
+        if (oauthHandled.current) return;
+
         const params = new URLSearchParams(window.location.search);
         const fubStatus = params.get('fub');
-        if (!fubStatus) return;
+        if (!fubStatus) { oauthHandled.current = true; return; }
 
         if (fubStatus === 'connected') {
+            if (!globalUser?.email) return; // wait for next render when user is loaded
+            oauthHandled.current = true;
             showToast('success', 'Follow Up Boss connected!');
-            if (globalUser?.email) updateGlobalUser(globalUser.email);
-        } else if (fubStatus === 'denied') {
-            showToast('warning', 'Follow Up Boss connection cancelled.');
-        } else if (fubStatus === 'error') {
-            showToast('error', 'Something went wrong connecting Follow Up Boss.');
+            updateGlobalUser(globalUser.email);
+        } else {
+            oauthHandled.current = true;
+            if (fubStatus === 'denied') showToast('warning', 'Follow Up Boss connection cancelled.');
+            else if (fubStatus === 'error') showToast('error', 'Something went wrong connecting Follow Up Boss.');
         }
 
         params.delete('fub');
         const next = params.toString();
-        const url = `${window.location.pathname}${next ? `?${next}` : ''}`;
-        window.history.replaceState({}, '', url);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        window.history.replaceState({}, '', `${window.location.pathname}${next ? `?${next}` : ''}`);
+    }, [globalUser]);
 
     return (
         <>

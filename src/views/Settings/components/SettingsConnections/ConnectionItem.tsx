@@ -30,7 +30,7 @@ export default function ConnectionItem({
     handleManage,
 }: Props) {
     return (
-        <div className={`connection-card${connected ? ' connection-card--connected' : ''}`}>
+        <div className="connection-card">
             <div className="connection-card-top">
                 {logoTile}
                 <div className="connection-card-top-info">

@@ -241,7 +241,6 @@
 }
 
 
-
 .connection-btn--danger {
     background: var(--sayso-destructive);
     color: #fff;
@@ -344,9 +343,3 @@
     to   { transform: rotate(360deg); }
 }
 
-/* ── Footer button group ── */
-.connection-foot-actions {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-}

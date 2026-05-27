@@ -38,9 +38,12 @@ export default function ManageConnectionModal({
     };
 
     const handleConfirm = async () => {
-        await onDisconnect();
-        setConfirming(false);
-        onClose();
+        try {
+            await onDisconnect();
+        } finally {
+            setConfirming(false);
+            onClose();
+        }
     };
 
     return (
