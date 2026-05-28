@@ -21,12 +21,6 @@
     transition: transform .18s cubic-bezier(.2,.7,.2,1), box-shadow .18s, border-color .18s;
 }
 
-.connection-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px -16px rgba(0, 0, 0, .14), 0 2px 4px rgba(0, 0, 0, .04);
-    border-color: #c8cdd9;
-}
-
 /* ── Request integration card ── */
 .connection-card--request {
     border-style: dashed;
@@ -146,22 +140,6 @@
     color: var(--sayso-success);
 }
 
-/* Ping ring on connected dot */
-.connection-status--connected .connection-status-dot::after {
-    content: "";
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: .25;
-    animation: connection-ping 2.2s ease-out infinite;
-}
-
-@keyframes connection-ping {
-    0%   { transform: scale(1); opacity: .4; }
-    80%, 100% { transform: scale(2.4); opacity: 0; }
-}
-
 .connection-status--disconnected {
     color: #9aa3b6;
     background: transparent;
@@ -245,6 +223,23 @@
 .connection-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.connection-btn--ghost {
+    border-color: transparent;
+    background: transparent;
+    color: var(--sayso-lightgray);
+    padding: 6px 4px;
+}
+
+.connection-btn--ghost:hover {
+    border-color: transparent;
+    background: transparent;
+    color: var(--sayso-darkgray);
+}
+
+.connection-btn--ghost:hover .connection-btn-arr {
+    transform: translateX(3px);
 }
 
 /* ── Manage modal ── */
