@@ -3,6 +3,8 @@ import './styles/App.css';
 import './styles/Dashboard.css';
 import Providers from './Providers';
 import AppRoutes from './AppRoutes';
+import StagingGuard from './components/guards/StagingGuard';
+import StagingBanner from './components/StagingBanner';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from './config/supabase';
@@ -76,8 +78,11 @@ function App() {
 
   return (
     <Providers>
+      <StagingBanner />
       <div className='App'>
-        <AppRoutes />
+        <StagingGuard>
+          <AppRoutes />
+        </StagingGuard>
       </div>
     </Providers>
   );
