@@ -13,7 +13,7 @@ export default function StagingGuard({ children }: Props) {
 
   if (user && user.app_metadata?.role !== 'admin') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 gap-4 p-8 text-center">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 gap-4 p-8 text-center w-full">
         <div className="w-full max-w-sm flex flex-col items-center gap-6">
           <div className="flex flex-col items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-widest text-amber-600 bg-amber-100 px-3 py-1 rounded-full">
