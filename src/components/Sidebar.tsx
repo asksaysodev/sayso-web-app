@@ -131,7 +131,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <Divider />
                 <div className='sidebar-footer-button' onClick={() => openExternal(HELP_CENTER_URL)}>
                     <LuCircleHelp />
-                    <p>Support</p>
+                    <p>Help Center</p>
                 </div>
                 <div className='sidebar-footer-button' onClick={() => setShowSignOutModal(true)}>
                     <LuLogOut />
