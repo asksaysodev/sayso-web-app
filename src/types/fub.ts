@@ -149,3 +149,27 @@ export interface FubLeadsResponse {
   leads: FubLead[];
   _metadata: FubLeadsMetadata;
 }
+
+// ── Note ───────────────────────────────────────────────────────────
+
+/** Created note returned by FUB `POST /v1/notes`. */
+export interface FubNote {
+  id: number;
+  personId: number;
+  subject: string;
+  body: string;
+  type: string;
+  isHtml: boolean;
+  isExternal: boolean;
+  showContent: boolean;
+  systemId: number;
+  systemName: string;
+  actionPlanId: number | null;
+  automationId: number | null;
+  createdBy: string;
+  createdById: number;
+  updatedBy: string;
+  updatedById: number;
+  created: string;
+  updated: string;
+}
