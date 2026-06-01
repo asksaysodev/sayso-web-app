@@ -39,7 +39,7 @@ export default function FUBConnection() {
         if (!globalUser) return;
         setIsDisconnecting(true);
         try {
-            await disconnectFUB(globalUser.id);
+            await disconnectFUB();
             setFubConnected(false);
             await updateGlobalUser(globalUser.email);
             showToast('success', 'Follow Up Boss disconnected successfully!');

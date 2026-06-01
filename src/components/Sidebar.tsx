@@ -32,6 +32,7 @@ interface SidebarProps {
 }
 
 const SVG_FONT_SIZE = 18;
+const HELP_CENTER_URL = "https://asksayso.notion.site/helpcenter"
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const [showSignOutModal, setShowSignOutModal] = useState(false);
@@ -128,9 +129,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     </div>
                 </div>
                 <Divider />
-                <div className='sidebar-footer-button' onClick={() => openExternal(`mailto:support@asksayso.com?subject=${subjectValue}&body=${bodyValue}`)}>
+                <div className='sidebar-footer-button' onClick={() => openExternal(HELP_CENTER_URL)}>
                     <LuCircleHelp />
-                    <p>Support</p>
+                    <p>Help Center</p>
                 </div>
                 <div className='sidebar-footer-button' onClick={() => setShowSignOutModal(true)}>
                     <LuLogOut />
