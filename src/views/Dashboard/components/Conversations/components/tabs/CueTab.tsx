@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { FaRegThumbsDown, FaRegThumbsUp, FaThumbsDown, FaThumbsUp } from 'react-icons/fa6';
 import { ConversationInsight } from '@/types/coach';
 import { InsightRating } from '../../../../types';
 import useUpdateConversationInsight from '../../hooks/useUpdateConversationInsight';
