@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { ConversationItem, LeadTypeFilter } from '@/types/coach';
+import { ConversationItem } from '@/types/coach';
 import SearchBar, { SearchFilterConfig } from '@/components/ui/search-bar';
 import FilterPill from '@/components/ui/filter-pill';
+import TextFilterPill from '@/components/ui/text-filter-pill';
 import useDebounce from '@/hooks/useDebounce';
 import getConversations from '../../services/getConversations';
 import InsightsCalendarPopover, { INITIAL_DATE_RANGE } from '../InsightsCalendarPopover';
@@ -11,17 +12,29 @@ import ConversationCollapsibleItem from './ConversationCollapsibleItem';
 import ConversationsListSkeleton from './ConversationsListSkeleton';
 import './styles/Conversations.css';
 
-type LeadTypeFilterConfig = {
-    key: 'lead_type';
-    value: LeadTypeFilter;
+interface ConversationFilter {
+    key: 'lead_type' | 'appointment_booked' | 'lead_name';
+    value: string;
 }
 
-const AVAILABLE_FILTERS: SearchFilterConfig<LeadTypeFilterConfig>[] = [
+const AVAILABLE_FILTERS: SearchFilterConfig<ConversationFilter>[] = [
     {
         key: 'lead_type',
         label: 'Lead type',
-        description: 'Filter by Lead type',
+        description: 'Filter by lead type',
         defaultValue: () => ({ key: 'lead_type', value: 'all' }),
+    },
+    {
+        key: 'appointment_booked',
+        label: 'Appointment',
+        description: 'Filter by appointment status',
+        defaultValue: () => ({ key: 'appointment_booked', value: 'all' }),
+    },
+    {
+        key: 'lead_name',
+        label: 'Lead name',
+        description: 'Search by client name',
+        defaultValue: () => ({ key: 'lead_name', value: '' }),
     },
 ];
 
@@ -29,7 +42,7 @@ export default function Conversations() {
     const [searchInputValue, setSearchInputValue] = useState('');
     const [dateRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>(INITIAL_DATE_RANGE);
     const [openedConversations, setOpenedConversations] = useState<string[]>([]);
-    const [activeFilters, setActiveFilters] = useState<LeadTypeFilterConfig[]>([]);
+    const [activeFilters, setActiveFilters] = useState<ConversationFilter[]>([]);
     const debouncedSearch = useDebounce(searchInputValue, 500);
 
     const {
@@ -93,6 +106,24 @@ export default function Conversations() {
                                         filter={filter}
                                         onUpdate={onUpdate}
                                         onRemove={onRemove}
+                                    />
+                                ),
+                                appointment_booked: (filter, onUpdate, onRemove) => (
+                                    <FilterPill
+                                        label="appointment"
+                                        options={['all', 'booked', 'not booked']}
+                                        filter={filter}
+                                        onUpdate={onUpdate}
+                                        onRemove={onRemove}
+                                    />
+                                ),
+                                lead_name: (filter, onUpdate, onRemove) => (
+                                    <TextFilterPill
+                                        label="lead name"
+                                        filter={filter}
+                                        onUpdate={onUpdate}
+                                        onRemove={onRemove}
+                                        placeholder="search by name…"
                                     />
                                 ),
                             }}
