@@ -2,6 +2,7 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 import { LuPlus, LuMinus, LuMapPin, LuUserPlus } from 'react-icons/lu';
 import { ConversationItem } from '@/types/coach';
+import type { CrmLead } from '@/hooks/integrations/crm/types';
 import LpmamaMeter from './components/LpmamaMeter';
 import LeadChip from './components/LeadChip';
 import Avatar from './components/Avatar';
@@ -9,6 +10,8 @@ import ConversationTabs, { ConversationTab } from './components/ConversationTabs
 import CueTab from './components/tabs/CueTab';
 import SmartCaptureTab from './components/tabs/SmartCaptureTab';
 import PulseTab from './components/tabs/PulseTab';
+import AddLeadDropdown from './components/AddLeadDropdown';
+import useAttachConversationLead from './hooks/useAttachConversationLead';
 import './styles/ConversationCollapsibleItem.css';
 
 interface Props {
@@ -19,6 +22,7 @@ interface Props {
 
 export default function ConversationCollapsibleItem({ conversation, isOpen, onToggle }: Props) {
     const [activeTab, setActiveTab] = useState<ConversationTab>('Cue');
+    const { attachLead } = useAttachConversationLead();
 
     const pulse = conversation.pulse ?? [];
     const city = pulse[0]?.city;
@@ -50,13 +54,17 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                                     {conversation.crm_lead_name}
                                 </span>
                             ) : (
-                                <button
-                                    className="conv-add-lead"
-                                    onClick={e => e.stopPropagation()}
-                                >
-                                    <LuUserPlus size={13} />
-                                    Add lead
-                                </button>
+                                <AddLeadDropdown
+                                    trigger={
+                                        <button className="conv-add-lead">
+                                            <LuUserPlus size={13} />
+                                            Add lead
+                                        </button>
+                                    }
+                                    onSelect={(lead: CrmLead) => {
+                                        attachLead({ conversationId: conversation.id, lead });
+                                    }}
+                                />
                             )
                         }
 

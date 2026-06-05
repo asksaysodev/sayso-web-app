@@ -1,0 +1,18 @@
+import { useAuth } from '@/context/AuthContext';
+import type { CrmConnection } from './types';
+
+export default function useCrmConnection(): CrmConnection {
+    const { globalUser } = useAuth();
+
+    if (!globalUser) {
+        return { isConnected: false, providerId: null, providerLabel: null };
+    }
+
+    if (globalUser.fub_connected) {
+        return { isConnected: true, providerId: 'fub', providerLabel: 'Follow Up Boss' };
+    }
+
+    // Add future providers here as they land
+
+    return { isConnected: false, providerId: null, providerLabel: null };
+}
