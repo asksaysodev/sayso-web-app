@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { LuPlus, LuMinus, LuMapPin } from 'react-icons/lu';
+import { SquarePen, UserPlus } from 'lucide-react';
 import { ConversationItem } from '@/types/coach';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
 import LpmamaMeter from './components/LpmamaMeter';
@@ -13,7 +14,6 @@ import PulseTab from './components/tabs/PulseTab';
 import AddLeadDropdown from './components/AddLeadDropdown';
 import useAttachConversationLead from './hooks/useAttachConversationLead';
 import './styles/ConversationCollapsibleItem.css';
-import { SquarePen, UserPlus } from 'lucide-react';
 
 interface Props {
     conversation: ConversationItem;
@@ -27,6 +27,8 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
 
     const pulse = conversation.pulse ?? [];
     const city = pulse[0]?.city;
+    const time = dayjs(conversation.created_at).format('h:mm A');
+    const date = dayjs(conversation.created_at).format('ddd, MMM D');
 
     return (
         <div className={`conv-item${isOpen ? ' conv-item-open' : ''}`}>
@@ -35,16 +37,21 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                 role="button"
                 tabIndex={0}
                 onClick={onToggle}
-                onKeyDown={e => e.key === 'Enter' || e.key === ' ' ? onToggle() : undefined}
+                onKeyDown={e => (e.key === 'Enter' || e.key === ' ') ? onToggle() : undefined}
             >
+                {/* Desktop-only left time column */}
                 <div className="conv-time-col">
-                    <span className="conv-time">{dayjs(conversation.created_at).format('h:mm A')}</span>
-                    <span className="conv-date">{dayjs(conversation.created_at).format('ddd, MMM D')}</span>
+                    <span className="conv-time">{time}</span>
+                    <span className="conv-date">{date}</span>
                 </div>
 
                 <div className="conv-main">
                     <div className="conv-summary">{conversation.summary ?? 'No summary available.'}</div>
                     <div className="conv-meta">
+                        {/* Mobile-only inline time — hidden on desktop */}
+                        <span className="conv-time-inline">{time} · {date}</span>
+                        <span className="conv-meta-sep conv-meta-sep--after-time" />
+
                         {conversation.lead_type && <LeadChip type={conversation.lead_type} />}
                         {conversation.lead_type && <span className="conv-meta-sep" />}
 
@@ -55,11 +62,11 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                                     <button className="conv-client-btn">
                                         <Avatar name={conversation.crm_lead_name} />
                                         {conversation.crm_lead_name}
-                                        <SquarePen size={11} className='conv-client-edit-icon'/>
+                                        <SquarePen size={11} className="conv-client-edit-icon" />
                                     </button>
                                 ) : (
                                     <button className="conv-add-lead">
-                                        <UserPlus size={13}/>
+                                        <UserPlus size={13} />
                                         Add lead
                                     </button>
                                 )
@@ -71,7 +78,8 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
 
                         {city && (
                             <>
-                                <span className="conv-meta-sep" />
+                                {/* Hidden on mobile — market goes on its own line via width:100% */}
+                                <span className="conv-meta-sep conv-meta-sep--before-market" />
                                 <span className="conv-market">
                                     <LuMapPin size={13} />
                                     {city}
@@ -81,12 +89,15 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                     </div>
                 </div>
 
-                <div className="conv-right">
+                {/* Meter: own flex item — drops to its own row on mobile */}
+                <div className="conv-meter-wrapper">
                     <LpmamaMeter smartCaptures={conversation.smart_captures ?? []} />
-                    <span className="conv-toggle">
-                        {isOpen ? <LuMinus size={17} /> : <LuPlus size={17} />}
-                    </span>
                 </div>
+
+                {/* Toggle: extracted so it stays top-right on mobile while meter wraps below */}
+                <span className="conv-toggle">
+                    {isOpen ? <LuMinus size={17} /> : <LuPlus size={17} />}
+                </span>
             </div>
 
             {isOpen && (

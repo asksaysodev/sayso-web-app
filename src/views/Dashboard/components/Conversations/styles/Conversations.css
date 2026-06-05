@@ -124,7 +124,7 @@
     animation: shimmer 2s ease-in-out infinite;
 }
 
-/* ===== Responsive ===== */
+/* ===== Responsive — tablet ===== */
 @media (max-width: 1280px) {
     .conversations-container {
         overflow: visible;
@@ -158,5 +158,28 @@
 
     .conversations-list-container {
         padding-top: 0;
+    }
+}
+
+/* ===== Responsive — mobile ===== */
+@media (max-width: 640px) {
+    .conversations-header {
+        padding: 14px 16px;
+        gap: 10px;
+    }
+
+    .conversations-header p {
+        font-size: 15px;
+    }
+
+    .conversations-header-right-content {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .conversations-search-row,
+    .conversations-filters-row {
+        width: 100%;
     }
 }

@@ -77,11 +77,25 @@
     color: var(--sayso-lightgray);
 }
 
+/* Mobile-only inline time — hidden on desktop */
+.conv-time-inline {
+    display: none;
+    font-size: 12px;
+    color: var(--sayso-placeholder);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
 .conv-meta-sep {
     width: 1px;
     height: 11px;
     background: var(--sayso-border);
     flex: none;
+}
+
+/* Hidden on mobile (market goes to its own line via width:100%) */
+.conv-meta-sep--after-time {
+    display: none;
 }
 
 .conv-client {
@@ -134,12 +148,12 @@
     white-space: nowrap;
 }
 
-/* right column */
-.conv-right {
+/* meter wrapper — standalone flex item so it can drop to its own row on mobile */
+.conv-meter-wrapper {
     flex: none;
     display: flex;
     align-items: flex-start;
-    gap: 14px;
+    padding-top: 1px;
 }
 
 .conv-toggle {
@@ -151,6 +165,7 @@
     color: var(--sayso-lightgray);
     transition: background 0.12s;
     flex: none;
+    margin-left: 14px;
 }
 
 .conv-head:hover .conv-toggle {
@@ -491,7 +506,7 @@
     text-align: left;
 }
 
-/* ===== Responsive ===== */
+/* ===== Responsive — tablet ===== */
 @media (max-width: 1280px) {
     .conv-head {
         padding: 14px 16px;
@@ -508,6 +523,81 @@
 
     .conv-sc-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .conv-pulse-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===== Responsive — mobile ===== */
+@media (max-width: 640px) {
+    /* Head becomes a wrapping flex container */
+    .conv-head {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        padding: 14px 16px 10px;
+        gap: 0;
+    }
+
+    /* Hide the left time column — time moves inline into meta */
+    .conv-time-col {
+        display: none;
+    }
+
+    /* Summary row: conv-main takes the space, toggle stays top-right */
+    .conv-main {
+        flex: 1;
+        min-width: 0;
+        order: 1;
+        margin-bottom: 6px;
+    }
+
+    /* Toggle stays on the same row as summary */
+    .conv-toggle {
+        order: 1;
+        margin-left: 10px;
+        margin-top: 1px;
+    }
+
+    /* Meter drops to its own full-width row below summary */
+    .conv-meter-wrapper {
+        order: 2;
+        width: 100%;
+        padding-top: 8px;
+        border-top: 1px solid #f4f5f7;
+        margin-top: 4px;
+    }
+
+    /* Show inline time in the meta row */
+    .conv-time-inline {
+        display: inline;
+    }
+
+    /* Show the separator after inline time */
+    .conv-meta-sep--after-time {
+        display: flex;
+    }
+
+    /* Market gets its own line by taking full width */
+    .conv-market {
+        width: 100%;
+        margin-top: 2px;
+    }
+
+    /* Hide the separator before market (no longer needed) */
+    .conv-meta-sep--before-market {
+        display: none;
+    }
+
+    /* Expanded body: remove the left indent */
+    .conv-body {
+        padding: 0 16px 18px 16px;
+    }
+
+    /* Tab body content — single column grids on mobile */
+    .conv-sc-grid {
+        grid-template-columns: 1fr;
     }
 
     .conv-pulse-grid {
