@@ -93,7 +93,6 @@
     flex: none;
 }
 
-/* Hidden on mobile (market goes to its own line via width:100%) */
 .conv-meta-sep--after-time {
     display: none;
 }
@@ -140,15 +139,7 @@
     opacity: 1;
 }
 
-.conv-market {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--sayso-lightgray);
-    white-space: nowrap;
-}
-
-/* meter wrapper — standalone flex item so it can drop to its own row on mobile */
+/* signals pill wrapper — standalone flex item so it can drop to its own row on mobile */
 .conv-meter-wrapper {
     flex: none;
     display: flex;
@@ -219,41 +210,54 @@
     background: color-mix(in srgb, var(--sayso-blue) 13%, #fff);
 }
 
-/* ===== LPMAMA meter ===== */
-.conv-meter {
+/* ===== Conversation signals pill ===== */
+.conv-signals {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
+    background: var(--sayso-active-lightblue);
+    border-radius: 99px;
+    padding: 5px 12px;
+    white-space: nowrap;
 }
 
-.conv-meter-count {
-    font-size: 13px;
+.conv-signals-count {
+    font-size: 12px;
     font-weight: 700;
     color: var(--sayso-blue);
     font-variant-numeric: tabular-nums;
 }
 
-.conv-meter-div {
+.conv-signals-div {
     width: 1px;
     height: 13px;
-    background: var(--sayso-border);
+    background: color-mix(in srgb, var(--sayso-blue) 22%, transparent);
+    flex: none;
 }
 
-.conv-meter-letters {
+.conv-signals-letters {
     display: flex;
-    gap: 3px;
+    gap: 4px;
 }
 
-.conv-meter-letter {
+.conv-signals-letter {
     display: inline-grid;
     place-items: center;
-    width: 18px;
-    height: 18px;
-    border-radius: 5px;
-    font-size: 10.5px;
+    width: 17px;
+    height: 17px;
+    border-radius: 99px;
+    background: #fff;
+    font-size: 10px;
     font-weight: 700;
-    border: 1px solid;
-    transition: all 0.12s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    flex: none;
+}
+
+.conv-signals-icon {
+    display: flex;
+    align-items: center;
+    color: var(--sayso-blue);
+    flex: none;
 }
 
 /* ===== Expanded body ===== */
@@ -532,7 +536,6 @@
 
 /* ===== Responsive — mobile ===== */
 @media (max-width: 640px) {
-    /* Head becomes a wrapping flex container */
     .conv-head {
         flex-wrap: wrap;
         align-items: flex-start;
@@ -540,12 +543,10 @@
         gap: 0;
     }
 
-    /* Hide the left time column — time moves inline into meta */
     .conv-time-col {
         display: none;
     }
 
-    /* Summary row: conv-main takes the space, toggle stays top-right */
     .conv-main {
         flex: 1;
         min-width: 0;
@@ -553,14 +554,13 @@
         margin-bottom: 6px;
     }
 
-    /* Toggle stays on the same row as summary */
     .conv-toggle {
         order: 1;
         margin-left: 10px;
         margin-top: 1px;
     }
 
-    /* Meter drops to its own full-width row below summary */
+    /* Signals pill drops to its own full-width row */
     .conv-meter-wrapper {
         order: 2;
         width: 100%;
@@ -569,33 +569,18 @@
         margin-top: 4px;
     }
 
-    /* Show inline time in the meta row */
     .conv-time-inline {
         display: inline;
     }
 
-    /* Show the separator after inline time */
     .conv-meta-sep--after-time {
         display: flex;
     }
 
-    /* Market gets its own line by taking full width */
-    .conv-market {
-        width: 100%;
-        margin-top: 2px;
-    }
-
-    /* Hide the separator before market (no longer needed) */
-    .conv-meta-sep--before-market {
-        display: none;
-    }
-
-    /* Expanded body: remove the left indent */
     .conv-body {
         padding: 0 16px 18px 16px;
     }
 
-    /* Tab body content — single column grids on mobile */
     .conv-sc-grid {
         grid-template-columns: 1fr;
     }
