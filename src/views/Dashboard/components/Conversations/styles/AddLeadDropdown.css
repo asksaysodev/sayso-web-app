@@ -84,7 +84,7 @@
 }
 
 .add-lead-row:hover {
-    background: var(--sayso-active-lightblue);
+    background: #F2F5FF;
 }
 
 .add-lead-row-name {
@@ -114,7 +114,7 @@
 }
 
 .add-lead-state a {
-    color: var(--sayso-blue);
+    color: var(--sayso-indigo);
     text-decoration: underline;
     cursor: pointer;
 }
