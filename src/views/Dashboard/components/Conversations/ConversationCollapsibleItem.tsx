@@ -39,8 +39,8 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                 onKeyDown={e => (e.key === 'Enter' || e.key === ' ') ? onToggle() : undefined}
             >
                 <div className="conv-time-col">
-                    <span className="conv-time">{time}</span>
                     <span className="conv-date">{date}</span>
+                    <span className="conv-time">{time}</span>
                 </div>
 
                 <div className="conv-main">
