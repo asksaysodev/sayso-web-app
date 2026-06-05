@@ -8,6 +8,28 @@
     overflow: hidden;
 }
 
+.add-lead-remove {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sayso-destructive);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--sayso-border);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.1s;
+}
+
+.add-lead-remove:hover {
+    background: var(--sayso-destructive-light);
+}
+
 .add-lead-search {
     display: flex;
     align-items: center;

@@ -93,6 +93,39 @@
     white-space: nowrap;
 }
 
+/* lead display as an editable trigger */
+.conv-client-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--sayso-lightgray);
+    font-weight: 500;
+    white-space: nowrap;
+    background: transparent;
+    border: 0;
+    padding: 2px 6px 2px 2px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    transition: background 0.12s;
+}
+
+.conv-client-btn:hover {
+    background: var(--sayso-active-lightblue);
+}
+
+.conv-client-edit-icon {
+    opacity: 0;
+    color: var(--sayso-blue);
+    transition: opacity 0.12s;
+    flex: none;
+}
+
+.conv-client-btn:hover .conv-client-edit-icon {
+    opacity: 1;
+}
+
 .conv-market {
     display: inline-flex;
     align-items: center;

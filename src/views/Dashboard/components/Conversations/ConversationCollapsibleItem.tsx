@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import { LuPlus, LuMinus, LuMapPin, LuUserPlus } from 'react-icons/lu';
+import { LuPlus, LuMinus, LuMapPin } from 'react-icons/lu';
 import { ConversationItem } from '@/types/coach';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
 import LpmamaMeter from './components/LpmamaMeter';
@@ -13,6 +13,7 @@ import PulseTab from './components/tabs/PulseTab';
 import AddLeadDropdown from './components/AddLeadDropdown';
 import useAttachConversationLead from './hooks/useAttachConversationLead';
 import './styles/ConversationCollapsibleItem.css';
+import { SquarePen, UserPlus } from 'lucide-react';
 
 interface Props {
     conversation: ConversationItem;
@@ -47,26 +48,26 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                         {conversation.lead_type && <LeadChip type={conversation.lead_type} />}
                         {conversation.lead_type && <span className="conv-meta-sep" />}
 
-                        {conversation.crm_lead_name
-                            ? (
-                                <span className="conv-client">
-                                    <Avatar name={conversation.crm_lead_name} />
-                                    {conversation.crm_lead_name}
-                                </span>
-                            ) : (
-                                <AddLeadDropdown
-                                    trigger={
-                                        <button className="conv-add-lead">
-                                            <LuUserPlus size={13} />
-                                            Add lead
-                                        </button>
-                                    }
-                                    onSelect={(lead: CrmLead) => {
-                                        attachLead({ conversationId: conversation.id, lead });
-                                    }}
-                                />
-                            )
-                        }
+                        <AddLeadDropdown
+                            currentLeadName={conversation.crm_lead_name}
+                            trigger={conversation.crm_lead_name
+                                ? (
+                                    <button className="conv-client-btn">
+                                        <Avatar name={conversation.crm_lead_name} />
+                                        {conversation.crm_lead_name}
+                                        <SquarePen size={11} className='conv-client-edit-icon'/>
+                                    </button>
+                                ) : (
+                                    <button className="conv-add-lead">
+                                        <UserPlus size={13}/>
+                                        Add lead
+                                    </button>
+                                )
+                            }
+                            onSelect={(lead: CrmLead | null) => {
+                                attachLead({ conversationId: conversation.id, lead });
+                            }}
+                        />
 
                         {city && (
                             <>

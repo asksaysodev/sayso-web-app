@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { LuSearch } from 'react-icons/lu';
+import { LuSearch, LuUserMinus } from 'react-icons/lu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import useDebounce from '@/hooks/useDebounce';
 import useCrmConnection from '@/hooks/integrations/crm/useCrmConnection';
@@ -9,7 +9,8 @@ import '../styles/AddLeadDropdown.css';
 
 interface Props {
     trigger: React.ReactNode;
-    onSelect: (lead: CrmLead) => void;
+    currentLeadName?: string | null;
+    onSelect: (lead: CrmLead | null) => void;
 }
 
 function LeadSkeleton() {
@@ -25,7 +26,7 @@ function LeadSkeleton() {
     );
 }
 
-export default function AddLeadDropdown({ trigger, onSelect }: Props) {
+export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: Props) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 350);
@@ -85,6 +86,15 @@ export default function AddLeadDropdown({ trigger, onSelect }: Props) {
                     </div>
                 ) : (
                     <>
+                        {currentLeadName && (
+                            <button
+                                className="add-lead-remove"
+                                onClick={() => { onSelect(null); setOpen(false); }}
+                            >
+                                <LuUserMinus size={13} />
+                                Remove "{currentLeadName}"
+                            </button>
+                        )}
                         <div className="add-lead-search">
                             <LuSearch size={14} />
                             <input
