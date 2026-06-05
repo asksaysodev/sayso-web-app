@@ -39,16 +39,16 @@
 
 .conv-time {
     display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--sayso-darkgray);
+    font-size: 11.5px;
+    color: var(--sayso-placeholder);
     font-variant-numeric: tabular-nums;
 }
 
 .conv-date {
     display: block;
-    font-size: 11.5px;
-    color: var(--sayso-placeholder);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--sayso-darkgray);
     margin-top: 2px;
     font-variant-numeric: tabular-nums;
 }
