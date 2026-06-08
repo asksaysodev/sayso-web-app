@@ -142,3 +142,20 @@
     color: var(--sayso-indigo);
     font-weight: 500;
 }
+
+.filter-pill-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sayso-indigo);
+    width: 110px;
+    font-family: inherit;
+    padding: 2px 4px;
+}
+
+.filter-pill-input::placeholder {
+    color: #94A3B8;
+    font-weight: 400;
+}

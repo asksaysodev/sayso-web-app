@@ -1,7 +1,8 @@
 import apiClient from "@/config/axios";
 import type { FubLeadsResponse } from "@/types/fub";
 
-interface GetFubLeadsParams {
+export interface GetFubLeadsParams {
+    query?: string;     // generic name search → server passes as `name` to FUB
     email?: string;
     firstName?: string;
     lastName?: string;
