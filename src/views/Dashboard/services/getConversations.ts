@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import apiClient from "@/config/axios";
 import type { GetConversationsResponse } from "@/types/coach";
 import type { DateRange } from "react-day-picker";
@@ -18,8 +19,8 @@ export default async function getConversations(
         if (f.key === 'has_summary') params.set('has_summary', f.value);
     });
 
-    if (dateRange?.from) params.set('from', dateRange.from.toISOString().split('T')[0]);
-    if (dateRange?.to) params.set('to', dateRange.to.toISOString().split('T')[0]);
+    if (dateRange?.from) params.set('from', dayjs(dateRange.from).format('YYYY-MM-DD'));
+    if (dateRange?.to) params.set('to', dayjs(dateRange.to).format('YYYY-MM-DD'));
     if (search) params.set('keyword', search);
 
     const response = await apiClient.get(`conversations?${params}`);
