@@ -58,6 +58,9 @@ export default function useAttachConversationLead() {
             showToast('error', 'Failed to link lead. Please try again.');
             Sentry.captureException(error);
         },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+        },
     });
 
     return { attachLead, isPending };

@@ -51,6 +51,9 @@ export default function useUpdateConversationInsight() {
             showToast('error', 'Error updating insight rating');
             Sentry.captureException(error);
         },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+        },
     });
 
     return { updateInsightRating };
