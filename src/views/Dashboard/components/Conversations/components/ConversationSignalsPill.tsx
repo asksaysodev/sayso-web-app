@@ -16,8 +16,13 @@ export default function ConversationSignalsPill({ smartCaptures, pulse, appointm
 
     return (
         <div className="conv-signals" title={`${count} of ${LPMAMA_CONFIG.length} LPMAMA fields captured`}>
-            <span className="conv-signals-count">{count}</span>
-            <span className="conv-signals-div" />
+			{
+				count > 0 &&
+				<>
+					<span className="conv-signals-count">{count}</span>
+					<span className="conv-signals-div" />
+				</>
+			}
             <div className="conv-signals-letters">
                 {LPMAMA_CONFIG.map((f, i) => {
                     const captured = capturedTopics.has(f.key);
@@ -26,7 +31,10 @@ export default function ConversationSignalsPill({ smartCaptures, pulse, appointm
                             key={i}
                             className="conv-signals-letter"
                             title={`${f.label}${captured ? '' : ' — not captured'}`}
-                            style={{ color: captured ? 'var(--sayso-indigo)' : '#b8c4dc' }}
+                            style={{ 
+								color: captured ? 'var(--sayso-indigo)' : 'var(--sayso-indigo-washed)',
+								fontWeight: captured ? '700' : '400'
+							}}
                         >
                             {f.letter}
                         </span>

@@ -39,15 +39,15 @@
 
 .conv-date {
     display: block;
-    font-size: 12.5px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--sayso-darkgray);
     font-variant-numeric: tabular-nums;
 }
 
 .conv-time {
     display: block;
-    font-size: 11.5px;
+    font-size: 13px;
     color: var(--sayso-placeholder);
     margin-top: 2px;
     font-variant-numeric: tabular-nums;
@@ -60,9 +60,10 @@
 }
 
 .conv-summary {
-    font-size: 13.5px;
+    font-size: 15px;
     font-weight: 550;
     color: var(--sayso-darkgray);
+	opacity: 0.9;
     line-height: 1.4;
     letter-spacing: -0.005em;
 }
@@ -120,7 +121,7 @@
     border-radius: 6px;
     cursor: pointer;
     font-family: inherit;
-    font-size: inherit;
+    font-size: 13px;
     transition: background 0.12s;
 }
 
@@ -150,8 +151,8 @@
 .conv-toggle {
     display: grid;
     place-items: center;
-    width: 26px;
-    height: 26px;
+    width: 29px;
+    height: 29px;
     border-radius: 7px;
     color: var(--sayso-lightgray);
     transition: background 0.12s;
@@ -165,7 +166,7 @@
 
 /* lead chip */
 .conv-lead-chip {
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 600;
     padding: 2.5px 9px;
     border-radius: 99px;
@@ -177,12 +178,12 @@
 .conv-avatar {
     display: inline-grid;
     place-items: center;
-    width: 19px;
-    height: 19px;
+    width: 23px;
+    height: 23px;
     border-radius: 99px;
     background: #F2F5FF;
     color: var(--sayso-indigo);
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.02em;
     flex: none;
@@ -243,12 +244,12 @@
 .conv-signals-letter {
     display: inline-grid;
     place-items: center;
-    width: 17px;
-    height: 17px;
+    width: 19px;
+    height: 19px;
     border-radius: 99px;
     background: #fff;
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 12px;
+    /* font-weight: 700; */
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     flex: none;
 }
@@ -262,7 +263,7 @@
 
 /* ===== Expanded body ===== */
 .conv-body {
-    padding: 0 20px 22px 122px;
+    padding: 12px 20px 22px 122px;
     text-align: left;
 }
 
@@ -276,7 +277,7 @@
 
 .conv-tab {
     position: relative;
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 550;
     color: var(--sayso-placeholder);
     background: transparent;
@@ -439,10 +440,10 @@
 }
 
 .conv-sc-label {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: var(--sayso-lightgray);
+    color: var(--sayso-darkgray);
     text-transform: uppercase;
     text-align: left;
 }
@@ -491,10 +492,10 @@
 }
 
 .conv-pulse-label {
-    font-size: 10.5px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: var(--sayso-placeholder);
+    color: var(--sayso-darkgray);
     text-transform: uppercase;
     margin-bottom: 8px;
     text-align: left;
@@ -504,10 +505,10 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--sayso-darkgray);
+    font-weight: 500;
     text-align: left;
+	font-size: 13.5px;
+    color: var(--sayso-darkgray);
 }
 
 /* ===== Responsive — tablet ===== */
