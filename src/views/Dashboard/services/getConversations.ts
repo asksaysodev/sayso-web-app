@@ -16,7 +16,6 @@ export default async function getConversations(
         if (f.key === 'appointment_booked' && f.value === 'booked') params.set('appointment_booked', 'true');
         if (f.key === 'appointment_booked' && f.value === 'not booked') params.set('appointment_booked', 'false');
         if (f.key === 'lead_name' && f.value.trim()) params.set('lead_name', f.value.trim());
-        if (f.key === 'has_summary') params.set('has_summary', f.value);
     });
 
     if (dateRange?.from) params.set('from', dayjs(dateRange.from).format('YYYY-MM-DD'));
