@@ -50,7 +50,6 @@ export default function Conversations() {
         isLoading,
         error,
         isFetchingNextPage,
-        isRefetching,
         fetchNextPage,
         hasNextPage,
     } = useInfiniteQuery({
@@ -147,7 +146,7 @@ export default function Conversations() {
                             Unable to load conversations. Please try again later.
                         </p>
                     </div>
-                ) : (isLoading && conversations.length === 0) || isRefetching ? (
+                ) : isLoading && conversations.length === 0 ? (
                     <ConversationsListSkeleton />
                 ) : conversations.length > 0 ? (
                     <>
