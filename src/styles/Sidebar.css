@@ -197,6 +197,7 @@
     text-align: left;
     margin-left: 4px;
     width: 100%;
+    min-width: 0;
 }
 
 .account-widget-info h3 {
@@ -205,6 +206,9 @@
   color: black;
   font-size: 16px;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .account-widget-info p {
@@ -213,6 +217,9 @@
     color: black;
     opacity: 0.6;
     font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .account-widget-active-container .account-widget-icon {
