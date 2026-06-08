@@ -6,7 +6,7 @@ export default function useRefreshDashboardData() {
     const refreshDashboardData = () => {
         queryClient.refetchQueries({ queryKey: ['dashboard-account-usage'] });
         queryClient.refetchQueries({ queryKey: ['dashboard-weekly-activity'] });
-        queryClient.refetchQueries({ queryKey: ['dashboard-insights'] });
+        queryClient.refetchQueries({ queryKey: ['dashboard-conversations'] });
         queryClient.refetchQueries({ queryKey: ['coach-tips'] });
     }
 
