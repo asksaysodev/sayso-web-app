@@ -152,14 +152,6 @@
     opacity: 1;
 }
 
-.calendar-buttons-container {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0px 12px 12px 12px;
-}
-
 @media (max-width: 767px) {
     .collapsible-group-trigger {
         font-size: 14px;
