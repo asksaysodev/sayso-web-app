@@ -25,7 +25,7 @@ export default function SmartCaptureTab({ smartCaptures }: Props) {
                             </span>
                             <span className="conv-sc-label">{field.label}</span>
                         </div>
-                        <div className="conv-sc-val">{value || 'Not captured yet'}</div>
+                        <div className="conv-sc-val">{value || 'Not captured'}</div>
                     </div>
                 );
             })}

@@ -14,6 +14,7 @@ import PulseTab from './components/tabs/PulseTab';
 import AddLeadDropdown from './components/AddLeadDropdown';
 import useAttachConversationLead from './hooks/useAttachConversationLead';
 import './styles/ConversationCollapsibleItem.css';
+import useCrmConnection from '@/hooks/integrations/crm/useCrmConnection';
 
 interface Props {
     conversation: ConversationItem;
@@ -24,6 +25,7 @@ interface Props {
 export default function ConversationCollapsibleItem({ conversation, isOpen, onToggle }: Props) {
     const [activeTab, setActiveTab] = useState<ConversationTab>('Cue');
     const { attachLead } = useAttachConversationLead();
+    const { isConnected } = useCrmConnection();
 
     const pulse = conversation.pulse ?? [];
     const time = dayjs(conversation.created_at).format('h:mm A');
@@ -50,9 +52,9 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                         <span className="conv-meta-sep conv-meta-sep--after-time" />
 
                         {conversation.lead_type && <LeadChip type={conversation.lead_type} />}
-                        {conversation.lead_type && <span className="conv-meta-sep" />}
+                        {conversation.lead_type && isConnected && <span className="conv-meta-sep" />}
 
-                        <AddLeadDropdown
+                        {isConnected && <AddLeadDropdown
                             currentLeadName={conversation.crm_lead_name}
                             trigger={conversation.crm_lead_name
                                 ? (
@@ -71,12 +73,13 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                             onSelect={(lead: CrmLead | null) => {
                                 attachLead({ conversationId: conversation.id, lead });
                             }}
-                        />
+                        />}
                     </div>
                 </div>
 
                 <div className="conv-meter-wrapper">
                     <ConversationSignalsPill
+                        insightCount={(conversation.insights ?? []).length}
                         smartCaptures={conversation.smart_captures ?? []}
                         pulse={pulse}
                         appointmentBooked={conversation.appointment_booked}
@@ -92,9 +95,9 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                 <div className="conv-body">
                     <ConversationTabs value={activeTab} onChange={setActiveTab} />
                     <div className="conv-tabbody">
-                        {activeTab === 'Cue'           && <CueTab insights={conversation.insights ?? []} />}
+                        {activeTab === 'Cue' && <CueTab insights={conversation.insights ?? []} />}
                         {activeTab === 'Smart Capture' && <SmartCaptureTab smartCaptures={conversation.smart_captures ?? []} />}
-                        {activeTab === 'Pulse'         && <PulseTab pulse={pulse} />}
+                        {activeTab === 'Pulse' && <PulseTab pulse={pulse} />}
                     </div>
                 </div>
             )}

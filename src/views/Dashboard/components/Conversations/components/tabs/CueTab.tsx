@@ -16,8 +16,8 @@ export default function CueTab({ insights }: Props) {
     }
 
     const handleRate = (insightId: string, currentRating: InsightRating, newRating: InsightRating) => {
-        if (currentRating === newRating) return;
-        updateInsightRating({ insightId, rating: newRating });
+        const nextRating = currentRating === newRating ? null : newRating;
+        updateInsightRating({ insightId, rating: nextRating });
     };
 
     return (

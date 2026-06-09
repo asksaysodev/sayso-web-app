@@ -4,6 +4,7 @@ import { useState } from "react"
 import { DateRange } from "react-day-picker";
 import { LuCalendar } from "react-icons/lu"
 import dayjs from "dayjs"
+import "./InsightsCalendarPopover.css"
 
 interface Props {
     applyDateRangeFilter: (range: DateRange | undefined) => void;

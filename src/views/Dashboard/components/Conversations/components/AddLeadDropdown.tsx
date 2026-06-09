@@ -33,10 +33,8 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
     const sentinelRef = useRef<HTMLDivElement>(null);
 
     const { isConnected, providerLabel } = useCrmConnection();
-    const { leads, isLoading, error, hasNextPage, isFetchingNextPage, fetchNextPage } =
-        useCrmLeads(debouncedSearch, { enabled: open });
+    const { leads, isLoading, error, hasNextPage, isFetchingNextPage, fetchNextPage } = useCrmLeads(debouncedSearch, { enabled: open });
 
-    // infinite scroll — fires when sentinel enters viewport; gated on not already fetching
     useEffect(() => {
         const sentinel = sentinelRef.current;
         if (!sentinel) return;

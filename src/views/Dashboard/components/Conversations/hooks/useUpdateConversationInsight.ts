@@ -15,8 +15,6 @@ export default function useUpdateConversationInsight() {
         mutationFn: ({ insightId, rating }: { insightId: string; rating: InsightRating }) =>
             updateInsight(insightId, rating),
         onMutate: async ({ insightId, rating }) => {
-            // Prefix match — the real query key also carries the active filters,
-            // so we must touch every cached variation, not just the bare key.
             await queryClient.cancelQueries({ queryKey: CONVERSATIONS_KEY });
 
             const previousData = queryClient.getQueriesData<InfiniteData<GetConversationsResponse>>({
