@@ -79,6 +79,7 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
 
                 <div className="conv-meter-wrapper">
                     <ConversationSignalsPill
+                        insightCount={(conversation.insights ?? []).length}
                         smartCaptures={conversation.smart_captures ?? []}
                         pulse={pulse}
                         appointmentBooked={conversation.appointment_booked}
@@ -94,9 +95,9 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                 <div className="conv-body">
                     <ConversationTabs value={activeTab} onChange={setActiveTab} />
                     <div className="conv-tabbody">
-                        {activeTab === 'Cue'           && <CueTab insights={conversation.insights ?? []} />}
+                        {activeTab === 'Cue' && <CueTab insights={conversation.insights ?? []} />}
                         {activeTab === 'Smart Capture' && <SmartCaptureTab smartCaptures={conversation.smart_captures ?? []} />}
-                        {activeTab === 'Pulse'         && <PulseTab pulse={pulse} />}
+                        {activeTab === 'Pulse' && <PulseTab pulse={pulse} />}
                     </div>
                 </div>
             )}

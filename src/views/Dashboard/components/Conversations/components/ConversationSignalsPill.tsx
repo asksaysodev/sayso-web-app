@@ -3,23 +3,23 @@ import type { ConversationSmartCapture, ConversationPulse } from '@/types/coach'
 import { LPMAMA_CONFIG } from '../constants/lpmama';
 
 interface Props {
+    insightCount: number;
     smartCaptures: ConversationSmartCapture[];
     pulse: ConversationPulse[];
     appointmentBooked: boolean | null;
 }
 
-export default function ConversationSignalsPill({ smartCaptures, pulse, appointmentBooked }: Props) {
+export default function ConversationSignalsPill({ insightCount, smartCaptures, pulse, appointmentBooked }: Props) {
     const capturedTopics = new Set(smartCaptures.map(sc => sc.topic));
-    const count = LPMAMA_CONFIG.filter(f => capturedTopics.has(f.key)).length;
     const hasPulse = pulse.length > 0;
     const hasAppointment = appointmentBooked === true;
 
     return (
-        <div className="conv-signals" title={`${count} of ${LPMAMA_CONFIG.length} LPMAMA fields captured`}>
+        <div className="conv-signals">
 			{
-				count > 0 &&
+				insightCount > 0 &&
 				<>
-					<span className="conv-signals-count">{count}</span>
+					<span className="conv-signals-count">{insightCount}</span>
 					<span className="conv-signals-div" />
 				</>
 			}
