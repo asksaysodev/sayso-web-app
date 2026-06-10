@@ -47,10 +47,23 @@ export const useAccounts = () => {
     }
   }
 
+  const updateCompany = async (updateData: Record<string, string>): Promise<void> => {
+    try {
+      if (!updateData) {
+        throw new Error('Update data is required');
+      }
+      await apiClient.put('/companies/update', { updateData });
+    } catch (error) {
+      console.error('Error in updateCompany:', error);
+      throw error;
+    }
+  };
+
   return {
     createAccount,
     getAccount,
     updateAccount,
+    updateCompany,
     getCompanyById
   };
 };
