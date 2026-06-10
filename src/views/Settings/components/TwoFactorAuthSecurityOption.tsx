@@ -1,14 +1,14 @@
-import { LuShield, LuLoader } from "react-icons/lu";
+import { LuLoader } from "react-icons/lu";
 import { Switch } from "@/components/ui/switch";
 import SaysoModal from "@/components/SaysoModal";
 import { useEffect, useState } from "react";
-import SecurityFormSettingContainer from "./SecuritySettingContainer";
 import MFAEnrollmentModal from "./MFAEnrollmentModal";
 import { enrollTOTP, unenrollFactor, listFactors } from "@/services/mfaServices";
 import { EnrollTOTPResult } from "@/types/supabaseMFA";
 import { useToast } from "@/context/ToastContext";
 import * as Sentry from "@sentry/react";
 import type { Factor } from "@supabase/supabase-js";
+import SecuritySettingContainer from "./SecuritySettingContainer";
 
 export default function TwoFactorAuthSecurityOption() {
     const { showToast } = useToast();
@@ -118,8 +118,7 @@ export default function TwoFactorAuthSecurityOption() {
 
     return (
         <>
-            <SecurityFormSettingContainer
-                icon={<LuShield size={20} />}
+            <SecuritySettingContainer
                 title="Two-factor authentication"
                 description={
                     isMFAEnabled

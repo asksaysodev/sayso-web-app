@@ -1,0 +1,8 @@
+.calendar-buttons-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0px 12px 12px 12px;
+}

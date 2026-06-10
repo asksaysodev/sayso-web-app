@@ -1,0 +1,328 @@
+/* ── Grid ── */
+.connections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 380px));
+    gap: 14px;
+    width: 100%;
+}
+
+/* ── Card base ── */
+.connection-card {
+    background: #fff;
+    border: 1px solid var(--sayso-border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .18s cubic-bezier(.2,.7,.2,1), box-shadow .18s, border-color .18s;
+}
+
+/* ── Request integration card ── */
+.connection-card--request {
+    border-style: dashed;
+    border-color: #d4d9e5;
+    background: #fafbfc;
+    cursor: default;
+}
+
+.connection-card--request:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: #c4c9d6;
+}
+
+.connection-request-tile {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: #f0f2f7;
+    color: #9aa3b6;
+}
+
+/* ── Card sections ── */
+.connection-card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.connection-card-top-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.connection-card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sayso-darkgray);
+    letter-spacing: -0.005em;
+}
+
+.connection-card-cat {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--sayso-lightgray);
+    margin-top: 1px;
+}
+
+.connection-card-desc {
+    color: var(--sayso-lightgray);
+    font-size: 13.5px;
+    line-height: 1.55;
+    flex: 1;
+    margin: 0;
+}
+
+.connection-card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: auto;
+}
+
+/* ── Logo tile (square, tinted) ── */
+.connection-tile {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.connection-tile svg {
+    width: 24px;
+    height: 24px;
+}
+
+.connection-tile--slack {
+    background: #f5edf6;
+    color: #7c3a8a;
+}
+
+.connection-tile--fub {
+    background: #e9f3ed;
+}
+
+/* ── Status pill ── */
+.connection-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+}
+
+.connection-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.connection-status--connected {
+    background: #e6f4ec;
+    color: var(--sayso-success);
+}
+
+.connection-status--disconnected {
+    color: #9aa3b6;
+    background: transparent;
+    padding-left: 0;
+    font-weight: 500;
+}
+
+/* ── Meta (channel name, etc.) ── */
+.connection-meta {
+    font-size: 12.5px;
+    color: var(--sayso-lightgray);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.connection-meta-hash {
+    color: var(--sayso-darkgray);
+    font-weight: 500;
+}
+
+/* ── Pill buttons ── */
+.connection-btn {
+    border: 1px solid var(--sayso-border);
+    background: #fff;
+    color: var(--sayso-darkgray);
+    border-radius: 999px;
+    padding: 8px 14px 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color .18s, background .18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+.connection-btn .connection-btn-arr {
+    display: inline-flex;
+    transition: transform .2s ease;
+}
+
+.connection-card:hover .connection-btn:not(.connection-btn--ghost):not(.connection-btn--danger) .connection-btn-arr {
+    transform: translateX(3px);
+}
+
+.connection-btn:hover {
+    border-color: #b8c1d3;
+    background: #f8f9fb;
+}
+
+.connection-btn--primary {
+    background: var(--sayso-indigo);
+    color: #fff;
+    border-color: var(--sayso-indigo);
+}
+
+.connection-btn--primary:hover {
+    background: var(--sayso-indigo);
+    border-color: var(--sayso-indigo);
+    color: #fff;
+    opacity: 0.88;
+}
+
+
+.connection-btn--danger {
+    background: var(--sayso-destructive);
+    color: #fff;
+    border-color: var(--sayso-destructive);
+}
+
+.connection-btn--danger:hover {
+    background: var(--sayso-destructive);
+    border-color: var(--sayso-destructive);
+    color: #fff;
+    opacity: 0.88;
+}
+
+.connection-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.connection-btn--ghost {
+    border-color: transparent;
+    background: transparent;
+    color: var(--sayso-lightgray);
+    padding: 6px 4px;
+}
+
+.connection-btn--ghost:hover {
+    border-color: transparent;
+    background: transparent;
+    color: var(--sayso-darkgray);
+}
+
+.connection-btn--ghost:hover .connection-btn-arr {
+    transform: translateX(3px);
+}
+
+/* ── Manage modal ── */
+.manage-connection-modal {
+    max-width: 480px;
+}
+
+.manage-connection-modal-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+}
+
+.manage-connection-modal-head-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+}
+
+.manage-connection-modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--sayso-darkgray);
+    letter-spacing: -0.005em;
+}
+
+.manage-connection-modal-desc {
+    color: var(--sayso-lightgray);
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin-top: 12px;
+}
+
+.manage-connection-modal-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--sayso-border);
+}
+
+.manage-connection-modal-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--sayso-darkgray);
+    margin: 0 0 6px;
+}
+
+.manage-connection-modal-section-desc {
+    color: var(--sayso-lightgray);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0 0 14px;
+}
+
+.manage-connection-modal-confirm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #fdf2f2;
+    border: 1px solid #f4cccc;
+    border-radius: 8px;
+}
+
+.manage-connection-modal-confirm-prompt {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sayso-darkgray);
+}
+
+.manage-connection-modal-confirm-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ── Loading spinner ── */
+.connection-btn .loading-icon {
+    animation: connections-spin 1s linear infinite;
+}
+
+@keyframes connections-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+

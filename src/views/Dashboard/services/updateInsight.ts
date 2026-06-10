@@ -2,7 +2,7 @@ import apiClient from "@/config/axios";
 import { InsightRating } from "../types";
 
 export const updateInsight = async (insightId: string, rating: InsightRating): Promise<void> => {
-    if (!rating || (rating !== null && rating !== 'up' && rating !== 'down')) {
+    if (rating !== null && rating !== 'up' && rating !== 'down') {
         throw new Error('Unexpected rating value');
     }
     if (!insightId) {
