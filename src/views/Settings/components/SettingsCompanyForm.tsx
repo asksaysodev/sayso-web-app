@@ -19,7 +19,7 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     //HOOKS
-    const { getCompanyById } = useAccounts();
+    const { getCompanyById, updateCompany } = useAccounts();
     const { showToast } = useToast();
 
     const getCompany = async (companyId: string) => {
@@ -92,11 +92,12 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
                         <form className="settings-company-form">
                             <FormLineAccount
                                 label='Organization Name'
-                                name='company'
+                                name='company_name'
                                 placeholder='Organization'
                                 value={company?.company_name || ''}
                                 editable={allowEditingOrgName}
                                 setUnsavedChanges={setUnsavedChanges}
+                                updateFn={updateCompany}
                             />
                         </form>
                         {isTeamMembersTableVisible &&
