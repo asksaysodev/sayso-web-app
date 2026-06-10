@@ -16,9 +16,10 @@ interface Props {
     value: string;
     editable: boolean;
     setUnsavedChanges: (unsavedChanges: boolean) => void;
+    updateFn?: (updateData: Record<string, string>) => Promise<void>;
 }
 
-export default function FormLineAccount({ label, name, placeholder, value, editable, setUnsavedChanges }: Props) {
+export default function FormLineAccount({ label, name, placeholder, value, editable, setUnsavedChanges, updateFn }: Props) {
 
     //STATE
     const [isEditing, setIsEditing] = useState(false);
@@ -50,7 +51,7 @@ export default function FormLineAccount({ label, name, placeholder, value, edita
             const updateData = {
                 [name]: inputValue,
             }
-            await updateAccount(updateData);
+            await (updateFn ?? updateAccount)(updateData);
             showToast('success', 'Account updated successfully!');
             setUnsavedChanges(false);
             setIsEditing(false);
