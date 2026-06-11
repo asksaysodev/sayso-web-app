@@ -4,6 +4,9 @@ import { useAuth } from "../../../context/AuthContext";
 import formatMinutesToDuration from "@/utils/formatters/formatMinutesToDuration";
 import { useMemo } from "react";
 import { TimeWidgetsSharedProps } from "../types";
+import { useQuery } from "@tanstack/react-query";
+import getActivePlan from "../../Subscription/services/getActivePlan";
+import dayjs from "dayjs";
 
 export default function MinutesRemaining({ accountUsage, isRefetching, isLoading = false }: TimeWidgetsSharedProps) {
     const { globalUser } = useAuth();
@@ -16,9 +19,15 @@ export default function MinutesRemaining({ accountUsage, isRefetching, isLoading
         return Math.min(Number(percentage.toFixed(2)), 100);
     }, [usedMinutes, planMinutes]);
     
+    const { data: activePlan } = useQuery({ queryKey: ['active-plan'], queryFn: getActivePlan });
+    const renewalDate = activePlan?.subscription?.billing?.period?.end
+        ? dayjs(activePlan.subscription.billing.period.end).format('MMM D, YYYY')
+        : null;
+
     const isTrialing = globalUser?.subscription_status === "trialing";
     const planHours = Math.floor(planMinutes / 60);
-    const cardDescription = `${usedPercentage}% used of your ${planHours} ${isTrialing ? 'trial' : 'plan'} hours`;
+    const renewalSuffix = renewalDate ? `. Renewing on ${renewalDate}` : '';
+    const cardDescription = `${usedPercentage}% used of your ${planHours} ${isTrialing ? 'trial' : 'plan'} hours${renewalSuffix}`;
     const { hours, mins } = useMemo(()=> formatMinutesToDuration(remainingMinutes), [remainingMinutes]);
     
     return (
