@@ -2,15 +2,12 @@ import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react';
 import { supabase } from '@/config/supabase';
-import type { ConversationItem } from '@/types/coach';
-
 const CONVERSATIONS_KEY = ['dashboard-conversations'];
 const MAX_RETRIES = 3;
 const BASE_BACKOFF_MS = 1000;
 
 type NewConversationMessage = {
     type: 'new_conversation';
-    payload: ConversationItem;
 };
 
 function buildWsUrl(token: string): string {
@@ -91,6 +88,10 @@ export default function useConversationsSocket() {
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
             if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+                if (retryTimerRef.current) {
+                    clearTimeout(retryTimerRef.current);
+                    retryTimerRef.current = null;
+                }
                 retryCountRef.current = 0;
                 connect();
             } else if (event === 'SIGNED_OUT') {
