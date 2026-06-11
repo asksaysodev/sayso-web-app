@@ -38,7 +38,11 @@ export default function useConversationsSocket() {
         };
 
         const scheduleReconnect = () => {
-            if (unmountedRef.current || retryTimerRef.current || retryCountRef.current >= MAX_RETRIES) return;
+            if (unmountedRef.current || retryTimerRef.current) return;
+            if (retryCountRef.current >= MAX_RETRIES) {
+                Sentry.captureException(new Error('useConversationsSocket: max retries reached, giving up'));
+                return;
+            }
             const delay = BASE_BACKOFF_MS * Math.pow(2, retryCountRef.current);
             retryCountRef.current += 1;
             retryTimerRef.current = setTimeout(() => {
@@ -49,35 +53,38 @@ export default function useConversationsSocket() {
 
         const connect = async () => {
             if (unmountedRef.current) return;
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (unmountedRef.current || !session?.access_token) return;
 
-            const { data: { session } } = await supabase.auth.getSession();
-            if (unmountedRef.current || !session?.access_token) return;
+                closeSocket();
 
-            closeSocket();
+                const ws = new WebSocket(buildWsUrl(session.access_token));
+                socketRef.current = ws;
 
-            const ws = new WebSocket(buildWsUrl(session.access_token));
-            socketRef.current = ws;
+                ws.onopen = () => { retryCountRef.current = 0; };
 
-            ws.onopen = () => { retryCountRef.current = 0; };
-
-            ws.onmessage = (event) => {
-                try {
-                    const message = JSON.parse(event.data) as NewConversationMessage;
-                    if (message.type === 'new_conversation') {
-                        queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+                ws.onmessage = (event) => {
+                    try {
+                        const message = JSON.parse(event.data) as NewConversationMessage;
+                        if (message.type === 'new_conversation') {
+                            queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+                        }
+                    } catch (error) {
+                        Sentry.captureException(error);
                     }
-                } catch (error) {
-                    Sentry.captureException(error);
-                }
-            };
+                };
 
-            const onDisconnect = () => {
-                ws.onclose = null;
-                ws.onerror = null;
-                scheduleReconnect();
-            };
-            ws.onclose = onDisconnect;
-            ws.onerror = onDisconnect;
+                const onDisconnect = () => {
+                    ws.onclose = null;
+                    ws.onerror = null;
+                    scheduleReconnect();
+                };
+                ws.onclose = onDisconnect;
+                ws.onerror = onDisconnect;
+            } catch (error) {
+                Sentry.captureException(error);
+            }
         };
 
         connect();
