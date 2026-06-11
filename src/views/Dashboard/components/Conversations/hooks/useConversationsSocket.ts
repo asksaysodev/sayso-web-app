@@ -5,6 +5,8 @@ import { supabase } from '@/config/supabase';
 const CONVERSATIONS_KEY = ['dashboard-conversations'];
 const MAX_RETRIES = 3;
 const BASE_BACKOFF_MS = 1000;
+// Must be longer than the longest backoff step (BASE_BACKOFF_MS * 2^(MAX_RETRIES-1) = 4s)
+const STABLE_DWELL_MS = 6000;
 
 type NewConversationMessage = {
     type: 'new_conversation';
@@ -20,10 +22,22 @@ export default function useConversationsSocket() {
     const socketRef = useRef<WebSocket | null>(null);
     const retryCountRef = useRef(0);
     const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const stableTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const unmountedRef = useRef(false);
 
     useEffect(() => {
         unmountedRef.current = false;
+
+        const clearTimers = () => {
+            if (retryTimerRef.current) {
+                clearTimeout(retryTimerRef.current);
+                retryTimerRef.current = null;
+            }
+            if (stableTimerRef.current) {
+                clearTimeout(stableTimerRef.current);
+                stableTimerRef.current = null;
+            }
+        };
 
         const closeSocket = () => {
             const ws = socketRef.current;
@@ -32,6 +46,7 @@ export default function useConversationsSocket() {
                 ws.close();
                 socketRef.current = null;
             }
+            clearTimers();
         };
 
         const scheduleReconnect = () => {
@@ -59,7 +74,13 @@ export default function useConversationsSocket() {
                 const ws = new WebSocket(buildWsUrl(session.access_token));
                 socketRef.current = ws;
 
-                ws.onopen = () => { retryCountRef.current = 0; };
+                ws.onopen = () => {
+                    // Defer reset so a server that accepts-then-drops can't loop forever at 1s.
+                    stableTimerRef.current = setTimeout(() => {
+                        stableTimerRef.current = null;
+                        retryCountRef.current = 0;
+                    }, STABLE_DWELL_MS);
+                };
 
                 ws.onmessage = (event) => {
                     try {
@@ -75,6 +96,10 @@ export default function useConversationsSocket() {
                 const onDisconnect = () => {
                     ws.onclose = null;
                     ws.onerror = null;
+                    if (stableTimerRef.current) {
+                        clearTimeout(stableTimerRef.current);
+                        stableTimerRef.current = null;
+                    }
                     scheduleReconnect();
                 };
                 ws.onclose = onDisconnect;
@@ -88,23 +113,17 @@ export default function useConversationsSocket() {
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
             if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
-                if (retryTimerRef.current) {
-                    clearTimeout(retryTimerRef.current);
-                    retryTimerRef.current = null;
-                }
+                clearTimers();
                 retryCountRef.current = 0;
                 connect();
             } else if (event === 'SIGNED_OUT') {
+                clearTimers();
                 closeSocket();
             }
         });
 
         return () => {
             unmountedRef.current = true;
-            if (retryTimerRef.current) {
-                clearTimeout(retryTimerRef.current);
-                retryTimerRef.current = null;
-            }
             closeSocket();
             subscription.unsubscribe();
         };
