@@ -109,6 +109,18 @@ export default function useConversationsSocket() {
             }
         };
 
+        // Revives after max-retries give-up; no-ops if a socket or pending retry already exists.
+        const restart = () => {
+            if (unmountedRef.current) return;
+            if (socketRef.current || retryTimerRef.current) return;
+            clearTimers();
+            retryCountRef.current = 0;
+            connect();
+        };
+
+        const onOnline = () => restart();
+        const onVisibilityChange = () => { if (document.visibilityState === 'visible') restart(); };
+
         connect();
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
@@ -122,10 +134,15 @@ export default function useConversationsSocket() {
             }
         });
 
+        window.addEventListener('online', onOnline);
+        document.addEventListener('visibilitychange', onVisibilityChange);
+
         return () => {
             unmountedRef.current = true;
             closeSocket();
             subscription.unsubscribe();
+            window.removeEventListener('online', onOnline);
+            document.removeEventListener('visibilitychange', onVisibilityChange);
         };
     }, []);
 }
