@@ -34,31 +34,42 @@ export default function ConversationSignalsPill({ insightCount, smartCaptures, p
 						<span className="conv-signals-div" />
 					</>
 				}
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <div className="conv-signals-letters">
-                            {LPMAMA_CONFIG.map((f, i) => {
-                                const captured = capturedTopics.has(f.key);
-                                return (
-                                    <span
-                                        key={i}
-                                        className="conv-signals-letter"
-                                        style={{
-											color: captured ? 'var(--sayso-indigo)' : 'var(--sayso-indigo-washed)',
-											fontWeight: captured ? '700' : '400'
-										}}
-                                    >
-                                        {f.letter}
-                                    </span>
-                                );
-                            })}
-                        </div>
-                    </TooltipTrigger>
-                    <TooltipContent>Smart Capture<TooltipArrow /></TooltipContent>
-                </Tooltip>
+				{
+					smartCaptures.length > 0 &&
+					<>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<div className="conv-signals-letters">
+									{LPMAMA_CONFIG.map((f, i) => {
+										const captured = capturedTopics.has(f.key);
+										return (
+											<span
+												key={i}
+												className="conv-signals-letter"
+												style={{
+													color: captured ? 'var(--sayso-indigo)' : 'var(--sayso-indigo-washed)',
+													fontWeight: captured ? '700' : '400'
+												}}
+											>
+												{f.letter}
+											</span>
+										);
+									})}
+								</div>
+							</TooltipTrigger>
+							<TooltipContent>Smart Capture<TooltipArrow /></TooltipContent>
+						</Tooltip>
+					</>
+				}
+				{
+					smartCaptures.length > 0 && hasPulse &&
+					
+					<>
+						<span className="conv-signals-div" />
+					</>
+				}
                 {hasPulse && (
                     <>
-                        <span className="conv-signals-div" />
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <span className="conv-signals-icon">

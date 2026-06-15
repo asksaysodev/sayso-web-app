@@ -15,6 +15,7 @@ import AddLeadDropdown from './components/AddLeadDropdown';
 import useAttachConversationLead from './hooks/useAttachConversationLead';
 import './styles/ConversationCollapsibleItem.css';
 import useCrmConnection from '@/hooks/integrations/crm/useCrmConnection';
+import ConversationPending from './ConversationPending';
 
 interface Props {
     conversation: ConversationItem;
@@ -30,6 +31,7 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
     const pulse = conversation.pulse ?? [];
     const time = dayjs(conversation.created_at).format('h:mm A');
     const date = dayjs(conversation.created_at).format('ddd, MMM D');
+	const isPendingSummary = conversation.summary === 'Creating conversation summary';
 
     return (
         <div className={`conv-item${isOpen ? ' conv-item-open' : ''}`}>
@@ -46,7 +48,14 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, onTo
                 </div>
 
                 <div className="conv-main">
-                    <div className="conv-summary">{conversation.summary ?? 'No summary available.'}</div>
+					{
+						isPendingSummary 
+							? (
+								<ConversationPending/>
+							) : (
+								<div className={"conv-summary"}>{conversation.summary ?? 'No summary available.'}</div>
+							)
+					}
                     <div className="conv-meta">
                         <span className="conv-time-inline">{time} · {date}</span>
                         <span className="conv-meta-sep conv-meta-sep--after-time" />

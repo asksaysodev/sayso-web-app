@@ -1,0 +1,22 @@
+.conversation-pending-wrapper {
+	display: flex;
+	align-items: center;
+	height: 21px;
+	font-style: italic;
+	gap: 8px;
+	opacity: 0.8
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+	width: 8px;
+	height: 8px;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background: #7bafeb;
+	box-shadow: 0 0 0 0 #0004;
+	animation: l1 1s infinite;
+}
+@keyframes l1 {
+	100% {box-shadow: 0 0 0 8px #00000000}
+}

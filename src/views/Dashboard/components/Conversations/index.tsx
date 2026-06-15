@@ -7,6 +7,7 @@ import FilterPill from '@/components/ui/filter-pill';
 import TextFilterPill from '@/components/ui/text-filter-pill';
 import useDebounce from '@/hooks/useDebounce';
 import getConversations from '../../services/getConversations';
+import useConversationsSocket from './hooks/useConversationsSocket';
 import InsightsCalendarPopover, { INITIAL_DATE_RANGE } from '../InsightsCalendarPopover';
 import ConversationCollapsibleItem from './ConversationCollapsibleItem';
 import ConversationsListSkeleton from './ConversationsListSkeleton';
@@ -44,6 +45,8 @@ export default function Conversations() {
     const [openedConversations, setOpenedConversations] = useState<string[]>([]);
     const [activeFilters, setActiveFilters] = useState<ConversationFilter[]>([]);
     const debouncedSearch = useDebounce(searchInputValue, 500);
+
+    useConversationsSocket();
 
     const {
         data: conversationsData,
