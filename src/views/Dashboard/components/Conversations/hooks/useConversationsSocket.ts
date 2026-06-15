@@ -8,8 +8,8 @@ const BASE_BACKOFF_MS = 1000;
 // Must be longer than the longest backoff step (BASE_BACKOFF_MS * 2^(MAX_RETRIES-1) = 4s)
 const STABLE_DWELL_MS = 6000;
 
-type NewConversationMessage = {
-    type: 'new_conversation';
+type ConversationSocketMessage = {
+    type: 'new_conversation' | 'conversation_updated';
 };
 
 function buildWsUrl(token: string): string {
@@ -84,8 +84,8 @@ export default function useConversationsSocket() {
 
                 ws.onmessage = (event) => {
                     try {
-                        const message = JSON.parse(event.data) as NewConversationMessage;
-                        if (message.type === 'new_conversation') {
+                        const message = JSON.parse(event.data) as ConversationSocketMessage;
+                        if (message.type === 'new_conversation' || message.type === 'conversation_updated') {
                             queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
                         }
                     } catch (error) {
