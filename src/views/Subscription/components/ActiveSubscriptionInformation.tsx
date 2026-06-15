@@ -52,9 +52,25 @@ export default function ActiveSubscriptionInformation() {
 
     const activePlanName = useMemo(() => {
         const { name = '', status = '' } = subscription || {};
-        if (status === "trialing") return `${name} - Free Trial`;
-        return name;
+        switch (status) {
+            case 'trialing': return `${name} - Free Trial`;
+            case 'canceled': return `${name} - Cancelled`;
+            case 'paused':   return `${name} - Paused`;
+            default:         return name;
+        }
     }, [subscription]);
+
+    const isCancelling = subscription?.status === 'canceled' || !!subscription?.cancelledAt;
+
+    const subscriptionText = useMemo(() => {
+        if (subscription?.status === 'paused') {
+            return `Your subscription is paused. Your minutes will expire on ${renewalDate}, but you'll continue to have access to your account.`;
+        }
+        if (isCancelling) {
+            return `You can continue using Sayso until ${renewalDate}.`;
+        }
+        return `Your subscription renews on ${renewalDate}.`;
+    }, [subscription, renewalDate, isCancelling]);
 
     const handleCancelSubscription = () => {
         if (!subscription?.plan) return;
@@ -68,10 +84,6 @@ export default function ActiveSubscriptionInformation() {
     if (isErrorActivePlan) {
         return <ActiveSubscriptionInformationError onRetry={refetch} />;
     }
-
-    const subscriptionText = subscription?.cancelledAt 
-        ? `Your subscription ends on ${renewalDate}.`
-        : `Your subscription will auto renew on ${renewalDate}.`;
 
     return (
         <div className="active-plan-information-container">
