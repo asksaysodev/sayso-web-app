@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { isValidPhoneNumber } from 'libphonenumber-js';
+import * as Sentry from '@sentry/react';
 import {
     Dialog,
     DialogContent,
@@ -35,13 +36,17 @@ const isValidPhone = (v: string) => isValidPhoneNumber(v.trim(), 'US');
 export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
     const { showToast } = useToast();
     const { createLead, isPending } = useCrmCreateLead();
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
         defaultValues: { firstName: '', lastName: '', phone: '', email: '' },
     });
 
     useEffect(() => {
-        if (!open) reset();
+        if (!open) {
+            reset();
+            setSubmitError(null);
+        }
     }, [open, reset]);
 
     const handleClose = () => {
@@ -50,6 +55,7 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
     };
 
     const onSubmit = async (values: FormValues) => {
+        setSubmitError(null);
         try {
             const lead = await createLead({
                 firstName: values.firstName.trim(),
@@ -60,8 +66,9 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
             showToast('success', `${lead.name} added to your CRM.`);
             onCreated(lead);
             handleClose();
-        } catch {
-            showToast('error', 'Failed to create lead. Please try again.');
+        } catch (error) {
+            Sentry.captureException(error);
+            setSubmitError('Failed to create lead. Please try again.');
         }
     };
 
@@ -137,6 +144,10 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                             )}
                         </div>
                     </div>
+
+                    {submitError && (
+                        <p className="text-xs text-destructive mt-2" role="alert">{submitError}</p>
+                    )}
 
                     <DialogFooter className="mt-2">
                         <SaysoButton
