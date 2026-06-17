@@ -1,6 +1,7 @@
 import getFubLeads from '@/services/integrations/fub/getFubLeads';
+import createFubLead from '@/services/integrations/fub/createFubLead';
 import type { FubLead } from '@/types/fub';
-import type { CrmLead, CrmLeadsPage, CrmProvider } from '../types';
+import type { CrmCreateLeadInput, CrmLead, CrmProvider } from '../types';
 
 function normalizeFubLead(lead: FubLead): CrmLead {
     const primaryEmail =
@@ -41,5 +42,9 @@ export const fubProvider: CrmProvider = {
             nextOffset,
             total: meta?.total ?? 0,
         };
+    },
+    createLead: async (input: CrmCreateLeadInput): Promise<CrmLead> => {
+        const lead = await createFubLead(input);
+        return normalizeFubLead(lead);
     },
 };
