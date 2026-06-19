@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
+import { Eye, EyeOff, Lock, CircleAlert, Check } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -9,6 +10,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { useSureSend } from "@/hooks/useSureSend";
 import { openExternal } from "@/utils/helpers/openExternal";
+import SaysoButton from "@/components/SaysoButton";
 import suresendIcon from '/assets/suresend-icon-color.svg';
 
 type ModalState = 'default' | 'validating' | 'error' | 'success';
@@ -19,22 +21,6 @@ const SureSendTile = () => (
     <div className="connection-tile connection-tile--suresend">
         <img src={suresendIcon} alt="SureSend" width={26} height={26} style={{ objectFit: 'contain' }} />
     </div>
-);
-
-const EyeIcon = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
-);
-const EyeOffIcon = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.2 4.2M9.9 5.2A9.5 9.5 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4M6.2 6.2A17 17 0 0 0 2 12s3.5 7 10 7a9.5 9.5 0 0 0 3-.5" /></svg>
-);
-const LockIcon = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
-);
-const WarnIcon = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16h.01" /></svg>
-);
-const CheckIcon = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg>
 );
 
 interface Props {
@@ -145,43 +131,43 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
                                         tabIndex={-1}
                                         aria-label={showToken ? 'Hide token' : 'Show token'}
                                     >
-                                        {showToken ? <EyeOffIcon /> : <EyeIcon />}
+                                        {showToken ? <EyeOff /> : <Eye />}
                                     </button>
                                 </div>
                                 {state === 'error' ? (
-                                    <p className="ss-hint ss-hint--error"><WarnIcon /> {errorMsg}</p>
+                                    <p className="ss-hint ss-hint--error"><CircleAlert /> {errorMsg}</p>
                                 ) : (
-                                    <p className="ss-hint"><LockIcon /> Stored encrypted. We never display it again.</p>
+                                    <p className="ss-hint"><Lock /> Stored encrypted. We never display it again.</p>
                                 )}
                             </div>
                         </div>
 
                         <div className="ss-foot">
-                            <button
-                                type="button"
-                                className="ss-btn ss-btn-ghost"
+                            <SaysoButton
+                                label="Cancel"
+                                variant="outlined"
+                                size="sm"
                                 onClick={() => handleOpenChange(false)}
                                 disabled={state === 'validating'}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="button"
-                                className="ss-btn ss-btn-primary"
+                            />
+                            <SaysoButton
+                                label="Connect"
+                                variant="sayso-indigo"
+                                size="sm"
                                 onClick={handleConnect}
                                 disabled={connectDisabled}
-                            >
-                                {state === 'validating' ? (<><span className="ss-spinner" />Connecting…</>) : 'Connect'}
-                            </button>
+                                loading={state === 'validating'}
+                                loadingLabel="Connecting…"
+                            />
                         </div>
                     </div>
 
                     <div className="ss-success">
-                        <div className="ss-check" aria-hidden="true"><CheckIcon /></div>
+                        <div className="ss-check" aria-hidden="true"><Check /></div>
                         <h2>SureSend connected</h2>
                         <p>Your account is linked. New call summaries and contacts will start syncing within a few minutes.</p>
                         <div className="ss-foot">
-                            <button type="button" className="ss-btn ss-btn-primary" onClick={() => handleOpenChange(false)}>Done</button>
+                            <SaysoButton label="Done" variant="sayso-indigo" size="sm" onClick={() => handleOpenChange(false)} />
                         </div>
                     </div>
                 </div>

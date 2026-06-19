@@ -485,37 +485,6 @@
     border-top: 1px solid var(--ss-line-2);
     background: linear-gradient(var(--ss-panel), #fcfcfe);
 }
-.suresend-modal .ss-btn {
-    height: 40px;
-    padding: 0 18px;
-    border-radius: var(--ss-r-ctrl);
-    font-size: 14px;
-    font-weight: 600;
-    border: 1.5px solid transparent;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background .15s, border-color .15s, color .15s, transform .08s, box-shadow .15s;
-}
-.suresend-modal .ss-btn:active { transform: translateY(1px); }
-.suresend-modal .ss-btn-ghost { background: var(--ss-panel); border-color: var(--ss-line); color: var(--ss-ink-2); }
-.suresend-modal .ss-btn-ghost:hover { background: var(--ss-field); border-color: var(--ss-ink-3); color: var(--ss-ink); }
-.suresend-modal .ss-btn-primary { background: var(--ss-accent); color: #fff; box-shadow: 0 2px 6px -1px rgba(47, 107, 255, .45); }
-.suresend-modal .ss-btn-primary:hover { background: var(--ss-accent-d); }
-.suresend-modal .ss-btn-primary:disabled { background: #c3cad6; color: #fff; box-shadow: none; cursor: not-allowed; }
-.suresend-modal .ss-spinner {
-    width: 15px;
-    height: 15px;
-    border: 2px solid rgba(255, 255, 255, .45);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: ss-spin .7s linear infinite;
-}
-@keyframes ss-spin { to { transform: rotate(360deg); } }
-
 /* success view */
 .suresend-modal .ss-success { display: none; padding: 38px 26px 30px; text-align: center; }
 .suresend-modal[data-state="success"] .ss-default-view { display: none; }
@@ -533,7 +502,6 @@
 .suresend-modal .ss-success h2 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.01em; color: var(--ss-ink); }
 .suresend-modal .ss-success p { margin: 8px auto 0; font-size: 14px; line-height: 1.5; color: var(--ss-ink-2); max-width: 320px; }
 .suresend-modal .ss-success .ss-foot { justify-content: center; margin-top: 24px; border: 0; background: none; padding: 0; }
-.suresend-modal .ss-success .ss-btn-primary { min-width: 130px; }
 
 /* ── SureSend Manage Modal (Claude Design) ── */
 .suresend-manage {
@@ -626,41 +594,6 @@
 .suresend-manage .ssm-confirm-text { margin: 7px 0 0 24px; font-size: 13px; line-height: 1.5; color: #9a3a32; }
 .suresend-manage .ssm-confirm-actions { display: flex; gap: 9px; justify-content: flex-end; margin-top: 13px; }
 
-/* buttons */
-.suresend-manage .ssm-btn {
-    height: 38px;
-    padding: 0 16px;
-    border-radius: var(--ss-r-ctrl);
-    font-size: 13.5px;
-    font-weight: 600;
-    border: 1.5px solid transparent;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background .15s, border-color .15s, color .15s, transform .08s, box-shadow .15s;
-}
-.suresend-manage .ssm-btn:active { transform: translateY(1px); }
-.suresend-manage .ssm-btn:disabled { cursor: not-allowed; opacity: .85; }
-.suresend-manage .ssm-btn-ghost { background: var(--ss-panel); border-color: var(--ss-line); color: var(--ss-ink-2); }
-.suresend-manage .ssm-btn-ghost:hover { background: var(--ss-field); border-color: var(--ss-ink-3); color: var(--ss-ink); }
-.suresend-manage .ssm-btn-danger { background: var(--ss-bad); color: #fff; box-shadow: 0 2px 6px -1px rgba(216, 69, 59, .4); }
-.suresend-manage .ssm-btn-danger:hover { background: var(--ss-bad-d); }
-.suresend-manage .ssm-btn-danger-soft { background: var(--ss-panel); border-color: var(--ss-bad-line); color: var(--ss-bad-d); }
-.suresend-manage .ssm-btn-danger-soft:hover { background: var(--ss-bad-soft); border-color: var(--ss-bad); }
-.suresend-manage .ssm-btn-primary { background: var(--ss-accent); color: #fff; box-shadow: 0 2px 6px -1px rgba(47, 107, 255, .45); }
-.suresend-manage .ssm-btn-primary:hover { background: var(--ss-accent-d); }
-.suresend-manage .ssm-spinner {
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255, 255, 255, .45);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: ss-spin .7s linear infinite;
-}
-
 /* disconnected (success) view */
 .suresend-manage .ssm-done { display: none; padding: 38px 26px 30px; text-align: center; }
 .suresend-manage[data-state="disconnected"] .ssm-manage-view { display: none; }
@@ -678,7 +611,6 @@
 .suresend-manage .ssm-done h2 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.01em; color: var(--ss-ink); }
 .suresend-manage .ssm-done p { margin: 8px auto 0; font-size: 14px; line-height: 1.5; color: var(--ss-ink-2); max-width: 330px; }
 .suresend-manage .ssm-done-actions { margin-top: 24px; display: flex; gap: 10px; justify-content: center; }
-.suresend-manage .ssm-done-actions .ssm-btn { min-width: 120px; }
 
 /* ── Loading spinner ── */
 .connection-btn .loading-icon {

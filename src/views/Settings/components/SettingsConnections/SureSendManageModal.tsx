@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { useSureSend } from "@/hooks/useSureSend";
+import SaysoButton from "@/components/SaysoButton";
 import suresendIcon from '/assets/suresend-icon-color.svg';
 
 type ManageState = 'manage' | 'confirm' | 'disconnecting' | 'disconnected';
@@ -103,9 +104,12 @@ export default function SureSendManageModal({ open, onClose, onReconnect }: Prop
                                 <p className="ssm-danger-desc">Sayso will stop sending data to SureSend. Reconnecting later will require you to re-authorize the app.</p>
 
                                 <div className="ssm-danger-actions">
-                                    <button type="button" className="ssm-btn ssm-btn-danger-soft" onClick={() => setState('confirm')}>
-                                        Disconnect SureSend
-                                    </button>
+                                    <SaysoButton
+                                        label="Disconnect SureSend"
+                                        variant="error-outlined"
+                                        size="sm"
+                                        onClick={() => setState('confirm')}
+                                    />
                                 </div>
 
                                 <div className="ssm-confirm">
@@ -114,22 +118,22 @@ export default function SureSendManageModal({ open, onClose, onReconnect }: Prop
                                     </div>
                                     <p className="ssm-confirm-text">Syncing stops immediately. Records already pushed to SureSend stay there.</p>
                                     <div className="ssm-confirm-actions">
-                                        <button
-                                            type="button"
-                                            className="ssm-btn ssm-btn-ghost"
+                                        <SaysoButton
+                                            label="Keep connected"
+                                            variant="outlined"
+                                            size="sm"
                                             onClick={() => setState('manage')}
                                             disabled={state === 'disconnecting'}
-                                        >
-                                            Keep connected
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="ssm-btn ssm-btn-danger"
+                                        />
+                                        <SaysoButton
+                                            label="Disconnect"
+                                            variant="error"
+                                            size="sm"
                                             onClick={handleDisconnect}
                                             disabled={state === 'disconnecting'}
-                                        >
-                                            {state === 'disconnecting' ? (<><span className="ssm-spinner" />Disconnecting…</>) : 'Disconnect'}
-                                        </button>
+                                            loading={state === 'disconnecting'}
+                                            loadingLabel="Disconnecting…"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -141,8 +145,8 @@ export default function SureSendManageModal({ open, onClose, onReconnect }: Prop
                         <h2>SureSend disconnected</h2>
                         <p>Sayso has stopped sending data to SureSend. You can reconnect any time from the Connections page.</p>
                         <div className="ssm-done-actions">
-                            <button type="button" className="ssm-btn ssm-btn-ghost" onClick={onClose}>Close</button>
-                            <button type="button" className="ssm-btn ssm-btn-primary" onClick={onReconnect}>Reconnect</button>
+                            <SaysoButton label="Close" variant="outlined" size="sm" onClick={onClose} />
+                            <SaysoButton label="Reconnect" variant="sayso-indigo" size="sm" onClick={onReconnect} />
                         </div>
                     </div>
                 </div>
