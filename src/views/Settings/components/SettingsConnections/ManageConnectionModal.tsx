@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { LuLoader } from "react-icons/lu";
+import { TriangleAlert } from "lucide-react";
 import {
     Dialog,
     DialogContent,
-    DialogHeader,
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
+import SaysoButton from "@/components/SaysoButton";
 
 interface Props {
     open: boolean;
     onClose: () => void;
     logoTile: React.ReactNode;
     title: string;
+    category?: string;
     description: string;
     onDisconnect: () => Promise<void>;
     isDisconnecting?: boolean;
@@ -23,18 +24,19 @@ export default function ManageConnectionModal({
     onClose,
     logoTile,
     title,
+    category,
     description,
     onDisconnect,
     isDisconnecting = false,
 }: Props) {
     const [confirming, setConfirming] = useState(false);
 
+    const state = isDisconnecting ? 'disconnecting' : confirming ? 'confirm' : 'manage';
+
     const handleOpenChange = (next: boolean) => {
-        if (!next) {
-            if (isDisconnecting) return;
-            setConfirming(false);
-            onClose();
-        }
+        if (next || isDisconnecting) return;
+        setConfirming(false);
+        onClose();
     };
 
     const handleConfirm = async () => {
@@ -48,60 +50,68 @@ export default function ManageConnectionModal({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="manage-connection-modal">
-                <DialogHeader>
-                    <div className="manage-connection-modal-head">
-                        {logoTile}
-                        <div className="manage-connection-modal-head-info">
-                            <DialogTitle className="manage-connection-modal-title">{title}</DialogTitle>
-                            <span className="connection-status connection-status--connected">
-                                <span className="connection-status-dot" />
-                                Connected
-                            </span>
-                        </div>
-                    </div>
-                    <DialogDescription className="manage-connection-modal-desc">
-                        {description}
-                    </DialogDescription>
-                </DialogHeader>
+            <DialogContent className="p-0 gap-0 border-0 bg-transparent shadow-none max-w-[460px] w-full">
+                <div className="suresend-manage" data-state={state}>
+                    <div className="ssm-manage-view">
+                        <div className="ssm-pad">
+                            <div className="ssm-head">
+                                {logoTile}
+                                <div className="ssm-head-text">
+                                    <div className="ssm-head-row">
+                                        <DialogTitle className="ssm-h1">{title}</DialogTitle>
+                                        <span className="connection-status connection-status--connected">
+                                            <span className="connection-status-dot" />
+                                            Connected
+                                        </span>
+                                    </div>
+                                    {category && <p className="ssm-sub">{category}</p>}
+                                </div>
+                            </div>
 
-                <div className="manage-connection-modal-section">
-                    <h3 className="manage-connection-modal-section-title">Disconnect</h3>
-                    <p className="manage-connection-modal-section-desc">
-                        Sayso will stop sending data to {title}. Reconnecting will require you to re-authorize the app.
-                    </p>
+                            <DialogDescription className="ssm-lede">{description}</DialogDescription>
 
-                    {!confirming ? (
-                        <button
-                            type="button"
-                            className="connection-btn connection-btn--danger"
-                            onClick={() => setConfirming(true)}
-                        >
-                            Disconnect
-                        </button>
-                    ) : (
-                        <div className="manage-connection-modal-confirm">
-                            <span className="manage-connection-modal-confirm-prompt">Are you sure?</span>
-                            <div className="manage-connection-modal-confirm-actions">
-                                <button
-                                    type="button"
-                                    className="connection-btn"
-                                    onClick={() => setConfirming(false)}
-                                    disabled={isDisconnecting}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="button"
-                                    className="connection-btn connection-btn--danger"
-                                    onClick={handleConfirm}
-                                    disabled={isDisconnecting}
-                                >
-                                    {isDisconnecting ? <LuLoader className="loading-icon" /> : 'Yes, disconnect'}
-                                </button>
+                            <div className="ssm-rule" />
+
+                            <div className="ssm-danger">
+                                <h2 className="ssm-danger-title">Disconnect</h2>
+                                <p className="ssm-danger-desc">Sayso will stop sending data to {title}. Reconnecting will require you to re-authorize the app.</p>
+
+                                <div className="ssm-danger-actions">
+                                    <SaysoButton
+                                        label={`Disconnect ${title}`}
+                                        variant="error-outlined"
+                                        size="sm"
+                                        onClick={() => setConfirming(true)}
+                                    />
+                                </div>
+
+                                <div className="ssm-confirm">
+                                    <div className="ssm-confirm-head">
+                                        <TriangleAlert /> Disconnect {title}?
+                                    </div>
+                                    <p className="ssm-confirm-text">Syncing stops immediately. Data already sent to {title} stays there.</p>
+                                    <div className="ssm-confirm-actions">
+                                        <SaysoButton
+                                            label="Keep connected"
+                                            variant="outlined"
+                                            size="sm"
+                                            onClick={() => setConfirming(false)}
+                                            disabled={isDisconnecting}
+                                        />
+                                        <SaysoButton
+                                            label="Disconnect"
+                                            variant="error"
+                                            size="sm"
+                                            onClick={handleConfirm}
+                                            disabled={isDisconnecting}
+                                            loading={isDisconnecting}
+                                            loadingLabel="Disconnecting…"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    )}
+                    </div>
                 </div>
             </DialogContent>
         </Dialog>

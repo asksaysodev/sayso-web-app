@@ -95,6 +95,7 @@ export default function FUBConnection() {
                 onClose={() => setManageOpen(false)}
                 logoTile={<FUBTile />}
                 title={TITLE}
+                category="Real-estate CRM"
                 description={DESCRIPTION}
                 onDisconnect={handleDisconnect}
                 isDisconnecting={isDisconnecting}
