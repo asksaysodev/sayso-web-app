@@ -39,6 +39,7 @@ export interface Account {
   fub_connected?: boolean;
   suresend_connected?: boolean;
   suresend_account_name?: string | null;
+  suresend_account_email?: string | null;
   zoom_connected?: boolean;
   stripe_customer_id?: string | null;
   stripe_subscription_id?: string | null;
