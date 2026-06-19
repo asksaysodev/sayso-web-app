@@ -2,7 +2,7 @@
 .connections-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 380px));
-    gap: 14px;
+    gap: 8px;
     width: 100%;
 }
 
@@ -114,6 +114,10 @@
     background: #e9f3ed;
 }
 
+.connection-tile--suresend {
+    background: #e7eff7;
+}
+
 /* ── Status pill ── */
 .connection-status {
     display: inline-flex;
@@ -157,7 +161,7 @@
 }
 
 .connection-meta-hash {
-    color: var(--sayso-darkgray);
+    color: #6b7280;
     font-weight: 500;
 }
 
@@ -315,6 +319,221 @@
     display: flex;
     gap: 8px;
 }
+
+/* ── SureSend Connect Modal (Claude Design) ── */
+.suresend-modal {
+    --ss-ink: #14171c;
+    --ss-ink-2: #565f6e;
+    --ss-ink-3: #8a93a3;
+    --ss-line: #e6e8ee;
+    --ss-line-2: #eef0f4;
+    --ss-field: #fbfcfd;
+    --ss-panel: #ffffff;
+    --ss-accent: #2f6bff;
+    --ss-accent-d: #1f54df;
+    --ss-accent-soft: #eef3ff;
+    --ss-good: #0f9d63;
+    --ss-good-soft: #e8f6ef;
+    --ss-bad: #d8453b;
+    --ss-bad-soft: #fcecea;
+    --ss-r-ctrl: 9px;
+    width: 100%;
+    background: var(--ss-panel);
+    border-radius: 16px;
+    overflow: hidden;
+    color: var(--ss-ink);
+    text-align: left;
+    box-shadow:
+        0 1px 1px rgba(17, 20, 26, .04),
+        0 12px 28px -8px rgba(17, 20, 26, .18),
+        0 40px 80px -24px rgba(17, 20, 26, .28);
+}
+
+.suresend-modal .ss-pad { padding: 26px 26px 22px; }
+
+.suresend-modal .ss-head { display: flex; align-items: center; gap: 13px; }
+.suresend-modal .ss-h1 { margin: 0; font-size: 18px; font-weight: 650; letter-spacing: -.01em; color: var(--ss-ink); }
+.suresend-modal .ss-sub { margin: 2px 0 0; font-size: 13px; color: var(--ss-ink-3); font-weight: 500; }
+
+.suresend-modal .ss-lede { margin: 16px 0 0; font-size: 14px; line-height: 1.5; color: var(--ss-ink-2); }
+
+/* steps */
+.suresend-modal .ss-steps {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 16px 16px 4px;
+    background: var(--ss-field);
+    border: 1px solid var(--ss-line);
+    border-radius: 12px;
+    counter-reset: step;
+}
+.suresend-modal .ss-steps li {
+    position: relative;
+    padding: 0 0 14px 34px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--ss-ink-2);
+    counter-increment: step;
+}
+.suresend-modal .ss-steps li:last-child { padding-bottom: 4px; }
+.suresend-modal .ss-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: -1px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--ss-panel);
+    border: 1px solid var(--ss-line);
+    color: var(--ss-ink-2);
+    font-size: 12px;
+    font-weight: 650;
+    display: grid;
+    place-items: center;
+}
+.suresend-modal .ss-steps li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 10.5px;
+    top: 23px;
+    bottom: 5px;
+    width: 1px;
+    background: var(--ss-line);
+}
+.suresend-modal .ss-steps b { color: var(--ss-ink); font-weight: 600; }
+.suresend-modal .ss-link {
+    color: var(--ss-accent);
+    text-decoration: none;
+    font-weight: 600;
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+}
+.suresend-modal .ss-link:hover { text-decoration: underline; }
+.suresend-modal .ss-kbd { color: var(--ss-ink); font-weight: 600; }
+.suresend-modal .ss-once { color: var(--ss-bad); font-weight: 600; }
+
+/* field */
+.suresend-modal .ss-field-wrap { margin-top: 18px; }
+.suresend-modal .ss-field-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ss-ink-2); margin: 0 0 7px; }
+.suresend-modal .ss-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 44px;
+    background: var(--ss-panel);
+    border: 1.5px solid var(--ss-line);
+    border-radius: var(--ss-r-ctrl);
+    transition: border-color .15s, box-shadow .15s;
+}
+.suresend-modal .ss-field:focus-within { border-color: var(--ss-accent); box-shadow: 0 0 0 3.5px var(--ss-accent-soft); }
+.suresend-modal .ss-field input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    outline: none;
+    height: 100%;
+    padding: 0 8px 0 13px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--ss-ink);
+    letter-spacing: .01em;
+}
+.suresend-modal .ss-field input::placeholder { color: var(--ss-ink-3); letter-spacing: 0; }
+.suresend-modal .ss-reveal {
+    border: 0;
+    background: transparent;
+    width: 38px;
+    height: 100%;
+    flex: none;
+    color: var(--ss-ink-3);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    border-radius: 0 var(--ss-r-ctrl) var(--ss-r-ctrl) 0;
+}
+.suresend-modal .ss-reveal:hover { color: var(--ss-ink-2); }
+.suresend-modal .ss-reveal svg { width: 17px; height: 17px; }
+
+.suresend-modal .ss-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 9px 1px 0;
+    font-size: 12.5px;
+    color: var(--ss-ink-3);
+    min-height: 16px;
+}
+.suresend-modal .ss-hint svg { width: 14px; height: 14px; flex: none; }
+.suresend-modal .ss-hint--error { color: var(--ss-bad); }
+
+/* error state on field */
+.suresend-modal[data-state="error"] .ss-field { border-color: var(--ss-bad); }
+.suresend-modal[data-state="error"] .ss-field:focus-within { box-shadow: 0 0 0 3.5px var(--ss-bad-soft); }
+
+/* footer */
+.suresend-modal .ss-foot {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 26px;
+    border-top: 1px solid var(--ss-line-2);
+    background: linear-gradient(var(--ss-panel), #fcfcfe);
+}
+.suresend-modal .ss-btn {
+    height: 40px;
+    padding: 0 18px;
+    border-radius: var(--ss-r-ctrl);
+    font-size: 14px;
+    font-weight: 600;
+    border: 1.5px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, border-color .15s, color .15s, transform .08s, box-shadow .15s;
+}
+.suresend-modal .ss-btn:active { transform: translateY(1px); }
+.suresend-modal .ss-btn-ghost { background: var(--ss-panel); border-color: var(--ss-line); color: var(--ss-ink-2); }
+.suresend-modal .ss-btn-ghost:hover { background: var(--ss-field); border-color: var(--ss-ink-3); color: var(--ss-ink); }
+.suresend-modal .ss-btn-primary { background: var(--ss-accent); color: #fff; box-shadow: 0 2px 6px -1px rgba(47, 107, 255, .45); }
+.suresend-modal .ss-btn-primary:hover { background: var(--ss-accent-d); }
+.suresend-modal .ss-btn-primary:disabled { background: #c3cad6; color: #fff; box-shadow: none; cursor: not-allowed; }
+.suresend-modal .ss-spinner {
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(255, 255, 255, .45);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: ss-spin .7s linear infinite;
+}
+@keyframes ss-spin { to { transform: rotate(360deg); } }
+
+/* success view */
+.suresend-modal .ss-success { display: none; padding: 38px 26px 30px; text-align: center; }
+.suresend-modal[data-state="success"] .ss-default-view { display: none; }
+.suresend-modal[data-state="success"] .ss-success { display: block; }
+.suresend-modal .ss-check {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: var(--ss-good-soft);
+    display: grid;
+    place-items: center;
+}
+.suresend-modal .ss-check svg { width: 30px; height: 30px; color: var(--ss-good); }
+.suresend-modal .ss-success h2 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.01em; color: var(--ss-ink); }
+.suresend-modal .ss-success p { margin: 8px auto 0; font-size: 14px; line-height: 1.5; color: var(--ss-ink-2); max-width: 320px; }
+.suresend-modal .ss-success .ss-foot { justify-content: center; margin-top: 24px; border: 0; background: none; padding: 0; }
+.suresend-modal .ss-success .ss-btn-primary { min-width: 130px; }
 
 /* ── Loading spinner ── */
 .connection-btn .loading-icon {
