@@ -53,8 +53,13 @@ export default function SureSendManageModal({ open, onClose, onReconnect }: Prop
             await disconnectSureSend();
             if (globalUser) await updateGlobalUser(globalUser.email);
             setState('disconnected');
-        } catch (error) {
-            Sentry.captureException(Object.assign(new Error('SureSend disconnect failed in UI'), {}));
+        } catch (error: any) {
+            Sentry.captureException(
+                Object.assign(new Error('SureSend disconnect failed in UI'), {
+                    httpStatus: error?.response?.status,
+                    cause: error,
+                })
+            );
             showToast('error', 'Failed to disconnect SureSend');
             setState('confirm');
         }
