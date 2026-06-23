@@ -1,0 +1,13 @@
+.create-lead-modal-footer-wrapper {
+	margin-top: 36px;
+	display: flex;
+	justify-content: center;
+	gap: 12px
+
+}
+
+.create-lead-modal-footer-wrapper .button-wrapper {
+	width: 50%;
+	/* display: flex; */
+
+}
