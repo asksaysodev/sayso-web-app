@@ -11,17 +11,11 @@ import { useAuth } from "@/context/AuthContext";
 import { useSureSend } from "@/hooks/useSureSend";
 import { openExternal } from "@/utils/helpers/openExternal";
 import SaysoButton from "@/components/SaysoButton";
-import suresendIcon from '/assets/suresend-icon-color.svg';
+import SureSendTile from "./SureSendTile";
 
 type ModalState = 'default' | 'validating' | 'error' | 'success';
 
 const DEFAULT_ERROR = "That token wasn't recognized. Check it was copied in full and try again.";
-
-const SureSendTile = () => (
-    <div className="connection-tile connection-tile--suresend">
-        <img src={suresendIcon} alt="SureSend" width={26} height={26} style={{ objectFit: 'contain' }} />
-    </div>
-);
 
 interface Props {
     open: boolean;

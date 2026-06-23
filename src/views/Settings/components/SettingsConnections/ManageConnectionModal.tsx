@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TriangleAlert } from "lucide-react";
+import { Mail, TriangleAlert } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -15,6 +15,7 @@ interface Props {
     title: string;
     category?: string;
     description: string;
+    accountEmail?: string | null;
     onDisconnect: () => Promise<void>;
     isDisconnecting?: boolean;
 }
@@ -26,6 +27,7 @@ export default function ManageConnectionModal({
     title,
     category,
     description,
+    accountEmail,
     onDisconnect,
     isDisconnecting = false,
 }: Props) {
@@ -69,6 +71,15 @@ export default function ManageConnectionModal({
                             </div>
 
                             <DialogDescription className="ssm-lede">{description}</DialogDescription>
+
+                            {accountEmail && (
+                                <div className="ssm-meta">
+                                    <div className="ssm-meta-row">
+                                        <span className="ssm-k"><Mail size={15} /> Linked account</span>
+                                        <span className="ssm-v">{accountEmail}</span>
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="ssm-rule" />
 

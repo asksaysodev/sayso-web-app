@@ -246,8 +246,9 @@
     transform: translateX(3px);
 }
 
-/* ── SureSend Connect Modal (Claude Design) ── */
-.suresend-modal {
+/* ── SureSend Modals — shared tokens ── */
+.suresend-modal,
+.suresend-manage {
     --ss-ink: #14171c;
     --ss-ink-2: #565f6e;
     --ss-ink-3: #8a93a3;
@@ -257,7 +258,6 @@
     --ss-panel: #ffffff;
     --ss-accent: #2f6bff;
     --ss-accent-d: #1f54df;
-    --ss-accent-soft: #eef3ff;
     --ss-good: #0f9d63;
     --ss-good-soft: #e8f6ef;
     --ss-bad: #d8453b;
@@ -273,6 +273,11 @@
         0 1px 1px rgba(17, 20, 26, .04),
         0 12px 28px -8px rgba(17, 20, 26, .18),
         0 40px 80px -24px rgba(17, 20, 26, .28);
+}
+
+/* ── SureSend Connect Modal (Claude Design) ── */
+.suresend-modal {
+    --ss-accent-soft: #eef3ff;
 }
 
 .suresend-modal .ss-pad { padding: 26px 26px 22px; }
@@ -431,33 +436,9 @@
 
 /* ── SureSend Manage Modal (Claude Design) ── */
 .suresend-manage {
-    --ss-ink: #14171c;
-    --ss-ink-2: #565f6e;
-    --ss-ink-3: #8a93a3;
-    --ss-line: #e6e8ee;
-    --ss-line-2: #eef0f4;
-    --ss-field: #fbfcfd;
-    --ss-panel: #ffffff;
-    --ss-accent: #2f6bff;
-    --ss-accent-d: #1f54df;
-    --ss-good: #0f9d63;
-    --ss-good-soft: #e8f6ef;
     --ss-good-line: #bfe6d2;
-    --ss-bad: #d8453b;
     --ss-bad-d: #bf392f;
-    --ss-bad-soft: #fcecea;
     --ss-bad-line: #f3c7c2;
-    --ss-r-ctrl: 9px;
-    width: 100%;
-    background: var(--ss-panel);
-    border-radius: 16px;
-    overflow: hidden;
-    color: var(--ss-ink);
-    text-align: left;
-    box-shadow:
-        0 1px 1px rgba(17, 20, 26, .04),
-        0 12px 28px -8px rgba(17, 20, 26, .18),
-        0 40px 80px -24px rgba(17, 20, 26, .28);
 }
 
 .suresend-manage .ssm-pad { padding: 26px 26px 24px; }
@@ -519,24 +500,6 @@
 .suresend-manage .ssm-confirm-head svg { width: 16px; height: 16px; flex: none; }
 .suresend-manage .ssm-confirm-text { margin: 7px 0 0 24px; font-size: 13px; line-height: 1.5; color: #9a3a32; }
 .suresend-manage .ssm-confirm-actions { display: flex; gap: 9px; justify-content: flex-end; margin-top: 13px; }
-
-/* disconnected (success) view */
-.suresend-manage .ssm-done { display: none; padding: 38px 26px 30px; text-align: center; }
-.suresend-manage[data-state="disconnected"] .ssm-manage-view { display: none; }
-.suresend-manage[data-state="disconnected"] .ssm-done { display: block; }
-.suresend-manage .ssm-done-icon {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 18px;
-    border-radius: 50%;
-    background: var(--ss-line-2);
-    display: grid;
-    place-items: center;
-}
-.suresend-manage .ssm-done-icon svg { width: 28px; height: 28px; color: var(--ss-ink-2); }
-.suresend-manage .ssm-done h2 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.01em; color: var(--ss-ink); }
-.suresend-manage .ssm-done p { margin: 8px auto 0; font-size: 14px; line-height: 1.5; color: var(--ss-ink-2); max-width: 330px; }
-.suresend-manage .ssm-done-actions { margin-top: 24px; display: flex; gap: 10px; justify-content: center; }
 
 /* ── Loading spinner ── */
 .connection-btn .loading-icon {
