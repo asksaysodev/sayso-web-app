@@ -13,7 +13,7 @@ export interface CrmLead {
 
 export interface CrmLeadsPage {
     leads: CrmLead[];
-    nextOffset: number | null; // null = no more pages
+    nextOffset: number | null;
     total: number;
 }
 
@@ -23,9 +23,16 @@ export interface CrmConnection {
     providerLabel: string | null;
 }
 
-// Contract every provider adapter must implement
+export interface CrmCreateLeadInput {
+    firstName: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+}
+
 export interface CrmProvider {
     id: CrmProviderId;
     label: string;
     fetchLeads: (params: { search?: string; limit: number; offset: number }) => Promise<CrmLeadsPage>;
+    createLead: (input: CrmCreateLeadInput) => Promise<CrmLead>;
 }

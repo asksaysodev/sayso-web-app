@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { LuSearch, LuUserMinus } from 'react-icons/lu';
+import { LuSearch, LuUserMinus, LuUserPlus } from 'react-icons/lu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import useDebounce from '@/hooks/useDebounce';
 import useCrmConnection from '@/hooks/integrations/crm/useCrmConnection';
 import useCrmLeads from '@/hooks/integrations/crm/useCrmLeads';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
+import CreateLeadModal from './CreateLeadModal';
 import '../styles/AddLeadDropdown.css';
 
 interface Props {
@@ -28,6 +29,7 @@ function LeadSkeleton() {
 
 export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: Props) {
     const [open, setOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 350);
     const sentinelRef = useRef<HTMLDivElement>(null);
@@ -63,7 +65,18 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
         if (!next) setSearch('');
     };
 
+    const handleCreateClick = () => {
+        setOpen(false);
+        setModalOpen(true);
+    };
+
+    const handleLeadCreated = (lead: CrmLead) => {
+        onSelect(lead);
+        setModalOpen(false);
+    };
+
     return (
+        <>
         <Popover open={open} onOpenChange={handleOpenChange}>
             <PopoverTrigger asChild onClick={e => e.stopPropagation()}>
                 {trigger}
@@ -104,6 +117,11 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                         </div>
 
                         <div className="add-lead-list">
+                            <button className="add-lead-create" onClick={handleCreateClick}>
+                                <LuUserPlus size={13} />
+                                Create lead
+                            </button>
+
                             {isLoading ? (
                                 <LeadSkeleton />
                             ) : error ? (
@@ -144,5 +162,11 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                 )}
             </PopoverContent>
         </Popover>
+        <CreateLeadModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            onCreated={handleLeadCreated}
+        />
+        </>
     );
 }
