@@ -16,6 +16,7 @@ import SaysoButton from '@/components/SaysoButton';
 import { useToast } from '@/context/ToastContext';
 import useCrmCreateLead from '@/hooks/integrations/crm/useCrmCreateLead';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
+import '../styles/CreateLeadModal.css';
 
 interface Props {
     open: boolean;
@@ -149,25 +150,29 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                         <p className="text-xs text-destructive mt-2" role="alert">{submitError}</p>
                     )}
 
-                    <DialogFooter className="mt-2">
-                        <SaysoButton
-                            type="button"
-                            label="Cancel"
-                            variant="outlined"
-                            size="sm"
-                            fullWidth={false}
-                            onClick={handleClose}
-                            disabled={isPending}
-                        />
-                        <SaysoButton
-                            type="submit"
-                            label={isPending ? 'Creating…' : 'Create Lead'}
-                            variant="sayso-indigo"
-                            size="sm"
-                            fullWidth={false}
-                            loading={isPending}
-                            disabled={isPending}
-                        />
+                    <DialogFooter className="create-lead-modal-footer-wrapper">
+						<div className='button-wrapper'>
+							<SaysoButton
+								type="button"
+								label="Cancel"
+								variant="outlined"
+								size="sm"
+								fullWidth={true}
+								onClick={handleClose}
+								disabled={isPending}
+							/>
+						</div>
+						<div className='button-wrapper'>
+							<SaysoButton
+								type="submit"
+								label={isPending ? 'Creating…' : 'Create Lead'}
+								variant="sayso-indigo"
+								size="sm"
+								fullWidth={true}
+								loading={isPending}
+								disabled={isPending}
+							/>
+						</div>
                     </DialogFooter>
                 </form>
             </DialogContent>
