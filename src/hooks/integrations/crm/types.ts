@@ -1,4 +1,4 @@
-export type CrmProviderId = 'fub';
+export type CrmProviderId = 'fub' | 'suresend';
 
 export interface CrmLead {
     id: string;
@@ -28,6 +28,7 @@ export interface CrmCreateLeadInput {
     lastName?: string;
     email?: string;
     phone?: string;
+    stage?: string;
 }
 
 export interface CrmProvider {
