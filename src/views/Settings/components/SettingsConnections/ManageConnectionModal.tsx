@@ -52,7 +52,7 @@ export default function ManageConnectionModal({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="p-0 gap-0 border-0 bg-transparent shadow-none max-w-[460px] w-full">
+            <DialogContent className="p-0 gap-0 border-0 bg-transparent shadow-none max-w-[560px] w-full">
                 <div className="suresend-manage" data-state={state}>
                     <div className="ssm-manage-view">
                         <div className="ssm-pad">
@@ -61,10 +61,6 @@ export default function ManageConnectionModal({
                                 <div className="ssm-head-text">
                                     <div className="ssm-head-row">
                                         <DialogTitle className="ssm-h1">{title}</DialogTitle>
-                                        <span className="connection-status connection-status--connected">
-                                            <span className="connection-status-dot" />
-                                            Connected
-                                        </span>
                                     </div>
                                     {category && <p className="ssm-sub">{category}</p>}
                                 </div>
@@ -103,20 +99,20 @@ export default function ManageConnectionModal({
                                     <p className="ssm-confirm-text">Syncing stops immediately. Data already sent to {title} stays there.</p>
                                     <div className="ssm-confirm-actions">
                                         <SaysoButton
-                                            label="Keep connected"
-                                            variant="outlined"
-                                            size="sm"
-                                            onClick={() => setConfirming(false)}
-                                            disabled={isDisconnecting}
-                                        />
-                                        <SaysoButton
                                             label="Disconnect"
-                                            variant="error"
+                                            variant="error-outlined"
                                             size="sm"
                                             onClick={handleConfirm}
                                             disabled={isDisconnecting}
                                             loading={isDisconnecting}
                                             loadingLabel="Disconnecting…"
+                                        />
+                                        <SaysoButton
+                                            label="Keep connected"
+                                            variant="black"
+                                            size="sm"
+                                            onClick={() => setConfirming(false)}
+                                            disabled={isDisconnecting}
                                         />
                                     </div>
                                 </div>
