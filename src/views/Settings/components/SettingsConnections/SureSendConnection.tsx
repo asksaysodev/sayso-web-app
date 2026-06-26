@@ -8,12 +8,12 @@ import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { useSureSend } from "@/hooks/useSureSend";
 
-const TITLE = "SureSend";
+const TITLE = "Sure Send";
 const CATEGORY = "Real-estate CRM";
-const DESCRIPTION = "Push call summaries and contacts into the matching lead in SureSend.";
+const DESCRIPTION = "Push call summaries and contacts into the matching lead in Sure Send.";
 
 // Prefix the connected account name with its token scope ("Team: Sayso").
-// SureSend's raw tokenScope string format is unconfirmed, so match case-insensitively
+// Sure Send's raw tokenScope string format is unconfirmed, so match case-insensitively
 // and fall back to the bare name for any unknown/missing scope.
 const SCOPE_LABELS: Record<string, string> = { team: 'Team', personal: 'Personal' };
 
@@ -40,15 +40,15 @@ export default function SureSendConnection() {
         try {
             await disconnectSureSend();
             await updateGlobalUser(globalUser.email);
-            showToast('success', 'SureSend disconnected successfully.');
+            showToast('success', 'Sure Send disconnected successfully.');
         } catch (error: any) {
             Sentry.captureException(
-                Object.assign(new Error('SureSend disconnect failed in UI'), {
+                Object.assign(new Error('Sure Send disconnect failed in UI'), {
                     httpStatus: error?.response?.status,
                     cause: error,
                 })
             );
-            showToast('error', 'Failed to disconnect SureSend');
+            showToast('error', 'Failed to disconnect Sure Send');
         } finally {
             setIsDisconnecting(false);
         }

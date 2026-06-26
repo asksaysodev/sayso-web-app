@@ -58,7 +58,7 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
             setErrorMsg(isInvalid ? DEFAULT_ERROR : 'Something went wrong. Please try again.');
             setState('error');
             Sentry.captureException(
-                Object.assign(new Error('SureSend connect failed in UI'), {
+                Object.assign(new Error('Sure Send connect failed in UI'), {
                     httpStatus,
                     code: isInvalid ? 'INVALID_TOKEN' : 'CONNECT_ERROR',
                 }),
@@ -83,25 +83,25 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
                             <div className="ss-head">
                                 <SureSendTile />
                                 <div>
-                                    <DialogTitle className="ss-h1">Connect SureSend</DialogTitle>
+                                    <DialogTitle className="ss-h1">Connect Sure Send</DialogTitle>
                                     <p className="ss-sub">Real-estate CRM</p>
                                 </div>
                             </div>
 
                             <DialogDescription className="ss-lede">
-                                Paste a SureSend API token to link your account. Call summaries and contacts will sync to the matching lead.
+                                Paste a Sure Send API token to link your account. Call summaries and contacts will sync to the matching lead.
                             </DialogDescription>
 
                             <ol className="ss-steps">
                                 <li>
-                                    Log in to SureSend at{' '}
+                                    Log in to Sure Send at{' '}
                                     <button type="button" className="ss-link" onClick={() => openExternal('https://suresend.ai/')}>
                                         suresend.ai
                                     </button>
                                 </li>
                                 <li>Open <b>Settings → API Tokens</b></li>
                                 <li>Click <b>Create Token</b> — we recommend using <span className="ss-kbd">Team</span> scope</li>
-                                <li>Copy the token. SureSend shows it only once</li>
+                                <li>Copy the token. Sure Send shows it only once</li>
                             </ol>
 
                             <div className="ss-field-wrap">
@@ -158,7 +158,7 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
 
                     <div className="ss-success">
                         <div className="ss-check" aria-hidden="true"><Check /></div>
-                        <h2>SureSend connected</h2>
+                        <h2>Sure Send connected</h2>
                         <p>Your account is linked. New call summaries and contacts will start syncing within a few minutes.</p>
                         <div className="ss-foot">
                             <SaysoButton label="Done" variant="sayso-indigo" size="sm" onClick={() => handleOpenChange(false)} />
