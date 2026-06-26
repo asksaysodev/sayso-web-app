@@ -123,8 +123,14 @@ apiClient.interceptors.response.use(
 				return apiClient(originalRequest);
 			} catch (refreshError) {
 				if (isTerminalAuthError(refreshError)) {
-					// The session is genuinely dead — tell the app to log out.
-					Sentry.captureException(refreshError);
+					Sentry.addBreadcrumb({
+						category: 'auth.refresh',
+						message: 'Session expired (terminal) — logging out',
+						level: 'info',
+						data: {
+							error: refreshError instanceof Error ? refreshError.message : String(refreshError)
+						}
+					});
 					window.dispatchEvent(new CustomEvent('auth:session-expired'));
 				} else {
 					// Transient error (network blip, 5xx, timeout). The session is

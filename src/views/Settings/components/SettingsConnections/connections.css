@@ -2,7 +2,7 @@
 .connections-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 380px));
-    gap: 14px;
+    gap: 8px;
     width: 100%;
 }
 
@@ -114,6 +114,10 @@
     background: #e9f3ed;
 }
 
+.connection-tile--suresend {
+    background: #e7eff7;
+}
+
 /* ── Status pill ── */
 .connection-status {
     display: inline-flex;
@@ -157,7 +161,7 @@
 }
 
 .connection-meta-hash {
-    color: var(--sayso-darkgray);
+    color: #6b7280;
     font-weight: 500;
 }
 
@@ -242,79 +246,260 @@
     transform: translateX(3px);
 }
 
-/* ── Manage modal ── */
-.manage-connection-modal {
-    max-width: 480px;
+/* ── SureSend Modals — shared tokens ── */
+.suresend-modal,
+.suresend-manage {
+    --ss-ink: #14171c;
+    --ss-ink-2: #565f6e;
+    --ss-ink-3: #8a93a3;
+    --ss-line: #e6e8ee;
+    --ss-line-2: #eef0f4;
+    --ss-field: #fbfcfd;
+    --ss-panel: #ffffff;
+    --ss-accent: #2f6bff;
+    --ss-accent-d: #1f54df;
+    --ss-good: #0f9d63;
+    --ss-good-soft: #e8f6ef;
+    --ss-bad: #d8453b;
+    --ss-bad-soft: #fcecea;
+    --ss-r-ctrl: 9px;
+    width: 100%;
+    background: var(--ss-panel);
+    border-radius: 16px;
+    overflow: hidden;
+    color: var(--ss-ink);
+    text-align: left;
+    box-shadow:
+        0 1px 1px rgba(17, 20, 26, .04),
+        0 12px 28px -8px rgba(17, 20, 26, .18),
+        0 40px 80px -24px rgba(17, 20, 26, .28);
 }
 
-.manage-connection-modal-head {
+/* ── SureSend Connect Modal (Claude Design) ── */
+.suresend-modal {
+    --ss-accent-soft: #eef3ff;
+}
+
+.suresend-modal .ss-pad { padding: 26px 26px 22px; }
+
+.suresend-modal .ss-head { display: flex; align-items: center; gap: 13px; }
+.suresend-modal .ss-h1 { margin: 0; font-size: 18px; font-weight: 650; letter-spacing: -.01em; color: var(--ss-ink); }
+.suresend-modal .ss-sub { margin: 2px 0 0; font-size: 13px; color: var(--ss-ink-3); font-weight: 500; }
+
+.suresend-modal .ss-lede { margin: 16px 0 0; font-size: 14px; line-height: 1.5; color: var(--ss-ink-2); }
+
+/* steps */
+.suresend-modal .ss-steps {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 16px 16px 4px;
+    background: var(--ss-field);
+    border: 1px solid var(--ss-line);
+    border-radius: 12px;
+    counter-reset: step;
+}
+.suresend-modal .ss-steps li {
+    position: relative;
+    padding: 0 0 14px 34px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--ss-ink-2);
+    counter-increment: step;
+}
+.suresend-modal .ss-steps li:last-child { padding-bottom: 4px; }
+.suresend-modal .ss-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: -1px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--ss-panel);
+    border: 1px solid var(--ss-line);
+    color: var(--ss-ink-2);
+    font-size: 12px;
+    font-weight: 650;
+    display: grid;
+    place-items: center;
+}
+.suresend-modal .ss-steps li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 10.5px;
+    top: 23px;
+    bottom: 5px;
+    width: 1px;
+    background: var(--ss-line);
+}
+.suresend-modal .ss-steps b { color: var(--ss-ink); font-weight: 600; }
+.suresend-modal .ss-link {
+    color: var(--ss-accent);
+    text-decoration: none;
+    font-weight: 600;
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+}
+.suresend-modal .ss-link:hover { text-decoration: underline; }
+.suresend-modal .ss-kbd { color: var(--ss-ink); font-weight: 600; }
+.suresend-modal .ss-once { color: var(--ss-bad); font-weight: 600; }
+
+/* field */
+.suresend-modal .ss-field-wrap { margin-top: 18px; }
+.suresend-modal .ss-field-label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ss-ink-2); margin: 0 0 7px; }
+.suresend-modal .ss-field {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 4px;
+    height: 44px;
+    background: var(--ss-panel);
+    border: 1.5px solid var(--ss-line);
+    border-radius: var(--ss-r-ctrl);
+    transition: border-color .15s, box-shadow .15s;
 }
-
-.manage-connection-modal-head-info {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: flex-start;
-}
-
-.manage-connection-modal-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--sayso-darkgray);
-    letter-spacing: -0.005em;
-}
-
-.manage-connection-modal-desc {
-    color: var(--sayso-lightgray);
-    font-size: 13.5px;
-    line-height: 1.55;
-    margin-top: 12px;
-}
-
-.manage-connection-modal-section {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid var(--sayso-border);
-}
-
-.manage-connection-modal-section-title {
+.suresend-modal .ss-field:focus-within { border-color: var(--ss-accent); box-shadow: 0 0 0 3.5px var(--ss-accent-soft); }
+.suresend-modal .ss-field input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    outline: none;
+    height: 100%;
+    padding: 0 8px 0 13px;
+    font: inherit;
     font-size: 14px;
-    font-weight: 600;
-    color: var(--sayso-darkgray);
-    margin: 0 0 6px;
+    color: var(--ss-ink);
+    letter-spacing: .01em;
 }
-
-.manage-connection-modal-section-desc {
-    color: var(--sayso-lightgray);
-    font-size: 13px;
-    line-height: 1.5;
-    margin: 0 0 14px;
+.suresend-modal .ss-field input::placeholder { color: var(--ss-ink-3); letter-spacing: 0; }
+.suresend-modal .ss-reveal {
+    border: 0;
+    background: transparent;
+    width: 38px;
+    height: 100%;
+    flex: none;
+    color: var(--ss-ink-3);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    border-radius: 0 var(--ss-r-ctrl) var(--ss-r-ctrl) 0;
 }
+.suresend-modal .ss-reveal:hover { color: var(--ss-ink-2); }
+.suresend-modal .ss-reveal svg { width: 17px; height: 17px; }
 
-.manage-connection-modal-confirm {
+.suresend-modal .ss-hint {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 9px 1px 0;
+    font-size: 12.5px;
+    color: var(--ss-ink-3);
+    min-height: 16px;
+}
+.suresend-modal .ss-hint svg { width: 14px; height: 14px; flex: none; }
+.suresend-modal .ss-hint--error { color: var(--ss-bad); }
+
+/* error state on field */
+.suresend-modal[data-state="error"] .ss-field { border-color: var(--ss-bad); }
+.suresend-modal[data-state="error"] .ss-field:focus-within { box-shadow: 0 0 0 3.5px var(--ss-bad-soft); }
+
+/* footer */
+.suresend-modal .ss-foot {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     gap: 10px;
-    padding: 12px 14px;
-    background: #fdf2f2;
-    border: 1px solid #f4cccc;
-    border-radius: 8px;
+    padding: 16px 26px;
+    border-top: 1px solid var(--ss-line-2);
+    background: linear-gradient(var(--ss-panel), #fcfcfe);
+}
+/* success view */
+.suresend-modal .ss-success { display: none; padding: 38px 26px 30px; text-align: center; }
+.suresend-modal[data-state="success"] .ss-default-view { display: none; }
+.suresend-modal[data-state="success"] .ss-success { display: block; }
+.suresend-modal .ss-check {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: var(--ss-good-soft);
+    display: grid;
+    place-items: center;
+}
+.suresend-modal .ss-check svg { width: 30px; height: 30px; color: var(--ss-good); }
+.suresend-modal .ss-success h2 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.01em; color: var(--ss-ink); }
+.suresend-modal .ss-success p { margin: 8px auto 0; font-size: 14px; line-height: 1.5; color: var(--ss-ink-2); max-width: 320px; }
+.suresend-modal .ss-success .ss-foot { justify-content: center; margin-top: 24px; border: 0; background: none; padding: 0; }
+
+/* ── SureSend Manage Modal (Claude Design) ── */
+.suresend-manage {
+    --ss-good-line: #bfe6d2;
+    --ss-bad-d: #bf392f;
+    --ss-bad-line: #f3c7c2;
 }
 
-.manage-connection-modal-confirm-prompt {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--sayso-darkgray);
-}
+.suresend-manage .ssm-pad { padding: 26px 26px 24px; }
 
-.manage-connection-modal-confirm-actions {
+.suresend-manage .ssm-head { display: flex; align-items: center; gap: 13px; }
+.suresend-manage .ssm-head-text { display: flex; flex-direction: column; gap: 5px; }
+.suresend-manage .ssm-head-row { display: flex; align-items: center; gap: 10px; }
+.suresend-manage .ssm-h1 { margin: 0; font-size: 18px; font-weight: 650; letter-spacing: -.01em; color: var(--ss-ink); }
+.suresend-manage .ssm-sub { margin: 0; font-size: 13px; color: var(--ss-ink-3); font-weight: 500; }
+
+.suresend-manage .ssm-lede { margin: 16px 0 0; font-size: 14px; line-height: 1.5; color: var(--ss-ink-2); }
+
+/* connection meta */
+.suresend-manage .ssm-meta {
+    margin-top: 18px;
+    border: 1px solid var(--ss-line);
+    border-radius: 12px;
+    background: var(--ss-field);
+    overflow: hidden;
+}
+.suresend-manage .ssm-meta-row {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 14px;
+    font-size: 13.5px;
 }
+.suresend-manage .ssm-meta-row + .ssm-meta-row { border-top: 1px solid var(--ss-line); }
+.suresend-manage .ssm-k { display: inline-flex; align-items: center; gap: 8px; color: var(--ss-ink-2); font-weight: 500; }
+.suresend-manage .ssm-k svg { width: 15px; height: 15px; color: var(--ss-ink-3); }
+.suresend-manage .ssm-v { color: var(--ss-ink); font-weight: 600; }
+
+.suresend-manage .ssm-rule { height: 1px; background: var(--ss-line-2); margin: 22px 0; }
+
+/* danger zone */
+.suresend-manage .ssm-danger-title { margin: 0; font-size: 15px; font-weight: 650; color: var(--ss-ink); }
+.suresend-manage .ssm-danger-desc { margin: 7px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--ss-ink-2); }
+.suresend-manage .ssm-danger-actions { margin-top: 16px; }
+
+/* inline confirm panel */
+.suresend-manage .ssm-confirm {
+    margin-top: 16px;
+    border: 1px solid var(--ss-bad-line);
+    background: var(--ss-bad-soft);
+    border-radius: 12px;
+    padding: 14px 15px;
+    display: none;
+}
+.suresend-manage[data-state="confirm"] .ssm-confirm,
+.suresend-manage[data-state="disconnecting"] .ssm-confirm {
+    display: block;
+    animation: ssm-slide .2s cubic-bezier(.2, .7, .3, 1) both;
+}
+.suresend-manage[data-state="confirm"] .ssm-danger-actions,
+.suresend-manage[data-state="disconnecting"] .ssm-danger-actions { display: none; }
+@keyframes ssm-slide { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.suresend-manage .ssm-confirm-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 650; color: var(--ss-bad-d); }
+.suresend-manage .ssm-confirm-head svg { width: 16px; height: 16px; flex: none; }
+.suresend-manage .ssm-confirm-text { margin: 8px 0 0 2px; font-size: 13.5px; line-height: 1.5; color: #9a3a32; }
+.suresend-manage .ssm-confirm-actions { display: flex; gap: 9px; justify-content: flex-end; margin-top: 32px; }
 
 /* ── Loading spinner ── */
 .connection-btn .loading-icon {
