@@ -349,7 +349,7 @@
 
 /* field */
 .suresend-modal .ss-field-wrap { margin-top: 18px; }
-.suresend-modal .ss-field-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ss-ink-2); margin: 0 0 7px; }
+.suresend-modal .ss-field-label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ss-ink-2); margin: 0 0 7px; }
 .suresend-modal .ss-field {
     position: relative;
     display: flex;
@@ -498,8 +498,8 @@
 @keyframes ssm-slide { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 .suresend-manage .ssm-confirm-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 650; color: var(--ss-bad-d); }
 .suresend-manage .ssm-confirm-head svg { width: 16px; height: 16px; flex: none; }
-.suresend-manage .ssm-confirm-text { margin: 7px 0 0 24px; font-size: 13px; line-height: 1.5; color: #9a3a32; }
-.suresend-manage .ssm-confirm-actions { display: flex; gap: 9px; justify-content: flex-end; margin-top: 13px; }
+.suresend-manage .ssm-confirm-text { margin: 8px 0 0 2px; font-size: 13.5px; line-height: 1.5; color: #9a3a32; }
+.suresend-manage .ssm-confirm-actions { display: flex; gap: 9px; justify-content: flex-end; margin-top: 32px; }
 
 /* ── Loading spinner ── */
 .connection-btn .loading-icon {

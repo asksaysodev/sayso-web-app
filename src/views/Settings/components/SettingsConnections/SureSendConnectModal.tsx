@@ -76,7 +76,7 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="p-0 gap-0 border-0 bg-transparent shadow-none max-w-[472px] w-full">
+            <DialogContent className="p-0 gap-0 border-0 bg-transparent shadow-none max-w-[560px] w-full">
                 <div className="suresend-modal" data-state={state}>
                     <div className="ss-default-view">
                         <div className="ss-pad">
@@ -100,8 +100,8 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
                                     </button>
                                 </li>
                                 <li>Open <b>Settings → API Tokens</b></li>
-                                <li>Click <b>Create token</b> — choose <span className="ss-kbd">Team</span> for admins, or <span className="ss-kbd">Personal</span> for individual accounts</li>
-                                <li>Copy the token. SureSend shows it <span className="ss-once">only once</span></li>
+                                <li>Click <b>Create Token</b> — we recommend using <span className="ss-kbd">Team</span> scope</li>
+                                <li>Copy the token. SureSend shows it only once</li>
                             </ol>
 
                             <div className="ss-field-wrap">
