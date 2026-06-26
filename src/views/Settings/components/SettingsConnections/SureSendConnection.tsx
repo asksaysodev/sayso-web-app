@@ -12,6 +12,17 @@ const TITLE = "SureSend";
 const CATEGORY = "Real-estate CRM";
 const DESCRIPTION = "Push call summaries and contacts into the matching lead in SureSend.";
 
+// Prefix the connected account name with its token scope ("Team: Sayso").
+// SureSend's raw tokenScope string format is unconfirmed, so match case-insensitively
+// and fall back to the bare name for any unknown/missing scope.
+const SCOPE_LABELS: Record<string, string> = { team: 'Team', personal: 'Personal' };
+
+const formatSureSendMeta = (name?: string | null, scope?: string | null): string | undefined => {
+    if (!name) return undefined;
+    const label = scope ? SCOPE_LABELS[scope.toLowerCase()] : undefined;
+    return label ? `${label}: ${name}` : name;
+};
+
 export default function SureSendConnection() {
     const [connectModalOpen, setConnectModalOpen] = useState(false);
     const [manageOpen, setManageOpen] = useState(false);
@@ -51,7 +62,7 @@ export default function SureSendConnection() {
                 category={CATEGORY}
                 description={DESCRIPTION}
                 connected={connected}
-                connectedMeta={globalUser?.suresend_account_name ?? undefined}
+                connectedMeta={formatSureSendMeta(globalUser?.suresend_account_name, globalUser?.suresend_token_scope)}
                 handleConnection={() => setConnectModalOpen(true)}
                 handleManage={() => setManageOpen(true)}
             />

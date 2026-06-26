@@ -40,6 +40,7 @@ export interface Account {
   suresend_connected?: boolean;
   suresend_account_name?: string | null;
   suresend_account_email?: string | null;
+  suresend_token_scope?: string | null;
   zoom_connected?: boolean;
   stripe_customer_id?: string | null;
   stripe_subscription_id?: string | null;
