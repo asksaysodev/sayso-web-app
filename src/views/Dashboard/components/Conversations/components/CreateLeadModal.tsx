@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { isValidPhoneNumber } from 'libphonenumber-js';
+import { useForm, Controller } from 'react-hook-form';
 import * as Sentry from '@sentry/react';
 import {
     Dialog,
@@ -11,6 +10,7 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { PhoneInput, isValidPhone, toE164 } from '@/components/ui/PhoneInput';
 import { Label } from '@/components/ui/label';
 import SaysoButton from '@/components/SaysoButton';
 import { useToast } from '@/context/ToastContext';
@@ -32,14 +32,13 @@ interface FormValues {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const isValidPhone = (v: string) => isValidPhoneNumber(v.trim(), 'US');
 
 export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
     const { showToast } = useToast();
     const { createLead, isPending } = useCrmCreateLead();
     const [submitError, setSubmitError] = useState<string | null>(null);
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+    const { register, handleSubmit, reset, control, formState: { errors } } = useForm<FormValues>({
         defaultValues: { firstName: '', lastName: '', phone: '', email: '' },
     });
 
@@ -61,7 +60,7 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
             const lead = await createLead({
                 firstName: values.firstName.trim(),
                 lastName: values.lastName.trim(),
-                phone: values.phone.trim(),
+                phone: toE164(values.phone),
                 email: values.email.trim() || undefined,
             });
             showToast('success', `${lead.name} added to your CRM.`);
@@ -114,15 +113,24 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
 
                         <div className="flex flex-col gap-1.5">
                             <Label htmlFor="cl-phone">Phone *</Label>
-                            <Input
-                                id="cl-phone"
-                                type="tel"
-                                placeholder="+1 (555) 000-0000"
-                                disabled={isPending}
-                                {...register('phone', {
+                            <Controller
+                                name="phone"
+                                control={control}
+                                rules={{
                                     required: 'Phone is required.',
                                     validate: v => isValidPhone(v) || 'Enter a valid phone number.',
-                                })}
+                                }}
+                                render={({ field }) => (
+                                    <PhoneInput
+                                        id="cl-phone"
+                                        placeholder="+1 (555) 000-0000"
+                                        disabled={isPending}
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        onBlur={field.onBlur}
+                                        ref={field.ref}
+                                    />
+                                )}
                             />
                             {errors.phone && (
                                 <p className="text-xs text-destructive">{errors.phone.message}</p>
