@@ -106,9 +106,9 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
         <Dialog open={open} onOpenChange={isOpen => !isOpen && handleClose()}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Create SureSend Lead</DialogTitle>
+                    <DialogTitle>Create Sure Send Lead</DialogTitle>
                     <DialogDescription>
-                        Add a new contact to SureSend and link them to this conversation.
+                        Add a new contact to Sure Send and link them to this conversation.
                     </DialogDescription>
                 </DialogHeader>
 

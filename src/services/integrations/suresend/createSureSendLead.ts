@@ -11,6 +11,6 @@ export interface CreateSureSendLeadParams {
 
 export default async function createSureSendLead(params: CreateSureSendLeadParams): Promise<SureSendPerson> {
     const response = await apiClient.post<SureSendPerson>('/suresend/people', params);
-    if (!response?.data) throw new Error('Failed to create SureSend lead');
+    if (!response?.data) throw new Error('Failed to create Sure Send lead');
     return response.data;
 }
