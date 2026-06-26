@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { isValidPhoneNumber } from 'libphonenumber-js';
 import * as Sentry from '@sentry/react';
 import {
     Dialog,
@@ -11,6 +10,7 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { PhoneInput, isValidPhone, toE164 } from '@/components/ui/PhoneInput';
 import { Label } from '@/components/ui/label';
 import {
     Select,
@@ -46,7 +46,6 @@ interface FormValues {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const isValidPhone = (v: string) => isValidPhoneNumber(v.trim(), 'US');
 
 export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Props) {
     const { showToast } = useToast();
@@ -90,7 +89,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
             const lead = await createLead({
                 firstName: values.firstName.trim(),
                 lastName: values.lastName.trim(),
-                phone: values.phone.trim(),
+                phone: toE164(values.phone),
                 email: values.email.trim(),
                 stage: values.stage,
             });
@@ -144,15 +143,24 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
 
                         <div className="flex flex-col gap-1.5">
                             <Label htmlFor="ss-phone">Phone *</Label>
-                            <Input
-                                id="ss-phone"
-                                type="tel"
-                                placeholder="+1 (555) 000-0000"
-                                disabled={isPending}
-                                {...register('phone', {
+                            <Controller
+                                name="phone"
+                                control={control}
+                                rules={{
                                     required: 'Phone is required.',
                                     validate: v => isValidPhone(v) || 'Enter a valid phone number.',
-                                })}
+                                }}
+                                render={({ field }) => (
+                                    <PhoneInput
+                                        id="ss-phone"
+                                        placeholder="+1 (555) 000-0000"
+                                        disabled={isPending}
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        onBlur={field.onBlur}
+                                        ref={field.ref}
+                                    />
+                                )}
                             />
                             {errors.phone && (
                                 <p className="text-xs text-destructive">{errors.phone.message}</p>
