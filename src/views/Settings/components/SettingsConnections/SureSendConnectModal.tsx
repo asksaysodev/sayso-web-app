@@ -54,7 +54,7 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
             setState('success');
         } catch (err: any) {
             const httpStatus = err?.response?.status;
-            const isInvalid = httpStatus === 401;
+            const isInvalid = httpStatus === 422;
             setErrorMsg(isInvalid ? DEFAULT_ERROR : 'Something went wrong. Please try again.');
             setState('error');
             Sentry.captureException(
