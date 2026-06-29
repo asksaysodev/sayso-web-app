@@ -15,9 +15,17 @@ export function useSessionRevalidation(): void {
       if (now - lastCheck < DEBOUNCE_MS) return
       lastCheck = now
 
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.expires_at !== undefined && session.expires_at * 1000 - Date.now() < 60_000) {
-        await supabase.auth.refreshSession()
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.expires_at !== undefined && session.expires_at * 1000 - Date.now() < 60_000) {
+          await supabase.auth.refreshSession()
+        }
+      } catch (e: unknown) {
+        // Safari suspends tabs mid-lock, leaving lock:sayso-auth held by a frozen context.
+        // The lock times out after 10s and throws NavigatorLockAcquireTimeoutError.
+        // Safe to ignore — the existing token is still valid and the SDK's own refresh timer recovers.
+        if (e instanceof Error && e.name === 'NavigatorLockAcquireTimeoutError') return
+        throw e
       }
     }
 
