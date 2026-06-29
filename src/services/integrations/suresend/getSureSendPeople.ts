@@ -49,6 +49,6 @@ export interface GetSureSendPeopleParams {
 
 export default async function getSureSendPeople(params?: GetSureSendPeopleParams): Promise<SureSendPeopleResponse> {
     const response = await apiClient.get<SureSendPeopleResponse>('/suresend/people', { params });
-    if (!response?.data) throw new Error('Failed to fetch SureSend people');
+    if (!response?.data) throw new Error('Failed to fetch Sure Send people');
     return response.data;
 }
