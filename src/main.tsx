@@ -11,6 +11,11 @@ import { sentryConfig } from '@/config/sentry';
 
 Sentry.init(sentryConfig);
 
+// After a new deploy, old chunk hashes 404 — reload once to pick up fresh assets
+window.addEventListener('vite:preloadError', () => {
+  window.location.reload();
+});
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
