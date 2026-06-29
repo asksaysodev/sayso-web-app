@@ -15,10 +15,10 @@ interface Props {
     label?: string;
     labelCn?: string;
     labelColor?: string;
-    required?: boolean;
+    isRequired?: boolean;
 }
 
-export default function ControlledCustomFormField({ name, control, rules, label, children, labelCn = '', labelColor = 'var(--sayso-darkgray)', required }: Props) {
+export default function ControlledCustomFormField({ name, control, rules, label, children, labelCn = '', labelColor = 'var(--sayso-darkgray)', isRequired }: Props) {
     return (
         <Controller
             name={name}
@@ -26,11 +26,11 @@ export default function ControlledCustomFormField({ name, control, rules, label,
             rules={rules}
             render={(fieldOptions) => (
                 <div>
-                    <div className="grid gap-3">
+                    <div className="grid gap-2">
                         {label && (
                                 <Label className={labelCn} htmlFor={name} style={{ color: labelColor }}>
                                     {label}
-                                    {required && <span className="text-zinc-400 ml-0.5">*</span>}
+                                    {isRequired && <span className="text-black ml-0.5">*</span>}
                                 </Label>
                             )}
                         {children(fieldOptions)}
