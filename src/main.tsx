@@ -11,10 +11,16 @@ import { sentryConfig } from '@/config/sentry';
 
 Sentry.init(sentryConfig);
 
-// After a new deploy, old chunk hashes 404 — reload once to pick up fresh assets
+// After a new deploy, old chunk hashes 404 — reload once to pick up fresh assets.
+// sessionStorage flag prevents an infinite loop if the new build is also broken;
+// cleared on successful load so future deploys can recover too.
 window.addEventListener('vite:preloadError', () => {
-  window.location.reload();
+  if (!sessionStorage.getItem('vite_reload')) {
+    sessionStorage.setItem('vite_reload', '1');
+    window.location.reload();
+  }
 });
+window.addEventListener('load', () => sessionStorage.removeItem('vite_reload'));
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
