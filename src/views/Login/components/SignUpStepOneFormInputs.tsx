@@ -1,5 +1,6 @@
 import LoginBtn from '@/components/LoginBtn';
 import ControlledInputField from '@/components/forms/ControlledInputField';
+import ControlledPhoneInput from '@/components/forms/ControlledPhoneInput';
 import { Control } from 'react-hook-form';
 import { LoginFormData } from '../types';
 
@@ -15,17 +16,26 @@ export default function SignUpStepOneFormInputs({ control }: Props) {
                 name="name"
                 label="First Name"
                 labelCn='loginInFormInputLabel'
+                isRequired
             />
             <ControlledInputField
                 control={control}
                 name="lastname"
                 label="Last Name"
                 labelCn='loginInFormInputLabel'
+                isRequired
             />
             <ControlledInputField
                 control={control}
                 name="company"
                 label="Broker/Team"
+                labelCn='loginInFormInputLabel'
+                isRequired
+            />
+            <ControlledPhoneInput
+                control={control}
+                name="phone"
+                label="Phone"
                 labelCn='loginInFormInputLabel'
             />
             <div className="formActions">

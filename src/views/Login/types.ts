@@ -6,6 +6,7 @@ export interface LoginFormData {
     email: string;
     password: string;
     repeatPassword: string;
+    phone: string;
   }
 
   export interface ResetPasswordFormData {

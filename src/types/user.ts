@@ -17,6 +17,7 @@ export interface UserMetadata {
   name?: string;
   lastname?: string;
   company?: string;
+  phone?: string;
 }
 
 type AccountType = 'individual' | 'team';
@@ -26,6 +27,7 @@ export interface Account {
   email: string;
   name: string | null;
   lastname: string | null;
+  phone: string | null;
   company_id: string | null;
   subscription_monthly_minutes: number | null;
   subscription_plan_id: string | null;
@@ -119,6 +121,7 @@ export interface CreateAccountData {
   name?: string;
   lastname?: string;
   company?: string;
+  phone?: string;
 }
 
 export interface UpdateAccountData {
@@ -129,6 +132,7 @@ export interface UpdateAccountData {
   subscription_plan_id?: string;
   subscription_status?: SubscriptionStatus;
   subscription_monthly_minutes?: number;
+  phone?: string | null;
 }
 
 export interface AuthContextValue {
@@ -151,6 +155,7 @@ export interface SignUpData {
       name?: string;
       lastname?: string;
       company?: string;
+      phone?: string;
     };
   };
 }

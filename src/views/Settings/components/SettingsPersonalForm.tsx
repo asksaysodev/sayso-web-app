@@ -34,6 +34,15 @@ export default function SettingsPersonalForm({ setUnsavedChanges, globalUser }: 
                     editable={false}
                     setUnsavedChanges={setUnsavedChanges}
                 />
+                <FormLineAccount
+                    label='Phone'
+                    name='phone'
+                    type='phone'
+                    placeholder='Phone'
+                    value={globalUser?.phone || ''}
+                    editable={true}
+                    setUnsavedChanges={setUnsavedChanges}
+                />
             </form>
         </div>
     )

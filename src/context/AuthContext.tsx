@@ -250,8 +250,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const result = await supabase.auth.signUp(data)
     if (!result.error) {
       const { email, options } = data
-      const { name, lastname, company } = options?.data || {}
-      const creationPromise: any = createAccount({ email, name, lastname, company })
+      const { name, lastname, company, phone } = options?.data || {}
+      const creationPromise: any = createAccount({ email, name, lastname, company, phone })
         .catch((err) => {
           console.error('Error creating account in DB:', err)
           Sentry.captureException(err)
@@ -270,7 +270,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setAttributionPending(true);
       (async () => {
         try {
-          await enrollReferralParticipant({ email, fName: name, lName: lastname });
+          const enrolled = await enrollReferralParticipant({ email, fName: name, lName: lastname });
+          if (!enrolled) return;
           const { referredByCode, referrerEmail } = await getParticipantReferrer(email);
           if (referredByCode && referrerEmail) {
             await setReferralAttribution({ referralCodeUsed: referredByCode, referrerEmail });
