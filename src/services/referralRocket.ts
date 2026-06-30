@@ -42,8 +42,8 @@ export async function enrollReferralParticipant(params: {
   fName?: string;
   lName?: string;
 }): Promise<boolean> {
-  const campaign = await getCampaign();
   try {
+    const campaign = await getCampaign();
     await campaign.addParticipant({
       email: params.email,
       fName: params.fName,
