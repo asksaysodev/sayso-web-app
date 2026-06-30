@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { LuX } from 'react-icons/lu';
 import { DateRange } from 'react-day-picker';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { ConversationItem } from '@/types/coach';
@@ -14,11 +15,17 @@ import ConversationsListSkeleton from './ConversationsListSkeleton';
 import './styles/Conversations.css';
 
 interface ConversationFilter {
-    key: 'lead_type' | 'appointment_booked' | 'lead_name';
+    key: 'lead_type' | 'appointment_booked' | 'lead_name' | 'has_summary';
     value: string;
 }
 
 const AVAILABLE_FILTERS: SearchFilterConfig<ConversationFilter>[] = [
+    {
+        key: 'has_summary',
+        label: 'Summary Created',
+        description: 'Show only conversations with a summary',
+        defaultValue: () => ({ key: 'has_summary', value: 'true' }),
+    },
     {
         key: 'lead_type',
         label: 'Lead type',
@@ -43,7 +50,7 @@ export default function Conversations() {
     const [searchInputValue, setSearchInputValue] = useState('');
     const [dateRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>(INITIAL_DATE_RANGE);
     const [openedConversations, setOpenedConversations] = useState<string[]>([]);
-    const [activeFilters, setActiveFilters] = useState<ConversationFilter[]>([]);
+    const [activeFilters, setActiveFilters] = useState<ConversationFilter[]>([{ key: 'has_summary', value: 'true' }]);
     const debouncedSearch = useDebounce(searchInputValue, 500);
 
     useConversationsSocket();
@@ -101,6 +108,14 @@ export default function Conversations() {
                             availableFilters={AVAILABLE_FILTERS}
                             placeholder="Search conversations..."
                             filterPillRenderers={{
+                                has_summary: (_filter, _onUpdate, onRemove) => (
+                                    <div className="search-filter-pill">
+                                        <span className="filter-pill-label">Summary Created</span>
+                                        <button className="filter-pill-remove" onClick={onRemove}>
+                                            <LuX size={12} />
+                                        </button>
+                                    </div>
+                                ),
                                 lead_type: (filter, onUpdate, onRemove) => (
                                     <FilterPill
                                         label="lead type"
