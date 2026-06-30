@@ -270,7 +270,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setAttributionPending(true);
       (async () => {
         try {
-          await enrollReferralParticipant({ email, fName: name, lName: lastname });
+          const enrolled = await enrollReferralParticipant({ email, fName: name, lName: lastname });
+          if (!enrolled) return;
           const { referredByCode, referrerEmail } = await getParticipantReferrer(email);
           if (referredByCode && referrerEmail) {
             await setReferralAttribution({ referralCodeUsed: referredByCode, referrerEmail });
