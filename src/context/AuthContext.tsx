@@ -250,8 +250,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const result = await supabase.auth.signUp(data)
     if (!result.error) {
       const { email, options } = data
-      const { name, lastname, company } = options?.data || {}
-      const creationPromise: any = createAccount({ email, name, lastname, company })
+      const { name, lastname, company, phone } = options?.data || {}
+      const creationPromise: any = createAccount({ email, name, lastname, company, phone })
         .catch((err) => {
           console.error('Error creating account in DB:', err)
           Sentry.captureException(err)

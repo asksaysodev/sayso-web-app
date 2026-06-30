@@ -111,7 +111,7 @@ export default function CreateNotificationButton() {
                             name="title"
                             control={control}
                             label="Title"
-                            labelRequired
+                            isRequired
                             placeholder="e.g. New feature alert"
                             rules={{ required: 'Title is required' }}
                         />
@@ -127,7 +127,7 @@ export default function CreateNotificationButton() {
                             name="type"
                             control={control}
                             label="Type"
-                            labelRequired
+                            isRequired
                             options={[
                                 { value: 'media', label: 'Media' },
                                 { value: 'article', label: 'Article' },
@@ -140,7 +140,7 @@ export default function CreateNotificationButton() {
                                     name="media_url"
                                     control={control}
                                     label="Media URL"
-                                    labelRequired
+                                    isRequired
                                     placeholder="YouTube link, video or image URL"
                                     rules={{ required: 'Media URL is required' }}
                                 />
@@ -177,7 +177,7 @@ export default function CreateNotificationButton() {
                                 name="body"
                                 control={control}
                                 label="Body"
-                                required
+                                isRequired
                                 rules={{ validate: (v: string) => (v && v !== '<p></p>') || 'Body is required' }}
                             >
                                 {({ field }) => (

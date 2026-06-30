@@ -23,6 +23,7 @@ export default function SignUpStepTwoFormInputs({ control, isBtnLoading, setSign
                 name="email"
                 label="Email"
                 labelCn='loginInFormInputLabel'
+                isRequired
             />
             <ControlledInputField
                 type={showPassword ? 'text' : 'password'}
@@ -30,6 +31,7 @@ export default function SignUpStepTwoFormInputs({ control, isBtnLoading, setSign
                 name="password"
                 label="Password"
                 labelCn='loginInFormInputLabel'
+                isRequired
                 rightChildren={<EyeToggleShowPasswordButton
                     showPassword={showPassword}
                     setShowPassword={setShowPassword}
@@ -41,6 +43,7 @@ export default function SignUpStepTwoFormInputs({ control, isBtnLoading, setSign
                 name="repeatPassword"
                 label="Repeat Password"
                 labelCn='loginInFormInputLabel'
+                isRequired
                 rightChildren={<EyeToggleShowPasswordButton
                     showPassword={showRepeatPassword}
                     setShowPassword={setShowRepeatPassword}

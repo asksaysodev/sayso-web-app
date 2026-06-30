@@ -1,5 +1,6 @@
 import { FieldErrors } from "react-hook-form";
 import { LoginFormData, ResetPasswordFormData } from "../types";
+import { isValidPhone } from "@/components/ui/PhoneInput";
 
 /**
  * Validates signup step 1 fields (personal info)
@@ -9,6 +10,8 @@ export const validateStepOneFields = (formData: LoginFormData) => {
   if (!formData.name) errors.name = 'Name is required';
   if (!formData.lastname) errors.lastname = 'Last name is required';
   if (!formData.company) errors.company = 'Company is required';
+  const phoneFilled = formData.phone && formData.phone.trim() !== '+1';
+  if (phoneFilled && !isValidPhone(formData.phone)) errors.phone = 'Enter a valid phone number.';
   return errors;
 };
 
