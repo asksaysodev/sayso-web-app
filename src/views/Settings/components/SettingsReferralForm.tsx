@@ -27,7 +27,7 @@ export default function SettingsReferralForm() {
             {isError && (
                 <div className='settings-referral-error'>
                     <LuCircleAlert size={16} />
-                    <span>{error instanceof Error ? error.message : "Couldn't load your referral link."}</span>
+                    <span>{"Couldn't load your referral link. Please try again or contact support."}</span>
                     <button onClick={() => refetch()} className='settings-referral-retry-btn'>
                         Retry
                     </button>
