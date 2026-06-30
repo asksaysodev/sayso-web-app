@@ -45,6 +45,7 @@ export default function ControlledInputField({
                             <input
                                 step={step ? step : undefined}
                                 type={type}
+                                id={name}
                                 name={name}
                                 placeholder={placeholder}
                                 className={`formInput ${fieldError ? 'error' : ''} ${className}`}
@@ -68,6 +69,7 @@ export default function ControlledInputField({
                         <input
                             step={step ? step : undefined}
                             type={type}
+                            id={name}
                             name={name}
                             placeholder={placeholder}
                             className={`formInput ${fieldError ? 'error' : ''} ${className}`}

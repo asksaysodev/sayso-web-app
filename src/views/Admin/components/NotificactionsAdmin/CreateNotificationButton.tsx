@@ -177,7 +177,7 @@ export default function CreateNotificationButton() {
                                 name="body"
                                 control={control}
                                 label="Body"
-                                required
+                                isRequired
                                 rules={{ validate: (v: string) => (v && v !== '<p></p>') || 'Body is required' }}
                             >
                                 {({ field }) => (

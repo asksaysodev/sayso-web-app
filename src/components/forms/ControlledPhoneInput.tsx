@@ -32,6 +32,7 @@ export default function ControlledPhoneInput({
             {({ field, fieldState: { error: fieldError } }) => (
                 <div className="controlledInputFieldGroup">
                     <PhoneInput
+                        id={name}
                         value={field.value}
                         onChange={field.onChange}
                         onBlur={field.onBlur}

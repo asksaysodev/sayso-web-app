@@ -132,7 +132,7 @@ export interface UpdateAccountData {
   subscription_plan_id?: string;
   subscription_status?: SubscriptionStatus;
   subscription_monthly_minutes?: number;
-  phone?: string;
+  phone?: string | null;
 }
 
 export interface AuthContextValue {

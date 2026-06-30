@@ -17,7 +17,7 @@ interface Props {
     value: string;
     editable: boolean;
     setUnsavedChanges: (unsavedChanges: boolean) => void;
-    updateFn?: (updateData: Record<string, string>) => Promise<void>;
+    updateFn?: (updateData: Record<string, string | null>) => Promise<void>;
     type?: 'text' | 'phone';
 }
 
@@ -47,7 +47,7 @@ export default function FormLineAccount({ label, name, placeholder, value, edita
             }
             try {
                 const updateData = { [name]: isEmpty ? null : toE164(inputValue) };
-                await (updateFn ?? updateAccount)(updateData as Record<string, string>);
+                await (updateFn ?? updateAccount)(updateData as Record<string, string | null>);
                 showToast('success', 'Account updated successfully!');
                 setUnsavedChanges(false);
                 setIsEditing(false);
@@ -112,7 +112,7 @@ export default function FormLineAccount({ label, name, placeholder, value, edita
         if(inputValue !== value) {
             setUnsavedChanges(true);
         }
-    }, [inputValue]);
+    }, [inputValue, value]);
 
     return (
         <label className='form-line-container-label' htmlFor={name}>
