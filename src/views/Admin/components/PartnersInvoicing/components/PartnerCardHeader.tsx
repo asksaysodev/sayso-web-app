@@ -10,17 +10,22 @@ interface Props {
 }
 
 export default function PartnerCardHeader({ partner, expanded, onToggle }: Props) {
+    const {name, billingEmail, stripeStatus} = partner || {};
     return (
         <div className="partner-card-header" onClick={onToggle}>
             <div className="partner-card-header__mono">
-                {partner.name[0].toUpperCase()}
+                {name[0]?.toUpperCase() ?? '?'}
             </div>
             <div className="partner-card-header__info">
-                <span className="partner-card-header__name">{partner.name}</span>
-                <span className="partner-card-header__email">{partner.billingEmail}</span>
+                <span className="partner-card-header__name">
+                    {name}
+                </span>
+                <span className="partner-card-header__email">
+                    {billingEmail}
+                </span>
             </div>
             <div className="partner-card-header__right">
-                <StripeStatusBadge status={partner.stripeStatus} />
+                <StripeStatusBadge status={stripeStatus} />
                 <ChevronRight
                     size={18}
                     strokeWidth={2.4}

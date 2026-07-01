@@ -8,5 +8,6 @@ const toneMap: Record<InvitationStatus, StatusTone> = {
 };
 
 export function invitationStatusTone(status: InvitationStatus): StatusTone {
+    if (!status) return 'gray'
     return toneMap[status] ?? 'gray';
 }

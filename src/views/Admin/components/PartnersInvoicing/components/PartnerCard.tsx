@@ -11,12 +11,13 @@ interface Props {
 }
 
 export default function PartnerCard({ partner, expanded, onToggle }: Props) {
+    const {invitations, netTerms, id} = partner || {};
     return (
         <div className={`partner-card${expanded ? ' partner-card--expanded' : ''}`}>
             <PartnerCardHeader partner={partner} expanded={expanded} onToggle={onToggle} />
-            <PartnerStats invitations={partner.invitations} netTerms={partner.netTerms} />
+            <PartnerStats invitations={invitations} netTerms={netTerms} />
             {expanded && (
-                <PartnerInvitations invitations={partner.invitations} partnerId={partner.id} />
+                <PartnerInvitations invitations={invitations} partnerId={id} />
             )}
         </div>
     );

@@ -20,12 +20,15 @@ export default function PartnerInvitations({ invitations, partnerId }: Props) {
                         <span className="partner-invitations__divider-line" />
                     </div>
                     <div className="partner-invitations__list">
-                        {invitations.map(invitation => (
-                            <InvitationCard
-                                key={`${partnerId}-${invitation.id}`}
-                                invitation={invitation}
-                            />
-                        ))}
+                        {invitations.map(invitation => {
+                            const {id} = invitation || {};
+                            return (
+                                <InvitationCard
+                                    key={`${partnerId}-${id}`}
+                                    invitation={invitation}
+                                />
+                            );
+                        })}
                     </div>
                 </>
             )}

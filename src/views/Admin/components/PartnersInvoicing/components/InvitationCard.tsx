@@ -8,24 +8,24 @@ interface Props {
 }
 
 export default function InvitationCard({ invitation }: Props) {
-    const tone = invitationStatusTone(invitation.status);
-
+    const {email, planName, status, teamSize,claimedAt} = invitation || {}
+    const tone = invitationStatusTone(status);
     return (
         <div className="invitation-card">
             <div className={`invitation-card__avatar invitation-card__avatar--${tone}`}>
-                {invitation.email[0].toUpperCase()}
+                {email[0]?.toUpperCase() ?? '?'}
             </div>
             <div className="invitation-card__info">
-                <span className="invitation-card__email">{invitation.email}</span>
+                <span className="invitation-card__email">{email}</span>
                 <span className="invitation-card__plan">
-                    {invitation.planName} · {invitation.teamSize}
+                    {planName} · {teamSize}
                 </span>
             </div>
             <div className="invitation-card__meta">
-                <span className={`invitation-card__date${invitation.claimedAt ? '' : ' invitation-card__date--empty'}`}>
-                    {invitation.claimedAt ?? '—'}
+                <span className={`invitation-card__date${claimedAt ? '' : ' invitation-card__date--empty'}`}>
+                    {claimedAt ?? '—'}
                 </span>
-                <InvitationStatusBadge status={invitation.status} />
+                <InvitationStatusBadge status={status} />
             </div>
         </div>
     );

@@ -11,14 +11,17 @@ interface Props {
 export default function PartnersList({ partners, isExpanded, onToggle }: Props) {
     return (
         <div className="partners-list">
-            {partners.map(partner => (
-                <PartnerCard
-                    key={partner.id}
-                    partner={partner}
-                    expanded={isExpanded(partner.id)}
-                    onToggle={() => onToggle(partner.id)}
-                />
-            ))}
+            {partners.map(partner => {
+                const {id} = partner || {};
+                return (
+                    <PartnerCard
+                        key={id}
+                        partner={partner}
+                        expanded={isExpanded(id)}
+                        onToggle={() => onToggle(id)}
+                    />
+                );
+            })}
         </div>
     );
 }
