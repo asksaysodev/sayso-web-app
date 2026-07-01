@@ -13,6 +13,7 @@ import CreateNotificationButton from './components/NotificactionsAdmin/CreateNot
 import { NotificationsAdminProvider } from './components/NotificactionsAdmin/NotificationsAdminContext';
 import NotificationsSearchBar from './components/NotificactionsAdmin/NotificationsSearchBar';
 import NotificationsAdmin from './components/NotificactionsAdmin';
+import PartnersInvoicing from './components/PartnersInvoicing';
 
 export default function Admin() {
     const selectedTool = useAdminStore(state => state.selectedTool);
@@ -24,6 +25,7 @@ export default function Admin() {
             case 'cue-main-instructions': return <CueMainInstructions />
             case 'subscription': return <SubscriptionAdmin />
             case 'notifications': return <NotificationsAdmin />
+            case 'partners': return <PartnersInvoicing />
         }
     }, [selectedTool]);
 
