@@ -20,15 +20,33 @@ const Login = () => {
     isBtnLoading,
     handleToggleMode,
     handleSubmit,
-    setSignupStep
+    setSignupStep,
+    isInvite,
+    invitation,
+    isInvitationLoading,
+    isInvitationError
   } = useLoginForm();
 
-  if (isLoading) {
+  if (isLoading || (isInvite && isInvitationLoading)) {
     return <LoginLoader />
   }
 
+  if (isInvite && isInvitationError) {
+    return (
+      <LoginLayout title="Invitation">
+        <div className="errorMessage">
+          This invitation is no longer valid. Please contact your administrator.
+        </div>
+      </LoginLayout>
+    )
+  }
+
+  const invitedByNote = isInvite && invitation
+    ? `You've been invited by ${invitation.partner_name} — ${invitation.plan_name} plan`
+    : undefined;
+
   return (
-    <LoginLayout title={isLoggingIn ? 'Welcome Back!' : `Create Account`} error={error}>
+    <LoginLayout title={isLoggingIn ? 'Welcome Back!' : `Create Account`} description={invitedByNote} error={error}>
       <form onSubmit={handleSubmit}>
         {isLoggingIn ? (
           <LoginInFormInputs
@@ -45,6 +63,7 @@ const Login = () => {
                 control={control}
                 isBtnLoading={isBtnLoading}
                 setSignupStep={setSignupStep}
+                disableEmail={isInvite}
               />
           )
         )}

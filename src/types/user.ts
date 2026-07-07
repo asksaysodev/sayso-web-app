@@ -122,6 +122,7 @@ export interface CreateAccountData {
   lastname?: string;
   company?: string;
   phone?: string;
+  invite_token?: string;
 }
 
 export interface UpdateAccountData {
@@ -156,6 +157,7 @@ export interface SignUpData {
       lastname?: string;
       company?: string;
       phone?: string;
+      invite_token?: string;
     };
   };
 }
