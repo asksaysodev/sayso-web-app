@@ -31,3 +31,9 @@
     box-shadow: none;
     background-color: #ffffff;
 }
+
+.add-partner-form__error {
+    margin: 0 24px;
+    color: #dc2626;
+    font-size: 0.9em;
+}

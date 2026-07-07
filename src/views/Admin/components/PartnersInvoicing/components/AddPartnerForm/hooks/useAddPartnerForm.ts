@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPartner } from '../services/createPartner';
@@ -26,7 +27,7 @@ export function useAddPartnerForm() {
     const watchedTeams = watch('teams');
     const watchedNetTerms = watch('netTerms');
 
-    const { mutate, isPending } = useMutation({
+    const { mutate, isPending, error } = useMutation({
         mutationFn: async (data: AddPartnerFormValues) => {
             const { id } = await createPartner({
                 name: data.partnerName,
@@ -43,6 +44,10 @@ export function useAddPartnerForm() {
         },
     });
 
+    const errorMessage = error
+        ? (axios.isAxiosError(error) ? (error.response?.data?.error ?? error.message) : 'Failed to create partner')
+        : null;
+
     return {
         control,
         onSubmit: handleSubmit((data) => mutate(data)),
@@ -55,5 +60,6 @@ export function useAddPartnerForm() {
         isPending,
         isSuccess,
         teamCount,
+        errorMessage,
     };
 }

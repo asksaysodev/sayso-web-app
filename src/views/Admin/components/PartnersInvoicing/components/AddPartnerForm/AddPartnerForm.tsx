@@ -31,6 +31,7 @@ export default function AddPartnerForm({ onClose }: Props) {
         isPending,
         isSuccess,
         teamCount,
+        errorMessage,
     } = useAddPartnerForm();
 
     if (isSuccess) {
@@ -84,6 +85,7 @@ export default function AddPartnerForm({ onClose }: Props) {
                     plansLoading={plansLoading}
                 />
             </div>
+            {errorMessage && <p className="add-partner-form__error">{errorMessage}</p>}
             <FormFooter onCancel={onClose} isPending={isPending} />
         </form>
     );
