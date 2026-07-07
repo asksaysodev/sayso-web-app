@@ -2,8 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createPartner } from '../services/createPartner';
-import { createPartnerBatch } from '../services/createPartnerBatch';
+import { createPartnerWithTeams } from '../services/createPartnerWithTeams';
 import type { AddPartnerFormValues } from '../types';
 
 const DEFAULT_VALUES: AddPartnerFormValues = {
@@ -28,18 +27,10 @@ export function useAddPartnerForm() {
     const watchedNetTerms = watch('netTerms');
 
     const { mutate, isPending, error } = useMutation({
-        mutationFn: async (data: AddPartnerFormValues) => {
-            const { id } = await createPartner({
-                name: data.partnerName,
-                billingEmail: data.billingEmail,
-                netTerms: Number(data.netTerms),
-            });
-            await createPartnerBatch(id, data.teams);
-            return data.teams.length;
-        },
-        onSuccess: (count) => {
+        mutationFn: (data: AddPartnerFormValues) => createPartnerWithTeams(data),
+        onSuccess: ({ teamsInvited }) => {
             queryClient.invalidateQueries({ queryKey: ['admin-partners'] });
-            setTeamCount(count);
+            setTeamCount(teamsInvited);
             setIsSuccess(true);
         },
     });

@@ -15,14 +15,3 @@ export interface TeamPlanOption {
     label: string;
     priceInCents: number;
 }
-
-export interface CreatePartnerPayload {
-    name: string;
-    billingEmail: string;
-    netTerms: number;
-}
-
-export interface BatchTeam {
-    email: string;
-    planOptionId: string;
-}
