@@ -62,7 +62,7 @@ export default function ConnectionItem({
                     </>
                 ) : (
                     <>
-                        <span className="connection-status connection-status--disconnected">Not connected</span>
+                        <span className="connection-status connection-status--disconnected"></span>
                         <button
                             className="connection-btn connection-btn--primary"
                             onClick={handleConnection}

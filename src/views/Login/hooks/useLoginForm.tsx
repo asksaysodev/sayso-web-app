@@ -2,6 +2,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams} from 'react-router-dom';
 import { useForm, FieldErrors } from 'react-hook-form';
+import { toE164 } from '@/components/ui/PhoneInput';
 import {
   validateStepOneFields,
   validateLoginFields,
@@ -17,7 +18,8 @@ const INITIAL_VALUES: LoginFormData = {
   company: '',
   email: '',
   password: '',
-  repeatPassword: ''
+  repeatPassword: '',
+  phone: ''
 };
 
 export default function useLoginForm() {
@@ -112,7 +114,8 @@ export default function useLoginForm() {
           data: {
             name: data.name,
             lastname: data.lastname,
-            company: data.company
+            company: data.company,
+            phone: data.phone && data.phone.trim() !== '+1' ? toE164(data.phone) : undefined
           }
         }
       });

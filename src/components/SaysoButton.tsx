@@ -7,8 +7,9 @@ import '../styles/SaysoButton.css';
  * @param {Function} onClick - Click handler
  * @param {boolean} disabled - Disable button interaction
  * @param {boolean} loading - Show loading spinner
+ * @param {string} loadingLabel - Optional text shown next to the spinner while loading (spinner-only if omitted)
  * @param {React.ReactNode} icon - Optional icon to display before label
- * @param {'sayso-indigo' | 'error' | 'outlined'} variant - Button style variant (default: 'sayso-indigo')
+ * @param {'sayso-indigo' | 'error' | 'error-outlined' | 'outlined'} variant - Button style variant (default: 'sayso-indigo')
  * @param {boolean} fullWidth - Make button take full width of container (default: false)
  */
 
@@ -17,8 +18,9 @@ interface Props {
     onClick?: () => void;
     disabled?: boolean;
     loading?: boolean;
+    loadingLabel?: string;
     icon?: React.ReactNode;
-    variant?: 'sayso-indigo' | 'error' | 'outlined' | 'blue' | 'black';
+    variant?: 'sayso-indigo' | 'error' | 'error-outlined' | 'outlined' | 'blue' | 'black';
     fullWidth?: boolean;
     type?: 'button' | 'submit' | 'reset';
     size?: 'sm' | 'lg';
@@ -29,13 +31,14 @@ export default function SaysoButton({
     onClick,
     disabled = false,
     loading = false,
+    loadingLabel,
     icon,
     variant = 'sayso-indigo',
     fullWidth = false,
     type = 'button',
     size = 'lg',
 }: Props) {
-    const spinnerColor = variant === 'outlined' ? '#000' : 'white';
+    const spinnerColor = variant === 'outlined' ? '#000' : variant === 'error-outlined' ? '#bf392f' : 'white';
 
     return (
         <button
@@ -45,7 +48,10 @@ export default function SaysoButton({
             onClick={onClick}
         >
             {loading ? (
-                <ButtonSpinner color={spinnerColor} size={18} />
+                <>
+                    <ButtonSpinner color={spinnerColor} size={18} />
+                    {loadingLabel && <span className="sayso-button-label">{loadingLabel}</span>}
+                </>
             ) : (
                 <>
                     {icon && <span className="sayso-button-icon">{icon}</span>}

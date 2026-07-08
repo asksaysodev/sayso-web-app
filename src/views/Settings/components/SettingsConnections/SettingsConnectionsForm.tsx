@@ -2,6 +2,7 @@ import FUBConnection from './FUBConnection';
 import './connections.css';
 import { useAuth } from '../../../../context/AuthContext';
 import { openExternal } from '../../../../utils/helpers/openExternal';
+import SureSendConnection from './SureSendConnection';
 
 const ArrowIcon = () => (
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -49,6 +50,7 @@ export default function SettingsConnectionsForm() {
     return (
         <div className="connections-grid">
             <FUBConnection />
+            <SureSendConnection />
             <RequestIntegrationCard />
         </div>
     );

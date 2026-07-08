@@ -27,6 +27,7 @@ export async function getParticipantReferrer(email: string): Promise<{ referredB
   try {
     const campaign = await getCampaign();
     const participant = await campaign.getParticipantDetail({ email });
+    if (!participant) return { referredByCode: null, referrerEmail: null };
     const referredByCode = participant.referredByCode ?? null;
     const referrerEmail = participant.referrerEmail || null;
     return { referredByCode, referrerEmail };
@@ -40,15 +41,17 @@ export async function enrollReferralParticipant(params: {
   email: string;
   fName?: string;
   lName?: string;
-}): Promise<void> {
-  const campaign = await getCampaign();
+}): Promise<boolean> {
   try {
+    const campaign = await getCampaign();
     await campaign.addParticipant({
       email: params.email,
       fName: params.fName,
       lName: params.lName,
     });
+    return true;
   } catch (err) {
     Sentry.captureException(err);
+    return false;
   }
 }

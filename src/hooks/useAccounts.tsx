@@ -47,7 +47,7 @@ export const useAccounts = () => {
     }
   }
 
-  const updateCompany = async (updateData: Record<string, string>): Promise<void> => {
+  const updateCompany = async (updateData: Record<string, string | null>): Promise<void> => {
     try {
       if (!updateData) {
         throw new Error('Update data is required');

@@ -11,6 +11,9 @@ export default async function getConversations(
 ): Promise<GetConversationsResponse> {
     const params = new URLSearchParams({ page: String(page) });
 
+    const hasSummaryFilter = activeFilters.find(f => f.key === 'has_summary');
+    params.set('has_summary', hasSummaryFilter ? 'true' : 'false');
+
     activeFilters.forEach((f) => {
         if (f.key === 'lead_type' && f.value !== 'all') params.set('lead_type', f.value);
         if (f.key === 'appointment_booked' && f.value === 'booked') params.set('appointment_booked', 'true');

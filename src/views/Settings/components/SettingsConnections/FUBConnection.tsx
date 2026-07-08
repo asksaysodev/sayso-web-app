@@ -55,10 +55,6 @@ export default function FUBConnection() {
         setFubConnected(globalUser?.fub_connected || false);
     }, [globalUser]);
 
-    // Handle the post-OAuth redirect: /settings?fub=connected|denied|error.
-    // Depends on globalUser so the updateGlobalUser call isn't skipped if
-    // AuthContext hasn't finished loading on first mount. The ref ensures
-    // we only process and clean the URL once.
     const oauthHandled = useRef(false);
     useEffect(() => {
         if (oauthHandled.current) return;
@@ -68,7 +64,7 @@ export default function FUBConnection() {
         if (!fubStatus) { oauthHandled.current = true; return; }
 
         if (fubStatus === 'connected') {
-            if (!globalUser?.email) return; // wait for next render when user is loaded
+            if (!globalUser?.email) return;
             oauthHandled.current = true;
             showToast('success', 'Follow Up Boss connected!');
             updateGlobalUser(globalUser.email);
@@ -99,6 +95,7 @@ export default function FUBConnection() {
                 onClose={() => setManageOpen(false)}
                 logoTile={<FUBTile />}
                 title={TITLE}
+                category="Real-estate CRM"
                 description={DESCRIPTION}
                 onDisconnect={handleDisconnect}
                 isDisconnecting={isDisconnecting}

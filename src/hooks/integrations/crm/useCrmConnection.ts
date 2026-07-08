@@ -12,7 +12,9 @@ export default function useCrmConnection(): CrmConnection {
         return { isConnected: true, providerId: 'fub', providerLabel: 'Follow Up Boss' };
     }
 
-    // Add future providers here as they land
+    if (globalUser.suresend_connected) {
+        return { isConnected: true, providerId: 'suresend', providerLabel: 'SureSend' };
+    }
 
     return { isConnected: false, providerId: null, providerLabel: null };
 }

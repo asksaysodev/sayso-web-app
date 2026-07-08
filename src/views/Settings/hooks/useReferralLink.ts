@@ -14,13 +14,15 @@ export default function useReferralLink() {
     retry: 2,
     queryFn: async () => {
       try {
-        await enrollReferralParticipant({
+        const enrolled = await enrollReferralParticipant({
           email: email!,
           fName: globalUser?.name ?? undefined,
           lName: globalUser?.lastname ?? undefined,
         });
+        if (!enrolled) throw new Error('referral-enrollment-failed');
         const campaign = await getCampaign();
         const participant = await campaign.getParticipantDetail({ email: email! });
+        if (!participant) throw new Error('referral-enrollment-failed');
         return participant.shareLink;
       } catch (e) {
         Sentry.captureException(e);
