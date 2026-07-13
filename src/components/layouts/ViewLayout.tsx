@@ -6,11 +6,12 @@ interface Props {
     scrollable?: boolean;
     right?: React.ReactNode;
     description?: string;
+    className?: string;
 }
 
-export default function ViewLayout({ title, children, scrollable = false, right = undefined, description }: Props) {
+export default function ViewLayout({ title, children, scrollable = false, right = undefined, description, className = '' }: Props) {
     return (
-        <div className={`view-layout-container ${scrollable ? 'scrollable' : ''}`}>
+        <div className={`view-layout-container ${scrollable ? 'scrollable' : ''} ${className}`}>
             {title && (
                 <div className='view-container-header'>
                     <div className='view-container-header-top'>

@@ -34,7 +34,7 @@ export default function Subscription() {
 	const showSkeleton = isLoadingSubscriptionPlans || attributionPending;
 
 	return (
-		<ViewLayout title={hasSubscription ? "Subscription" : undefined} scrollable>
+		<ViewLayout title={hasSubscription ? "Subscription" : undefined} scrollable className="subscription-view">
 			{hasSubscription
 				? <ActiveSubscriptionInformation />
 				: showSkeleton

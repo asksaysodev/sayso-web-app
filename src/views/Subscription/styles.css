@@ -51,6 +51,11 @@
 }
 
 /* Pricing Components Grid */
+/* Tighter vertical rhythm for the pricing view only (not the global layout) */
+.view-layout-container.subscription-view {
+    gap: 18px;
+}
+
 .pricing-components-grid {
     display: flex;
     flex-wrap: wrap;
