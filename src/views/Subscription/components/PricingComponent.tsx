@@ -25,6 +25,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
         contactLink,
         trialDays = null,
         trialIncludedMinutes = null,
+        hasTrial = false,
         hasPackages
     } = plan || {};
     
@@ -138,7 +139,7 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                 </div>
             )}
 
-            {hasPackages
+            {purchasable && hasPackages
                 ? <div className="pkg-trigger-wrapper">
                         <button
                             className={`pkg-trigger${packageSelected ? ' has-selection' : ''}${isOverlayOpen ? ' open' : ''}`}
@@ -163,12 +164,14 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                             </div>
                         </button>
                     </div>
-                : <div className="pkg-trigger-wrapper">
+                : purchasable && hasTrial
+                ? <div className="pkg-trigger-wrapper">
                     <div className="promo">
                         <strong>Get {freeTrialHours} free hours of Live AI Coaching</strong>
                         <span>Valid for {trialDays} days</span>
                     </div>
                 </div>
+                : null
             }
 
             <div className="cta-section">
@@ -237,8 +240,8 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
             </div>
     
             <div className="features-section">
-                <div className="features-title">Features</div>
-                <div className="features-subtitle">{description}</div>
+                <div className="features-title">What's included</div>
+                <div className="features-subtitle">FEATURES</div>
                 {features && features?.features && features.features.map((feature) => (
                     <div key={feature.id} className={`feature-item${feature.included ? '' : ' disabled'}`}>
                         {feature.included
