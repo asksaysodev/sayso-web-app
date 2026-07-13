@@ -1,7 +1,7 @@
 import useHasSubscription from "@/hooks/useHasSubscription";
 import useStripeCheckout from "../hooks/useStripeCheckout";
 import { useAuth } from "@/context/AuthContext";
-import { BillingInterval, BillingIntervalEnum, PricingOption, PricingPlan } from "../types";
+import { BillingInterval, BillingIntervalEnum, PricingOption, PricingPlan, PlanFeature} from "../types";
 import '../styles/PricingComponent.css';
 import { useEffect, useMemo, useState } from "react";
 import formatMinutesToHours from "@/utils/formatters/formatMinutesToHours";
@@ -9,6 +9,7 @@ import centsToDollars from "@/utils/formatters/centsToDollars";
 import formatPrice from "@/utils/formatters/formatPrice";
 import ButtonSpinner from "@/components/ButtonSpinner";
 import { openExternal } from "@/utils/helpers/openExternal";
+import { LuInfo } from "react-icons/lu";
 
 interface Props {
 plan: PricingPlan | null;
@@ -52,6 +53,18 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
         pricingOptions ? pricingOptions.find(opt => opt.interval === selectedBillingTab) ?? null : null,
         [pricingOptions, selectedBillingTab]);
 
+	const featureItems = useMemo(() => 
+		features?.features?.filter((f) => f.type !== 'benefit') ?? [],
+		[features]
+	);
+
+	const benefitItems = useMemo(() =>
+		features?.features?.filter((f) => f.type === 'benefit') ?? [],
+		[features]
+	);
+
+	const hasBenefits = benefitItems.length > 0;
+
     const effectivePricingOption = hasPackages ? packageSelected : pricingOptionSelected;
 
     const priceInDollars = effectivePricingOption ? centsToDollars(effectivePricingOption.priceInCents) : 0;
@@ -76,6 +89,23 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
     const openOverlay = () => {
         setIsOverlayOpen(true);
     };
+
+	const renderFeatureRow = (feature: PlanFeature) => (
+		<div key={feature.id} className={`feature-item${feature.included ? '' : ' disabled'}`}>
+			{!feature.included
+			? <div className="minus-icon"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5h6" stroke="#b0bac8" strokeWidth="1.8" strokeLinecap="round"/></svg></div>
+			: feature.type === 'benefit'
+			? <div className="benefit-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 2.5v7M2.5 6h7" stroke="#64748b" strokeWidth="1.8" strokeLinecap="round"/></svg></div>
+			: <div className="check-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></div>}
+			<span>{feature.name}</span>
+			{feature.detail && (
+				<span className="feature-info" tabIndex={0} aria-label={feature.detail}>
+					<LuInfo size={13} />
+					<span className="feature-tooltip" role="tooltip">{feature.detail}</span>
+				</span>
+			)}
+		</div>
+	);
 
     const closeOverlay = () => setIsOverlayOpen(false);
 
@@ -103,7 +133,8 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
             <div className="card-inner">
                 <div className="card-header">
                     <div className="plan-name">{planName}</div>
-                    {purchasable && (
+                    <div className="header-pricing">
+                    {purchasable ? (
                         <>
                             <div className="price-row">
                                 <span className="price-amount">${formatPrice(finalDisplayPrice)}</span>
@@ -115,11 +146,19 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
                             <div className="hours-sub">
                                 {hasPackages && !packageSelected
                                     ? `*plans start at $${formatPrice(finalDisplayPrice)} / ${selectedBillingTab}`
-                                    : `${includedHoursPerMonth} hours included`
+                                    : `${includedHoursPerMonth} hours included per month`
                                 }
                             </div>
                         </>
+                    ) : (
+                        <>
+                            <div className="price-row">
+                                <span className="price-amount contact-headline">Let's talk</span>
+                            </div>
+                            <div className="hours-sub">Get a plan tailored to your team</div>
+                        </>
                     )}
+                    </div>
                 </div>
 
             {purchasable && discountDollars > 0 && (
@@ -242,15 +281,13 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
             <div className="features-section">
                 <div className="features-title">What's included</div>
                 <div className="features-subtitle">FEATURES</div>
-                {features && features?.features && features.features.map((feature) => (
-                    <div key={feature.id} className={`feature-item${feature.included ? '' : ' disabled'}`}>
-                        {feature.included
-                            ? <div className="check-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                            : <div className="minus-icon"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5h6" stroke="#b0bac8" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-                        }
-                        {feature.name}
-                    </div>
-                ))}
+				{featureItems.map(renderFeatureRow)}
+				{hasBenefits && (
+					<>
+						<div className="features-subtitle">BENEFITS</div>
+						{benefitItems.map(renderFeatureRow)}
+					</>
+				)}
             </div>
         </div>
         </div>
