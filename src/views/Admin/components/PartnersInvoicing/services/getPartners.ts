@@ -17,14 +17,14 @@ interface PartnerResponse {
     billing_email: string;
     net_terms: number;
     subscription_status: string | null;
-    invitations: PartnerInvitationResponse[];
+    invitations: PartnerInvitationResponse[] | null;
 }
 
 export async function getPartners(): Promise<Partner[]> {
     const response = await apiClient.get('/admin/partners');
-    if (!response?.data) throw new Error('Failed to fetch partners');
 
-    const partners: PartnerResponse[] = response.data.data;
+    const partners: PartnerResponse[] | undefined = response?.data?.data;
+    if (!Array.isArray(partners)) throw new Error('Failed to fetch partners: unexpected response shape');
 
     return partners.map(partner => ({
         id: partner.id,
@@ -32,7 +32,7 @@ export async function getPartners(): Promise<Partner[]> {
         billingEmail: partner.billing_email,
         netTerms: partner.net_terms,
         stripeStatus: (partner.subscription_status ?? 'incomplete') as StripeStatus,
-        invitations: partner.invitations.map(invitation => ({
+        invitations: (partner.invitations ?? []).map(invitation => ({
             id: invitation.id,
             email: invitation.email,
             planName: invitation.plan_name ?? '—',

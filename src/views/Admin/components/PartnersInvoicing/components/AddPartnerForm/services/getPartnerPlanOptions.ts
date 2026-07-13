@@ -9,6 +9,9 @@ export interface PartnerPlanOption {
 
 export default async function getPartnerPlanOptions(): Promise<PartnerPlanOption[]> {
     const response = await apiClient.get('/admin/partners/plans');
-    if (!response?.data) throw new Error('Failed to fetch partner plan options');
-    return response.data.data;
+
+    const plans: PartnerPlanOption[] | undefined = response?.data?.data;
+    if (!Array.isArray(plans)) throw new Error('Failed to fetch partner plan options: unexpected response shape');
+
+    return plans;
 }

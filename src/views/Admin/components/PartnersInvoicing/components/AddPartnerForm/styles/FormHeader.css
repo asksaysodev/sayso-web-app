@@ -27,14 +27,19 @@
     min-width: 0;
 }
 
-.form-header__title {
+/* Title and subtitle are Radix DialogTitle/DialogDescription (an h2 and a p that
+   ship their own Tailwind type classes), so these need the extra specificity and
+   a margin reset to keep the intended look. */
+.form-header .form-header__title {
+    margin: 0;
     font-size: 15px;
     font-weight: 700;
     color: #0f172a;
     line-height: 1.2;
 }
 
-.form-header__subtitle {
+.form-header .form-header__subtitle {
+    margin: 0;
     font-size: 12px;
     color: #64748b;
     line-height: 1.4;

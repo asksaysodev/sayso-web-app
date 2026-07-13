@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPartnerWithTeams } from '../services/createPartnerWithTeams';
+import reportApiError from '@/utils/reportApiError';
 import type { AddPartnerFormValues } from '../types';
 
 const DEFAULT_VALUES: AddPartnerFormValues = {
@@ -32,6 +33,9 @@ export function useAddPartnerForm() {
             queryClient.invalidateQueries({ queryKey: ['admin-partners'] });
             setTeamCount(teamsInvited);
             setIsSuccess(true);
+        },
+        onError: (err) => {
+            reportApiError(err, { feature: 'admin-partners', operation: 'createPartnerWithTeams' });
         },
     });
 

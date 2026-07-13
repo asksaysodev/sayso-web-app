@@ -11,9 +11,11 @@ interface Props {
     plans: TeamPlanOption[];
     onRemove: () => void;
     canRemove: boolean;
+    planDisabled: boolean;
+    planPlaceholder: string;
 }
 
-export default function TeamRow({ control, index, plans, onRemove, canRemove }: Props) {
+export default function TeamRow({ control, index, plans, onRemove, canRemove, planDisabled, planPlaceholder }: Props) {
     const planOptions = plans.map(({ id, label }) => ({ value: id, label }));
 
     return (
@@ -32,8 +34,9 @@ export default function TeamRow({ control, index, plans, onRemove, canRemove }: 
                 <ControlledSelectField
                     name={`teams.${index}.planOptionId`}
                     control={control}
-                    placeholder="Select plan"
+                    placeholder={planPlaceholder}
                     options={planOptions}
+                    disabled={planDisabled}
                     rules={{ required: 'Select a plan' }}
                 />
             </div>

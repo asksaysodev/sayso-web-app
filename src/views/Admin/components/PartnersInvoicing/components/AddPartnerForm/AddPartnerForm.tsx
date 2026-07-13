@@ -19,7 +19,13 @@ const NET_TERMS_OPTIONS = [
 ];
 
 export default function AddPartnerForm({ onClose }: Props) {
-    const { plans, isLoading: plansLoading } = useTeamPlans();
+    const {
+        plans,
+        isLoading: plansLoading,
+        isError: plansError,
+        isRetrying: plansRetrying,
+        retry: retryPlans,
+    } = useTeamPlans();
     const {
         control,
         onSubmit,
@@ -82,10 +88,13 @@ export default function AddPartnerForm({ onClose }: Props) {
                     watchedTeams={watchedTeams}
                     netTerms={watchedNetTerms}
                     plansLoading={plansLoading}
+                    plansError={plansError}
+                    plansRetrying={plansRetrying}
+                    onRetryPlans={retryPlans}
                 />
             </div>
             {errorMessage && <p className="add-partner-form__error">{errorMessage}</p>}
-            <FormFooter onCancel={onClose} isPending={isPending} />
+            <FormFooter onCancel={onClose} isPending={isPending} canSubmit={!plansLoading && !plansError} />
         </form>
     );
 }

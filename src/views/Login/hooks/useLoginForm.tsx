@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { LoginFormData } from '../types';
 import { getAAL } from '@/services/mfaServices';
 import getInvitation from '../services/getInvitation';
+import reportApiError from '@/utils/reportApiError';
 
 const INITIAL_VALUES: LoginFormData = {
   name: '',
@@ -40,13 +41,18 @@ export default function useLoginForm() {
   const {
     data: invitation,
     isLoading: isInvitationLoading,
-    isError: isInvitationError
+    isError: isInvitationError,
+    error: invitationError
   } = useQuery({
     queryKey: ['invitation', inviteToken],
     queryFn: () => getInvitation(inviteToken as string),
     enabled: !!inviteToken,
     retry: false
   });
+
+  useEffect(() => {
+    if (invitationError) reportApiError(invitationError, { feature: 'partner-invitations', operation: 'getInvitation' });
+  }, [invitationError])
 
   const customResolver = (values: LoginFormData) => {
     let errors = {};

@@ -10,9 +10,14 @@ interface Props {
 }
 
 export default function PartnerCardHeader({ partner, expanded, onToggle }: Props) {
-    const {name, billingEmail, stripeStatus} = partner || {};
+    const { name, billingEmail, stripeStatus } = partner;
     return (
-        <div className="partner-card-header" onClick={onToggle}>
+        <button
+            type="button"
+            className="partner-card-header"
+            onClick={onToggle}
+            aria-expanded={expanded}
+        >
             <div className="partner-card-header__mono">
                 {name[0]?.toUpperCase() ?? '?'}
             </div>
@@ -32,6 +37,6 @@ export default function PartnerCardHeader({ partner, expanded, onToggle }: Props
                     className={`partner-card-header__caret${expanded ? ' partner-card-header__caret--expanded' : ''}`}
                 />
             </div>
-        </div>
+        </button>
     );
 }

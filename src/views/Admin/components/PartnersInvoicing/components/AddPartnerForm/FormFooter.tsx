@@ -4,9 +4,10 @@ import './styles/FormFooter.css';
 interface Props {
     onCancel: () => void;
     isPending: boolean;
+    canSubmit: boolean;
 }
 
-export default function FormFooter({ onCancel, isPending }: Props) {
+export default function FormFooter({ onCancel, isPending, canSubmit }: Props) {
     return (
         <div className="form-footer">
             <SaysoButton
@@ -19,6 +20,7 @@ export default function FormFooter({ onCancel, isPending }: Props) {
             <SaysoButton
                 label="Create partner"
                 type="submit"
+                disabled={!canSubmit}
                 loading={isPending}
                 loadingLabel="Creating..."
             />

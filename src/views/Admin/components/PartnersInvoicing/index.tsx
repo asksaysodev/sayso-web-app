@@ -4,18 +4,20 @@ import PartnersHeader from './components/PartnersHeader';
 import PartnersList from './components/PartnersList';
 import PartnersLoadingState from './components/PartnersLoadingState';
 import PartnersEmptyState from './components/PartnersEmptyState';
+import PartnersErrorState from './components/PartnersErrorState';
 import './styles/PartnersInvoicing.css';
 
 export default function PartnersInvoicing() {
-    const { partners, isLoading, isEmpty } = usePartners();
+    const { partners, isLoading, isError, isRetrying, retry, isEmpty } = usePartners();
     const { isExpanded, toggle } = useExpandedRows();
 
     return (
         <div className="partners-invoicing">
-            <PartnersHeader count={isLoading ? undefined : partners.length} />
+            <PartnersHeader count={isLoading || isError ? undefined : partners.length} />
             {isLoading && <PartnersLoadingState />}
+            {isError && <PartnersErrorState onRetry={retry} isRetrying={isRetrying} />}
             {isEmpty && <PartnersEmptyState />}
-            {!isLoading && !isEmpty && (
+            {!isLoading && !isError && !isEmpty && (
                 <PartnersList
                     partners={partners}
                     isExpanded={isExpanded}
