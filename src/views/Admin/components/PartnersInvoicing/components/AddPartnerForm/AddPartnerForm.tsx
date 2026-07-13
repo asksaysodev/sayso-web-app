@@ -37,7 +37,6 @@ export default function AddPartnerForm({ onClose }: Props) {
     if (isSuccess) {
         return (
             <div className="add-partner-form">
-                <FormHeader />
                 <AddPartnerSuccess teamCount={teamCount} onClose={onClose} />
             </div>
         );
