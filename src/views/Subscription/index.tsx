@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ViewLayout from "@/components/layouts/ViewLayout";
 import "./styles.css";
 import BillingTabSelector from "./components/BillingTabSelector";
@@ -21,10 +21,20 @@ export default function Subscription() {
 		queryFn: getSubscriptionPlans
 	})
 
+	// Default to yearly billing for the new-generation catalog only (legacy/offer
+	// users keep the monthly default). Runs once when plans first load.
+	const didSetInitialBilling = useRef(false);
+	useEffect(() => {
+		if (didSetInitialBilling.current || !subscriptionPlans?.length) return;
+		const isNewGeneration = subscriptionPlans.some((plan) => plan.generation === 'new');
+		if (isNewGeneration) setSelectedBillingTab(BillingIntervalEnum.YEAR);
+		didSetInitialBilling.current = true;
+	}, [subscriptionPlans]);
+
 	const showSkeleton = isLoadingSubscriptionPlans || attributionPending;
 
 	return (
-		<ViewLayout title={hasSubscription ? "Subscription" : undefined} scrollable>
+		<ViewLayout title={hasSubscription ? "Subscription" : undefined} scrollable className="subscription-view">
 			{hasSubscription
 				? <ActiveSubscriptionInformation />
 				: showSkeleton
