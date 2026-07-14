@@ -62,11 +62,8 @@
     justify-content: center;
     margin-top: 18px;
     width: 100%;
-	gap: 52px
+	gap: 52px;
 }
-/* .pricing-components-grid .with-gap {
-    gap: 455px;
-} */
 
 .pricing-components-grid > * {
     flex: 0 1 calc(33.333% - 16px);
