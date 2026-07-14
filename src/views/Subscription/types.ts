@@ -73,6 +73,7 @@ export interface PricingPlan {
   trialIncludedMinutes: number | null;
   hasPackages: boolean;
   generation: 'legacy' | 'new' | null;
+  accountType: 'individual' | 'team' | null;
 }
 
 export interface PricingOption {

@@ -27,7 +27,9 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
         trialDays = null,
         trialIncludedMinutes = null,
         hasTrial = false,
-        hasPackages
+        hasPackages,
+        generation = null,
+        accountType = null
     } = plan || {};
     
     const [packageSelected, setPackageSelected] = useState<null | PricingOption>(null);
@@ -65,6 +67,15 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
 
 	const hasBenefits = benefitItems.length > 0;
 
+	// New-generation team plans inherit the Individual + catalog, so we show a single
+	// intro line and list only this plan's additional items (features + benefits together).
+	const allFeatureItems = useMemo(() =>
+		features?.features ?? [],
+		[features]
+	);
+
+	const isNewTeamPlan = generation === 'new' && accountType === 'team';
+
     const effectivePricingOption = hasPackages ? packageSelected : pricingOptionSelected;
 
     const priceInDollars = effectivePricingOption ? centsToDollars(effectivePricingOption.priceInCents) : 0;
@@ -95,7 +106,8 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
 			{!feature.included
 			? <div className="minus-icon"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5h6" stroke="#b0bac8" strokeWidth="1.8" strokeLinecap="round"/></svg></div>
 			: feature.type === 'benefit'
-			? <div className="benefit-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M6 2.5v7M2.5 6h7" stroke="#64748b" strokeWidth="1.8" strokeLinecap="round"/></svg></div>
+			? 
+			<div className="check-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
 			: <div className="check-icon"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></div>}
 			<span>{feature.name}</span>
 			{feature.detail && (
@@ -280,12 +292,21 @@ export default function PricingComponent({ plan = null, selectedBillingTab = Bil
     
             <div className="features-section">
                 <div className="features-title">What's included</div>
-                <div className="features-subtitle">FEATURES</div>
-				{featureItems.map(renderFeatureRow)}
-				{hasBenefits && (
+				{isNewTeamPlan ? (
 					<>
-						<div className="features-subtitle">BENEFITS</div>
-						{benefitItems.map(renderFeatureRow)}
+						<div className="features-subtitle">Everything in Individual +, plus:</div>
+						{allFeatureItems.map(renderFeatureRow)}
+					</>
+				) : (
+					<>
+						<div className="features-subtitle">FEATURES</div>
+						{featureItems.map(renderFeatureRow)}
+						{hasBenefits && (
+							<>
+								<div className="features-subtitle">BENEFITS</div>
+								{benefitItems.map(renderFeatureRow)}
+							</>
+						)}
 					</>
 				)}
             </div>

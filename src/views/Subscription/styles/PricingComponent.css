@@ -411,10 +411,17 @@ body {
   margin-bottom: 10px;
 }
 
-.features-subtitle { 
-	font-size: 13px; 
-	color: #8892a4; 
-	margin: 10px 0 6px 0px; 
+.features-subtitle {
+	font-size: 13px;
+	color: #677082;
+	margin: 10px 0 6px 0px;
+}
+
+.features-inherit {
+	font-size: 14px;
+	font-weight: 600;
+	color: #0f172a;
+	margin: 4px 0 10px 0px;
 }
 
 .feature-item {
@@ -424,7 +431,6 @@ body {
   padding: 5px 0;
   font-size: 14px;
   color: #0f172a;
-  margin-left: 12px;
 }
 
 .feature-item.disabled { color: #b0bac8; }
