@@ -8,6 +8,7 @@ import useLoginForm from './hooks/useLoginForm';
 
 import './styles.css';
 import LoginLayout from '@/components/layouts/LoginLayout';
+import OfferBanner from '@/components/OfferBanner';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const Login = () => {
 
   return (
     <LoginLayout title={isLoggingIn ? 'Welcome Back!' : `Create Account`} error={error}>
+      {!isLoggingIn && <OfferBanner />}
       <form onSubmit={handleSubmit}>
         {isLoggingIn ? (
           <LoginInFormInputs

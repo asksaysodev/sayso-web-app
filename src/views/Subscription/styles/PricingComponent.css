@@ -26,7 +26,8 @@ body {
   background: #fff;
   border-radius: 20px;
   border: 1px solid #e4e7ef;
-  width: 340px;
+  width: 100%;
+  max-width: 400px;
   position: relative;          /* for badge + overlay anchor */
   box-shadow: 0 4px 24px rgba(0,0,0,.06);
   overflow: visible;           /* ← badge not clipped */
@@ -106,8 +107,18 @@ body {
   transform: translateY(-4px);
 }
 
+/* Fixed-height price area so both cards' CTAs align regardless of headline size */
+.header-pricing {
+  height: 80px;
+  margin-top: 14px;
+}
+.header-pricing .price-row { margin-top: 0; }
+
+/* Contact-sales headline ("Let's talk") — smaller than the numeric price */
+.contact-headline { font-size: 32px; }
+
 /* ── PACKAGE TRIGGER (team only) ── */
-.pkg-trigger-wrapper { height: 70px; padding: 0 24px; display: flex; align-items: center; }
+.pkg-trigger-wrapper { height: 70px; padding: 0 24px; display: flex; align-items: center; margin-bottom: 22px;}
 .pkg-trigger-wrapper .pkg-trigger { width: 100%; }
 
 .pkg-trigger {
@@ -359,7 +370,7 @@ body {
 .divider { height: 1px; background: #e4e7ef; margin: 0 24px; }
 
 /* ── CTA ── */
-.cta-section { padding: 20px 24px; }
+.cta-section { padding: 5px 24px 20px; }
 
 .cta-btn {
     display: flex; 
@@ -392,15 +403,19 @@ body {
 .features-section { padding: 20px 24px 24px; border-top: 1px solid #e4e7ef; }
 
 .features-title {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   color: #0f172a;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 }
 
-.features-subtitle { font-size: 13px; color: #8892a4; margin-bottom: 14px; }
+.features-subtitle { 
+	font-size: 13px; 
+	color: #8892a4; 
+	margin: 10px 0 6px 0px; 
+}
 
 .feature-item {
   display: flex;
@@ -409,6 +424,7 @@ body {
   padding: 5px 0;
   font-size: 14px;
   color: #0f172a;
+  margin-left: 12px;
 }
 
 .feature-item.disabled { color: #b0bac8; }
@@ -426,6 +442,62 @@ body {
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .minus-icon svg { width: 10px; height: 10px; }
+
+/* Benefits use a gray circle with a "+" to read as add-on extras */
+.benefit-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #e4e7ef;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.benefit-icon svg { width: 12px; height: 12px; }
+
+/* Feature detail info icon + hover/focus tooltip */
+.feature-info {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: #94a3b8;
+  cursor: help;
+}
+
+.feature-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 60%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 200px;
+  background: #2e4a8f;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+  z-index: 20;
+}
+
+.feature-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #2e4a8f;
+}
+
+.feature-info:hover .feature-tooltip,
+.feature-info:focus-visible .feature-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
 
 /* ── PRICE STRIKE (inline strikethrough in price row) ── */
 .price-strike {

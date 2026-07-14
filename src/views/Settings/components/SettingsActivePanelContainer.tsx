@@ -7,6 +7,7 @@ import SettingsActivePanelContainerHeader from "./SettingsActivePanelContainerHe
 import SettingsSecurity from "./SettingsSecurity";
 import SettingsReferralForm from "./SettingsReferralForm";
 import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsForm";
+import SettingsUsage from "./SettingsUsage";
 
 interface Props {
     selectedPanel: SettingsPanel;
@@ -36,6 +37,9 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
             )
             case "referral": return (
                 <SettingsReferralForm />
+            )
+            case "usage": return (
+                <SettingsUsage />
             )
         }
     }
