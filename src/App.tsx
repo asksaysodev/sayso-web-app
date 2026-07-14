@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from './config/supabase';
 import * as Sentry from "@sentry/react";
 import SaysoLoader from './components/SaysoLoader';
+import { captureOfferTokenFromSearch } from './utils/offerToken';
 
 const hasAuthTokens = (hash: string) =>
   !hash.includes('type=recovery') &&
@@ -35,6 +36,12 @@ function App() {
       }
     });
   }, [location]);
+
+  // Capture ?offer=<token> from the URL and persist it so invited users keep
+  // legacy pricing through the signup/subscription flow (SAYSO-317).
+  useEffect(() => {
+    captureOfferTokenFromSearch(location.search);
+  }, [location.search]);
 
   // Intercept password recovery tokens in URL hash to redirect to reset-password instead of login the user in automatically
   useEffect(() => {

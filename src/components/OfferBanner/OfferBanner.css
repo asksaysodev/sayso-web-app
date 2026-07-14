@@ -1,0 +1,44 @@
+.offer-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: #ecfdf3;
+    border: 1px solid #b7e4c7;
+    color: #15803d;
+    font-size: 14px;
+    line-height: 1.4;
+    box-sizing: border-box;
+    transform-origin: center;
+    animation: offerBannerIn 0.3s ease-out both;
+}
+
+@keyframes offerBannerIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.offer-banner-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #16a34a;
+    color: #fff;
+}
+
+.offer-banner-text {
+    color: #166534;
+}
+
+.offer-banner-text strong {
+    color: #15803d;
+    font-weight: 700;
+}
