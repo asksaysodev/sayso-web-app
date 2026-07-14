@@ -6,10 +6,11 @@ import PricingComponent from "./components/PricingComponent";
 import { useQuery } from "@tanstack/react-query";
 import getSubscriptionPlans from "./services/getSubscriptionPlans";
 import ActiveSubscriptionInformation from "./components/ActiveSubscriptionInformation";
-import SubscriptionPlansSkeleton from "./components/SubscriptionPlansSkeleton";
+import SaysoLoader from "@/components/SaysoLoader";
 import { BillingInterval, BillingIntervalEnum } from "./types";
 import useHasSubscription from "@/hooks/useHasSubscription";
 import { useAuth } from "@/context/AuthContext";
+import OfferBanner from "@/components/OfferBanner";
 
 export default function Subscription() {
 	const [selectedBillingTab, setSelectedBillingTab] = useState<BillingInterval>(BillingIntervalEnum.MONTH);
@@ -31,15 +32,16 @@ export default function Subscription() {
 		didSetInitialBilling.current = true;
 	}, [subscriptionPlans]);
 
-	const showSkeleton = isLoadingSubscriptionPlans || attributionPending;
+	const showLoader = isLoadingSubscriptionPlans || attributionPending;
 
 	return (
 		<ViewLayout title={hasSubscription ? "Subscription" : undefined} scrollable className="subscription-view">
 			{hasSubscription
 				? <ActiveSubscriptionInformation />
-				: showSkeleton
-					? <SubscriptionPlansSkeleton />
+				: showLoader
+					? <SaysoLoader />
 					: <>
+						<OfferBanner />
 						<div className="select-your-plan-header">
 							<h1 className="select-your-plan-title">
 							    Select your plan
