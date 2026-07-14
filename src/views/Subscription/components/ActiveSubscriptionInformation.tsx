@@ -47,7 +47,7 @@ export default function ActiveSubscriptionInformation() {
 	const includedHours = useMemo(() => { 
 		const planMinutes = (isTrialing ? subscription?.includedMinutes?.trial : subscription?.includedMinutes?.plan) ?? 0;
 		const planHours = Math.floor(planMinutes / 60);
-		return `${planHours} hours`;
+		return `${planHours} hours / month`;
 	}, [subscription, isTrialing]);
 
     const activePlanName = useMemo(() => {
