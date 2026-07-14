@@ -11,11 +11,23 @@ import { BillingInterval, BillingIntervalEnum } from "./types";
 import useHasSubscription from "@/hooks/useHasSubscription";
 import { useAuth } from "@/context/AuthContext";
 import OfferBanner from "@/components/OfferBanner";
+import { useNavigate } from "react-router-dom";
+import { LuLogOut } from "react-icons/lu";
+import { clearOfferToken } from "@/utils/offerToken";
 
 export default function Subscription() {
 	const [selectedBillingTab, setSelectedBillingTab] = useState<BillingInterval>(BillingIntervalEnum.MONTH);
     const hasSubscription = useHasSubscription();
-    const { attributionPending } = useAuth();
+    const { attributionPending, handleSignOut } = useAuth();
+    const navigate = useNavigate();
+
+    // Give users an exit from the pricing view (they have no nav here); also the
+    // natural place to drop the offer token (SAYSO-317) so it doesn't linger.
+    const onSignOut = async () => {
+        clearOfferToken();
+        await handleSignOut();
+        navigate('/login');
+    };
 
 	const { data: subscriptionPlans, isLoading: isLoadingSubscriptionPlans } = useQuery({
 		queryKey: ['subscription-plans'],
@@ -41,6 +53,12 @@ export default function Subscription() {
 				: showLoader
 					? <SaysoLoader />
 					: <>
+						<div className="subscription-topbar">
+							<button type="button" className="subscription-signout" onClick={onSignOut}>
+								<LuLogOut size={16} />
+								Sign out
+							</button>
+						</div>
 						<OfferBanner />
 						<div className="select-your-plan-header">
 							<h1 className="select-your-plan-title">
