@@ -11,9 +11,9 @@ import { BillingInterval, BillingIntervalEnum } from "./types";
 import useHasSubscription from "@/hooks/useHasSubscription";
 import { useAuth } from "@/context/AuthContext";
 import OfferBanner from "@/components/OfferBanner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { LuLogOut } from "react-icons/lu";
-import { clearOfferToken } from "@/utils/offerToken";
+import { clearOfferToken, getOfferToken } from "@/utils/offerToken";
 
 export default function Subscription() {
 	const [selectedBillingTab, setSelectedBillingTab] = useState<BillingInterval>(BillingIntervalEnum.MONTH);
@@ -29,9 +29,14 @@ export default function Subscription() {
         navigate('/login');
     };
 
+	// URL-first (reactive) with localStorage fallback so the query key and the
+	// request stay in sync, and plans re-fetch when an offer token appears (SAYSO-317).
+	const [searchParams] = useSearchParams();
+	const offerToken = searchParams.get('offer') ?? getOfferToken();
+
 	const { data: subscriptionPlans, isLoading: isLoadingSubscriptionPlans } = useQuery({
-		queryKey: ['subscription-plans'],
-		queryFn: getSubscriptionPlans
+		queryKey: ['subscription-plans', offerToken],
+		queryFn: () => getSubscriptionPlans(offerToken)
 	})
 
 	// Default to yearly billing for the new-generation catalog only (legacy/offer
