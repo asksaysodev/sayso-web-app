@@ -30,6 +30,10 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
         [SettingsPanelEnum.REFERRAL]: {
             title: 'Referrals',
             description: 'Share your unique link and earn rewards when friends subscribe to Sayso.'
+        },
+        [SettingsPanelEnum.USAGE]: {
+            title: 'Usage',
+            description: 'Track the coaching minutes you have used in your current billing period'
         }
     }
 

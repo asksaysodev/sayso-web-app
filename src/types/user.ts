@@ -76,6 +76,7 @@ export interface AccountUsage {
   remainingMinutes: number;
   rolloverMinutes: number;
   usedMinutes: number;
+  periodEnd: string | null;
 }
 
 export interface WeeklyActivity {

@@ -1,6 +1,6 @@
 import { AccountStatus } from "@/types/user";
 
-export type SettingsPanel = 'personal' | 'company' | 'files' | 'connections' | 'security' | 'referral';
+export type SettingsPanel = 'personal' | 'company' | 'files' | 'connections' | 'security' | 'referral' | 'usage';
 
 export type MemberStatusFilterValue = AccountStatus;
 export type MemberStatusFilter = { key: 'status'; value: MemberStatusFilterValue };
@@ -11,5 +11,6 @@ export enum SettingsPanelEnum {
     FILES = 'files',
     CONNECTIONS = 'connections',
     SECURITY = 'security',
-    REFERRAL = 'referral'
+    REFERRAL = 'referral',
+    USAGE = 'usage'
 }
