@@ -79,6 +79,10 @@ export interface AccountUsage {
   periodEnd: string | null;
 }
 
+export interface ConversationTime {
+  totalMinutes: number;
+}
+
 export interface WeeklyActivity {
   totalMinutes: number;
   hasNextWeek: boolean;
