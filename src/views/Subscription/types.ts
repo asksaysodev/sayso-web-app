@@ -22,6 +22,8 @@ export interface GetAccountSubscriptionResponse {
         lastInvoicePaidAt: string | null;
       };
       cancelledAt: string | null;
+      isPartnerFunded: boolean;
+      partnerName: string | null;
     };
     invoices: Array<{
       account_id: string;
