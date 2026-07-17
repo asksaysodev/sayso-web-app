@@ -1,4 +1,4 @@
-import { InvitationStatus, StripeStatus } from '../types';
+import { InvitationStatus, InvoiceStatus, StripeStatus } from '../types';
 
 const stripeLabels: Record<StripeStatus, string> = {
     active: 'Active',
@@ -20,4 +20,17 @@ export function formatStripeStatusLabel(status: StripeStatus): string {
 
 export function formatInvitationStatusLabel(status: InvitationStatus): string {
     return invitationLabels[status] ?? status;
+}
+
+const invoiceLabels: Record<InvoiceStatus, string> = {
+    draft: 'Draft',
+    open: 'Open',
+    paid: 'Paid',
+    uncollectible: 'Uncollectible',
+    void: 'Void',
+};
+
+export function formatInvoiceStatusLabel(status: InvoiceStatus, isOverdue: boolean): string {
+    if (isOverdue) return 'Past due';
+    return invoiceLabels[status] ?? status;
 }

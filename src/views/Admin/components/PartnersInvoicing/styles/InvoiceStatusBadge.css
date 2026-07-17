@@ -1,0 +1,64 @@
+.invoice-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+.invoice-status-badge__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 9999px;
+    flex-shrink: 0;
+}
+
+.invoice-status-badge--green {
+    background-color: #ecfdf5;
+    color: #047857;
+    border-color: #a7f3d0;
+}
+.invoice-status-badge--green .invoice-status-badge__dot {
+    background-color: #10b981;
+}
+
+.invoice-status-badge--blue {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+.invoice-status-badge--blue .invoice-status-badge__dot {
+    background-color: #3b82f6;
+}
+
+.invoice-status-badge--amber {
+    background-color: #fffbeb;
+    color: #b45309;
+    border-color: #fde68a;
+}
+.invoice-status-badge--amber .invoice-status-badge__dot {
+    background-color: #f59e0b;
+}
+
+.invoice-status-badge--red {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+.invoice-status-badge--red .invoice-status-badge__dot {
+    background-color: #ef4444;
+}
+
+.invoice-status-badge--gray {
+    background-color: #f1f5f9;
+    color: #475569;
+    border-color: #e2e8f0;
+}
+.invoice-status-badge--gray .invoice-status-badge__dot {
+    background-color: #94a3b8;
+}

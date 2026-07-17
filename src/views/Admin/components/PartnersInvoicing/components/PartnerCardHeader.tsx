@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 import { Partner } from '../types';
 import StripeStatusBadge from './StripeStatusBadge';
+import PartnerIdentity from './PartnerIdentity';
 import '../styles/PartnerCardHeader.css';
 
 interface Props {
@@ -18,17 +19,7 @@ export default function PartnerCardHeader({ partner, expanded, onToggle }: Props
             onClick={onToggle}
             aria-expanded={expanded}
         >
-            <div className="partner-card-header__mono">
-                {name[0]?.toUpperCase() ?? '?'}
-            </div>
-            <div className="partner-card-header__info">
-                <span className="partner-card-header__name">
-                    {name}
-                </span>
-                <span className="partner-card-header__email">
-                    {billingEmail}
-                </span>
-            </div>
+            <PartnerIdentity name={name} subtitle={billingEmail} />
             <div className="partner-card-header__right">
                 <StripeStatusBadge status={stripeStatus} />
                 <ChevronRight

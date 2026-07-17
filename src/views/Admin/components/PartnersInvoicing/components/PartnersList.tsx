@@ -6,9 +6,10 @@ interface Props {
     partners: Partner[];
     isExpanded: (id: string) => boolean;
     onToggle: (id: string) => void;
+    onViewInvoices: (partner: Partner) => void;
 }
 
-export default function PartnersList({ partners, isExpanded, onToggle }: Props) {
+export default function PartnersList({ partners, isExpanded, onToggle, onViewInvoices }: Props) {
     return (
         <div className="partners-list">
             {partners.map(partner => {
@@ -19,6 +20,7 @@ export default function PartnersList({ partners, isExpanded, onToggle }: Props) 
                         partner={partner}
                         expanded={isExpanded(id)}
                         onToggle={() => onToggle(id)}
+                        onViewInvoices={() => onViewInvoices(partner)}
                     />
                 );
             })}

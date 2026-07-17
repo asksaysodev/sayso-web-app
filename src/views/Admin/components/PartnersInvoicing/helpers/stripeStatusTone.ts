@@ -1,6 +1,6 @@
 import { StripeStatus } from '../types';
 
-export type StatusTone = 'green' | 'amber' | 'red' | 'gray';
+export type StatusTone = 'green' | 'amber' | 'red' | 'gray' | 'blue';
 
 const toneMap: Record<StripeStatus, StatusTone> = {
     active: 'green',
