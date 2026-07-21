@@ -1,10 +1,30 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { supabase } from './supabase';
+import { markSessionExpired } from '@/utils/sessionExpired';
+import { markSuspendedTabTimeout } from '@/utils/suspendedTabTimeout';
 import * as Sentry from "@sentry/react";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 	_retryCount?: number;
 	_retry?: boolean;
+	_requestStartedAt?: number;
+}
+
+// A genuine timeout fires at roughly the configured timeout. A tab suspended
+// mid-request (machine sleeps, browser freezes a background tab) only fires
+// `ontimeout` on wake, so elapsed wall-clock far beyond the timeout is the tell.
+const SUSPENDED_TAB_ELAPSED_FACTOR = 2;
+
+function isSuspendedTabTimeout(error: AxiosError): boolean {
+	if (error.code !== 'ECONNABORTED') return false;
+
+	const config = error.config as CustomAxiosRequestConfig | undefined;
+	const startedAt = config?._requestStartedAt;
+	const timeout = config?.timeout;
+
+	if (!startedAt || !timeout) return false;
+
+	return Date.now() - startedAt > timeout * SUSPENDED_TAB_ELAPSED_FACTOR;
 }
 
 // Returns true only when Supabase explicitly rejects the refresh token.
@@ -38,6 +58,7 @@ apiClient.interceptors.request.use(
 		}
 
 		customConfig._retryCount = customConfig._retryCount || 0;
+		customConfig._requestStartedAt = Date.now();
 
 		Sentry.addBreadcrumb({
 			category: 'api.request',
@@ -107,6 +128,11 @@ apiClient.interceptors.response.use(
 			}
 		});
 
+		const suspendedTabTimeout = isSuspendedTabTimeout(error);
+		if (suspendedTabTimeout) {
+			markSuspendedTabTimeout(error);
+		}
+
 		// Handle 401 — attempt a single token refresh, then retry the request.
 		// The Supabase SDK serializes concurrent refresh calls via navigator.locks,
 		// so we don't need a local isRefreshing queue here.
@@ -132,6 +158,9 @@ apiClient.interceptors.response.use(
 						}
 					});
 					window.dispatchEvent(new CustomEvent('auth:session-expired'));
+
+					markSessionExpired(error);
+					return Promise.reject(error);
 				} else {
 					// Transient error (network blip, 5xx, timeout). The session is
 					// likely still valid — don't log the user out, just surface the error.
@@ -148,9 +177,16 @@ apiClient.interceptors.response.use(
 			}
 		}
 
-		// Retry logic for network errors and empty responses
+		// Retry logic for network errors, empty responses and genuine timeouts.
+		// Suspended-tab timeouts are excluded — the request was abandoned while
+		// nobody was watching, and the app refetches on its own once awake.
+		const isRetryableError =
+			error.code === 'ERR_NETWORK' ||
+			error.code === 'ERR_EMPTY_RESPONSE' ||
+			(error.code === 'ECONNABORTED' && !suspendedTabTimeout);
+
 		if (
-			(error.code === 'ERR_NETWORK' || error.code === 'ERR_EMPTY_RESPONSE') &&
+			isRetryableError &&
 			originalRequest &&
 			originalRequest._retryCount !== undefined &&
 			originalRequest._retryCount < 3
