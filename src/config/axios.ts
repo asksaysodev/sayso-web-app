@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { supabase } from './supabase';
+import { markSessionExpired } from '@/utils/sessionExpired';
 import * as Sentry from "@sentry/react";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -132,6 +133,9 @@ apiClient.interceptors.response.use(
 						}
 					});
 					window.dispatchEvent(new CustomEvent('auth:session-expired'));
+
+					markSessionExpired(error);
+					return Promise.reject(error);
 				} else {
 					// Transient error (network blip, 5xx, timeout). The session is
 					// likely still valid — don't log the user out, just surface the error.
