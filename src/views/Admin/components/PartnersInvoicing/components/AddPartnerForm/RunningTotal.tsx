@@ -1,6 +1,5 @@
 import { calculateRunningTotal } from './helpers/calculateRunningTotal';
-import centsToDollars from '@/utils/formatters/centsToDollars';
-import formatPrice from '@/utils/formatters/formatPrice';
+import { formatInvoiceAmount } from '../../helpers/formatInvoiceAmount';
 import type { TeamPlanOption } from './types';
 import './styles/RunningTotal.css';
 
@@ -12,7 +11,6 @@ interface Props {
 
 export default function RunningTotal({ plans, watchedTeams, netTerms }: Props) {
     const totalCents = calculateRunningTotal(watchedTeams, plans);
-    const totalDollars = centsToDollars(totalCents);
     const count = watchedTeams.length;
 
     return (
@@ -21,7 +19,7 @@ export default function RunningTotal({ plans, watchedTeams, netTerms }: Props) {
                 {count} {count === 1 ? 'team' : 'teams'} · Net {netTerms}
             </span>
             <span className="running-total__amount">
-                ${formatPrice(totalDollars)}/mo
+                {formatInvoiceAmount(totalCents, 'usd')}/mo
             </span>
         </div>
     );

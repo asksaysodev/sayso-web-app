@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import getPartnerPlanOptions from '../services/getPartnerPlanOptions';
-import centsToDollars from '@/utils/formatters/centsToDollars';
+import { formatInvoiceAmount } from '../../helpers/formatInvoiceAmount';
 import reportApiError from '@/utils/reportApiError';
 import type { TeamPlanOption } from '../types';
 
@@ -19,7 +19,7 @@ export function useTeamPlans() {
     const plans: TeamPlanOption[] = (data ?? [])
         .map(opt => ({
             id: opt.id,
-            label: `${opt.plan_name} · ${opt.team_size} · $${centsToDollars(opt.price_in_cents)}/mo`,
+            label: `${opt.plan_name} · ${opt.team_size} · ${formatInvoiceAmount(opt.price_in_cents, 'usd')}/mo`,
             priceInCents: opt.price_in_cents,
         }))
         .sort((a, b) => a.priceInCents - b.priceInCents);
