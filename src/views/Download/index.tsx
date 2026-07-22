@@ -9,6 +9,7 @@ import { useDownloadGithubRelease } from '@/components/DownloadDesktopAppButton/
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { openExternal } from '@/utils/helpers/openExternal';
+import AutoRedirectingButton from './components/AutoRedirectingButton';
 
 export default function Download() {
     const { globalUser } = useAuth();
@@ -17,6 +18,13 @@ export default function Download() {
 
     const detectedChip = useMemo(() => detectChip(), []);
     const [mobileModalOpen, setMobileModalOpen] = useState(false);
+    const [redirectRun, setRedirectRun] = useState(0);
+
+    const handleDownloadClick = (url: string | null) => {
+        if (!url) return;
+        handleDownload(url);
+        if (globalUser) setRedirectRun(run => run + 1);
+    };
 
     const formattedDate = publishedAt
         ? new Date(publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -29,10 +37,16 @@ export default function Download() {
         <div className='download-view-wrapper'>
             <div className='download-vh'>
                 {globalUser
-                    ?   <button className='download-vh-dashboard-btn' onClick={() => navigate('/')}>
-                            <MoveLeft size={20} />
-                            Go to Dashboard
-                        </button>
+                    ?   redirectRun > 0
+                            ?   <AutoRedirectingButton
+                                    key={redirectRun}
+                                    onCancel={() => setRedirectRun(0)}
+                                    onComplete={() => navigate('/')}
+                                />
+                            :   <button className='download-vh-dashboard-btn' onClick={() => navigate('/')}>
+                                    <MoveLeft size={20} />
+                                    Go to Dashboard
+                                </button>
                     :   <button className='download-vh-dashboard-btn' onClick={() => navigate('/login')}>
                             <MoveLeft size={20} />
                             Sign in
@@ -51,7 +65,7 @@ export default function Download() {
                     description='Optimized for MacBook, iMac, and Mac Mini models powered by Intel processors.'
                     icon={<Cpu size={34} color="#8a8a8a" />}
                     recommended={detectedChip === 'intel'}
-                    onClick={() => handleDownload(intelUrl)}
+                    onClick={() => handleDownloadClick(intelUrl)}
                     onMobileClick={() => setMobileModalOpen(true)}
                 />
                 <DownloadOptionCard
@@ -59,7 +73,7 @@ export default function Download() {
                     description='Optimized for M1, M2, and M3 series processors for maximum efficiency and speed.'
                     icon={<AppleSiliconIcon />}
                     recommended={detectedChip === 'silicon'}
-                    onClick={() => handleDownload(siliconUrl)}
+                    onClick={() => handleDownloadClick(siliconUrl)}
                     onMobileClick={() => setMobileModalOpen(true)}
                 />
             </div>
