@@ -55,6 +55,8 @@ export interface PlanFeature {
   id: string;
   name: string;
   included: boolean;
+  type?: 'feature' | 'benefit';
+  detail?: string 
 }
 
 export interface PricingPlan {
@@ -72,6 +74,8 @@ export interface PricingPlan {
   trialDays: number | null;
   trialIncludedMinutes: number | null;
   hasPackages: boolean;
+  generation: 'legacy' | 'new' | null;
+  accountType: 'individual' | 'team' | null;
 }
 
 export interface PricingOption {

@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import MinutesRemaining from "./MinutesRemaining";
+import ConversationTime from "./ConversationTime";
 import WeeklyActivityCard from "./WeeklyActivityCard";
-import getAccountUsage from "../services/getAccountUsage";
+import getConversationTime from "@/services/getConversationTime";
 import Tips from "./Tips";
 
 export default function InformativeCardsContainer() {
 
-    const { data: accountUsage, isRefetching, isLoading } = useQuery({
-        queryKey: ['dashboard-account-usage'],
-        queryFn: getAccountUsage,
+    const { data: conversationTime, isRefetching, isLoading } = useQuery({
+        queryKey: ['dashboard-conversation-time'],
+        queryFn: getConversationTime,
     });
 
     return (
@@ -16,8 +16,8 @@ export default function InformativeCardsContainer() {
             <Tips />
 
             <div className='dashboard-cards-right-column'>
-                <MinutesRemaining
-                    accountUsage={accountUsage!}
+                <ConversationTime
+                    totalMinutes={conversationTime?.totalMinutes ?? 0}
                     isRefetching={isRefetching}
                     isLoading={isLoading}
                 />

@@ -126,7 +126,7 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                                 <LuSearch size={14} />
                                 <input
                                     autoFocus
-                                    placeholder={`Search ${providerLabel} leads…`}
+                                    placeholder={providerId === 'suresend' ? 'Search by email or phone' : `Search ${providerLabel} leads…`}
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
                                 />

@@ -8,6 +8,7 @@ import useLoginForm from './hooks/useLoginForm';
 
 import './styles.css';
 import LoginLayout from '@/components/layouts/LoginLayout';
+import OfferBanner from '@/components/OfferBanner';
 
 const Login = () => {
   const navigate = useNavigate();
