@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import getPartnerPlanOptions from '../services/getPartnerPlanOptions';
-import { formatInvoiceAmount } from '../../helpers/formatInvoiceAmount';
+import { formatInvoiceAmount } from '../../../helpers/formatInvoiceAmount';
 import reportApiError from '@/utils/reportApiError';
 import type { TeamPlanOption } from '../types';
 
