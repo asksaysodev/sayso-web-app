@@ -1,0 +1,45 @@
+.partner-invoice-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.partner-invoice-stats__tile {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border: 1px solid #eef2f6;
+    border-radius: 10px;
+    align-items: flex-start;
+}
+
+.partner-invoice-stats__label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.partner-invoice-stats__value {
+    font-size: 18px;
+    font-weight: 500;
+    color: #0f172a;
+    font-variant-numeric: tabular-nums;
+}
+
+.partner-invoice-stats__value--amber {
+    color: #b45309;
+}
+
+.partner-invoice-stats__value--red {
+    color: #b91c1c;
+}
+
+@media (max-width: 720px) {
+    .partner-invoice-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

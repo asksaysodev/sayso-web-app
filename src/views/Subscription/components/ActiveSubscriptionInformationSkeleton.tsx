@@ -15,12 +15,10 @@ export default function ActiveSubscriptionInformationSkeleton() {
             </div>
 
             <div className="subscription-section">
-                <h3 className="section-title">Invoices</h3>
                 <div className="skeleton" style={{ width: '100%', height: '20px' }} />
             </div>
 
             <div className="subscription-section">
-                <h3 className="section-title">Cancellation</h3>
                 <div className="subscription-section-content">
                     <div className="skeleton cancel-plan-text-skeleton" />
                     <div className="skeleton cancel-button-skeleton" />
