@@ -1,0 +1,21 @@
+.running-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #eaf1f8;
+    border: 1px solid #d5e3f1;
+    border-radius: 8px;
+    margin-top: 4px;
+}
+
+.running-total__label {
+    font-size: 13px;
+    color: #3b5a7a;
+}
+
+.running-total__amount {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--sayso-indigo);
+}
