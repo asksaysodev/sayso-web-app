@@ -2,6 +2,7 @@ import getSureSendPeople from '@/services/integrations/suresend/getSureSendPeopl
 import createSureSendLead from '@/services/integrations/suresend/createSureSendLead';
 import type { SureSendPerson } from '@/services/integrations/suresend/getSureSendPeople';
 import type { CrmCreateLeadInput, CrmLead, CrmProvider } from '../types';
+import { crmReauthErrorFrom } from '../errors';
 
 function normalizeSureSendPerson(person: SureSendPerson): CrmLead {
     const primaryEmail =
@@ -33,27 +34,35 @@ export const suresendProvider: CrmProvider = {
         const params = search
             ? { email: search, page, limit }
             : { page, limit };
-        const response = await getSureSendPeople(params);
-        const meta = response.meta;
-        const nextOffset =
-            meta && meta.current_page < meta.total_pages
-                ? offset + limit
-                : null;
-        return {
-            leads: response.people.map(normalizeSureSendPerson),
-            nextOffset,
-            total: meta?.total_count ?? 0,
-        };
+        try {
+            const response = await getSureSendPeople(params);
+            const meta = response.meta;
+            const nextOffset =
+                meta && meta.current_page < meta.total_pages
+                    ? offset + limit
+                    : null;
+            return {
+                leads: response.people.map(normalizeSureSendPerson),
+                nextOffset,
+                total: meta?.total_count ?? 0,
+            };
+        } catch (error) {
+            throw crmReauthErrorFrom(error, 'suresend');
+        }
     },
 
     createLead: async (input: CrmCreateLeadInput): Promise<CrmLead> => {
-        const person = await createSureSendLead({
-            firstName: input.firstName,
-            lastName: input.lastName ?? '',
-            email: input.email ?? '',
-            phone: input.phone ?? '',
-            stage: input.stage ?? '',
-        });
-        return normalizeSureSendPerson(person);
+        try {
+            const person = await createSureSendLead({
+                firstName: input.firstName,
+                lastName: input.lastName ?? '',
+                email: input.email ?? '',
+                phone: input.phone ?? '',
+                stage: input.stage ?? '',
+            });
+            return normalizeSureSendPerson(person);
+        } catch (error) {
+            throw crmReauthErrorFrom(error, 'suresend');
+        }
     },
 };
