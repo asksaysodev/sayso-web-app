@@ -36,7 +36,16 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
     const sentinelRef = useRef<HTMLDivElement>(null);
 
     const { isConnected, providerId, providerLabel } = useCrmConnection();
-    const { leads, isLoading, error, hasNextPage, isFetchingNextPage, fetchNextPage } = useCrmLeads(debouncedSearch, { enabled: open });
+    const {
+        leads,
+        isLoading,
+        error,
+        needsReauth,
+        reauthProviderLabel,
+        hasNextPage,
+        isFetchingNextPage,
+        fetchNextPage,
+    } = useCrmLeads(debouncedSearch, { enabled: open });
 
     useEffect(() => {
         const sentinel = sentinelRef.current;
@@ -103,7 +112,15 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                     sideOffset={6}
                     onClick={e => e.stopPropagation()}
                 >
-                    {!isConnected ? (
+                    {needsReauth ? (
+                        <div className="add-lead-state">
+                            Your {reauthProviderLabel ?? 'CRM'} connection expired.{' '}
+                            <a href="/settings" onClick={() => setOpen(false)}>
+                                Reconnect {reauthProviderLabel ?? 'it'} in Settings
+                            </a>
+                            .
+                        </div>
+                    ) : !isConnected ? (
                         <div className="add-lead-state">
                             No CRM connected.{' '}
                             <a href="/settings" onClick={() => setOpen(false)}>
