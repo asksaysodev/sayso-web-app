@@ -1,17 +1,8 @@
-import type { AxiosError } from 'axios';
 import getFubLeads from '@/services/integrations/fub/getFubLeads';
 import createFubLead from '@/services/integrations/fub/createFubLead';
 import type { FubLead } from '@/types/fub';
 import type { CrmCreateLeadInput, CrmLead, CrmProvider } from '../types';
-import { CrmReauthRequiredError } from '../errors';
-
-function toCrmError(error: unknown): unknown {
-    const response = (error as AxiosError<{ error?: string }>)?.response;
-    if (response?.status === 409 && response.data?.error === 'fub_reauth_required') {
-        return new CrmReauthRequiredError('fub');
-    }
-    return error;
-}
+import { crmReauthErrorFrom } from '../errors';
 
 function normalizeFubLead(lead: FubLead): CrmLead {
     const primaryEmail =
@@ -54,7 +45,7 @@ export const fubProvider: CrmProvider = {
                 total: meta?.total ?? 0,
             };
         } catch (error) {
-            throw toCrmError(error);
+            throw crmReauthErrorFrom(error, 'fub');
         }
     },
     createLead: async (input: CrmCreateLeadInput): Promise<CrmLead> => {
@@ -62,7 +53,7 @@ export const fubProvider: CrmProvider = {
             const lead = await createFubLead(input);
             return normalizeFubLead(lead);
         } catch (error) {
-            throw toCrmError(error);
+            throw crmReauthErrorFrom(error, 'fub');
         }
     },
 };
