@@ -13,6 +13,8 @@ export default function SheetVersionSelector() {
     const activeSheetVersion = useAdminStore(state => state.activeSheetVersion);
     const setActiveSheetVersion = useAdminStore(state => state.setActiveSheetVersion);
 
+    if ((!signalSheets || signalSheets.length == 0) || !activeSheetVersion) return null;
+
     return (
         <div className="sheet-version-selector-container">
             <label htmlFor="sheet-version-select">Sheet Version</label>

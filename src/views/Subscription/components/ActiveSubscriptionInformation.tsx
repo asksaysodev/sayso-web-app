@@ -62,7 +62,14 @@ export default function ActiveSubscriptionInformation() {
 
     const isCancelling = subscription?.status === 'canceled' || !!subscription?.cancelledAt;
 
+    const isPartnerFunded = !!subscription?.isPartnerFunded;
+
     const subscriptionText = useMemo(() => {
+        if (isPartnerFunded) {
+            return subscription?.partnerName
+                ? `Your subscription is paid by ${subscription.partnerName}.`
+                : 'Your subscription is paid by your partner organization.';
+        }
         if (subscription?.status === 'paused') {
             return `Your subscription is paused. Your minutes will expire on ${renewalDate}, but you'll continue to have access to your account.`;
         }
@@ -70,7 +77,7 @@ export default function ActiveSubscriptionInformation() {
             return `You can continue using Sayso until ${renewalDate}.`;
         }
         return `Your subscription renews on ${renewalDate}.`;
-    }, [subscription, renewalDate, isCancelling]);
+    }, [subscription, renewalDate, isCancelling, isPartnerFunded]);
 
     const handleCancelSubscription = () => {
         if (!subscription?.plan) return;
@@ -160,21 +167,25 @@ export default function ActiveSubscriptionInformation() {
                 }
             </div>
 
-            <div style={{ width: '100%', height: '1px', backgroundColor: 'var(--sayso-border)' }} />
+            {!isPartnerFunded && (
+                <>
+                    <div style={{ width: '100%', height: '1px', backgroundColor: 'var(--sayso-border)' }} />
 
-            <div className="subscription-section">
-                <h3 className="section-title">Stripe</h3>
-                <div className="subscription-section-content">
-                    <span className="cancel-plan-text">Manage your subscription</span>
-                    <SaysoButton
-                        label={'Open Stripe'}
-                        onClick={handleCancelSubscription}
-                        disabled={isPendingGetStripeCancellationPageUrl}
-                        loading={isPendingGetStripeCancellationPageUrl}
-                        variant="sayso-indigo"
-                    />
-                </div>
-            </div>
+                    <div className="subscription-section">
+                        <h3 className="section-title">Stripe</h3>
+                        <div className="subscription-section-content">
+                            <span className="cancel-plan-text">Manage your subscription</span>
+                            <SaysoButton
+                                label={'Open Stripe'}
+                                onClick={handleCancelSubscription}
+                                disabled={isPendingGetStripeCancellationPageUrl}
+                                loading={isPendingGetStripeCancellationPageUrl}
+                                variant="sayso-indigo"
+                            />
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 }

@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import SaysoButton from '@/components/SaysoButton';
 import { useToast } from '@/context/ToastContext';
 import useCrmCreateLead from '@/hooks/integrations/crm/useCrmCreateLead';
+import { CrmReauthRequiredError } from '@/hooks/integrations/crm/errors';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
 import '../styles/CreateLeadModal.css';
 
@@ -67,6 +68,10 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
             onCreated(lead);
             handleClose();
         } catch (error) {
+            if (error instanceof CrmReauthRequiredError) {
+                setSubmitError('Your CRM connection expired. Reconnect it in Settings to create leads.');
+                return;
+            }
             Sentry.captureException(error);
             setSubmitError('Failed to create lead. Please try again.');
         }

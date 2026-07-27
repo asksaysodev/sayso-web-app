@@ -9,8 +9,11 @@ import {
   validateSignupFields
 } from '../helpers/formValidation';
 import * as Sentry from "@sentry/react";
+import { useQuery } from '@tanstack/react-query';
 import { LoginFormData } from '../types';
 import { getAAL } from '@/services/mfaServices';
+import getInvitation from '../services/getInvitation';
+import reportApiError from '@/utils/reportApiError';
 
 const INITIAL_VALUES: LoginFormData = {
   name: '',
@@ -32,7 +35,24 @@ export default function useLoginForm() {
   const { signIn, signUp, checkIfNeedsMFA } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const signupParam = searchParams.get("signup");
-  const shouldShowSignUp = signupParam === "true" || !!searchParams.get("referralCode");
+  const inviteToken = searchParams.get("invite");
+  const shouldShowSignUp = signupParam === "true" || !!searchParams.get("referralCode") || !!inviteToken;
+
+  const {
+    data: invitation,
+    isLoading: isInvitationLoading,
+    isError: isInvitationError,
+    error: invitationError
+  } = useQuery({
+    queryKey: ['invitation', inviteToken],
+    queryFn: () => getInvitation(inviteToken as string),
+    enabled: !!inviteToken,
+    retry: false
+  });
+
+  useEffect(() => {
+    if (invitationError) reportApiError(invitationError, { feature: 'partner-invitations', operation: 'getInvitation' });
+  }, [invitationError])
 
   const customResolver = (values: LoginFormData) => {
     let errors = {};
@@ -58,7 +78,8 @@ export default function useLoginForm() {
     control,
     reset,
     handleSubmit: rhfHandleSubmit,
-    trigger
+    trigger,
+    setValue
   } = useForm<LoginFormData>({
     resolver: customResolver,
     mode: 'onSubmit',
@@ -76,8 +97,14 @@ export default function useLoginForm() {
   useEffect(()=>{
       if (!shouldShowSignUp) return;
       handleToggleMode();
-      setSearchParams({}, { replace: true });
+      setSearchParams(inviteToken ? { invite: inviteToken } : {}, { replace: true });
   }, [shouldShowSignUp])
+
+  useEffect(()=>{
+      if (invitation?.email) {
+        setValue('email', invitation.email);
+      }
+  }, [invitation, setValue])
 
   const performAuthentication = async (data: LoginFormData) => {
     if (isLoggingIn) {
@@ -115,7 +142,8 @@ export default function useLoginForm() {
             name: data.name,
             lastname: data.lastname,
             company: data.company,
-            phone: data.phone && data.phone.trim() !== '+1' ? toE164(data.phone) : undefined
+            phone: data.phone && data.phone.trim() !== '+1' ? toE164(data.phone) : undefined,
+            invite_token: inviteToken || undefined
           }
         }
       });
@@ -156,6 +184,10 @@ export default function useLoginForm() {
     isBtnLoading,
     handleToggleMode,
     handleSubmit,
-    setSignupStep
+    setSignupStep,
+    isInvite: !!inviteToken,
+    invitation,
+    isInvitationLoading,
+    isInvitationError
   }
 }

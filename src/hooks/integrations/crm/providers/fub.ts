@@ -2,6 +2,7 @@ import getFubLeads from '@/services/integrations/fub/getFubLeads';
 import createFubLead from '@/services/integrations/fub/createFubLead';
 import type { FubLead } from '@/types/fub';
 import type { CrmCreateLeadInput, CrmLead, CrmProvider } from '../types';
+import { crmReauthErrorFrom } from '../errors';
 
 function normalizeFubLead(lead: FubLead): CrmLead {
     const primaryEmail =
@@ -31,20 +32,28 @@ export const fubProvider: CrmProvider = {
         const params = search
             ? { query: search, limit, offset }
             : { limit, offset };
-        const response = await getFubLeads(params);
-        const meta = response._metadata;
-        const nextOffset =
-            meta && meta.offset + meta.limit < meta.total
-                ? meta.offset + meta.limit
-                : null;
-        return {
-            leads: response.leads.map(normalizeFubLead),
-            nextOffset,
-            total: meta?.total ?? 0,
-        };
+        try {
+            const response = await getFubLeads(params);
+            const meta = response._metadata;
+            const nextOffset =
+                meta && meta.offset + meta.limit < meta.total
+                    ? meta.offset + meta.limit
+                    : null;
+            return {
+                leads: response.leads.map(normalizeFubLead),
+                nextOffset,
+                total: meta?.total ?? 0,
+            };
+        } catch (error) {
+            throw crmReauthErrorFrom(error, 'fub');
+        }
     },
     createLead: async (input: CrmCreateLeadInput): Promise<CrmLead> => {
-        const lead = await createFubLead(input);
-        return normalizeFubLead(lead);
+        try {
+            const lead = await createFubLead(input);
+            return normalizeFubLead(lead);
+        } catch (error) {
+            throw crmReauthErrorFrom(error, 'fub');
+        }
     },
 };

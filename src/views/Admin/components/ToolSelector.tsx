@@ -31,6 +31,10 @@ const tools: { value: Tool, label: string }[] = [
       value: "notifications",
       label: "Notifications",
     },
+    {
+      value: "partners",
+      label: "Partners",
+    },
     // {
     //   value: "cue-main-instructions",
     //   label: "Cue Main Instructions",

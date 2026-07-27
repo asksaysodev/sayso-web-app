@@ -1,0 +1,17 @@
+.no-invitations-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 24px 20px;
+    text-align: center;
+}
+
+.no-invitations-state__icon {
+    color: #cbd5e1;
+}
+
+.no-invitations-state__text {
+    color: #94a3b8;
+    font-size: 13px;
+}

@@ -1,0 +1,53 @@
+.funded-teams-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.funded-teams-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.funded-teams-section__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.funded-teams-section__count {
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.funded-teams-section__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.funded-teams-section__add {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sayso-indigo);
+    cursor: pointer;
+    width: fit-content;
+    transition: opacity 120ms;
+}
+
+.funded-teams-section__add:hover {
+    opacity: 0.75;
+}
+
+.funded-teams-section__add:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

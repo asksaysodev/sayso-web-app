@@ -1,3 +1,4 @@
+import { forwardRef, ButtonHTMLAttributes } from 'react';
 import ButtonSpinner from './ButtonSpinner';
 import '../styles/SaysoButton.css';
 
@@ -11,9 +12,13 @@ import '../styles/SaysoButton.css';
  * @param {React.ReactNode} icon - Optional icon to display before label
  * @param {'sayso-indigo' | 'error' | 'error-outlined' | 'outlined'} variant - Button style variant (default: 'sayso-indigo')
  * @param {boolean} fullWidth - Make button take full width of container (default: false)
+ *
+ * Forwards its ref and any extra button props so it can be used as an `asChild`
+ * target for Radix primitives (e.g. DialogTrigger), which need both to manage
+ * focus restoration and aria state.
  */
 
-interface Props {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
     label: string;
     onClick?: () => void;
     disabled?: boolean;
@@ -26,7 +31,7 @@ interface Props {
     size?: 'sm' | 'lg';
 }
 
-export default function SaysoButton({
+const SaysoButton = forwardRef<HTMLButtonElement, Props>(function SaysoButton({
     label,
     onClick,
     disabled = false,
@@ -37,15 +42,18 @@ export default function SaysoButton({
     fullWidth = false,
     type = 'button',
     size = 'lg',
-}: Props) {
+    ...rest
+}, ref) {
     const spinnerColor = variant === 'outlined' ? '#000' : variant === 'error-outlined' ? '#bf392f' : 'white';
 
     return (
         <button
+            ref={ref}
             type={type}
             disabled={disabled || loading}
             className={`sayso-button variant-${variant} size-${size} ${loading ? 'loading' : ''} ${fullWidth ? 'full-width' : ''}`}
             onClick={onClick}
+            {...rest}
         >
             {loading ? (
                 <>
@@ -60,4 +68,6 @@ export default function SaysoButton({
             )}
         </button>
     )
-}
+});
+
+export default SaysoButton;

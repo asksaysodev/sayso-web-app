@@ -9,4 +9,9 @@ export const sentryConfig = {
     if (isSessionExpiredError(exception) || isSuspendedTabTimeoutError(exception)) return null;
     return event;
   },
+  // Backstop for Supabase Auth's cross-tab Web Locks timeout. Safari can leave the
+  // "lock:sayso-auth" Navigator lock held by a frozen tab, surfacing as an unhandled
+  // rejection. supabase.ts switches to processLock to prevent this; this filter keeps
+  // any residual noise out of the issue stream. Benign and self-recovering.
+  ignoreErrors: [/Acquiring an exclusive Navigator LockManager lock/],
 }

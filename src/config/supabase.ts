@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, processLock } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -16,5 +16,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     // with a key bundled in the client JS — providing no real security while
     // introducing async-storage race conditions that contributed to spurious
     // session revocations.
+    lock: processLock,
   }
 });

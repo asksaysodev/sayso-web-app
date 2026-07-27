@@ -1,0 +1,29 @@
+.add-partner-success {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px 32px;
+    text-align: center;
+}
+
+.add-partner-success__icon {
+    color: #10b981;
+}
+
+.add-partner-success__heading {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.add-partner-success__subtext {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+    max-width: 300px;
+    line-height: 1.5;
+}

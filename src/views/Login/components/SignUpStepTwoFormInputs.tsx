@@ -9,9 +9,10 @@ interface Props {
     control: Control<LoginFormData>;
     isBtnLoading: boolean;
     setSignupStep: (step: number) => void;
+    disableEmail?: boolean;
 }
 
-export default function SignUpStepTwoFormInputs({ control, isBtnLoading, setSignupStep }: Props) {
+export default function SignUpStepTwoFormInputs({ control, isBtnLoading, setSignupStep, disableEmail }: Props) {
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
@@ -24,6 +25,7 @@ export default function SignUpStepTwoFormInputs({ control, isBtnLoading, setSign
                 label="Email"
                 labelCn='loginInFormInputLabel'
                 isRequired
+                disabled={disableEmail}
             />
             <ControlledInputField
                 type={showPassword ? 'text' : 'password'}

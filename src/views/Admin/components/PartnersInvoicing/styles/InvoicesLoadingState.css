@@ -1,0 +1,24 @@
+.invoices-loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 80px 20px;
+    min-height: 260px;
+}
+
+.invoices-loading-state__icon {
+    color: #64748b;
+    animation: invoices-spin 0.8s linear infinite;
+}
+
+.invoices-loading-state__text {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+@keyframes invoices-spin {
+    to { transform: rotate(360deg); }
+}
