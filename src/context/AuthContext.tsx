@@ -186,11 +186,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
         const newUser = session?.user as User | null
-        if (event === 'TOKEN_REFRESHED' || JSON.stringify(newUser) !== JSON.stringify(prevUserRef.current)) {
+
+        setAuthToken(session?.access_token ?? null)
+        setLoading(false)
+
+        if (JSON.stringify(newUser) !== JSON.stringify(prevUserRef.current)) {
           setUser(newUser)
           prevUserRef.current = newUser
-          setAuthToken(session?.access_token ?? null)
-          setLoading(false)
         }
       }
     })
