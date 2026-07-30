@@ -1,6 +1,4 @@
-//CONTEXT PROVIDERS
 import { AuthProvider } from './context/AuthContext';
-import { ProspectsProvider } from './context/ProspectsContext';
 import { SubscriptionAlertProvider } from './context/SubscriptionAlertContext';
 import { ToastProvider } from './context/ToastContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -20,16 +18,14 @@ const queryClient = new QueryClient({
 
 export default function Providers({ children }: Props) {
     return (
-      <QueryClientProvider client={queryClient}>
-          <ToastProvider>
-              <AuthProvider>
-                  <ProspectsProvider>
+        <QueryClientProvider client={queryClient}>
+            <ToastProvider>
+                <AuthProvider>
                     <SubscriptionAlertProvider>
                         {children}
                     </SubscriptionAlertProvider>
-                  </ProspectsProvider>
-              </AuthProvider>
-          </ToastProvider>
-      </QueryClientProvider>
+                </AuthProvider>
+            </ToastProvider>
+        </QueryClientProvider>
     );
 }
