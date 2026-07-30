@@ -22,6 +22,7 @@ interface AuthContextValue {
   userLoading: boolean;
   loading: boolean;
   updateGlobalUser: (accountEmail: string) => Promise<void>;
+  registerAccountCreation: (creationPromise: Promise<unknown>) => void;
   mfaRequired: boolean;
   currentAAL: AALLevel | null;
   mfaFactors: Factor[];
@@ -73,6 +74,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.error('Error updating global user:', error);
       Sentry.captureException(error);
     }
+  }
+
+  /**
+   * Lets a signup flow that bypasses this context's own `signUp` (currently
+   * AcceptInvite, which calls supabase.auth.signUp directly) gate the account
+   * fetch below on the request that actually creates the accounts row.
+   *
+   * Without this the SIGNED_IN event schedules getAccount 300ms later, which
+   * beats the row into existence and 400s — see SAYSO-341.
+   *
+   * The stored promise deliberately never rejects: the ref only answers "has
+   * account creation finished?". A creation failure surfaces through the caller
+   * that owns the promise, and reporting it here too would double-count it.
+   */
+  const registerAccountCreation = (creationPromise: Promise<unknown>): void => {
+    const settled: Promise<void> = creationPromise
+      .then(() => undefined)
+      .catch(() => undefined)
+      .finally(() => {
+        if (accountCreationRef.current === settled) {
+          accountCreationRef.current = null
+        }
+      })
+    accountCreationRef.current = settled
   }
 
   const resetUser = () => {
@@ -308,6 +333,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     userLoading,
     loading,
     updateGlobalUser,
+    registerAccountCreation,
     mfaRequired,
     currentAAL,
     mfaFactors,
