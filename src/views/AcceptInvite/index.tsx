@@ -9,6 +9,7 @@ import LoginBtn from "@/components/LoginBtn";
 import EyeToggleShowPasswordButton from "@/views/Login/components/EyeToggleShowPasswordButton";
 import dayjs from "dayjs";
 import { supabase } from "@/config/supabase";
+import { useAuth } from "@/context/AuthContext";
 import validateInvite from "./services/validateInvite";
 import acceptInvite from "./services/acceptInvite";
 import SaysoLoader from "@/components/SaysoLoader";
@@ -24,6 +25,7 @@ interface FormValues {
 export default function AcceptInvite() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const { registerAccountCreation, updateGlobalUser } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -55,12 +57,22 @@ export default function AcceptInvite() {
 
             if (signUpError) throw signUpError;
 
-            await acceptInvite({
+            // signUp fires SIGNED_IN, which makes AuthContext schedule its account
+            // fetch 300ms later — before this request has created the accounts row.
+            // Register the promise first so that fetch waits on it (SAYSO-341).
+            const acceptancePromise = acceptInvite({
                 email: invite?.email as string,
                 name: values.name,
                 lastname: values.lastname,
                 company: invite?.companyName
             }, token);
+
+            registerAccountCreation(acceptancePromise);
+            await acceptancePromise;
+
+            // Populate globalUser before navigating, so the dashboard renders
+            // immediately instead of depending on AuthContext's timer.
+            await updateGlobalUser(invite!.email);
         },
         onSuccess: () => {
             navigate("/", { replace: true });
