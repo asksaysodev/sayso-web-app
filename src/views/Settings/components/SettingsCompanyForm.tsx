@@ -6,7 +6,7 @@ import { useToast } from "../../../context/ToastContext";
 import { LuLoader } from "react-icons/lu";
 import FormLineAccount from "../../../components/FormLineAccount";
 import TeamMembersTable from "./TeamMembersTable";
-import { Account, Company } from "@/types/user";
+import { Account, Company, TEAM_ADMIN_ROLES } from "@/types/user";
 
 interface Props {
     globalUser: Account | null;
@@ -76,9 +76,9 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
             setUnsavedChanges(inputValue !== '');
     }, [inputValue]);
 
-    const allowEditingOrgName = (globalUser?.role === 'user' && globalUser.account_type === 'individual') || (globalUser?.role === 'admin' && globalUser.account_type === 'team') || globalUser?.role === 'superadmin';
-
-	const isTeamMembersTableVisible = (globalUser?.role === 'admin' || globalUser?.role === 'superadmin') && globalUser.account_type === 'team';
+    const isTeamAdminRole = !!globalUser?.role && TEAM_ADMIN_ROLES.includes(globalUser.role);
+    const allowEditingOrgName = (globalUser?.role === 'user' && globalUser.account_type === 'individual') || (isTeamAdminRole && globalUser.account_type === 'team') || globalUser?.role === 'superadmin';
+	const isTeamMembersTableVisible = isTeamAdminRole && globalUser.account_type === 'team';
     
     return (
         <div className="settings-company">
