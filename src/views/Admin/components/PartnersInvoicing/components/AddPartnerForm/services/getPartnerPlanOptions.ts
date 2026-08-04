@@ -3,7 +3,7 @@ import apiClient from "@/config/axios";
 export interface PartnerPlanOption {
     id: string;
     plan_name: string;
-    team_size: string;
+    included_minutes_per_month: number;
     price_in_cents: number;
 }
 

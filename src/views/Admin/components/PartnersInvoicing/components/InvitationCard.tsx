@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function InvitationCard({ invitation }: Props) {
-    const {email, planName, status, teamSize,claimedAt} = invitation || {}
+    const {email, planName, status, includedHours,claimedAt} = invitation || {}
     const tone = invitationStatusTone(status);
     return (
         <div className="invitation-card">
@@ -18,7 +18,7 @@ export default function InvitationCard({ invitation }: Props) {
             <div className="invitation-card__info">
                 <span className="invitation-card__email">{email}</span>
                 <span className="invitation-card__plan">
-                    {planName} · {teamSize}
+                    {planName} · {includedHours != null ? `${includedHours} hours` : '—'}
                 </span>
             </div>
             <div className="invitation-card__meta">
