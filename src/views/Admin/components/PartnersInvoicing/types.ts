@@ -5,7 +5,7 @@ export interface Invitation {
     id: string;
     email: string;
     planName: string;
-    teamSize: string;
+    includedHours: number | null;
     status: InvitationStatus;
     claimedAt: string | null;
 }
