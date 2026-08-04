@@ -6,6 +6,9 @@ export async function createPartnerWithTeams(values: AddPartnerFormValues): Prom
         name: values.partnerName,
         billing_email: values.billingEmail,
         net_terms: Number(values.netTerms),
+        // Left off entirely when blank so the server takes its "no discount" path
+        // rather than having to interpret an empty string.
+        ...(values.discountPercent?.trim() ? { discount_percent: Number(values.discountPercent) } : {}),
         teams: values.teams.map(team => ({
             email: team.email,
             plan_pricing_id: team.planOptionId,

@@ -34,6 +34,7 @@ export default function AddPartnerForm({ onClose }: Props) {
         remove,
         watchedTeams,
         watchedNetTerms,
+        watchedDiscountPercent,
         isPending,
         isSuccess,
         teamCount,
@@ -79,6 +80,25 @@ export default function AddPartnerForm({ onClose }: Props) {
                     isRequired
                     options={NET_TERMS_OPTIONS}
                 />
+                <ControlledInputField
+                    name="discountPercent"
+                    control={control}
+                    label="Discount % (optional)"
+                    type="number"
+                    placeholder="e.g. 15"
+                    min={1}
+                    max={100}
+                    step={1}
+                    rules={{
+                        validate: (value: string) => {
+                            if (!value?.trim()) return true;
+                            const parsed = Number(value);
+                            if (!Number.isInteger(parsed)) return 'Discount must be a whole number';
+                            if (parsed < 1 || parsed > 100) return 'Discount must be between 1 and 100';
+                            return true;
+                        },
+                    }}
+                />
                 <FundedTeamsSection
                     control={control}
                     fields={fields}
@@ -87,6 +107,7 @@ export default function AddPartnerForm({ onClose }: Props) {
                     plans={plans}
                     watchedTeams={watchedTeams}
                     netTerms={watchedNetTerms}
+                    discountPercent={watchedDiscountPercent}
                     plansLoading={plansLoading}
                     plansError={plansError}
                     plansRetrying={plansRetrying}

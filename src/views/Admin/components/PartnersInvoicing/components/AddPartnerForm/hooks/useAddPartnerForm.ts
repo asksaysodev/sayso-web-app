@@ -10,6 +10,7 @@ const DEFAULT_VALUES: AddPartnerFormValues = {
     partnerName: '',
     billingEmail: '',
     netTerms: '30',
+    discountPercent: '',
     teams: [{ email: '', planOptionId: '' }],
 };
 
@@ -26,6 +27,7 @@ export function useAddPartnerForm() {
 
     const watchedTeams = watch('teams');
     const watchedNetTerms = watch('netTerms');
+    const watchedDiscountPercent = watch('discountPercent');
 
     const { mutate, isPending, error } = useMutation({
         mutationFn: (data: AddPartnerFormValues) => createPartnerWithTeams(data),
@@ -52,6 +54,7 @@ export function useAddPartnerForm() {
         remove,
         watchedTeams,
         watchedNetTerms,
+        watchedDiscountPercent,
         isPending,
         isSuccess,
         teamCount,

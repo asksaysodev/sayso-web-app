@@ -17,6 +17,7 @@ interface PartnerResponse {
     name: string;
     billing_email: string;
     net_terms: number;
+    discount_percent: number | null;
     subscription_status: string | null;
     invitations: PartnerInvitationResponse[] | null;
 }
@@ -32,6 +33,7 @@ export async function getPartners(): Promise<Partner[]> {
         name: partner.name,
         billingEmail: partner.billing_email,
         netTerms: partner.net_terms,
+        discountPercent: partner.discount_percent ?? null,
         stripeStatus: (partner.subscription_status ?? 'incomplete') as StripeStatus,
         invitations: (partner.invitations ?? []).map(invitation => ({
             id: invitation.id,
