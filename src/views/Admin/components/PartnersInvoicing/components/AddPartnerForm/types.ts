@@ -7,6 +7,7 @@ export interface AddPartnerFormValues {
     partnerName: string;
     billingEmail: string;
     netTerms: string;
+    discountPercent: string;
     teams: TeamField[];
 }
 

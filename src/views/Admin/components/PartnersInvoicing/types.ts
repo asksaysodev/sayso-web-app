@@ -15,6 +15,7 @@ export interface Partner {
     name: string;
     billingEmail: string;
     netTerms: number;
+    discountPercent: number | null;
     stripeStatus: StripeStatus;
     invitations: Invitation[];
 }
