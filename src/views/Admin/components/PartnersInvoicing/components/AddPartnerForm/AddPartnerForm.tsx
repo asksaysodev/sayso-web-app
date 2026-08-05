@@ -91,10 +91,12 @@ export default function AddPartnerForm({ onClose }: Props) {
                     step={1}
                     rules={{
                         validate: (value: string) => {
+                            // Blank and 0 both mean "no discount" — the same two spellings
+                            // the server accepts — so neither is an error.
                             if (!value?.trim()) return true;
                             const parsed = Number(value);
                             if (!Number.isInteger(parsed)) return 'Discount must be a whole number';
-                            if (parsed < 1 || parsed > 100) return 'Discount must be between 1 and 100';
+                            if (parsed < 0 || parsed > 100) return 'Discount must be between 0 and 100';
                             return true;
                         },
                     }}
