@@ -14,6 +14,7 @@ interface Props {
     plans: TeamPlanOption[];
     watchedTeams: Array<{ email: string; planOptionId: string }>;
     netTerms: string;
+    discountPercent: string;
     plansLoading: boolean;
     plansError: boolean;
     plansRetrying: boolean;
@@ -28,6 +29,7 @@ export default function FundedTeamsSection({
     plans,
     watchedTeams,
     netTerms,
+    discountPercent,
     plansLoading,
     plansError,
     plansRetrying,
@@ -67,7 +69,7 @@ export default function FundedTeamsSection({
                 <Plus size={14} />
                 <span>Add team</span>
             </button>
-            <RunningTotal plans={plans} watchedTeams={watchedTeams} netTerms={netTerms} />
+            <RunningTotal plans={plans} watchedTeams={watchedTeams} netTerms={netTerms} discountPercent={discountPercent} />
         </div>
     );
 }

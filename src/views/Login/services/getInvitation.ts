@@ -3,7 +3,6 @@ import apiClient from "@/config/axios";
 export interface InvitationInfo {
     email: string;
     plan_name: string;
-    team_size: number;
     partner_name: string;
 }
 

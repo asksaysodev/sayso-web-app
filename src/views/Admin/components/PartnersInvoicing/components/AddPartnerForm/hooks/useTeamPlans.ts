@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import getPartnerPlanOptions from '../services/getPartnerPlanOptions';
 import { formatInvoiceAmount } from '../../../helpers/formatInvoiceAmount';
+import formatMinutesToHours from '@/utils/formatters/formatMinutesToHours';
 import reportApiError from '@/utils/reportApiError';
 import type { TeamPlanOption } from '../types';
 
@@ -19,7 +20,7 @@ export function useTeamPlans() {
     const plans: TeamPlanOption[] = (data ?? [])
         .map(opt => ({
             id: opt.id,
-            label: `${opt.plan_name} · ${opt.team_size} · ${formatInvoiceAmount(opt.price_in_cents, 'usd')}/mo`,
+            label: `${opt.plan_name} · ${formatMinutesToHours(opt.included_minutes_per_month)} hours · ${formatInvoiceAmount(opt.price_in_cents, 'usd')}/mo`,
             priceInCents: opt.price_in_cents,
         }))
         .sort((a, b) => a.priceInCents - b.priceInCents);

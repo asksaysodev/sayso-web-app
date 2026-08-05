@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 import { Partner } from '../types';
 import StripeStatusBadge from './StripeStatusBadge';
+import PartnerDiscountBadge from './PartnerDiscountBadge';
 import PartnerIdentity from './PartnerIdentity';
 import '../styles/PartnerCardHeader.css';
 
@@ -11,7 +12,7 @@ interface Props {
 }
 
 export default function PartnerCardHeader({ partner, expanded, onToggle }: Props) {
-    const { name, billingEmail, stripeStatus } = partner;
+    const { name, billingEmail, stripeStatus, discountPercent } = partner;
     return (
         <button
             type="button"
@@ -21,6 +22,7 @@ export default function PartnerCardHeader({ partner, expanded, onToggle }: Props
         >
             <PartnerIdentity name={name} subtitle={billingEmail} />
             <div className="partner-card-header__right">
+                {discountPercent != null && <PartnerDiscountBadge discountPercent={discountPercent} />}
                 <StripeStatusBadge status={stripeStatus} />
                 <ChevronRight
                     size={18}
