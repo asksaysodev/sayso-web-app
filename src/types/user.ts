@@ -110,7 +110,11 @@ export type SubscriptionStatus =
   | 'unpaid'
   | 'paused';
 
-export type UserRole = 'admin' | 'user' | 'superadmin';
+export const USER_ROLES = ['owner', 'admin', 'user', 'superadmin'] as const;
+
+export type UserRole = typeof USER_ROLES[number];
+
+export const TEAM_ADMIN_ROLES: readonly UserRole[] = ['owner', 'admin', 'superadmin'];
 
 export interface Company {
   id: string;
