@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
+import { TEAM_ADMIN_ROLES } from "@/types/user";
 import { useMemo } from "react";
 
 /**
@@ -9,7 +10,7 @@ export default function useIsTeamAdmin(): boolean {
     const { globalUser } = useAuth();
     return useMemo(() =>
         globalUser?.account_type === 'team' &&
-        (globalUser?.role === 'admin' || globalUser?.role === 'superadmin'), 
+        !!globalUser?.role && TEAM_ADMIN_ROLES.includes(globalUser.role),
         [globalUser]
     );
 }
