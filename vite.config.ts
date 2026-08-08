@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     sentryVitePlugin({
       org: "sayso-zj",
-      project: "sayso-web-app",
+      project: "sayso-app",
     }),
   ],
   resolve: {

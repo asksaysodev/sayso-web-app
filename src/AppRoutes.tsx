@@ -10,14 +10,15 @@ import Login from './views/Login';
 import PasswordRecovery from './views/PasswordRecovery';
 import ResetPassword from './views/ResetPassword';
 
-const Dashboard = lazy(() => import('./views/Dashboard'));
-const Settings = lazy(() => import('./views/Settings'));
-const Marketplace = lazy(() => import('./views/Marketplace'));
-const Checkout = lazy(() => import('./views/Checkout'));
-const Admin = lazy(() => import('./views/Admin'));
-const Subscription = lazy(() => import('./views/Subscription'));
-const MFAVerify = lazy(() => import('./views/MFAVerify'));
-const AcceptInvite = lazy(() => import('./views/AcceptInvite'));
+const lazyView: typeof lazy = (factory) => lazy(() => factory().then((module) => module ?? new Promise<never>(() => {})));
+const Dashboard = lazyView(() => import('./views/Dashboard'));
+const Settings = lazyView(() => import('./views/Settings'));
+const Marketplace = lazyView(() => import('./views/Marketplace'));
+const Checkout = lazyView(() => import('./views/Checkout'));
+const Admin = lazyView(() => import('./views/Admin'));
+const Subscription = lazyView(() => import('./views/Subscription'));
+const MFAVerify = lazyView(() => import('./views/MFAVerify'));
+const AcceptInvite = lazyView(() => import('./views/AcceptInvite'));
 
 import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
