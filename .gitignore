@@ -32,3 +32,6 @@ dist-ssr
 CLAUDE.md
 .mcp.json
 .claude
+
+# Claude Code multi-phase plans. Local working notes, not shared
+docs/plans/
