@@ -19,7 +19,6 @@ selectedBillingTab: BillingInterval;
 export default function PricingComponent({ plan = null, selectedBillingTab = BillingIntervalEnum.MONTH }: Props) {
     const {
         name: planName,
-        description,
         features,
         pricingOptions,
         purchasable,

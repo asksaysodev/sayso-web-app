@@ -1,13 +1,13 @@
-import { RegisterOptions, UseFormReturn } from "react-hook-form";
+import { Control, FieldPath, FieldValues, RegisterOptions } from "react-hook-form";
 import ControlledCustomFormField from "./ControlledCustomFormField";
 import { DetailedHTMLProps, HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
 
 import './styles/controlledInputField.css'
 
-interface Props extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
-    name: string;
-    control: UseFormReturn<any>['control'];
-    rules?: RegisterOptions;
+interface Props<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>> extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+    name: TName;
+    control: Control<TFieldValues>;
+    rules?: RegisterOptions<TFieldValues, TName>;
     label?: string;
     labelCn?: string;
     labelColor?: string;
@@ -19,7 +19,7 @@ interface Props extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>,
     rightChildren?: React.ReactNode;
 }
 
-export default function ControlledInputField({
+export default function ControlledInputField<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({
     name,
     control,
     rules,
@@ -33,7 +33,7 @@ export default function ControlledInputField({
     className = '',
     rightChildren,
     ...rest
-}: Props) {
+}: Props<TFieldValues, TName>) {
     const isNumberInput = type === 'number';
 
     return (

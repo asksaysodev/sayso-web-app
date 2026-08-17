@@ -46,13 +46,6 @@ export type StageFitFilter = {
 };
 
 export type ActiveFilter = StageFitFilter;
-export interface FilterConfig {
-    key: ActiveFilter['key'];
-    label: string;
-    description: string;
-    defaultValue: () => ActiveFilter;
-}
-
 export interface ResetAccountSubscriptionResponse {
     message: string;
     companyId: string;

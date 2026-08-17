@@ -112,7 +112,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useSessionRevalidation()
 
   // Wrapper function to handle localStorage updates
-  const updateGlobalUserState = (newGlobalUser: any) => { // $FixTS
+  const updateGlobalUserState = (newGlobalUser: Account | null) => {
     if (newGlobalUser === null) {
       localStorage.removeItem(GLOBAL_USER_CACHE_KEY)
     } else {
@@ -258,7 +258,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Handle session expiration
   useEffect(() => {
     const handleSessionExpired = () => {
-      console.log('🔐 AuthContext: Session expired event received');
       resetUser();
     };
 
@@ -389,18 +388,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!result.error) {
       const { email, options } = data
       const { name, lastname, company, phone, invite_token } = options?.data || {}
-      const creationPromise: any = createAccount({ email, name, lastname, company, phone, invite_token })
+      const creationPromise = createAccount({ email, name, lastname, company, phone, invite_token })
         .catch((err) => {
           console.error('Error creating account in DB:', err)
           Sentry.captureException(err)
           throw err
         })
-        accountCreationRef.current = creationPromise;
-      try {
-          await creationPromise;
-      } finally {
-          accountCreationRef.current = null;
-      }
+      registerAccountCreation(creationPromise);
+      await creationPromise;
       // Fire-and-forget: enroll in RR then persist referral attribution if user was referred.
       // Must not block signup or throw — failures are captured in Sentry.
       // attributionPending gates the subscription page so it shows skeletons until we know

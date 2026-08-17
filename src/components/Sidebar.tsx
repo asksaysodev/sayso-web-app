@@ -39,8 +39,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const { globalUser, handleSignOut, isSuperAdmin } = useAuth();
     const hasSubscription = useHasSubscription();
 
-    const subjectValue = encodeURIComponent(`Sayso App Support Request - ${globalUser?.email ?? '{user email}'}`);
-    const bodyValue = encodeURIComponent(`Describe the error and include any attachments or video links. All context or additional information will help us reproducing the error scenario`);
     const userNotAdminOnTeams = useUserNotAdminOnTeams()
     
     return (

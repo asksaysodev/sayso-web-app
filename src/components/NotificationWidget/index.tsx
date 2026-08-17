@@ -15,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import NotificationsHistoryBtnMenubar from './components/NotificationsHistoryBtnMenubar';
 
 export default function NotificationWidget() {
-    const { globalUser, isSuperAdmin } = useAuth();
+    const { globalUser } = useAuth();
     const isAdmin = false;
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { userNotifications, isLoading, mutateDismissNotification } = useNotificationWidget();
@@ -60,6 +60,7 @@ export default function NotificationWidget() {
         setRemindedIds(updated);
     };
     
+    /* eslint-disable react-hooks/set-state-in-effect */
     useEffect(() => {
         if (visibleNotifications.length > 0 && currentIndex >= visibleNotifications.length) {
             setCurrentIndex(visibleNotifications.length - 1);

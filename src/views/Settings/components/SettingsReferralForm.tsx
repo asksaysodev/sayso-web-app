@@ -5,7 +5,7 @@ import useReferralLink from '../hooks/useReferralLink';
 
 export default function SettingsReferralForm() {
     const { showToast } = useToast();
-    const { referralLink, isLoading, isError, error, refetch } = useReferralLink();
+    const { referralLink, isLoading, isError, refetch } = useReferralLink();
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {

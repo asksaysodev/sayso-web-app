@@ -1,9 +1,6 @@
-import CustomInput from '@/components/CustomInput';
 import LoginBtn from '@/components/LoginBtn';
-import PasswordInput from './PasswordInput';
 import ControlledInputField from '@/components/forms/ControlledInputField';
 import { useState } from 'react';
-import { LuEye, LuEyeOff } from 'react-icons/lu';
 import EyeToggleShowPasswordButton from './EyeToggleShowPasswordButton';
 import { LoginFormData } from '../types';
 import { Control } from 'react-hook-form';

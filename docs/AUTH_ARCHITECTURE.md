@@ -48,10 +48,9 @@ The Supabase JS SDK owns the session. `AuthContext` is a React mirror — it lis
 | `src/context/AuthContext.tsx` | React state mirror. Bootstraps from `INITIAL_SESSION` / `getSession()`. Listens to `onAuthStateChange`. Exposes `signIn`, `signOut`, `verifyMFA`, and all user/MFA state. |
 | `src/config/axios.ts` | `apiClient` instance. Reads token via `getSession()` on every request. Handles 401 → refresh → retry. Classifies refresh errors: only terminal Supabase errors force a logout. |
 | `src/hooks/useSessionRevalidation.ts` | Listens to `visibilitychange` and `online` events. Forces a refresh if the token is within 60s of expiry. Compensates for browser tab-throttling that delays the SDK's internal timer. |
-| `src/components/AuthGuard.tsx` | Route wrapper: redirects to `/login` if not authenticated. |
-| `src/components/MFAGuard.tsx` | Route wrapper: redirects to `/mfa-verify` if `mfaRequired` is true. |
+| `src/components/guards/AuthGuard.tsx` | Route wrapper: redirects to `/login` if not authenticated. |
+| `src/components/guards/MFAGuard.tsx` | Route wrapper: redirects to `/mfa-verify` if `mfaRequired` is true. |
 | `src/services/mfaServices.ts` | MFA enrollment and verification helpers (TOTP). Calls Supabase SDK directly. |
-| `src/utils/tokenEncryption.ts` | Legacy — no longer used by the Supabase client. `debugStorage.ts` still imports it for dev console tooling. Do not add new usages. |
 
 ---
 

@@ -22,7 +22,7 @@ const DEFAULT_SUBSCRIPTION_ALERT: SubscriptionAlert = {
     description: 'You are currently on a free trial and ran out of minutes. Upgrade to a paid account to continue using the Coach Feature.',
 };
 
-const SubscriptionAlertContext = createContext<SubscriptionAlertContextValue>({} as SubscriptionAlertContextValue);
+const SubscriptionAlertContext = createContext<SubscriptionAlertContextValue | undefined>(undefined);
 
 export const SubscriptionAlertProvider = ({ children }: { children: React.ReactNode }) => {
     const [subscriptionAlert, setSubscriptionAlert] = useState<SubscriptionAlert | null>(null);
@@ -48,6 +48,7 @@ export const SubscriptionAlertProvider = ({ children }: { children: React.ReactN
         setSubscriptionAlert({ title, description, fn });
     }, []);
     
+    /* eslint-disable react-hooks/set-state-in-effect -- shows the upgrade alert once per session when quota runs out */
     useEffect(() => {
         if (hasSubscription && isOutOfMinutes && isTrialing) {
             if (!sessionStorage.getItem('alreadyShownAlert')) {
@@ -56,6 +57,7 @@ export const SubscriptionAlertProvider = ({ children }: { children: React.ReactN
             }
         }
     }, [isOutOfMinutes, isTrialing, showSubscriptionAlert, hasSubscription]);
+    /* eslint-enable react-hooks/set-state-in-effect */
     
 
     const hideSubscriptionAlert = () => {

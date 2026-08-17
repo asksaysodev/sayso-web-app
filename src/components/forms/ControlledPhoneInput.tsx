@@ -1,13 +1,13 @@
-import { RegisterOptions, UseFormReturn } from "react-hook-form";
+import { Control, FieldPath, FieldValues, RegisterOptions } from "react-hook-form";
 import ControlledCustomFormField from "./ControlledCustomFormField";
 import { PhoneInput } from "@/components/ui/PhoneInput";
 
 import './styles/controlledInputField.css'
 
-interface Props {
-    name: string;
-    control: UseFormReturn<any>['control'];
-    rules?: RegisterOptions;
+interface Props<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>> {
+    name: TName;
+    control: Control<TFieldValues>;
+    rules?: RegisterOptions<TFieldValues, TName>;
     label?: string;
     labelCn?: string;
     labelColor?: string;
@@ -16,7 +16,7 @@ interface Props {
     className?: string;
 }
 
-export default function ControlledPhoneInput({
+export default function ControlledPhoneInput<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({
     name,
     control,
     rules,
@@ -26,7 +26,7 @@ export default function ControlledPhoneInput({
     isRequired,
     placeholder,
     className = '',
-}: Props) {
+}: Props<TFieldValues, TName>) {
     return (
         <ControlledCustomFormField name={name} control={control} rules={rules} label={label} labelCn={labelCn} labelColor={labelColor} isRequired={isRequired}>
             {({ field, fieldState: { error: fieldError } }) => (

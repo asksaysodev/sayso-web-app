@@ -45,6 +45,7 @@ export default function Subscription() {
 	useEffect(() => {
 		if (didSetInitialBilling.current || !subscriptionPlans?.length) return;
 		const isNewGeneration = subscriptionPlans.some((plan) => plan.generation === 'new');
+		// eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot default, guarded by didSetInitialBilling
 		if (isNewGeneration) setSelectedBillingTab(BillingIntervalEnum.YEAR);
 		didSetInitialBilling.current = true;
 	}, [subscriptionPlans]);

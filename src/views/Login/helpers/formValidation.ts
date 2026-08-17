@@ -1,4 +1,3 @@
-import { FieldErrors } from "react-hook-form";
 import { LoginFormData, ResetPasswordFormData } from "../types";
 import { isValidPhone } from "@/components/ui/PhoneInput";
 

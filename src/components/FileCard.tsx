@@ -6,12 +6,22 @@ import { GoFile } from 'react-icons/go';
 
 import '../styles/FileCard.css';
 
+export interface FileCardFile {
+    id?: string;
+    file_name?: string;
+    file_size?: number;
+    file?: File;
+    name?: string;
+    size?: number;
+}
+
 interface Props {
     status: string;
-    file: any;
+    file: FileCardFile;
     progress: number;
     fromDatabase: boolean;
-    setFormData: (formData: any) => void;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    setFormData: (updater: (prevData: any) => any) => void;
     setFileToDelete?: (file: any) => void;
     deletingFileId?: string | null;
 }
@@ -24,8 +34,8 @@ export default function FileCard({status, file, progress: propProgress = 0, from
 
 
     //FUNCTIONS
-    const formatFileSize = (bytes: number): string => {
-        if (bytes === 0) return '0 MB';
+    const formatFileSize = (bytes: number | undefined): string => {
+        if (!bytes) return '0 MB';
         const mb = bytes / (1024 * 1024);
         return `${mb.toFixed(2)} MB`;
     };
@@ -38,9 +48,9 @@ export default function FileCard({status, file, progress: propProgress = 0, from
             return;
         } else {
             //REMOVE FROM FORM LOCAL DATA
-            setFormData((prevData: any) => ({ // $FixTS
+            setFormData((prevData: { files: FileCardFile[] }) => ({
                 ...prevData,
-                files: prevData.files.filter((f: any) => f.name !== file.name) // $FixTS
+                files: prevData.files.filter(f => f.name !== file.name)
             }));
         }
     }

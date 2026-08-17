@@ -29,7 +29,7 @@ export default function useLoginForm() {
   const [isLoggingIn, setIsLoggingIn] = useState(true);
   const [signupStep, setSignupStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const navigate = useNavigate();
   const { signIn, signUp, checkIfNeedsMFA } = useAuth();
@@ -78,7 +78,6 @@ export default function useLoginForm() {
     control,
     reset,
     handleSubmit: rhfHandleSubmit,
-    trigger,
     setValue
   } = useForm<LoginFormData>({
     resolver: customResolver,
@@ -164,8 +163,8 @@ export default function useLoginForm() {
 
     try {
       await performAuthentication(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Authentication failed. Please try again.');
       console.error('Authentication error:', err);
       Sentry.captureException(err);
     } finally {

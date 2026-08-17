@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { Eye, EyeOff, Lock, CircleAlert, Check } from 'lucide-react';
@@ -31,6 +32,7 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
     const { globalUser, updateGlobalUser } = useAuth();
     const { connectSureSend } = useSureSend();
 
+    /* eslint-disable react-hooks/set-state-in-effect */
     useEffect(() => {
         if (!open) {
             setToken('');
@@ -52,8 +54,8 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
             await connectSureSend(token.trim());
             await updateGlobalUser(globalUser.email);
             setState('success');
-        } catch (err: any) {
-            const httpStatus = err?.response?.status;
+        } catch (err) {
+            const httpStatus = axios.isAxiosError(err) ? err.response?.status : undefined;
             const isInvalid = httpStatus === 422;
             setErrorMsg(isInvalid ? DEFAULT_ERROR : 'Something went wrong. Please try again.');
             setState('error');

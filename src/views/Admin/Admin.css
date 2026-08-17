@@ -45,19 +45,6 @@
     color: var(--sayso-indigo);
 }
 
-.select-lead-type-container {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
-}
-
-.select-lead-type-container label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--sayso-indigo);
-}
-
 .sheet-version-selector-container {
     display: flex;
     flex-direction: column;
@@ -509,7 +496,6 @@
     }
 
     .tool-selector-container select,
-    .select-lead-type-container select,
     .sheet-version-selector-container select {
         width: 100%;
     }

@@ -43,12 +43,14 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
         defaultValues: { firstName: '', lastName: '', phone: '', email: '' },
     });
 
+    /* eslint-disable react-hooks/set-state-in-effect -- clears the form when the dialog closes */
     useEffect(() => {
         if (!open) {
             reset();
             setSubmitError(null);
         }
     }, [open, reset]);
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     const handleClose = () => {
         if (isPending) return;

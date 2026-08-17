@@ -8,6 +8,7 @@ export default function NotificationContent({ notification }: { notification: Cr
     const { type, media_url, title, body } = notification;
     const [mediaIndex, setMediaIndex] = useState(0);
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => { setMediaIndex(0); }, [notification.id]);
 
     if (type === 'media' && media_url && media_url.length > 0) {
