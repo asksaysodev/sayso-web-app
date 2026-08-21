@@ -46,10 +46,9 @@ const GLOBAL_USER_CACHE_KEY = 'sayso-global-user'
 const ACCOUNT_FETCH_ATTEMPTS = 3
 const ACCOUNT_RETRY_BASE_DELAY_MS = 500
 
-/** 4xx is a settled answer; only server-side and unknown failures are worth retrying. */
 const isRetriableAccountError = (error: unknown): boolean => {
   const status = (error as AxiosError | undefined)?.response?.status
-  return status === undefined || status >= 500
+  return status !== undefined && status >= 500
 }
 
 /**
