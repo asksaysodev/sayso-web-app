@@ -9,7 +9,7 @@ import type { AddPartnerFormValues } from '../types';
 const DEFAULT_VALUES: AddPartnerFormValues = {
     partnerName: '',
     billingEmail: '',
-    netTerms: '30',
+    netTerms: '',
     discountPercent: '',
     teams: [{ email: '', planOptionId: '' }],
 };

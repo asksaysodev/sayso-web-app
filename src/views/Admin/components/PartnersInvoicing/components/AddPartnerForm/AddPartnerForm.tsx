@@ -86,8 +86,10 @@ export default function AddPartnerForm({ onClose }: Props) {
                     name="netTerms"
                     control={control}
                     label="Net terms"
+                    placeholder="Select net terms"
                     isRequired
                     options={NET_TERMS_OPTIONS}
+                    rules={{ required: 'Net terms is required' }}
                 />
                 <ControlledInputField
                     name="discountPercent"

@@ -32,7 +32,7 @@ export default function RunningTotal({ plans, watchedTeams, netTerms, discountPe
             )}
             <div className="running-total__summary">
                 <span className="running-total__label">
-                    {count} {count === 1 ? 'team' : 'teams'} · {formatNetTerms(netTerms)}
+                    {count} {count === 1 ? 'team' : 'teams'}{netTerms && ` · ${formatNetTerms(netTerms)}`}
                 </span>
                 <span className="running-total__amount">
                     {formatInvoiceAmount(totalCents, 'usd')}/mo
