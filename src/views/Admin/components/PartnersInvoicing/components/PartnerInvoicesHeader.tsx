@@ -2,6 +2,7 @@ import { ExternalLink } from 'lucide-react';
 import { Partner } from '../types';
 import StripeStatusBadge from './StripeStatusBadge';
 import PartnerIdentity from './PartnerIdentity';
+import { formatNetTerms } from '../helpers/formatNetTerms';
 import { openExternal } from '@/utils/helpers/openExternal';
 import '../styles/PartnerInvoicesHeader.css';
 
@@ -17,7 +18,7 @@ export default function PartnerInvoicesHeader({ partner, stripeCustomerUrl }: Pr
         <div className="partner-invoices-header">
             <PartnerIdentity
                 name={name}
-                subtitle={`${billingEmail} · Net ${netTerms}`}
+                subtitle={`${billingEmail} · ${formatNetTerms(netTerms)}`}
                 trailing={<StripeStatusBadge status={stripeStatus} />}
             />
             {stripeCustomerUrl && (
