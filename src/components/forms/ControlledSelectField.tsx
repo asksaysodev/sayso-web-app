@@ -1,4 +1,4 @@
-import { RegisterOptions, UseFormReturn } from "react-hook-form";
+import { Control, FieldPath, FieldValues, RegisterOptions } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import ControlledCustomFormField from "./ControlledCustomFormField";
 import './styles/controlledInputField.css';
@@ -8,10 +8,10 @@ interface SelectOption {
     label: string;
 }
 
-interface Props {
-    name: string;
-    control: UseFormReturn<any>['control'];
-    rules?: RegisterOptions;
+interface Props<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>> {
+    name: TName;
+    control: Control<TFieldValues>;
+    rules?: RegisterOptions<TFieldValues, TName>;
     label?: string;
     isRequired?: boolean;
     placeholder?: string;
@@ -20,7 +20,7 @@ interface Props {
     disabled?: boolean;
 }
 
-export default function ControlledSelectField({
+export default function ControlledSelectField<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({
     name,
     control,
     rules,
@@ -30,7 +30,7 @@ export default function ControlledSelectField({
     options,
     className,
     disabled
-}: Props) {
+}: Props<TFieldValues, TName>) {
     return (
         <ControlledCustomFormField name={name} control={control} rules={rules} label={label} isRequired={isRequired}>
             {({ field, fieldState: { error } }) => (

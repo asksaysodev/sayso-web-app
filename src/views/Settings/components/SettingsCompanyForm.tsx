@@ -15,8 +15,6 @@ interface Props {
 
 export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: Props) {
     const [company, setCompany] = useState<Company | null>(null);
-    const [inputValue, setInputValue] = useState('');
-    const [isValidEmail, setIsValidEmail] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     //HOOKS
     const { getCompanyById, updateCompany } = useAccounts();
@@ -50,21 +48,7 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
         }
     }
 
-    const validateEmail = (email: string) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
     //EFFECTS
-    useEffect(() => {
-        if(inputValue !== '') {
-            const isValid = validateEmail(inputValue);
-            setIsValidEmail(isValid);
-        } else {
-            setIsValidEmail(false);
-        }
-    }, [inputValue]);
-
     useEffect(() => {
         if (globalUser?.company_id) {
             getCompany(globalUser.company_id);
@@ -73,8 +57,8 @@ export default function SettingsCompanyForm({ globalUser, setUnsavedChanges }: P
     }, [globalUser]);
 
     useEffect(() => {
-            setUnsavedChanges(inputValue !== '');
-    }, [inputValue]);
+        setUnsavedChanges(false);
+    }, [setUnsavedChanges]);
 
     const isTeamAdminRole = !!globalUser?.role && TEAM_ADMIN_ROLES.includes(globalUser.role);
     const allowEditingOrgName = (globalUser?.role === 'user' && globalUser.account_type === 'individual') || (isTeamAdminRole && globalUser.account_type === 'team') || globalUser?.role === 'superadmin';

@@ -29,6 +29,7 @@ export default function MobileSendLinkModal({ open, onOpenChange, defaultEmail =
     const [cooldown, setCooldown] = useState(0);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+    /* eslint-disable react-hooks/set-state-in-effect -- resets the send-link form when the dialog closes */
     useEffect(() => {
         if (!open) {
             if (intervalRef.current) clearInterval(intervalRef.current);
@@ -38,6 +39,7 @@ export default function MobileSendLinkModal({ open, onOpenChange, defaultEmail =
             setEmail(defaultEmail);
         }
     }, [open, defaultEmail]);
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     const startCooldown = () => {
         setCooldown(COOLDOWN_SECONDS);

@@ -27,7 +27,7 @@ export const useFiles = () => {
         original_file_id: originalFileId
       });
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error in handleParseFile:', error);
       throw error;
     }

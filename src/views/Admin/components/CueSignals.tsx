@@ -1,24 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
-import SelectLeadType from "./SelectLeadType";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import getSignals from "../services/getSignals";
 import SignalsCollapsibleList from "./SignalsCollapsibleList";
-import { GetSignalResponse, Signal, SignalVersion } from "../types";
+import { GetSignalResponse } from "../types";
 import { useAdminStore } from "@/store/adminStore";
-import updateSignalsByLeadType from "../services/updateSignalsByLeadType";
-import { useToast } from "@/context/ToastContext";
-import ButtonSpinner from "@/components/ButtonSpinner";
-
-function updatePriorities(signals: Signal[]): Signal[] {
-    return signals.map((signal, index) => ({
-        ...signal,
-        priority: index + 1
-    }));
-}
 
 export default function CueSignals() {
-    const [originalSignals, setOriginalSignals] = useState<Signal[]>([]);
-    const [newSignals, setNewSignals] = useState<Signal[]>([]);
     const setActiveSheetVersion = useAdminStore(state => state.setActiveSheetVersion)
     const setSignalSheets = useAdminStore(state => state.setSignalSheets)
     const setLiveSheetVersion = useAdminStore(state => state.setLiveSheetVersion)

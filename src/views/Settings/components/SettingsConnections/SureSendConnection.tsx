@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from 'react';
 import * as Sentry from '@sentry/react';
 import ConnectionItem from "./ConnectionItem";
@@ -41,10 +42,10 @@ export default function SureSendConnection() {
             await disconnectSureSend();
             await updateGlobalUser(globalUser.email);
             showToast('success', 'Sure Send disconnected successfully.');
-        } catch (error: any) {
+        } catch (error) {
             Sentry.captureException(
                 Object.assign(new Error('Sure Send disconnect failed in UI'), {
-                    httpStatus: error?.response?.status,
+                    httpStatus: axios.isAxiosError(error) ? error.response?.status : undefined,
                     cause: error,
                 })
             );

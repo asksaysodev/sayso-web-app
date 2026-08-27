@@ -1,32 +1,3 @@
-.main-primary-button{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    height: 40px;
-    padding: 0 14px;
-    border-radius: 100px;
-    background-color: var(--sayso-indigo);
-    color: white;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 400;
-    transition: opacity 0.15s ease;
-}
-
-.main-primary-button:hover{
-    opacity: 0.9;
-}
-
-.main-primary-button.loading {
-    position: relative;
-}
-
-.main-primary-button.loading p {
-    opacity: 0;
-}
-
 .button-loader {
     position: absolute;
     top: 50%;
@@ -44,34 +15,6 @@
 @keyframes spin {
     0% { transform: translate(-50%, -50%) rotate(0deg); }
     100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-.main-secondary-button{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    height: 40px;
-    padding: 0 14px;
-    border-radius: 100px;
-    background-color: white;
-    color: var(--sayso-darkgray);
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 400;
-    transition: opacity 0.15s ease;
-    border: 1px solid var(--sayso-lightgray);
-}
-
-.main-secondary-button:hover{
-    background-color: var(--sayso-border);
-    border: 1px solid var(--sayso-lightgray);
-}
-
-.main-primary-button.loading {
-    opacity: 0.8;
-    cursor: not-allowed;
 }
 
 .login-primary-button{

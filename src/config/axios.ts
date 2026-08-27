@@ -82,12 +82,6 @@ apiClient.interceptors.request.use(
 // Response interceptor to handle 401 errors and retry logic
 apiClient.interceptors.response.use(
 	(response) => {
-		console.log('🌐 [API Response]', {
-			url: response.config.url,
-			status: response.status,
-			data: response.data
-		});
-
 		Sentry.addBreadcrumb({
 			category: 'api.response',
 			message: `${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`,
@@ -192,8 +186,6 @@ apiClient.interceptors.response.use(
 			originalRequest._retryCount < 3
 		) {
 			originalRequest._retryCount += 1;
-
-			console.log(`🔄 [API Retry] Attempt ${originalRequest._retryCount}/3 for ${originalRequest.url}`);
 
 			Sentry.addBreadcrumb({
 				category: 'api.retry',

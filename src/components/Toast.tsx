@@ -26,6 +26,7 @@ export default function Toast({ status, text, onClose, autoClose = false }: Prop
     }, []);
 
     // Handle auto-close animation
+    /* eslint-disable react-hooks/set-state-in-effect */
     useEffect(() => {
         if (autoClose) {
             setIsClosing(true);

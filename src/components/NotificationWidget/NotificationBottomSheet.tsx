@@ -21,6 +21,7 @@ export function NotificationBottomSheet({ notification, currentIndex, total, onD
     const [open, setOpen] = useState(false);
 
     // not the best to do here. but is it in order to trigger the animation to happen.
+    /* eslint-disable react-hooks/set-state-in-effect -- mount-only flip to trigger the open animation */
     useEffect(() => { 
         setOpen(true);
     }, []);

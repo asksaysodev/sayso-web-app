@@ -9,6 +9,7 @@ import { useFiles, StoredFile } from "../../../hooks/useFiles";
 import { useToast } from "../../../context/ToastContext";
 
 import SaysoModal from "@/components/SaysoModal";
+import * as Sentry from "@sentry/react";
 
 interface FileWithUploadStatus {
     file: File;
@@ -90,7 +91,8 @@ export default function SettingsFilesForm() {
             }));
             
         } catch (error) {
-            
+            Sentry.captureException(error);
+
             setNewAccountFiles(prevFiles => ({
                 ...prevFiles,
                 files: prevFiles.files.map(fileItem => {

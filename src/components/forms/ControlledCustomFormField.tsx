@@ -1,24 +1,24 @@
-import { Controller, ControllerFieldState, ControllerRenderProps, RegisterOptions, UseFormReturn, UseFormStateReturn } from "react-hook-form";
+import { Control, Controller, ControllerFieldState, ControllerRenderProps, FieldPath, FieldValues, RegisterOptions, UseFormStateReturn } from "react-hook-form";
 import { Label } from "../ui/label";
 
-interface FieldOptions {
-    field: ControllerRenderProps<any, string>;
+interface FieldOptions<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>> {
+    field: ControllerRenderProps<TFieldValues, TName>;
     fieldState: ControllerFieldState;
-    formState: UseFormStateReturn<any>;
+    formState: UseFormStateReturn<TFieldValues>;
 }
 
-interface Props {
-    name: string;
-    control: UseFormReturn<any>['control'];
-    rules?: RegisterOptions;
-    children: (fieldOptions: FieldOptions) => React.ReactNode;
+interface Props<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>> {
+    name: TName;
+    control: Control<TFieldValues>;
+    rules?: RegisterOptions<TFieldValues, TName>;
+    children: (fieldOptions: FieldOptions<TFieldValues, TName>) => React.ReactNode;
     label?: string;
     labelCn?: string;
     labelColor?: string;
     isRequired?: boolean;
 }
 
-export default function ControlledCustomFormField({ name, control, rules, label, children, labelCn = '', labelColor = 'var(--sayso-darkgray)', isRequired }: Props) {
+export default function ControlledCustomFormField<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({ name, control, rules, label, children, labelCn = '', labelColor = 'var(--sayso-darkgray)', isRequired }: Props<TFieldValues, TName>) {
     return (
         <Controller
             name={name}

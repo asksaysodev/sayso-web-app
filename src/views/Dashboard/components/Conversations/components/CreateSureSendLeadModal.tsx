@@ -59,6 +59,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
         defaultValues: { firstName: '', lastName: '', phone: '', email: '', stage: '' },
     });
 
+    /* eslint-disable react-hooks/set-state-in-effect -- clears the form on close, then loads SureSend stages on open */
     useEffect(() => {
         if (!open) {
             reset();
@@ -77,6 +78,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
             })
             .finally(() => setStagesLoading(false));
     }, [open, reset]);
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     const handleClose = () => {
         if (isPending) return;

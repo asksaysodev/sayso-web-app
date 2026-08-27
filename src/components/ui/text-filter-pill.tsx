@@ -22,7 +22,6 @@ export default function TextFilterPill<TFilter extends { key: string; value: str
     const debouncedValue = useDebounce(inputValue, 400);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         onUpdate({ ...filter, value: debouncedValue } as TFilter);
     }, [debouncedValue]);
 

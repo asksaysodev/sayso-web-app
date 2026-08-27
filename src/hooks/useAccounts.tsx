@@ -31,7 +31,7 @@ export const useAccounts = () => {
       await apiClient.put(`/accounts/update-account`, { updateData });
       return
     } catch (error) {   
-      console.error('Error in updateProspect:', error);
+      console.error('Error in updateAccount:', error);
       throw error;
     }
 

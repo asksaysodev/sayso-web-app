@@ -33,7 +33,7 @@ const ResetPassword = () => {
     };
   };
   
-  const { control, handleSubmit, setError, reset, formState: { errors } } = useForm<ResetPasswordFormData>({
+  const { control, handleSubmit, setError, formState: { errors } } = useForm<ResetPasswordFormData>({
     resolver: customResolver,
     mode: 'onSubmit',
     reValidateMode: 'onBlur',
@@ -55,13 +55,6 @@ const ResetPassword = () => {
     try {
       const accessToken = searchParams.get('access_token');
       const refreshToken = searchParams.get('refresh_token');
-      const type = searchParams.get('type');
-
-      console.log('[ResetPassword] Initializing session with tokens:', { 
-        hasAccessToken: !!accessToken, 
-        hasRefreshToken: !!refreshToken, 
-        type 
-      });
 
       if (!accessToken || !refreshToken) {
         setError('root', { type: 'manual', message: 'Invalid or expired reset link. Please request a new one.' });
@@ -79,7 +72,6 @@ const ResetPassword = () => {
         throw sessionError;
       }
 
-      console.log('[ResetPassword] Session established successfully');
       setIsLoading(false);
     } catch (err) {
       console.error('[ResetPassword] Error initializing session:', err);
@@ -101,15 +93,15 @@ const ResetPassword = () => {
         throw updateError;
       }
 
-      console.log('[ResetPassword] Password updated successfully');
       setSuccess(true);
 
       setTimeout(() => {
         navigate('/', { replace: true });
       }, 2000);
-    } catch (err: any) {
+    } catch (err) {
       console.error('[ResetPassword] Error resetting password:', err);
-      setError('root', { type: 'manual', message: err.message || 'Failed to reset password. Please try again.' });
+      const message = err instanceof Error ? err.message : '';
+      setError('root', { type: 'manual', message: message || 'Failed to reset password. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }

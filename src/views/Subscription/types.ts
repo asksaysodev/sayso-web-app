@@ -49,7 +49,7 @@ export interface GetStripeCheckoutPageUrlResponse {
     url: string;
 }
 
-export interface GetPricingPlansResponse extends Array<PricingPlan> {}
+export type GetPricingPlansResponse = PricingPlan[];
 
 export interface PlanFeature {
   id: string;
@@ -101,6 +101,3 @@ export interface UpgradeTrialSuccessResponse {
   status: string;
 }
 
-export interface UpgradeTrialErrorResponse {
-  error: string;
-}

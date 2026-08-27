@@ -116,12 +116,16 @@ export type UserRole = typeof USER_ROLES[number];
 
 export const TEAM_ADMIN_ROLES: readonly UserRole[] = ['owner', 'admin', 'superadmin'];
 
+export interface TeamMember extends Account {
+  active?: boolean;
+}
+
 export interface Company {
   id: string;
   name: string;
   company_name?: string;
   team?: {
-    members: any[]; // $FixTS:
+    members: TeamMember[];
   };
 }
 
@@ -143,18 +147,6 @@ export interface UpdateAccountData {
   subscription_status?: SubscriptionStatus;
   subscription_monthly_minutes?: number;
   phone?: string | null;
-}
-
-export interface AuthContextValue {
-  signUp: (data: SignUpData) => Promise<AuthResult>;
-  signIn: (data: SignInData) => Promise<AuthResult>;
-  handleSignOut: () => Promise<void>;
-  user: User | null;
-  globalUser: Account | null;
-  authToken: string | null;
-  userLoading: boolean;
-  loading: boolean;
-  updateGlobalUser: (accountEmail: string) => Promise<void>;
 }
 
 export interface SignUpData {

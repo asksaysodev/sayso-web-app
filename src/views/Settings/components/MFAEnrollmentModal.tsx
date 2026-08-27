@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { LuCopy, LuCheck, LuLoader } from 'react-icons/lu';
-import { EnrollTOTPResult, MFAServiceError } from '@/types/supabaseMFA';
+import { EnrollTOTPResult } from '@/types/supabaseMFA';
 import { verifyTOTPCode } from '@/services/mfaServices';
 import '../styles.css';
 

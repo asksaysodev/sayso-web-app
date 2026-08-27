@@ -1,5 +1,4 @@
 //STYLES
-import './styles/App.css';
 import './styles/Dashboard.css';
 import Providers from './Providers';
 import AppRoutes from './AppRoutes';
@@ -54,7 +53,6 @@ function App() {
     const refreshToken = hashParams.get('refresh_token');
 
     if (hash.includes('type=recovery') && hash.includes('access_token=')) {
-      console.log('[App] Password recovery detected in URL, redirecting to reset-password');
       const hashContent = hash.split('#')[1];
       if (hashContent && accessToken) {
         const [route, queryString] = hashContent.split('?');
