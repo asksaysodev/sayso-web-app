@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import * as Sentry from '@sentry/react'
 import { supabase } from '../config/supabase'
 
 // Triggers a session check (and refresh if expiry is near) when the tab
@@ -21,24 +22,26 @@ export function useSessionRevalidation(): void {
           await supabase.auth.refreshSession()
         }
       } catch (e: unknown) {
-        // Safari suspends tabs mid-lock, leaving lock:sayso-auth held by a frozen context.
-        // The lock times out after 10s and throws NavigatorLockAcquireTimeoutError.
-        // Safe to ignore — the existing token is still valid and the SDK's own refresh timer recovers.
-        if (e instanceof Error && e.name === 'NavigatorLockAcquireTimeoutError') return
-        throw e
+        // Never rethrow — both callers are event handlers, so anything escaping
+        // here is an unhandled rejection. Usually Safari suspending the tab
+        // mid-operation and stalling lock:sayso-auth until the call times out;
+        // benign, and Sentry drops those in beforeSend (SAYSO-380).
+        Sentry.captureException(e)
       }
     }
 
     const handleVisibility = () => {
-      if (document.visibilityState === 'visible') revalidate()
+      if (document.visibilityState === 'visible') void revalidate()
     }
 
+    const handleOnline = () => { void revalidate() }
+
     document.addEventListener('visibilitychange', handleVisibility)
-    window.addEventListener('online', revalidate)
+    window.addEventListener('online', handleOnline)
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibility)
-      window.removeEventListener('online', revalidate)
+      window.removeEventListener('online', handleOnline)
     }
   }, [])
 }
