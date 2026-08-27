@@ -13,10 +13,13 @@ interface Props {
 }
 
 const NET_TERMS_OPTIONS = [
+    { value: '0', label: 'Due on receipt' },
     { value: '15', label: 'Net 15' },
     { value: '30', label: 'Net 30' },
     { value: '60', label: 'Net 60' },
 ];
+
+const PARTNER_NAME_MAX_LENGTH = 30;
 
 export default function AddPartnerForm({ onClose }: Props) {
     const {
@@ -59,7 +62,13 @@ export default function AddPartnerForm({ onClose }: Props) {
                     label="Partner name"
                     placeholder="e.g. Acme Corp"
                     isRequired
-                    rules={{ required: 'Partner name is required' }}
+                    rules={{
+                        required: 'Partner name is required',
+                        maxLength: {
+                            value: PARTNER_NAME_MAX_LENGTH,
+                            message: `Partner name must be ${PARTNER_NAME_MAX_LENGTH} characters or fewer`,
+                        },
+                    }}
                 />
                 <ControlledInputField
                     name="billingEmail"
@@ -77,8 +86,10 @@ export default function AddPartnerForm({ onClose }: Props) {
                     name="netTerms"
                     control={control}
                     label="Net terms"
+                    placeholder="Select net terms"
                     isRequired
                     options={NET_TERMS_OPTIONS}
+                    rules={{ required: 'Net terms is required' }}
                 />
                 <ControlledInputField
                     name="discountPercent"

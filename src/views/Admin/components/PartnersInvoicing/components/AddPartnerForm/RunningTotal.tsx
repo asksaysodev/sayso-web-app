@@ -1,5 +1,6 @@
 import { calculatePartnerTotals, parseDiscountPercent } from './helpers/calculateRunningTotal';
 import { formatInvoiceAmount } from '../../helpers/formatInvoiceAmount';
+import { formatNetTerms } from '../../helpers/formatNetTerms';
 import type { TeamPlanOption } from './types';
 import './styles/RunningTotal.css';
 
@@ -31,7 +32,7 @@ export default function RunningTotal({ plans, watchedTeams, netTerms, discountPe
             )}
             <div className="running-total__summary">
                 <span className="running-total__label">
-                    {count} {count === 1 ? 'team' : 'teams'} · Net {netTerms}
+                    {count} {count === 1 ? 'team' : 'teams'}{netTerms && ` · ${formatNetTerms(netTerms)}`}
                 </span>
                 <span className="running-total__amount">
                     {formatInvoiceAmount(totalCents, 'usd')}/mo

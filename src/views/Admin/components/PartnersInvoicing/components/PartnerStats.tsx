@@ -1,4 +1,5 @@
 import { Invitation } from '../types';
+import { formatNetTerms } from '../helpers/formatNetTerms';
 import '../styles/PartnerStats.css';
 
 interface Props {
@@ -15,7 +16,7 @@ export default function PartnerStats({ invitations, netTerms }: Props) {
         <div className="partner-stats">
             <div className="partner-stats__tile">
                 <span className="partner-stats__label">Net terms</span>
-                <span className="partner-stats__value">Net {netTerms}</span>
+                <span className="partner-stats__value">{formatNetTerms(netTerms)}</span>
             </div>
             <div className="partner-stats__tile">
                 <span className="partner-stats__label">Funded teams</span>
