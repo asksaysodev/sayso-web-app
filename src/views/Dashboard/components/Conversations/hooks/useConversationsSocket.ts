@@ -96,6 +96,7 @@ export default function useConversationsSocket() {
                 const onDisconnect = () => {
                     ws.onclose = null;
                     ws.onerror = null;
+                    if (socketRef.current === ws) socketRef.current = null;
                     if (stableTimerRef.current) {
                         clearTimeout(stableTimerRef.current);
                         stableTimerRef.current = null;
