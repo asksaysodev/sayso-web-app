@@ -1,11 +1,26 @@
 import { Account, Company, CreateAccountData, UpdateAccountData } from '@/types/user';
 import apiClient from '../config/axios';
+import { supabase } from '@/config/supabase';
 
 export const useAccounts = () => {
 
   const createAccount = async ( accountData: CreateAccountData ): Promise<Account> => {
     try {
       const response = await apiClient.post('/accounts/create', { accountData });
+
+      // The access token was minted at sign-up, before the account existed and before the
+      // server wrote the company_id claim into app_metadata. Refresh so the session that
+      // continues into the dashboard actually carries it — otherwise the user holds a
+      // claimless token until it happens to expire, and looks correctly signed in while
+      // being invisible to any policy scoped on that claim.
+      //
+      // Non-fatal: the account is already created, and the next natural refresh picks the
+      // claim up. Failing the signup here would be worse than a delayed claim.
+      const { error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshError) {
+        console.error('Error refreshing session after account creation:', refreshError);
+      }
+
       return response.data.data;
     } catch (error) {
       console.error('Error creating account:', error);
