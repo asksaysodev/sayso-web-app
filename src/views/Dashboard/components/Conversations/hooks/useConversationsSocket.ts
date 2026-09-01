@@ -7,9 +7,10 @@ const MAX_RETRIES = 3;
 const BASE_BACKOFF_MS = 1000;
 // Must be longer than the longest backoff step (BASE_BACKOFF_MS * 2^(MAX_RETRIES-1) = 4s)
 const STABLE_DWELL_MS = 6000;
+const RESYNC_JITTER_MS = 2000;
 
 type ConversationSocketMessage = {
-    type: 'new_conversation' | 'conversation_updated';
+    type: 'new_conversation' | 'conversation_updated' | 'conversations_resync' | 'connected';
 };
 
 function buildWsUrl(token: string): string {
@@ -23,6 +24,8 @@ export default function useConversationsSocket() {
     const retryCountRef = useRef(0);
     const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const stableTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const resyncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const hasConnectedOnceRef = useRef(false);
     const unmountedRef = useRef(false);
 
     useEffect(() => {
@@ -87,6 +90,29 @@ export default function useConversationsSocket() {
                         const message = JSON.parse(event.data) as ConversationSocketMessage;
                         if (message.type === 'new_conversation' || message.type === 'conversation_updated') {
                             queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+                            return;
+                        }
+
+                        // The server went deaf to its pub/sub for a while and dropped events.
+                        // This socket never closed, so a reconnect-based refetch would never
+                        // have fired — the broadcast is the only signal that we are stale.
+                        if (message.type === 'conversations_resync') {
+                            if (resyncTimerRef.current) return;
+                            resyncTimerRef.current = setTimeout(() => {
+                                resyncTimerRef.current = null;
+                                if (unmountedRef.current) return;
+                                queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+                            }, Math.random() * RESYNC_JITTER_MS);
+                            return;
+                        }
+
+                        // Covers a client that was itself offline. Skipped on the first
+                        // connect, where the list query is already loading on its own.
+                        if (message.type === 'connected') {
+                            if (hasConnectedOnceRef.current) {
+                                queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+                            }
+                            hasConnectedOnceRef.current = true;
                         }
                     } catch (error) {
                         Sentry.captureException(error);
@@ -140,6 +166,10 @@ export default function useConversationsSocket() {
 
         return () => {
             unmountedRef.current = true;
+            if (resyncTimerRef.current) {
+                clearTimeout(resyncTimerRef.current);
+                resyncTimerRef.current = null;
+            }
             closeSocket();
             subscription.unsubscribe();
             window.removeEventListener('online', onOnline);
