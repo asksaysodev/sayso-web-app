@@ -129,15 +129,6 @@ export interface Company {
   };
 }
 
-export interface CreateAccountData {
-  email: string;
-  name?: string;
-  lastname?: string;
-  company?: string;
-  phone?: string;
-  invite_token?: string;
-}
-
 /** Body of POST /accounts/signup — the server creates the auth user AND the domain rows. */
 export interface SignupData {
   email: string;

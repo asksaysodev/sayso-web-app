@@ -1,4 +1,4 @@
-import { Account, Company, CreateAccountData, SignupData, UpdateAccountData } from '@/types/user';
+import { Account, Company, SignupData, UpdateAccountData } from '@/types/user';
 import apiClient from '../config/axios';
 
 export const useAccounts = () => {
@@ -15,16 +15,6 @@ export const useAccounts = () => {
   const signup = async (data: SignupData): Promise<{ id: string; email: string; role: string; company_id: string }> => {
     const response = await apiClient.post('/accounts/signup', data);
     return response.data.data;
-  };
-
-  const createAccount = async ( accountData: CreateAccountData ): Promise<Account> => {
-    try {
-      const response = await apiClient.post('/accounts/create', { accountData });
-      return response.data.data;
-    } catch (error) {
-      console.error('Error creating account:', error);
-      throw error;
-    }
   };
 
   const getAccount = async (email: string): Promise<Account> => {
@@ -75,7 +65,6 @@ export const useAccounts = () => {
 
   return {
     signup,
-    createAccount,
     getAccount,
     updateAccount,
     updateCompany,
