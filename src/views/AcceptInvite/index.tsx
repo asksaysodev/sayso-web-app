@@ -49,9 +49,9 @@ export default function AcceptInvite() {
             // One server-side call creates the auth user, the account, and accepts the
             // invite (SAYSO-387). Previously this was supabase.auth.signUp() followed by
             // an authenticated accept — which minted a session before the accounts row
-            // existed and needed registerAccountCreation to stop AuthContext's account
-            // fetch racing it (SAYSO-341). The row now precedes the session, so there is
-            // nothing to coordinate.
+            // existed, and needed a coordination hook in AuthContext to stop the account
+            // fetch racing it (SAYSO-341). The row now precedes the session, so that hook
+            // is gone (SAYSO-387 Phase 4).
             //
             // The token goes to the server as-is: it derives the company from the invite
             // ROW after verifying the token's signature, never from the token's payload.
