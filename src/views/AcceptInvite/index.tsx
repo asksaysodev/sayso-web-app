@@ -11,7 +11,8 @@ import dayjs from "dayjs";
 import { supabase } from "@/config/supabase";
 import { useAuth } from "@/context/AuthContext";
 import validateInvite from "./services/validateInvite";
-import acceptInvite from "./services/acceptInvite";
+import { useAccounts } from "@/hooks/useAccounts";
+import { toSignupError, ACCOUNT_CREATED_SIGN_IN_FAILED } from "@/utils/signupErrors";
 import SaysoLoader from "@/components/SaysoLoader";
 import "./styles.css";
 
@@ -25,7 +26,8 @@ interface FormValues {
 export default function AcceptInvite() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { registerAccountCreation, updateGlobalUser } = useAuth();
+    const { updateGlobalUser } = useAuth();
+    const { signup } = useAccounts();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -44,31 +46,35 @@ export default function AcceptInvite() {
 
     const { mutate, isPending, error: submitError } = useMutation({
         mutationFn: async (values: FormValues) => {
-            const { error: signUpError } = await supabase.auth.signUp({
+            // One server-side call creates the auth user, the account, and accepts the
+            // invite (SAYSO-387). Previously this was supabase.auth.signUp() followed by
+            // an authenticated accept — which minted a session before the accounts row
+            // existed and needed registerAccountCreation to stop AuthContext's account
+            // fetch racing it (SAYSO-341). The row now precedes the session, so there is
+            // nothing to coordinate.
+            //
+            // The token goes to the server as-is: it derives the company from the invite
+            // ROW after verifying the token's signature, never from the token's payload.
+            try {
+                await signup({
+                    email: invite!.email,
+                    password: values.password,
+                    name: values.name,
+                    lastname: values.lastname,
+                    team_invite_token: token,
+                });
+            } catch (err) {
+                throw toSignupError(err);
+            }
+
+            const { error: signInError } = await supabase.auth.signInWithPassword({
                 email: invite!.email,
                 password: values.password,
-                options: {
-                    data: {
-                        name: values.name,
-                        lastname: values.lastname,
-                    },
-                },
             });
 
-            if (signUpError) throw signUpError;
-
-            // signUp fires SIGNED_IN, which makes AuthContext schedule its account
-            // fetch 300ms later — before this request has created the accounts row.
-            // Register the promise first so that fetch waits on it (SAYSO-341).
-            const acceptancePromise = acceptInvite({
-                email: invite?.email as string,
-                name: values.name,
-                lastname: values.lastname,
-                company: invite?.companyName
-            }, token);
-
-            registerAccountCreation(acceptancePromise);
-            await acceptancePromise;
+            // Account exists but no session — retrying would collide on the email and
+            // read as "already registered", so name the real state instead.
+            if (signInError) throw new Error(ACCOUNT_CREATED_SIGN_IN_FAILED);
 
             // Populate globalUser before navigating, so the dashboard renders
             // immediately instead of depending on AuthContext's timer.

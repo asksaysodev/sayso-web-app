@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useRef, useMemo } from 
 import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../config/supabase'
 import { useAccounts } from '../hooks/useAccounts'
+import { toSignupError, ACCOUNT_CREATED_SIGN_IN_FAILED } from '@/utils/signupErrors'
 import { useLocation } from 'react-router-dom'
 import { useSessionRevalidation } from '../hooks/useSessionRevalidation'
 import * as Sentry from "@sentry/react"
@@ -105,7 +106,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [mfaFactors, setMfaFactors] = useState<Factor[]>([])
   const [attributionPending, setAttributionPending] = useState(false)
 
-  const { createAccount, getAccount } = useAccounts()
+  const { signup, getAccount } = useAccounts()
   const queryClient = useQueryClient()
 
   useSessionRevalidation()
@@ -382,19 +383,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user, accountRetryNonce])
 
-  const signUp = async (data: SignUpData) => {
-    const result = await supabase.auth.signUp(data)
+  /**
+   * Signup now happens server-side (SAYSO-387).
+   *
+   * Was: supabase.auth.signUp() — which minted a session before any domain row existed —
+   * then an authenticated POST /accounts/create. That ordering is what made the company_id
+   * claim impossible on the first token, what made signup non-atomic (a failure left an
+   * orphaned auth user; migration 029 deleted 10), and what forced the SAYSO-341
+   * coordination below.
+   *
+   * Now: one POST /accounts/signup creates the auth user and the domain rows together,
+   * with company_id already in app_metadata, then we sign in normally. The accounts row
+   * exists before the session does, so registerAccountCreation is no longer needed here —
+   * there is nothing for the account fetch to race.
+   */
+  const signUp = async (data: SignUpData): Promise<AuthResult> => {
+    const { email, password, options } = data
+    const { name, lastname, company, phone, invite_token } = options?.data || {}
+
+    try {
+      await signup({
+        email,
+        password,
+        name: name ?? '',
+        lastname: lastname ?? '',
+        company,
+        phone,
+        invite_token,
+      })
+    } catch (err) {
+      throw toSignupError(err)
+    }
+
+    // The account exists; this is a normal sign-in against it. Its token already carries
+    // the company_id claim.
+    const result = await supabase.auth.signInWithPassword({ email, password }) as AuthResult
+
+    if (result.error) {
+      // The new failure mode: the account was created but sign-in did not complete.
+      // Retrying signup would collide on the email and read as "already registered", so
+      // say what actually happened instead of letting the user loop.
+      console.error('Account created but sign-in failed:', result.error)
+      Sentry.captureException(result.error, { tags: { flow: 'signup', step: 'post_signup_sign_in' } })
+      throw new Error(ACCOUNT_CREATED_SIGN_IN_FAILED)
+    }
+
     if (!result.error) {
-      const { email, options } = data
-      const { name, lastname, company, phone, invite_token } = options?.data || {}
-      const creationPromise = createAccount({ email, name, lastname, company, phone, invite_token })
-        .catch((err) => {
-          console.error('Error creating account in DB:', err)
-          Sentry.captureException(err)
-          throw err
-        })
-      registerAccountCreation(creationPromise);
-      await creationPromise;
       // Fire-and-forget: enroll in RR then persist referral attribution if user was referred.
       // Must not block signup or throw — failures are captured in Sentry.
       // attributionPending gates the subscription page so it shows skeletons until we know
