@@ -1,7 +1,21 @@
-import { Account, Company, CreateAccountData, UpdateAccountData } from '@/types/user';
+import { Account, Company, CreateAccountData, SignupData, UpdateAccountData } from '@/types/user';
 import apiClient from '../config/axios';
 
 export const useAccounts = () => {
+
+  /**
+   * Creates the auth user and the domain rows in one server-side call (SAYSO-387).
+   *
+   * Unauthenticated: this runs before any session exists, which is the point — the server
+   * sets company_id in app_metadata at creation, so the first token the caller receives
+   * from signInWithPassword already carries the claim. No refresh, no second round trip.
+   *
+   * Does NOT sign the user in. The caller does that afterwards.
+   */
+  const signup = async (data: SignupData): Promise<{ id: string; email: string; role: string; company_id: string }> => {
+    const response = await apiClient.post('/accounts/signup', data);
+    return response.data.data;
+  };
 
   const createAccount = async ( accountData: CreateAccountData ): Promise<Account> => {
     try {
@@ -60,6 +74,7 @@ export const useAccounts = () => {
   };
 
   return {
+    signup,
     createAccount,
     getAccount,
     updateAccount,

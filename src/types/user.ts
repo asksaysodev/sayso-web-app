@@ -138,6 +138,29 @@ export interface CreateAccountData {
   invite_token?: string;
 }
 
+/** Body of POST /accounts/signup — the server creates the auth user AND the domain rows. */
+export interface SignupData {
+  email: string;
+  password: string;
+  name: string;
+  lastname: string;
+  company?: string;
+  phone?: string;
+  invite_token?: string;
+  team_invite_token?: string;
+}
+
+/** Error codes POST /accounts/signup returns. `EMAIL_TAKEN` is the one the UI must
+ *  distinguish, since it is also what a retry after a failed sign-in looks like. */
+export type SignupErrorCode =
+  | 'EMAIL_TAKEN'
+  | 'INVALID_INPUT'
+  | 'INVITE_INVALID'
+  | 'INVITE_CLAIMED'
+  | 'INVITE_EMAIL_MISMATCH'
+  | 'INVITATION_INVALID'
+  | 'INVITATION_CLAIMED';
+
 export interface UpdateAccountData {
   id?: string;
   name?: string;
