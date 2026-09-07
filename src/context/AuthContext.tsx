@@ -29,7 +29,6 @@ interface AuthContextValue {
   accountUnavailable: boolean;
   retryAccountFetch: () => void;
   updateGlobalUser: (accountEmail: string) => Promise<void>;
-  registerAccountCreation: (creationPromise: Promise<unknown>) => void;
   mfaRequired: boolean;
   currentAAL: AALLevel | null;
   mfaFactors: Factor[];
@@ -98,7 +97,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [accountUnavailable, setAccountUnavailable] = useState(false)
   const [accountRetryNonce, setAccountRetryNonce] = useState(0)
   const prevUserRef = useRef<User | null>(null)
-  const accountCreationRef = useRef<Promise<void> | null>(null)
   const enrolledEmailRef = useRef<string | null>(null)
   const location = useLocation()
   const [mfaRequired, setMfaRequired] = useState(false)
@@ -131,30 +129,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.error('Error updating global user:', error);
       Sentry.captureException(error);
     }
-  }
-
-  /**
-   * Lets a signup flow that bypasses this context's own `signUp` (currently
-   * AcceptInvite, which calls supabase.auth.signUp directly) gate the account
-   * fetch below on the request that actually creates the accounts row.
-   *
-   * Without this the SIGNED_IN event schedules getAccount 300ms later, which
-   * beats the row into existence and 400s — see SAYSO-341.
-   *
-   * The stored promise deliberately never rejects: the ref only answers "has
-   * account creation finished?". A creation failure surfaces through the caller
-   * that owns the promise, and reporting it here too would double-count it.
-   */
-  const registerAccountCreation = (creationPromise: Promise<unknown>): void => {
-    const settled: Promise<void> = creationPromise
-      .then(() => undefined)
-      .catch(() => undefined)
-      .finally(() => {
-        if (accountCreationRef.current === settled) {
-          accountCreationRef.current = null
-        }
-      })
-    accountCreationRef.current = settled
   }
 
   /**
@@ -325,12 +299,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUserLoading(true);
 
     if (user) {
-      // Add a small delay to prevent rapid re-fetching
+      // Debounce, not coordination. SIGNED_IN and TOKEN_REFRESHED can land within a few
+      // ms of each other and each changes `user`; the cleanup below clears a pending
+      // timer, so only the last change fetches. This is NOT the SAYSO-341 signup gate —
+      // that was a separate `await accountCreationRef.current` here, removed in SAYSO-387
+      // Phase 4 because the accounts row is now created before the session exists and
+      // there is nothing left to race.
       timeoutId = setTimeout(async () => {
         try {
-          if (accountCreationRef.current) {
-            await accountCreationRef.current
-          }
           const account = await fetchAccountWithRetry(user.email, () => cancelled)
           if (cancelled) return
           updateGlobalUserState(account)
@@ -394,8 +370,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
    *
    * Now: one POST /accounts/signup creates the auth user and the domain rows together,
    * with company_id already in app_metadata, then we sign in normally. The accounts row
-   * exists before the session does, so registerAccountCreation is no longer needed here —
-   * there is nothing for the account fetch to race.
+   * exists before the session does, so there is nothing for the account fetch to race —
+   * which is why Phase 4 could delete the coordination this used to need.
    */
   const signUp = async (data: SignUpData): Promise<AuthResult> => {
     const { email, password, options } = data
@@ -475,7 +451,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     accountUnavailable,
     retryAccountFetch,
     updateGlobalUser,
-    registerAccountCreation,
     mfaRequired,
     currentAAL,
     mfaFactors,
