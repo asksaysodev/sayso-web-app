@@ -3,18 +3,23 @@ export interface GetAccountSubscriptionResponse {
       plan: string;
       name: string;
       description: string;
-      interval: string;
+      // Pricing is resolved from the company's stripe_price_id, which the cancellation
+      // webhook clears while the plan itself survives to the end of the paid period. The
+      // server recovers the pricing row from the plan where it can, but a plan with more
+      // than one price and no billing period to disambiguate it stays unresolved — these
+      // are null in that case rather than the request failing (SAYSO-407).
+      interval: string | null;
       price: {
-        priceInCents: number;
-        currency: string;
+        priceInCents: number | null;
+        currency: string | null;
       };
       includedMinutes: {
-        plan: number;
-        trial: number;
+        plan: number | null;
+        trial: number | null;
       };
       status: string;
       billing: {
-        cycle: string;
+        cycle: string | null;
         period: {
           start: string | null;
           end: string | null;
