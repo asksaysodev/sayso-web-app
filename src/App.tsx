@@ -11,16 +11,16 @@ import * as Sentry from "@sentry/react";
 import SaysoLoader from './components/SaysoLoader';
 import { captureOfferTokenFromSearch } from './utils/offerToken';
 
-const hasAuthTokens = (hash: string) =>
-  !hash.includes('type=recovery') &&
-  hash.includes('access_token=') &&
-  hash.includes('refresh_token=');
+const getHandoffToken = (hash: string): string | null => {
+  if (hash.includes('type=recovery')) return null;
+  return new URLSearchParams(hash.slice(1)).get('token_hash');
+};
 
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const [processingToken, setProcessingToken] = useState(() =>
-    hasAuthTokens(window.location.hash)
+    Boolean(getHandoffToken(window.location.hash))
   );
 
   // Track navigation changes in Sentry breadcrumbs
@@ -50,7 +50,7 @@ function App() {
     const intendedPath = location.pathname;
     const hashParams = new URLSearchParams(hash.slice(1));
     const accessToken = hashParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token');
+    const handoffToken = getHandoffToken(hash);
 
     if (hash.includes('type=recovery') && hash.includes('access_token=')) {
       const hashContent = hash.split('#')[1];
@@ -60,11 +60,14 @@ function App() {
           navigate(`/reset-password?${queryString || hashContent}`, { replace: true });
         }
       }
-    } else if (hasAuthTokens(hash)) {
-      supabase.auth.setSession({ access_token: accessToken!, refresh_token: refreshToken! })
+    } else if (handoffToken) {
+      supabase.auth.verifyOtp({ type: 'magiclink', token_hash: handoffToken })
         .then(({ error }) => {
+          // Strip the token from the URL either way — it is single-use, and leaving it
+          // in history hands it to anything that can read the address bar.
           if (error) {
-            console.error('[App] Failed to set session from desktop token:', error);
+            console.error('[App] Failed to redeem desktop handoff token:', error);
+            Sentry.captureException(error, { tags: { flow: 'desktop_handoff' } });
             window.history.replaceState(null, '', '/login');
             navigate('/login', { replace: true });
           } else {
