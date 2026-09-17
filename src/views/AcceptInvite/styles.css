@@ -63,3 +63,7 @@
     color: var(--sayso-destructive, #ef4444);
     margin: 0;
 }
+
+.accept-invite-error-actions {
+    margin-top: 20px;
+}
