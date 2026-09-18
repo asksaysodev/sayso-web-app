@@ -10,6 +10,8 @@ import { useForm, FieldErrors } from 'react-hook-form';
 import ControlledInputField from '@/components/forms/ControlledInputField';
 import EyeToggleShowPasswordButton from '../Login/components/EyeToggleShowPasswordButton';
 import { ResetPasswordFormData } from '../Login/types';
+import clearRecoveryPending from './services/clearRecoveryPending';
+import * as Sentry from "@sentry/react";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -71,6 +73,15 @@ const ResetPassword = () => {
         console.error('[ResetPassword] Session error:', sessionError);
         throw sessionError;
       }
+
+      // The link is spent the moment it verifies, so release the flag that suppresses
+      // desktop handoffs while a reset is outstanding (SAYSO-433). Fire-and-forget on
+      // purpose: this is a cleanup courtesy and must never block, delay or fail the
+      // password reset itself. An uncleared flag just expires on its own.
+      clearRecoveryPending().catch((err) => {
+        console.error('[ResetPassword] Failed to clear recovery flag:', err);
+        Sentry.captureException(err, { tags: { flow: 'recovery_complete' } });
+      });
 
       setIsLoading(false);
     } catch (err) {

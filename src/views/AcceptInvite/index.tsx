@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -7,10 +7,12 @@ import LoginLayout from "@/components/layouts/LoginLayout";
 import ControlledInputField from "@/components/forms/ControlledInputField";
 import LoginBtn from "@/components/LoginBtn";
 import EyeToggleShowPasswordButton from "@/views/Login/components/EyeToggleShowPasswordButton";
-import dayjs from "dayjs";
 import { supabase } from "@/config/supabase";
 import { useAuth } from "@/context/AuthContext";
 import validateInvite from "./services/validateInvite";
+import { toInviteErrorKind } from "./services/inviteErrors";
+import InviteUnavailable from "./components/InviteUnavailable";
+import reportApiError from "@/utils/reportApiError";
 import { useAccounts } from "@/hooks/useAccounts";
 import { toSignupError, ACCOUNT_CREATED_SIGN_IN_FAILED } from "@/utils/signupErrors";
 import SaysoLoader from "@/components/SaysoLoader";
@@ -33,12 +35,16 @@ export default function AcceptInvite() {
 
     const token = searchParams.get("token") ?? "";
 
-    const { data: invite, isLoading, isError } = useQuery({
+    const { data: invite, isLoading, isError, error, refetch, isFetching } = useQuery({
         queryKey: ["validate-invite", token],
         queryFn: () => validateInvite(token),
         enabled: !!token,
         retry: false,
     });
+
+    useEffect(() => {
+        if (error) reportApiError(error, { feature: "accept-invite", operation: "validateInvite" });
+    }, [error]);
 
     const { control, handleSubmit, watch } = useForm<FormValues>({
         defaultValues: { name: "", lastname: "", password: "", confirmPassword: "" },
@@ -90,13 +96,7 @@ export default function AcceptInvite() {
     };
 
     if (!token) {
-        return (
-            <LoginLayout>
-                <div className="accept-invite-invalid">
-                    <p>This invite link is missing required information.</p>
-                </div>
-            </LoginLayout>
-        );
+        return <InviteUnavailable kind="INVALID" />;
     }
 
     if (isLoading) {
@@ -106,16 +106,14 @@ export default function AcceptInvite() {
             </div>
         );
     }
-    
-    const isExpired = invite ? dayjs().isAfter(dayjs(invite.expiresAt)) : false;
 
-    if (isError || !invite || isExpired) {
+    if (isError || !invite) {
         return (
-            <LoginLayout>
-                <div className="accept-invite-invalid">
-                    <p>This invite is no longer valid. Please contact your Company administrator to get a new invite.</p>
-                </div>
-            </LoginLayout>
+            <InviteUnavailable
+                kind={isError ? toInviteErrorKind(error) : "TRANSIENT"}
+                onRetry={refetch}
+                isRetrying={isFetching}
+            />
         );
     }
 
