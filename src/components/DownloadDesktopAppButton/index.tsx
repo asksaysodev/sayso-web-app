@@ -11,7 +11,7 @@ export default function DownloadDesktopAppButton() {
             onClick={() => navigate('/download')}
         >
             <Download size={15} />
-            Download for Mac
+            Download Sayso
         </button>
     );
 }

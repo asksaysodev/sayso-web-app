@@ -81,7 +81,7 @@ export default function MobileSendLinkModal({ open, onOpenChange, defaultEmail =
                         Want the download link sent to your inbox?
                     </DialogTitle>
                     <DialogDescription className="text-sm text-muted-foreground leading-relaxed">
-                        Sayso is a macOS desktop app — it can't be installed from a phone. We'll send a one-click download link to your email so you can get started from your Mac.
+                        Sayso is a desktop app for Mac and Windows — it can't be installed from a phone. We'll send a one-click download link to your email so you can get started from your computer.
                     </DialogDescription>
                 </DialogHeader>
 
