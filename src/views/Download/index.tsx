@@ -1,41 +1,49 @@
-import { MoveLeft, CircleHelp, Cpu } from 'lucide-react';
+import { ArrowLeft, CircleHelp } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './styles.css';
 import DownloadOptionCard from './components/DownloadOptionCard';
+import MacDownloadMenu from './components/MacDownloadMenu';
+import ChipHelpPopover from './components/ChipHelpPopover';
 import MobileSendLinkModal from './components/MobileSendLinkModal';
-import AppleSiliconIcon from './components/AppleSiliconIcon';
-import { detectChip } from './utils/detectChip';
-import { useDownloadGithubRelease } from '@/components/DownloadDesktopAppButton/hooks/useDownloadGithubRelease';
-import { useAuth } from '@/context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { openExternal } from '@/utils/helpers/openExternal';
 import AutoRedirectingButton from './components/AutoRedirectingButton';
+import ButtonSpinner from '@/components/ButtonSpinner';
+import { useDownloadGithubRelease } from './hooks/useDownloadGithubRelease';
+import { detectOS } from './utils/detectOS';
+import { isMobileViewport } from './utils/isMobileViewport';
+import { useAuth } from '@/context/AuthContext';
+import { openExternal } from '@/utils/helpers/openExternal';
 
 export default function Download() {
     const { globalUser } = useAuth();
-    const { handleDownload, intelUrl, siliconUrl, version, publishedAt } = useDownloadGithubRelease(true);
+    const { siliconUrl, intelUrl, windowsUrl, version, isLoading } = useDownloadGithubRelease();
     const navigate = useNavigate();
 
-    const detectedChip = useMemo(() => detectChip(), []);
+    const detectedOS = useMemo(() => detectOS(), []);
     const [mobileModalOpen, setMobileModalOpen] = useState(false);
     const [redirectRun, setRedirectRun] = useState(0);
 
-    const handleDownloadClick = (url: string | null) => {
-        if (!url) return;
-        handleDownload(url);
+    const handleDownload = (url: string) => {
+        openExternal(url);
         if (globalUser) setRedirectRun(run => run + 1);
     };
 
-    const formattedDate = publishedAt
-        ? new Date(publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-        : '—';
+    const handleWindowsClick = () => {
+        if (isMobileViewport()) {
+            setMobileModalOpen(true);
+            return;
+        }
+        if (windowsUrl) handleDownload(windowsUrl);
+    };
+
+    const withVersion = (compat: string) => (version ? `${compat} · ${version}` : compat);
 
     const subjectValue = encodeURIComponent(`Sayso App Support Request - ${globalUser?.email ?? '{enter your email}'}`);
     const bodyValue = encodeURIComponent(`Describe the error and include any attachments or video links. All context or additional information will help us reproducing the error scenario`);
 
     return (
         <div className='download-view-wrapper'>
-            <div className='download-vh'>
+            <div className='download-header'>
                 {globalUser
                     ?   redirectRun > 0
                             ?   <AutoRedirectingButton
@@ -43,38 +51,63 @@ export default function Download() {
                                     onCancel={() => setRedirectRun(0)}
                                     onComplete={() => navigate('/')}
                                 />
-                            :   <button className='download-vh-dashboard-btn' onClick={() => navigate('/')}>
-                                    <MoveLeft size={20} />
-                                    Go to Dashboard
+                            :   <button className='download-back-link' onClick={() => navigate('/')}>
+                                    <ArrowLeft size={20} />
+                                    Back to Dashboard
                                 </button>
-                    :   <button className='download-vh-dashboard-btn' onClick={() => navigate('/login')}>
-                            <MoveLeft size={20} />
+                    :   <button className='download-back-link' onClick={() => navigate('/login')}>
+                            <ArrowLeft size={20} />
                             Sign in
                         </button>
                 }
-
-                <div className='download-vh-title'>
-                    <img src='/assets/white_iso.svg' alt="Sayso Icon" className='download-vh-icon' />
-                    <span>Download Sayso for Mac</span>
-                </div>
             </div>
 
-            <div className='download-options-container'>
+            <div className='download-hero'>
+                <div className='download-hero-logo'>
+                    <img src='/assets/download/glow.svg' alt='' width={443} height={443} className='download-hero-glow' />
+                    <div className='download-hero-ring' />
+                    <div className='download-hero-ring download-hero-ring--inner' />
+                    <img src='/assets/download/sayso-logo.svg' alt='Sayso' width={240} height={240} className='download-hero-icon' />
+                </div>
+                <h1 className='download-title'>Download Sayso</h1>
+            </div>
+
+            <div className='download-cards'>
                 <DownloadOptionCard
-                    title='Intel Chip'
-                    description='Optimized for MacBook, iMac, and Mac Mini models powered by Intel processors.'
-                    icon={<Cpu size={34} color="#8a8a8a" />}
-                    recommended={detectedChip === 'intel'}
-                    onClick={() => handleDownloadClick(intelUrl)}
-                    onMobileClick={() => setMobileModalOpen(true)}
+                    logo='/assets/download/windows-logo.svg'
+                    logoAlt='Windows'
+                    meta={withVersion('Win10+')}
+                    title='Sayso for Windows'
+                    description='Bring Sayso to your Windows desktop.'
+                    recommended={detectedOS === 'windows'}
+                    unavailable={!isLoading && !windowsUrl}
+                    actions={
+                        <button className='download-btn' disabled={isLoading || !windowsUrl} onClick={handleWindowsClick}>
+                            Download
+                            {isLoading && <ButtonSpinner />}
+                        </button>
+                    }
                 />
                 <DownloadOptionCard
-                    title='Apple Silicon Chip'
-                    description='Optimized for M1, M2, and M3 series processors for maximum efficiency and speed.'
-                    icon={<AppleSiliconIcon />}
-                    recommended={detectedChip === 'silicon'}
-                    onClick={() => handleDownloadClick(siliconUrl)}
-                    onMobileClick={() => setMobileModalOpen(true)}
+                    logo='/assets/download/apple-logo.svg'
+                    logoAlt='Apple'
+                    meta={withVersion('macOS 13.0+')}
+                    title='Sayso for Mac'
+                    description='Choose the right version for your Mac.'
+                    recommended={detectedOS === 'mac'}
+                    unavailable={!isLoading && !siliconUrl && !intelUrl}
+                    actions={
+                        <>
+                            <MacDownloadMenu
+                                siliconUrl={siliconUrl}
+                                intelUrl={intelUrl}
+                                isLoading={isLoading}
+                                onDownload={handleDownload}
+                                onMobileClick={() => setMobileModalOpen(true)}
+                            />
+                            <ChipHelpPopover />
+                        </>
+                    }
                 />
             </div>
 
@@ -84,28 +117,15 @@ export default function Download() {
                 defaultEmail={globalUser?.email ?? ''}
             />
 
-            <div className='download-body'>
-                <div className='download-meta'>
-                    <div className='download-meta-item'>
-                        <span className='download-meta-label'>Version</span>
-                        <span className='download-meta-value'>{version ?? '—'}</span>
-                    </div>
-                    <div className='download-meta-divider' />
-                    <div className='download-meta-item'>
-                        <span className='download-meta-label'>Compatibility</span>
-                        <span className='download-meta-value'>macOS 13.0+</span>
-                    </div>
-                    <div className='download-meta-divider' />
-                    <div className='download-meta-item'>
-                        <span className='download-meta-label'>Release Date</span>
-                        <span className='download-meta-value'>{formattedDate}</span>
-                    </div>
-                </div>
-
-                <div className='download-support' onClick={() => openExternal(`mailto:support@asksayso.com?subject=${subjectValue}&body=${bodyValue}`)}>
-                    <CircleHelp size={18} color='#9ca3af' />
-                    <span>Need help? Contact support</span>
-                </div>
+            <div className='download-support'>
+                <span>Need help?</span>
+                <button
+                    className='download-link'
+                    onClick={() => openExternal(`mailto:support@asksayso.com?subject=${subjectValue}&body=${bodyValue}`)}
+                >
+                    Contact Support
+                    <CircleHelp size={20} />
+                </button>
             </div>
         </div>
     );
