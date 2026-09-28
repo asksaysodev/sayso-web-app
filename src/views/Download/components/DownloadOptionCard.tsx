@@ -1,45 +1,42 @@
-import { ArrowDownToLine } from 'lucide-react';
 import { ReactNode } from 'react';
 
 interface Props {
+    logo: string;
+    logoAlt: string;
+    meta: string;
     title: string;
     description: string;
-    icon: ReactNode;
-    recommended?: boolean;
-    onClick: () => void;
-    onMobileClick: () => void;
+    recommended: boolean;
+    unavailable: boolean;
+    actions: ReactNode;
 }
 
-export default function DownloadOptionCard({ title, description, icon, recommended, onClick, onMobileClick }: Props) {
-    const handleClick = () => {
-        if (window.innerWidth <= 768) {
-            onMobileClick();
-            return;
-        }
-        onClick();
-    };
-
+export default function DownloadOptionCard({ logo, logoAlt, meta, title, description, recommended, unavailable, actions }: Props) {
     return (
-        <div className={`download-option${recommended ? ' download-option--recommended' : ''}`}>
-            {recommended && (
-                <span className='chip-recommended-badge'>Recommended for your Mac</span> 
-            )}
-
-            <div className='chip-card-header'>
-                <div className='chip-icon-wrapper'>{icon}</div>
-
-                <div className='chip-mobile-header'>
-                    <span className='chip-title'>{title}</span>
-                    <button className='chip-mobile-download-btn' onClick={handleClick}>
-                        <ArrowDownToLine size={22} />
-                    </button>
+        <div className='download-card'>
+            <div className='download-card-info'>
+                <div className='download-card-top'>
+                    <img src={logo} alt={logoAlt} width={32} height={32} className='download-card-logo' />
+                    <span className='download-card-meta'>{meta}</span>
                 </div>
 
-                <span className='chip-title chip-title-desktop'>{title}</span>
+                <div className='download-card-text'>
+                    <div className='download-card-title-row'>
+                        <span className='download-card-title'>{title}</span>
+                        {recommended && <span className='download-card-badge'>RECOMMENDED</span>}
+                    </div>
+                    <span className='download-card-description'>{description}</span>
+                </div>
             </div>
 
-            <span className='chip-description'>{description}</span>
-            <button className='chip-download-btn' onClick={handleClick}>Download</button>
+            <div className='download-card-footer'>
+                <div className='download-card-actions'>{actions}</div>
+                {unavailable && (
+                    <span className='download-card-unavailable'>
+                        Download unavailable right now. Please try again later or contact support.
+                    </span>
+                )}
+            </div>
         </div>
-    )
+    );
 }
