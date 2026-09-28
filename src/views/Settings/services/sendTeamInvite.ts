@@ -19,7 +19,7 @@ export interface SendTeamInviteResponse {
 }
 
 export default async function sendTeamInvite(emails: string[]): Promise<SendTeamInviteResponse> {
-    const response = await apiClient.post(`accounts/company/invite`, { emails });
+    const response = await apiClient.post(`company/invite`, { emails });
 
     if (!response?.data) {
         throw new Error('Failed to send team invite');
