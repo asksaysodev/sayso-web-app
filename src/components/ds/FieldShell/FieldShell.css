@@ -1,0 +1,121 @@
+.ds-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    font-family: var(--font-ds);
+}
+
+.ds-field {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    padding-right: var(--space-16);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-8);
+    background-color: var(--surface-bg);
+    font-family: var(--font-ds);
+    color: var(--text-primary);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ds-field:not(:has(.ds-field__leading)) {
+    padding-left: var(--space-16);
+}
+
+.ds-field:focus-within,
+.ds-field:focus-visible,
+.ds-field[data-state='open'] {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: inset 0 0 0 1px var(--primary-500);
+}
+
+.ds-field--invalid,
+.ds-field--invalid:focus-within {
+    border-color: var(--error-icon);
+    box-shadow: inset 0 0 0 1px var(--error-icon);
+}
+
+.ds-field--disabled {
+    background-color: var(--neutral-200);
+    border-color: var(--neutral-200);
+    color: var(--text-disabled);
+    cursor: not-allowed;
+}
+
+.ds-field__leading,
+.ds-field__trailing {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--text-secondary);
+}
+
+.ds-field__leading {
+    width: 48px;
+    align-self: stretch;
+}
+
+.ds-field__trailing {
+    margin-left: var(--space-8);
+    pointer-events: none;
+}
+
+.ds-field--disabled .ds-field__leading,
+.ds-field--disabled .ds-field__trailing {
+    color: var(--text-disabled);
+}
+
+.ds-field__main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-2);
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-8) 0;
+}
+
+.ds-field__label {
+    font-size: var(--text-body-sm-size);
+    line-height: 16px;
+    color: var(--text-secondary);
+}
+
+.ds-field--disabled .ds-field__label {
+    color: var(--text-disabled);
+}
+
+.ds-field__input {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: var(--text-body-lg-size);
+    line-height: 22px;
+    color: inherit;
+}
+
+.ds-field__input::placeholder {
+    color: var(--text-disabled);
+}
+
+.ds-field__input:disabled {
+    cursor: not-allowed;
+}
+
+.ds-field-message {
+    margin: 0;
+    padding: 0 var(--space-4);
+    font-size: var(--text-body-sm-size);
+    line-height: 16px;
+    color: var(--text-secondary);
+}
+
+.ds-field-message--error {
+    color: var(--error-text);
+}
