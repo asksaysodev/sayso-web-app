@@ -17,7 +17,7 @@ export interface SortState<K extends string> {
 export default function useSortableRows<T, K extends string>(
     rows: T[],
     comparators: Record<K, Comparator<T>>,
-    initial: SortState<K>,
+    initial: SortState<NoInfer<K>>,
 ) {
     const [sort, setSort] = useState<SortState<K>>(initial);
 

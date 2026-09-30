@@ -49,3 +49,10 @@ export interface CompanyViewer {
 }
 
 export type MemberRowAction = 'updateRole' | 'resendInvite' | 'revokeInvite' | 'removeMember';
+
+export type MemberSortKey = 'member' | 'email' | 'role' | 'status';
+
+export interface StatusFilter {
+    key: 'status';
+    value: CompanyMemberStatus;
+}
