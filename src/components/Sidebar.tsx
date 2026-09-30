@@ -24,7 +24,8 @@ import useHasSubscription from '@/hooks/useHasSubscription';
 import DownloadDesktopAppButton from './DownloadDesktopAppButton';
 import useUserNotAdminOnTeams from '@/hooks/useUserNotAdminOnTeams';
 import LaunchCoachButton from './LaunchCoachButton';
-import { Store } from 'lucide-react';
+import { Building2, Store } from 'lucide-react';
+import useIsTeamAdmin from '@/hooks/useIsTeamAdmin';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -40,6 +41,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const hasSubscription = useHasSubscription();
 
     const userNotAdminOnTeams = useUserNotAdminOnTeams()
+    const isTeamAdmin = useIsTeamAdmin();
     
     return (
         <>
@@ -69,6 +71,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                             <div className='sidebar-nav-item'>
                                 <LuUsers size={SVG_FONT_SIZE}/>
                                 <p>Dashboard</p>
+                            </div>
+                        </NavLink>
+                    }
+                    {isTeamAdmin &&
+                        <NavLink to="/organization" onClick={onClose}>
+                            <div className="outline"></div>
+                            <div className='sidebar-nav-item'>
+                                <Building2 size={SVG_FONT_SIZE}/>
+                                <p>Organization</p>
                             </div>
                         </NavLink>
                     }

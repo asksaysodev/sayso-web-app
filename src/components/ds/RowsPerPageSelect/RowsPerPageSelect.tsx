@@ -17,9 +17,6 @@ export function RowsPerPageSelect({ value, onChange, options = [10, 25, 50], cla
 
     return (
         <div className={clsx('ds-rows-per-page', className)}>
-            <span id={labelId} className='ds-rows-per-page__label'>
-                Rows per page
-            </span>
             <Select value={String(value)} onValueChange={(next) => onChange(Number(next))}>
                 <SelectPrimitive.Trigger className='ds-rows-per-page__trigger' aria-labelledby={labelId}>
                     <SelectPrimitive.Value />
@@ -46,6 +43,9 @@ export function RowsPerPageSelect({ value, onChange, options = [10, 25, 50], cla
                     </SelectPrimitive.Content>
                 </SelectPrimitive.Portal>
             </Select>
+            <span id={labelId} className='ds-rows-per-page__label'>
+                Rows per page
+            </span>
         </div>
     );
 }
