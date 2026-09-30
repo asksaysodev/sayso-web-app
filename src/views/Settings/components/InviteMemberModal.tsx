@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import SaysoButton from "@/components/SaysoButton";
 import EmailChipsInput from "@/components/forms/EmailChipsInput";
-import sendTeamInvite, { SkippedInvite, SendTeamInviteResponse } from "../services/sendTeamInvite";
+import sendTeamInvite from "@/views/Organization/Company/services/sendTeamInvite";
+import type { SkippedInvite, SendTeamInviteResponse } from "@/views/Organization/Company/types";
 import { useToast } from "@/context/ToastContext";
 import { OrganizationMembersResponse } from "@/types/user";
 

@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import SaysoModal from "../../../components/SaysoModal";
 import { useToast } from "@/context/ToastContext";
 import { OrganizationMembersResponse } from "@/types/user";
-import removeMember from "../services/removeMember";
+import removeMember from "@/views/Organization/Company/services/removeMember";
 
 interface Props {
     memberId: string | null;
