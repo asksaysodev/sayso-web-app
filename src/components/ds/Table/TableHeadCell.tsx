@@ -27,7 +27,7 @@ export function TableHeadCell({ sortable, sortDirection, onSort, className, chil
             {sortable ? (
                 <button type='button' className='ds-table__sort' onClick={onSort}>
                     {children}
-                    <ChevronsUpDown size={16} aria-hidden='true' />
+                    <ChevronsUpDown size={16} className='ds-table__sort-icon' aria-hidden='true' />
                 </button>
             ) : (
                 children

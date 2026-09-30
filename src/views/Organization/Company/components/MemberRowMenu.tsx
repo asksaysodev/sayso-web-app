@@ -3,6 +3,7 @@ import { EllipsisVertical, RefreshCw, Send, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
 import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/components/ds/Menu';
 import type { MemberRowAction } from '../types';
+import './MemberRowMenu.css';
 
 interface ActionConfig {
     label: string;
@@ -28,7 +29,12 @@ export default function MemberRowMenu({ actions, memberLabel, onAction }: Props)
     return (
         <Menu>
             <MenuTrigger asChild>
-                <Button variant='ghost' size='icon' aria-label={`Actions for ${memberLabel}`}>
+                <Button
+                    variant='ghost'
+                    size='icon'
+                    className='member-row-menu__trigger'
+                    aria-label={`Actions for ${memberLabel}`}
+                >
                     <EllipsisVertical size={16} />
                 </Button>
             </MenuTrigger>

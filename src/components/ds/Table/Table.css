@@ -49,8 +49,11 @@
     border-radius: var(--radius-8);
 }
 
-.ds-table__head-cell--sorted,
-.ds-table__head-cell--sorted .ds-table__sort:hover {
+.ds-table__sort-icon {
+    flex-shrink: 0;
+}
+
+.ds-table__head-cell--sorted .ds-table__sort-icon {
     color: var(--primary-500);
 }
 
