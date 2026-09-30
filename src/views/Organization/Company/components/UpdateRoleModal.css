@@ -1,0 +1,24 @@
+.update-role-modal__fields {
+    display: flex;
+    gap: var(--space-16);
+}
+
+.update-role-modal__member {
+    flex: 1;
+    min-width: 0;
+}
+
+.update-role-modal__role {
+    width: 172px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+    .update-role-modal__fields {
+        flex-direction: column;
+    }
+
+    .update-role-modal__role {
+        width: 100%;
+    }
+}

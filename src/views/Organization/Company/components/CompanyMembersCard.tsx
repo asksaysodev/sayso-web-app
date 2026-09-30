@@ -9,7 +9,10 @@ import useResendInvite from '../hooks/useResendInvite';
 import type { CompanyMemberRow, CompanyViewer, MemberRowAction, StatusFilter } from '../types';
 import filterRows from '../utils/filterRows';
 import CompanyMembersTable from './CompanyMembersTable';
+import InviteMemberModal from './InviteMemberModal';
+import RemoveMemberModal from './RemoveMemberModal';
 import StatusFilterPill from './StatusFilterPill';
+import UpdateRoleModal from './UpdateRoleModal';
 import './CompanyMembersCard.css';
 
 const AVAILABLE_FILTERS: SearchFilterConfig<StatusFilter>[] = [
@@ -21,12 +24,19 @@ const AVAILABLE_FILTERS: SearchFilterConfig<StatusFilter>[] = [
     },
 ];
 
+type OpenModal =
+    | { kind: 'invite' }
+    | { kind: 'updateRole'; row: CompanyMemberRow }
+    | { kind: 'remove'; row: CompanyMemberRow }
+    | null;
+
 export default function CompanyMembersCard() {
     const { globalUser } = useAuth();
     const { members, isLoading, isError, isRetrying, retry } = useCompanyMembers();
     const { resendInvite } = useResendInvite();
     const [searchText, setSearchText] = useState('');
     const [activeFilters, setActiveFilters] = useState<StatusFilter[]>([]);
+    const [openModal, setOpenModal] = useState<OpenModal>(null);
 
     const viewer: CompanyViewer = { id: globalUser?.id ?? '', role: globalUser?.role ?? null };
     const statusFilter = activeFilters.find((filter) => filter.key === 'status')?.value;
@@ -36,8 +46,21 @@ export default function CompanyMembersCard() {
         [members, searchText, statusFilter],
     );
 
+    const closeModal = () => setOpenModal(null);
+
     const handleAction = (action: MemberRowAction, row: CompanyMemberRow) => {
-        if (action === 'resendInvite') resendInvite(row.id);
+        switch (action) {
+            case 'resendInvite':
+                resendInvite(row.id);
+                break;
+            case 'updateRole':
+                setOpenModal({ kind: 'updateRole', row });
+                break;
+            case 'removeMember':
+            case 'revokeInvite':
+                setOpenModal({ kind: 'remove', row });
+                break;
+        }
     };
 
     return (
@@ -60,7 +83,9 @@ export default function CompanyMembersCard() {
                             }}
                         />
                     </div>
-                    <Button leftIcon={<Plus size={20} />}>Add member</Button>
+                    <Button leftIcon={<Plus size={20} />} onClick={() => setOpenModal({ kind: 'invite' })}>
+                        Add member
+                    </Button>
                 </div>
             </div>
             <CompanyMembersTable
@@ -73,6 +98,9 @@ export default function CompanyMembersCard() {
                 isFiltered={Boolean(searchText.trim() || statusFilter)}
                 onAction={handleAction}
             />
+            {openModal?.kind === 'invite' && <InviteMemberModal onClose={closeModal} />}
+            {openModal?.kind === 'updateRole' && <UpdateRoleModal row={openModal.row} onClose={closeModal} />}
+            {openModal?.kind === 'remove' && <RemoveMemberModal row={openModal.row} onClose={closeModal} />}
         </Card>
     );
 }

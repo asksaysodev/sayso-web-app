@@ -61,12 +61,12 @@
 }
 
 .ds-button--destructive {
-    background-color: var(--error-icon);
+    background-color: var(--error-text);
     color: var(--white);
 }
 
 .ds-button--destructive:hover:not(:disabled) {
-    background-color: var(--error-text);
+    background-color: color-mix(in srgb, var(--error-text) 85%, black);
 }
 
 .ds-button--ghost {
