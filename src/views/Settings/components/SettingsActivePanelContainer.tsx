@@ -1,6 +1,5 @@
 import { useAuth } from "../../../context/AuthContext";
 import { SettingsPanel } from "../types";
-import SettingsCompanyForm from "./SettingsCompanyForm"
 import SettingsFilesForm from "./SettingsFilesForm"
 import SettingsPersonalForm from "./SettingsPersonalForm";
 import SettingsActivePanelContainerHeader from "./SettingsActivePanelContainerHeader";
@@ -22,9 +21,6 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
         switch(selectedPanel) {
             case 'personal': return (
                 <SettingsPersonalForm setUnsavedChanges={setUnsavedChanges} globalUser={globalUser} />
-            )
-            case "company": return (
-                <SettingsCompanyForm  setUnsavedChanges={setUnsavedChanges} globalUser={globalUser} />
             )
             case "files": return (
                 <SettingsFilesForm />

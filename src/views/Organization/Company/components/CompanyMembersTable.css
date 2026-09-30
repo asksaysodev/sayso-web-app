@@ -1,0 +1,51 @@
+.company-members-table__member {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    min-width: 0;
+}
+
+.company-members-table__name {
+    overflow: hidden;
+    font-size: var(--text-body-lg-size);
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.company-members-table__muted {
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}
+
+.company-members-table__actions {
+    width: 56px;
+    text-align: right;
+}
+
+.company-members-table {
+    table-layout: fixed;
+}
+
+.company-members-table th:nth-child(1) {
+    width: 30%;
+}
+
+.company-members-table th:nth-child(2) {
+    width: 30%;
+}
+
+.company-members-table th:nth-child(3),
+.company-members-table th:nth-child(4) {
+    width: 17%;
+}
+
+.company-members-table th:nth-child(5) {
+    width: 56px;
+}
+
+.company-members-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

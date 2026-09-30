@@ -1,4 +1,4 @@
-import { LuUser, LuFileScan, LuBuilding, LuUnplug, LuLock, LuGift, LuGauge } from 'react-icons/lu';
+import { LuUser, LuFileScan, LuUnplug, LuLock, LuGift, LuGauge } from 'react-icons/lu';
 import TabSelector from '../../../components/TabSelector';
 import '../../../components/TabSelector.css';
 import { SettingsPanel, SettingsPanelEnum } from '../types';
@@ -18,11 +18,6 @@ export default function SettingsTabs({ onSelectPanel, selectedPanel }: Props) {
             icon: <LuUser size={ICON_SIZE} />,
             label: 'Profile',
             value: SettingsPanelEnum.PERSONAL
-        },
-        {
-            icon: <LuBuilding size={ICON_SIZE} />,
-            label: 'Organization',
-            value: SettingsPanelEnum.COMPANY
         },
         {
             icon: <LuFileScan size={ICON_SIZE} />,

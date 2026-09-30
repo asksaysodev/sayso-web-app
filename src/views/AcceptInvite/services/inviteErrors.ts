@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 /**
- * The distinct outcomes of GET /accounts/company/invite/validate, as far as the UI is
+ * The distinct outcomes of GET /company/invite/validate, as far as the UI is
  * concerned.
  */
 export type InviteErrorKind =
