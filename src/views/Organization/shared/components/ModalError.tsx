@@ -8,7 +8,7 @@ interface Props {
 export default function ModalError({ message }: Props) {
     if (!message) return null;
     return (
-        <p className='company-modal-error' role='alert'>
+        <p className='org-modal-error' role='alert'>
             {message}
         </p>
     );

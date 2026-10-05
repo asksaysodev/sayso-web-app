@@ -7,7 +7,7 @@ import { TextField } from '@/components/ds/TextField';
 import useUpdateMemberRole from '../hooks/useUpdateMemberRole';
 import type { AssignableRole, CompanyMemberRow } from '../types';
 import roleLabel from '../utils/roleLabel';
-import ModalError from './ModalError';
+import ModalError from '@/views/Organization/shared/components/ModalError';
 import './UpdateRoleModal.css';
 
 const ROLE_OPTIONS: SelectFieldOption<AssignableRole>[] = [

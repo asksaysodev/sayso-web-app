@@ -2,7 +2,7 @@ import { ConfirmModal } from '@/components/ds/ConfirmModal';
 import useRemoveMember from '../hooks/useRemoveMember';
 import useRevokeInvite from '../hooks/useRevokeInvite';
 import type { CompanyMemberRow } from '../types';
-import ModalError from './ModalError';
+import ModalError from '@/views/Organization/shared/components/ModalError';
 
 interface Props {
     row: CompanyMemberRow;

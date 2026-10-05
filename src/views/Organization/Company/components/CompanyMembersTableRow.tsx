@@ -3,7 +3,7 @@ import { Badge } from '@/components/ds/Badge';
 import { TableCell, TableRow } from '@/components/ds/Table';
 import { getInitials } from '@/utils/helpers/getInitials';
 import type { CompanyMemberRow, MemberRowAction } from '../types';
-import displayName from '../utils/displayName';
+import displayName from '@/views/Organization/shared/utils/displayName';
 import roleLabel from '../utils/roleLabel';
 import statusBadge from '../utils/statusBadge';
 import MemberRowMenu from './MemberRowMenu';

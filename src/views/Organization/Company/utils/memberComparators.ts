@@ -1,6 +1,6 @@
 import type { Comparator } from '@/hooks/useSortableRows';
 import type { CompanyMemberRow, MemberSortKey } from '../types';
-import displayName from './displayName';
+import displayName from '@/views/Organization/shared/utils/displayName';
 import roleLabel from './roleLabel';
 import statusBadge from './statusBadge';
 
