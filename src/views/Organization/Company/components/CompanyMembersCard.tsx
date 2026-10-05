@@ -13,7 +13,7 @@ import InviteMemberModal from './InviteMemberModal';
 import RemoveMemberModal from './RemoveMemberModal';
 import StatusFilterPill from './StatusFilterPill';
 import UpdateRoleModal from './UpdateRoleModal';
-import './CompanyMembersCard.css';
+import '@/views/Organization/shared/styles/orgCard.css';
 
 const AVAILABLE_FILTERS: SearchFilterConfig<StatusFilter>[] = [
     {
@@ -64,11 +64,11 @@ export default function CompanyMembersCard() {
     };
 
     return (
-        <Card className='company-members-card'>
-            <div className='company-members-card__header'>
-                <h2 className='company-members-card__title'>Company members</h2>
-                <div className='company-members-card__controls'>
-                    <div className='company-members-card__search'>
+        <Card className='org-card'>
+            <div className='org-card__header'>
+                <h2 className='org-card__title'>Company members</h2>
+                <div className='org-card__controls'>
+                    <div className='org-card__search'>
                         <SearchBar
                             searchText={searchText}
                             onSearchTextChange={setSearchText}

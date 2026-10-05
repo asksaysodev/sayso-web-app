@@ -1,10 +1,10 @@
-.company-members-card {
+.org-card {
     display: flex;
     flex-direction: column;
     gap: var(--space-16);
 }
 
-.company-members-card__header {
+.org-card__header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -12,35 +12,35 @@
     gap: var(--space-16);
 }
 
-.company-members-card__title {
+.org-card__title {
     margin: 0;
     font-size: var(--text-h5-size);
     line-height: var(--text-h5-line);
     font-weight: var(--font-weight-semibold);
 }
 
-.company-members-card__controls {
+.org-card__controls {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-16);
 }
 
-.company-members-card__search {
+.org-card__search {
     width: 352px;
     max-width: 100%;
 }
 
-.company-members-card__search .search-bar {
+.org-card__search .search-bar {
     min-width: 0 !important;
 }
 
-.company-members-card__search [data-slot='input-group'],
-.company-members-card__search [data-slot='input-group'] input {
+.org-card__search [data-slot='input-group'],
+.org-card__search [data-slot='input-group'] input {
     height: 44px !important;
 }
 
-.company-members-card__search [data-slot='input-group'] {
+.org-card__search [data-slot='input-group'] {
     border-radius: var(--radius-8);
     border-color: var(--surface-border) !important;
     font-family: var(--font-ds);
