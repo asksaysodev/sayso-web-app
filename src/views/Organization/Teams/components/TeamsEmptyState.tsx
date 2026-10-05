@@ -2,7 +2,11 @@ import { Plus, UsersRound } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
 import './TeamsEmptyState.css';
 
-export default function TeamsEmptyState() {
+interface Props {
+    onAddTeam: () => void;
+}
+
+export default function TeamsEmptyState({ onAddTeam }: Props) {
     return (
         <div className='teams-empty'>
             <span className='teams-empty__icon'>
@@ -12,7 +16,9 @@ export default function TeamsEmptyState() {
             <p className='teams-empty__text'>
                 Bring your people together to manage members and track activity by team.
             </p>
-            <Button leftIcon={<Plus size={20} />}>Add team</Button>
+            <Button leftIcon={<Plus size={20} />} onClick={onAddTeam}>
+                Add team
+            </Button>
         </div>
     );
 }

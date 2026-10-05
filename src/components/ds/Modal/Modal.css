@@ -80,6 +80,11 @@
     color: var(--primary-500);
 }
 
+.ds-modal__icon--success {
+    background-color: var(--success-bg);
+    color: var(--success-icon);
+}
+
 .ds-modal__icon--danger {
     background-color: var(--warning-bg);
     color: var(--warning-icon);

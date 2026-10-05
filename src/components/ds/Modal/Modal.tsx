@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { Dialog, DialogPortal } from '@/components/ui/dialog';
 import './Modal.css';
 
-export type ModalTone = 'danger' | 'primary';
+export type ModalTone = 'danger' | 'primary' | 'success';
 
 export const Modal = Dialog;
 

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import reportApiError from '@/utils/reportApiError';
 import { COMPANY_MEMBERS_QUERY_KEY, TEAMS_QUERY_KEY } from '@/views/Organization/shared/hooks/queryKeys';
@@ -15,6 +16,9 @@ export default function useCreateTeam() {
         },
         onError: (err) => {
             reportApiError(err, { feature: 'teams', operation: 'createTeam' });
+            if (axios.isAxiosError(err) && err.response?.status === 409) {
+                queryClient.invalidateQueries({ queryKey: COMPANY_MEMBERS_QUERY_KEY });
+            }
         },
     });
 
