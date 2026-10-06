@@ -49,7 +49,7 @@ export default function TeamsCard() {
                         isError={isError}
                         isRetrying={isRetrying}
                         onRetry={retry}
-                        isFiltered={Boolean(searchText.trim())}
+                        isFiltered={searchText.trim() !== ''}
                     />
                 </>
             )}

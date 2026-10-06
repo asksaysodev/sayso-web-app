@@ -7,11 +7,11 @@ import { TextField } from '@/components/ds/TextField';
 import useCompanyMembers from '@/views/Organization/Company/hooks/useCompanyMembers';
 import MemberPicker from '@/views/Organization/shared/components/MemberPicker/MemberPicker';
 import ModalError from '@/views/Organization/shared/components/ModalError';
+import { TEAM_NAME_MAX_LENGTH } from '../constants';
 import useCreateTeam from '../hooks/useCreateTeam';
 import TeamCreated from './TeamCreated';
 import './AddTeamModal.css';
 
-const NAME_MAX_LENGTH = 80;
 const HOUR_CAP_MAX = 10000;
 
 interface Props {
@@ -63,7 +63,7 @@ export default function AddTeamModal({ onClose }: Props) {
                                     setName(event.target.value);
                                     clearError();
                                 }}
-                                maxLength={NAME_MAX_LENGTH}
+                                maxLength={TEAM_NAME_MAX_LENGTH}
                                 disabled={isPending}
                                 error={error?.field === 'name' ? error.message : undefined}
                                 autoFocus
