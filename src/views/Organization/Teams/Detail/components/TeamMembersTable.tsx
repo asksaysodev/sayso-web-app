@@ -1,3 +1,4 @@
+import { Button } from '@/components/ds/Button';
 import { Table, TableBody, TableHeadCell, TableHeader, TableStateRow } from '@/components/ds/Table';
 import useSortableRows from '@/hooks/useSortableRows';
 import type { CompanyViewer } from '@/views/Organization/Company/types';
@@ -21,9 +22,10 @@ interface Props {
     viewer: CompanyViewer;
     isFiltered: boolean;
     onAction: (action: TeamMemberAction, member: TeamMember) => void;
+    onAddMember: () => void;
 }
 
-export default function TeamMembersTable({ members, viewer, isFiltered, onAction }: Props) {
+export default function TeamMembersTable({ members, viewer, isFiltered, onAction, onAddMember }: Props) {
     const { sortedRows, sortKey, direction, toggleSort } = useSortableRows(members, TEAM_MEMBER_COMPARATORS, {
         key: 'member',
         direction: 'asc',
@@ -46,7 +48,17 @@ export default function TeamMembersTable({ members, viewer, isFiltered, onAction
             </TableHeader>
             <TableBody>
                 {sortedRows.length === 0 ? (
-                    <TableStateRow state='empty' colSpan={COLUMN_COUNT}>
+                    <TableStateRow
+                        state='empty'
+                        colSpan={COLUMN_COUNT}
+                        action={
+                            !isFiltered && (
+                                <Button variant='secondary' size='sm' onClick={onAddMember}>
+                                    Add member
+                                </Button>
+                            )
+                        }
+                    >
                         {isFiltered ? 'No members match your search.' : 'No members in this team yet.'}
                     </TableStateRow>
                 ) : (

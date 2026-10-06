@@ -40,7 +40,7 @@ export default function TeamDetail() {
             <>
                 <TeamDetailHeader team={detail.team} />
                 <AllocatedHoursCard team={detail.team} />
-                <TeamMembersCard teamId={detail.team.id} members={detail.members} />
+                <TeamMembersCard teamId={detail.team.id} teamName={detail.team.name} members={detail.members} />
             </>
         );
     };

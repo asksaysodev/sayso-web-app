@@ -59,9 +59,21 @@ export type UpdateTeamInput = { teamId: string } & ({ name: string } | { hourCap
 
 export type TeamMemberSortKey = 'member' | 'email' | 'role' | 'lastConversation';
 
-export type TeamMemberAction = 'updateRole' | 'removeFromTeam';
+export type TeamMemberAction = 'updateRole' | 'transferMember' | 'removeFromTeam';
 
 export interface RemoveTeamMemberInput {
     teamId: string;
     accountId: string;
+}
+
+export interface AddTeamMembersInput {
+    teamId: string;
+    accountIds: string[];
+}
+
+export interface TransferTeamMemberInput {
+    teamId: string;
+    accountId: string;
+    toTeamId: string;
+    toTeamName: string;
 }
