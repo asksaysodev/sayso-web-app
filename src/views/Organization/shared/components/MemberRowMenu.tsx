@@ -1,31 +1,18 @@
-import { Fragment, type ReactNode } from 'react';
-import { EllipsisVertical, RefreshCw, Send, Trash2 } from 'lucide-react';
+import { Fragment } from 'react';
+import { EllipsisVertical } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
 import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/components/ds/Menu';
-import type { MemberRowAction } from '../types';
+import type { RowActionConfig } from '../types';
 import './MemberRowMenu.css';
 
-interface ActionConfig {
-    label: string;
-    icon: ReactNode;
-    destructive?: boolean;
-}
-
-const ACTIONS: Record<MemberRowAction, ActionConfig> = {
-    updateRole: { label: 'Update role member', icon: <RefreshCw size={20} /> },
-    resendInvite: { label: 'Resend invite', icon: <Send size={20} /> },
-    removeMember: { label: 'Remove member', icon: <Trash2 size={20} />, destructive: true },
-    revokeInvite: { label: 'Revoke invite', icon: <Trash2 size={20} />, destructive: true },
-};
-
-interface Props {
-    actions: MemberRowAction[];
+interface Props<A extends string> {
+    actions: A[];
+    config: Record<A, RowActionConfig>;
     memberLabel: string;
-    onAction: (action: MemberRowAction) => void;
+    onAction: (action: A) => void;
 }
 
-/** Kebab menu for a row. Destructive actions sit last, after a separator. */
-export default function MemberRowMenu({ actions, memberLabel, onAction }: Props) {
+export default function MemberRowMenu<A extends string>({ actions, config, memberLabel, onAction }: Props<A>) {
     return (
         <Menu>
             <MenuTrigger asChild>
@@ -40,8 +27,8 @@ export default function MemberRowMenu({ actions, memberLabel, onAction }: Props)
             </MenuTrigger>
             <MenuContent>
                 {actions.map((action, index) => {
-                    const { label, icon, destructive } = ACTIONS[action];
-                    const startsDestructive = destructive && index > 0 && !ACTIONS[actions[index - 1]].destructive;
+                    const { label, icon, destructive } = config[action];
+                    const startsDestructive = destructive && index > 0 && !config[actions[index - 1]].destructive;
                     return (
                         <Fragment key={action}>
                             {startsDestructive && <MenuSeparator />}

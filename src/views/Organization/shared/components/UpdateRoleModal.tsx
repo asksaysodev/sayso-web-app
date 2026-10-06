@@ -5,9 +5,9 @@ import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/comp
 import { SelectField, type SelectFieldOption } from '@/components/ds/SelectField';
 import { TextField } from '@/components/ds/TextField';
 import useUpdateMemberRole from '../hooks/useUpdateMemberRole';
-import type { AssignableRole, CompanyMemberRow } from '../types';
+import type { AssignableRole, RoleTarget } from '../types';
 import roleLabel from '../utils/roleLabel';
-import ModalError from '@/views/Organization/shared/components/ModalError';
+import ModalError from './ModalError';
 import './UpdateRoleModal.css';
 
 const ROLE_OPTIONS: SelectFieldOption<AssignableRole>[] = [
@@ -16,12 +16,12 @@ const ROLE_OPTIONS: SelectFieldOption<AssignableRole>[] = [
 ];
 
 interface Props {
-    row: CompanyMemberRow;
+    target: RoleTarget;
     onClose: () => void;
 }
 
-export default function UpdateRoleModal({ row, onClose }: Props) {
-    const currentRole: AssignableRole = row.role === 'admin' ? 'admin' : 'user';
+export default function UpdateRoleModal({ target, onClose }: Props) {
+    const currentRole: AssignableRole = target.role === 'admin' ? 'admin' : 'user';
     const [role, setRole] = useState<AssignableRole>(currentRole);
     const { updateRole, isPending, errorMessage } = useUpdateMemberRole();
 
@@ -30,7 +30,7 @@ export default function UpdateRoleModal({ row, onClose }: Props) {
     };
 
     const handleSave = () => {
-        updateRole({ memberId: row.id, role }, { onSuccess: onClose });
+        updateRole({ memberId: target.id, role }, { onSuccess: onClose });
     };
 
     return (
@@ -47,7 +47,7 @@ export default function UpdateRoleModal({ row, onClose }: Props) {
                             className='update-role-modal__member'
                             label='Member'
                             leadingIcon={<User size={20} />}
-                            value={row.email}
+                            value={target.email}
                             disabled
                             readOnly
                         />

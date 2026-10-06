@@ -1,7 +1,7 @@
 import type { Comparator } from '@/hooks/useSortableRows';
 import type { CompanyMemberRow, MemberSortKey } from '../types';
 import displayName from '@/views/Organization/shared/utils/displayName';
-import roleLabel from './roleLabel';
+import roleLabel from '@/views/Organization/shared/utils/roleLabel';
 import statusBadge from './statusBadge';
 
 const byText = (a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: 'base' });

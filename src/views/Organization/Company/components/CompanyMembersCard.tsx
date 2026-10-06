@@ -12,7 +12,7 @@ import CompanyMembersTable from './CompanyMembersTable';
 import InviteMemberModal from './InviteMemberModal';
 import RemoveMemberModal from './RemoveMemberModal';
 import StatusFilterPill from './StatusFilterPill';
-import UpdateRoleModal from './UpdateRoleModal';
+import UpdateRoleModal from '@/views/Organization/shared/components/UpdateRoleModal';
 import '@/views/Organization/shared/styles/orgCard.css';
 
 const AVAILABLE_FILTERS: SearchFilterConfig<StatusFilter>[] = [
@@ -99,7 +99,7 @@ export default function CompanyMembersCard() {
                 onAction={handleAction}
             />
             {openModal?.kind === 'invite' && <InviteMemberModal onClose={closeModal} />}
-            {openModal?.kind === 'updateRole' && <UpdateRoleModal row={openModal.row} onClose={closeModal} />}
+            {openModal?.kind === 'updateRole' && <UpdateRoleModal target={openModal.row} onClose={closeModal} />}
             {openModal?.kind === 'remove' && <RemoveMemberModal row={openModal.row} onClose={closeModal} />}
         </Card>
     );

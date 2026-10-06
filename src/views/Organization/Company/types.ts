@@ -17,8 +17,6 @@ export interface CompanyMemberRow {
     team_name?: string | null;
 }
 
-export type AssignableRole = Extract<UserRole, 'admin' | 'user'>;
-
 export interface SkippedInvite {
     email: string;
     reason: string;
