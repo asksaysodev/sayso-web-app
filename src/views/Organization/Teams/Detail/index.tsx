@@ -5,6 +5,7 @@ import useTeam from '../hooks/useTeam';
 import AllocatedHoursCard from './components/AllocatedHoursCard';
 import TeamDetailHeader from './components/TeamDetailHeader';
 import TeamDetailStatus from './components/TeamDetailStatus';
+import TeamMembersCard from './components/TeamMembersCard';
 import '@/views/Organization/Organization.css';
 import './TeamDetail.css';
 
@@ -39,6 +40,7 @@ export default function TeamDetail() {
             <>
                 <TeamDetailHeader team={detail.team} />
                 <AllocatedHoursCard team={detail.team} />
+                <TeamMembersCard teamId={detail.team.id} members={detail.members} />
             </>
         );
     };

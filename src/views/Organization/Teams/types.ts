@@ -56,3 +56,12 @@ export interface TeamDetail {
 }
 
 export type UpdateTeamInput = { teamId: string } & ({ name: string } | { hourCap: number | null });
+
+export type TeamMemberSortKey = 'member' | 'email' | 'role' | 'lastConversation';
+
+export type TeamMemberAction = 'updateRole' | 'removeFromTeam';
+
+export interface RemoveTeamMemberInput {
+    teamId: string;
+    accountId: string;
+}
