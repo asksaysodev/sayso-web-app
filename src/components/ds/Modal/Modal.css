@@ -65,6 +65,11 @@
     text-align: center;
 }
 
+.ds-modal__header--start {
+    align-items: flex-start;
+    text-align: left;
+}
+
 .ds-modal__icon {
     display: inline-flex;
     align-items: center;

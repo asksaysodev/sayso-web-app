@@ -7,12 +7,10 @@ import { TextField } from '@/components/ds/TextField';
 import useCompanyMembers from '@/views/Organization/Company/hooks/useCompanyMembers';
 import MemberPicker from '@/views/Organization/shared/components/MemberPicker/MemberPicker';
 import ModalError from '@/views/Organization/shared/components/ModalError';
-import { TEAM_NAME_MAX_LENGTH } from '../constants';
+import { HOUR_CAP_MAX, TEAM_NAME_MAX_LENGTH } from '../constants';
 import useCreateTeam from '../hooks/useCreateTeam';
 import TeamCreated from './TeamCreated';
 import './AddTeamModal.css';
-
-const HOUR_CAP_MAX = 10000;
 
 interface Props {
     onClose: () => void;

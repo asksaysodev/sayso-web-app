@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
 import useTeam from '../hooks/useTeam';
+import AllocatedHoursCard from './components/AllocatedHoursCard';
 import TeamDetailHeader from './components/TeamDetailHeader';
 import TeamDetailStatus from './components/TeamDetailStatus';
 import '@/views/Organization/Organization.css';
@@ -34,7 +35,12 @@ export default function TeamDetail() {
                 </TeamDetailStatus>
             );
         }
-        return <TeamDetailHeader team={detail.team} />;
+        return (
+            <>
+                <TeamDetailHeader team={detail.team} />
+                <AllocatedHoursCard team={detail.team} />
+            </>
+        );
     };
 
     return (

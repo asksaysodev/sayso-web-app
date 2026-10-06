@@ -33,9 +33,11 @@
   --success-bg: #f0fdf4;
   --success-text: #15803d;
   --success-icon: #16a34a;
+  --error-bg: #fef2f2;
   --error-text: #b91c1c;
   --error-icon: #dc2626;
   --warning-bg: #fff7ed;
+  --warning-text: #c2410c;
   --warning-icon: #f97316;
   --info-bg: #f5f3ff;
   --info-text: #6d28d9;

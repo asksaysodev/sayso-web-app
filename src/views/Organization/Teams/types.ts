@@ -55,7 +55,4 @@ export interface TeamDetail {
     members: TeamMember[];
 }
 
-export interface UpdateTeamInput {
-    teamId: string;
-    name: string;
-}
+export type UpdateTeamInput = { teamId: string } & ({ name: string } | { hourCap: number | null });

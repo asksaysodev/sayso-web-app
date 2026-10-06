@@ -1,14 +1,11 @@
 import apiClient from "@/config/axios";
 import type { CreateTeamInput, CreateTeamResponse } from "../types";
-
-// The Figma allocated-hours rule warns at 80%, so every cap is sent with that threshold.
-const NOTIFY_AT_PERCENT = 80;
+import hourCapPayload from "../utils/hourCapPayload";
 
 export default async function createTeam({ name, hourCap, accountIds }: CreateTeamInput): Promise<CreateTeamResponse> {
     const response = await apiClient.post(`teams`, {
         name,
-        hour_cap: hourCap,
-        notify_at_percent: hourCap === null ? null : NOTIFY_AT_PERCENT,
+        ...hourCapPayload(hourCap),
         ...(accountIds.length > 0 && { accountIds }),
     });
 
