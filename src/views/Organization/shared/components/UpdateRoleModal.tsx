@@ -38,7 +38,7 @@ export default function UpdateRoleModal({ target, onClose }: Props) {
             <ModalContent hideClose={isPending}>
                 <ModalHeader
                     icon={<RefreshCw size={24} />}
-                    title='Update role member'
+                    title='Update member role'
                     description="Select an option below to change the user's role."
                 />
                 <ModalBody>
