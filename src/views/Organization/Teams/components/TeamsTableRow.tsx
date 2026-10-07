@@ -19,7 +19,9 @@ export default function TeamsTableRow({ team }: Props) {
     return (
         <TableRow className='teams-table__row' onClick={() => navigate(href)}>
             <TableCell>
-                <Link to={href} className='teams-table__name'>
+                {/* The row navigates too; without this a click on the name navigates twice, and a
+                    cmd/ctrl-click opens a new tab and also navigates this one. */}
+                <Link to={href} className='teams-table__name' onClick={(event) => event.stopPropagation()}>
                     {team.name}
                 </Link>
             </TableCell>

@@ -7,7 +7,7 @@ export interface TeamError {
 }
 
 /**
- * Team writes can 409 for a taken name (shown on the name field) or for member / cap conflicts
+ * Team writes can 409 for a taken name (shown on the name field) or for member conflicts
  * (shown on the form). Told apart by `code`, never by copy.
  */
 export default function teamError(error: unknown, fallback: string): TeamError {
