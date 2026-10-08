@@ -14,7 +14,7 @@ interface Props {
 
 export default function AllocatedHoursCard({ team }: Props) {
     const [isEditOpen, setIsEditOpen] = useState(false);
-    const tone = team.capPercent === null ? 'primary' : allocationTone(team.capPercent).tone;
+    const tone = allocationTone(team.status)?.tone ?? 'primary';
 
     return (
         <Card className='allocated-hours-card'>
@@ -27,6 +27,7 @@ export default function AllocatedHoursCard({ team }: Props) {
                     usedHours={team.usedHours}
                     capHours={team.capHours}
                     capPercent={team.capPercent}
+                    status={team.status}
                     variant='card'
                 />
             </div>

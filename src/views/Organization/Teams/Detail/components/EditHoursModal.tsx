@@ -8,6 +8,8 @@ import { HOUR_CAP_MAX } from '../../constants';
 import useUpdateTeam from '../../hooks/useUpdateTeam';
 import type { TeamDetail } from '../../types';
 import capPercent from '../../utils/capPercent';
+import hourCapPayload from '../../utils/hourCapPayload';
+import teamCapStatus from '../../utils/teamCapStatus';
 import AllocationUsage from './AllocationUsage';
 import './EditHoursModal.css';
 
@@ -22,6 +24,12 @@ export default function EditHoursModal({ team, onClose }: Props) {
     const { updateTeam, isPending, error, reset } = useUpdateTeam();
     const [hourCap, setHourCap] = useState<number | null>(team.hourCap);
     const canSave = hourCap !== team.hourCap;
+    const preview = canSave
+        ? {
+              percent: hourCap === null ? null : capPercent(team.usedMinutes, hourCap),
+              status: teamCapStatus(team.usedMinutes, hourCap, hourCapPayload(hourCap).notify_at_percent),
+          }
+        : { percent: team.capPercent, status: team.status };
 
     const changeHourCap = (value: number | null) => {
         setHourCap(value);
@@ -45,7 +53,8 @@ export default function EditHoursModal({ team, onClose }: Props) {
                                 title='Used so far'
                                 usedHours={team.usedHours}
                                 capHours={hourCap}
-                                capPercent={hourCap === null ? null : capPercent(team.usedMinutes, hourCap)}
+                                capPercent={preview.percent}
+                                status={preview.status}
                                 variant='panel'
                             />
                         </div>

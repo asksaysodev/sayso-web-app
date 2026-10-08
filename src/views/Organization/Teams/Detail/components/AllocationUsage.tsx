@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { ProgressBar } from '@/components/ds/ProgressBar';
+import type { TeamStatus } from '@/views/Organization/shared/types';
 import allocationTone from '../../utils/allocationTone';
 import './AllocationUsage.css';
 
@@ -8,11 +9,12 @@ interface Props {
     usedHours: number;
     capHours: number | null;
     capPercent: number | null;
+    status: TeamStatus;
     variant: 'card' | 'panel';
 }
 
-export default function AllocationUsage({ title, usedHours, capHours, capPercent, variant }: Props) {
-    const allocation = capPercent === null ? null : allocationTone(capPercent);
+export default function AllocationUsage({ title, usedHours, capHours, capPercent, status, variant }: Props) {
+    const allocation = allocationTone(status);
 
     return (
         <div className={clsx('allocation-usage', `allocation-usage--${variant}`)}>
