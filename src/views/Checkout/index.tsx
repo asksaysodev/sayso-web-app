@@ -18,7 +18,7 @@ export default function Checkout() {
         if (success === null) {
             navigate("/", { replace: true });
         } else if (success === true) {
-            navigate(isTeamAdmin ? "/settings?tab=company" : "/download", { replace: true });
+            navigate(isTeamAdmin ? "/organization" : "/download", { replace: true });
         }
     }, [success, isTeamAdmin, navigate]);
 

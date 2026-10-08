@@ -1,0 +1,13 @@
+.ds-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: var(--radius-full);
+    background-color: var(--primary-50);
+    color: var(--primary-500);
+    font-family: var(--font-ds);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    user-select: none;
+}
