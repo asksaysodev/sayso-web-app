@@ -15,6 +15,7 @@ import NotificationsSearchBar from './components/NotificactionsAdmin/Notificatio
 import NotificationsAdmin from './components/NotificactionsAdmin';
 import PartnersInvoicing from './components/PartnersInvoicing';
 import AddPartnerButton from './components/PartnersInvoicing/AddPartnerButton';
+import PlaybooksAdmin from './components/PlaybooksAdmin';
 
 export default function Admin() {
     const selectedTool = useAdminStore(state => state.selectedTool);
@@ -27,6 +28,7 @@ export default function Admin() {
             case 'subscription': return <SubscriptionAdmin />
             case 'notifications': return <NotificationsAdmin />
             case 'partners': return <PartnersInvoicing />
+            case 'playbooks': return <PlaybooksAdmin />
         }
     }, [selectedTool]);
 
