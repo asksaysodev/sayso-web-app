@@ -11,10 +11,6 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
             title: 'Profile',
             description: 'Fill in general info about yourself'
         },
-        [SettingsPanelEnum.COMPANY]: {
-            title: 'Organization',
-            description: 'Manage your organization and team information'
-        },
         [SettingsPanelEnum.FILES]: {
             title: 'Context Files',
             description: 'Upload files to give your coach more context about your company or product'

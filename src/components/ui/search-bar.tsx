@@ -18,26 +18,26 @@ export interface SearchFilterConfig<TFilter extends { key: string }> {
 interface Props<TFilter extends { key: string }> {
     searchText: string;
     onSearchTextChange: (text: string) => void;
-    activeFilters: TFilter[];
-    setActiveFilters: Dispatch<SetStateAction<TFilter[]>>;
-    availableFilters: SearchFilterConfig<TFilter>[];
-    filterPillRenderers: Partial<Record<TFilter['key'], (filter: TFilter, onUpdate: (filter: TFilter) => void, onRemove: () => void) => ReactNode>>;
+    activeFilters?: TFilter[];
+    setActiveFilters?: Dispatch<SetStateAction<TFilter[]>>;
+    availableFilters?: SearchFilterConfig<TFilter>[];
+    filterPillRenderers?: Partial<Record<TFilter['key'], (filter: TFilter, onUpdate: (filter: TFilter) => void, onRemove: () => void) => ReactNode>>;
     placeholder?: string;
 }
 
-export default function SearchBar<TFilter extends { key: string }>({
+export default function SearchBar<TFilter extends { key: string } = { key: string }>({
     searchText,
     onSearchTextChange,
     activeFilters = [],
     setActiveFilters,
-    availableFilters,
+    availableFilters = [],
     filterPillRenderers,
     placeholder = 'Search...',
 }: Props<TFilter>) {
     const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
     const availableFilterOptions = useMemo(
-        () => (availableFilters ?? []).filter(
+        () => availableFilters.filter(
             config => !activeFilters.some(af => af.key === config.key)
         ),
         [availableFilters, activeFilters]
@@ -46,20 +46,20 @@ export default function SearchBar<TFilter extends { key: string }>({
     const handleAddFilter = (key: string) => {
         const config = availableFilters.find(f => f.key === key);
         if (config) {
-            setActiveFilters(prev => [...prev, config.defaultValue()]);
+            setActiveFilters?.(prev => [...prev, config.defaultValue()]);
         }
         setIsFilterDropdownOpen(false);
         if (searchText !== '') onSearchTextChange('')
     };
 
     const handleUpdateFilter = (updatedFilter: TFilter) => {
-        setActiveFilters(prev =>
+        setActiveFilters?.(prev =>
             prev.map(f => f.key === updatedFilter.key ? updatedFilter : f)
         );
     };
 
     const handleRemoveFilter = (key: string) => {
-        setActiveFilters(prev => prev.filter(f => f.key !== key));
+        setActiveFilters?.(prev => prev.filter(f => f.key !== key));
     };
 
     const hasActiveFilters = activeFilters.length > 0;
@@ -86,7 +86,7 @@ export default function SearchBar<TFilter extends { key: string }>({
                             </InputGroupAddon>
 
                             {activeFilters.map(filter => {
-                                const renderer = filterPillRenderers[filter.key as TFilter['key']];
+                                const renderer = filterPillRenderers?.[filter.key as TFilter['key']];
                                 if (!renderer) return null;
                                 return (
                                     <span key={filter.key}>

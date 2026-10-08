@@ -58,19 +58,6 @@ export interface Account {
   status: AccountStatus;
   has_referral_discount?: boolean;
 }
-export interface OrgMemberInvite {
-    email: string;
-    expires_at: string;
-    id: string;
-    invited_by: string;
-    lastname: string;
-    name: string;
-    status: AccountStatus;
-}
-export interface OrganizationMembersResponse {
-    members: Account[]; 
-    invites: OrgMemberInvite[];
-}
 export interface AccountUsage {
   planMinutes: number;
   remainingMinutes: number;
@@ -115,19 +102,6 @@ export const USER_ROLES = ['owner', 'admin', 'user', 'superadmin'] as const;
 export type UserRole = typeof USER_ROLES[number];
 
 export const TEAM_ADMIN_ROLES: readonly UserRole[] = ['owner', 'admin', 'superadmin'];
-
-export interface TeamMember extends Account {
-  active?: boolean;
-}
-
-export interface Company {
-  id: string;
-  name: string;
-  company_name?: string;
-  team?: {
-    members: TeamMember[];
-  };
-}
 
 /** Body of POST /accounts/signup — the server creates the auth user AND the domain rows. */
 export interface SignupData {

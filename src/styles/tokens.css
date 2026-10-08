@@ -1,0 +1,90 @@
+/*
+ * Design tokens for the new UI, named 1:1 after the Figma variables (Sayso file).
+ * New components read these; legacy Colors.css (--sayso-*) stays for the old screens.
+ */
+:root {
+  /* Neutrals */
+  --white: #ffffff;
+  --neutral-100: #f6f6f6;
+  --neutral-200: #eaeaeb;
+  --neutral-400: #b5b5ba;
+  --neutral-500: #71717a;
+  --neutral-600: #62626a;
+  --neutral-800: #313135;
+  --neutral-950: #141415;
+
+  /* Primary */
+  --primary-50: #e2e8f5;
+  --primary-200: #afc7f1;
+  --primary-300: #86adf2;
+  --primary-500: #2367ee;
+  --text-brand: #054dd2;
+
+  /* Surface */
+  --surface-bg: #ffffff;
+  --surface-canvas: #fbfbfb;
+  --surface-subtle: #f6f6f6;
+  --surface-border: #eaeaeb;
+  --text-primary: #202022;
+  --text-secondary: #62626a;
+  --text-disabled: #b5b5ba;
+
+  /* Feedback */
+  --success-bg: #f0fdf4;
+  --success-text: #15803d;
+  --success-icon: #16a34a;
+  --error-bg: #fef2f2;
+  --error-text: #b91c1c;
+  --error-icon: #dc2626;
+  --warning-bg: #fff7ed;
+  --warning-text: #c2410c;
+  --warning-icon: #f97316;
+  --info-bg: #f5f3ff;
+  --info-text: #6d28d9;
+
+  /* Spacing */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-60: 60px;
+
+  /* Radius */
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-20: 20px;
+  --radius-full: 999px;
+
+  /* Elevation */
+  --shadow-card: 0 1px 4px 0 rgba(0, 0, 0, 0.05), 0 4px 24px 0 rgba(99, 120, 200, 0.1);
+  --shadow-menu: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 1px 1.5px 0 rgba(0, 0, 0, 0.08);
+  --shadow-tab: 0 3px 4px 0 rgba(0, 0, 0, 0.12), 0 1px 1.5px 0 rgba(0, 0, 0, 0.04);
+  --overlay-bg: rgba(74, 74, 79, 0.3);
+  --overlay-blur: 6px;
+
+  /* Typography — DM Sans is loaded in index.html */
+  --font-ds: 'DM Sans', Helvetica, Arial, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+
+  --text-h1-size: 32px;
+  --text-h1-line: 40px;
+  --text-h1-tracking: -0.32px;
+  --text-h3-size: 24px;
+  --text-h3-line: 28px;
+  --text-h3-tracking: -0.12px;
+  --text-h5-size: 18px;
+  --text-h5-line: 22px;
+  --text-body-lg-size: 16px;
+  --text-body-md-size: 14px;
+  --text-body-sm-size: 12px;
+  --text-caption-size: 11px;
+  --text-caption-line: 16px;
+  --text-caption-tracking: 0.11px;
+}
