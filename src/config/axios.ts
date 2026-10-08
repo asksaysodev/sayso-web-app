@@ -4,6 +4,13 @@ import { markSessionExpired } from '@/utils/sessionExpired';
 import { markSuspendedTabTimeout } from '@/utils/suspendedTabTimeout';
 import * as Sentry from "@sentry/react";
 
+declare module 'axios' {
+	interface AxiosRequestConfig {
+		/** Opts out of automatic retries, for non-idempotent requests such as uploads. */
+		skipRetry?: boolean;
+	}
+}
+
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 	_retryCount?: number;
 	_retry?: boolean;
@@ -182,6 +189,7 @@ apiClient.interceptors.response.use(
 		if (
 			isRetryableError &&
 			originalRequest &&
+			!originalRequest.skipRetry &&
 			originalRequest._retryCount !== undefined &&
 			originalRequest._retryCount < 3
 		) {
