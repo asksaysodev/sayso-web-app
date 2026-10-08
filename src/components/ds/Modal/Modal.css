@@ -65,6 +65,11 @@
     text-align: center;
 }
 
+.ds-modal__header--start {
+    align-items: flex-start;
+    text-align: left;
+}
+
 .ds-modal__icon {
     display: inline-flex;
     align-items: center;
@@ -78,6 +83,11 @@
 .ds-modal__icon--primary {
     background-color: var(--primary-50);
     color: var(--primary-500);
+}
+
+.ds-modal__icon--success {
+    background-color: var(--success-bg);
+    color: var(--success-icon);
 }
 
 .ds-modal__icon--danger {

@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { Dialog, DialogPortal } from '@/components/ui/dialog';
 import './Modal.css';
 
-export type ModalTone = 'danger' | 'primary';
+export type ModalTone = 'danger' | 'primary' | 'success';
 
 export const Modal = Dialog;
 
@@ -39,12 +39,13 @@ export interface ModalHeaderProps {
     tone?: ModalTone;
     title: ReactNode;
     description?: ReactNode;
+    align?: 'center' | 'start';
     className?: string;
 }
 
-export function ModalHeader({ icon, tone = 'primary', title, description, className }: ModalHeaderProps) {
+export function ModalHeader({ icon, tone = 'primary', title, description, align = 'center', className }: ModalHeaderProps) {
     return (
-        <div className={clsx('ds-modal__header', className)}>
+        <div className={clsx('ds-modal__header', align === 'start' && 'ds-modal__header--start', className)}>
             {icon && <span className={clsx('ds-modal__icon', `ds-modal__icon--${tone}`)}>{icon}</span>}
             <DialogPrimitive.Title className='ds-modal__title'>{title}</DialogPrimitive.Title>
             {description && (

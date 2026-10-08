@@ -20,6 +20,7 @@ const Subscription = lazyView(() => import('./views/Subscription'));
 const MFAVerify = lazyView(() => import('./views/MFAVerify'));
 const AcceptInvite = lazyView(() => import('./views/AcceptInvite'));
 const Organization = lazyView(() => import('./views/Organization'));
+const TeamDetail = lazyView(() => import('./views/Organization/Teams/Detail'));
 
 import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
@@ -84,6 +85,17 @@ export default function AppRoutes() {
                         <AuthGuard>
                             {isTeamAdmin
                                 ? <Layout><Organization /></Layout>
+                                : <Navigate to="/" replace />
+                            }
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/organization/teams/:teamId"
+                    element={
+                        <AuthGuard>
+                            {isTeamAdmin
+                                ? <Layout><TeamDetail /></Layout>
                                 : <Navigate to="/" replace />
                             }
                         </AuthGuard>

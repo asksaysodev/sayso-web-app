@@ -3,10 +3,11 @@ import { Badge } from '@/components/ds/Badge';
 import { TableCell, TableRow } from '@/components/ds/Table';
 import { getInitials } from '@/utils/helpers/getInitials';
 import type { CompanyMemberRow, MemberRowAction } from '../types';
-import displayName from '../utils/displayName';
-import roleLabel from '../utils/roleLabel';
+import displayName from '@/views/Organization/shared/utils/displayName';
+import roleLabel from '@/views/Organization/shared/utils/roleLabel';
 import statusBadge from '../utils/statusBadge';
-import MemberRowMenu from './MemberRowMenu';
+import { ROW_ACTION_CONFIG } from '../utils/rowActionConfig';
+import MemberRowMenu from '@/views/Organization/shared/components/MemberRowMenu';
 
 interface Props {
     row: CompanyMemberRow;
@@ -35,7 +36,12 @@ export default function CompanyMembersTableRow({ row, actions, onAction }: Props
             </TableCell>
             <TableCell className='company-members-table__actions'>
                 {actions.length > 0 && (
-                    <MemberRowMenu actions={actions} memberLabel={name} onAction={(action) => onAction(action, row)} />
+                    <MemberRowMenu
+                        actions={actions}
+                        config={ROW_ACTION_CONFIG}
+                        memberLabel={name}
+                        onAction={(action) => onAction(action, row)}
+                    />
                 )}
             </TableCell>
         </TableRow>

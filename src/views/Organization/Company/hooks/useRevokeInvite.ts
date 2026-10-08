@@ -3,7 +3,7 @@ import { useToast } from '@/context/ToastContext';
 import reportApiError from '@/utils/reportApiError';
 import getApiErrorMessage from '@/utils/getApiErrorMessage';
 import revokeInvite from '../services/revokeInvite';
-import { COMPANY_MEMBERS_QUERY_KEY } from './queryKeys';
+import { COMPANY_MEMBERS_QUERY_KEY } from '@/views/Organization/shared/hooks/queryKeys';
 
 export default function useRevokeInvite() {
     const queryClient = useQueryClient();

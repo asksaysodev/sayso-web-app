@@ -1,0 +1,54 @@
+.teams-table {
+    table-layout: fixed;
+}
+
+.teams-table th:nth-child(1),
+.teams-table th:nth-child(2) {
+    width: 30%;
+}
+
+.teams-table th:nth-child(3),
+.teams-table th:nth-child(4) {
+    width: 17%;
+}
+
+.teams-table th:nth-child(5) {
+    width: 56px;
+}
+
+.teams-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.teams-table__row {
+    cursor: pointer;
+}
+
+.teams-table__name {
+    font-size: var(--text-body-lg-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.teams-table__name:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-8);
+}
+
+.teams-table__muted {
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}
+
+.teams-table__chevron {
+    text-align: right;
+    color: var(--neutral-600);
+}
+
+.teams-table__chevron svg {
+    vertical-align: middle;
+}

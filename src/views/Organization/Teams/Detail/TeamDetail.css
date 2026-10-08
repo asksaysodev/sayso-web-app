@@ -1,0 +1,19 @@
+.team-detail__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: calc(var(--space-8) * -1);
+    font-size: var(--text-body-md-size);
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.team-detail__back:hover {
+    color: var(--text-primary);
+}
+
+.team-detail__back:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-8);
+}

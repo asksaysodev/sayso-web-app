@@ -6,8 +6,8 @@ import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/comp
 import { SelectField, type SelectFieldOption } from '@/components/ds/SelectField';
 import { useAuth } from '@/context/AuthContext';
 import useInviteMembers from '../hooks/useInviteMembers';
-import useTeams from '../hooks/useTeams';
-import ModalError from './ModalError';
+import useTeams from '@/views/Organization/shared/hooks/useTeams';
+import ModalError from '@/views/Organization/shared/components/ModalError';
 import SkippedInvitesList from './SkippedInvitesList';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

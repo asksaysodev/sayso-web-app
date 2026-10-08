@@ -3,7 +3,7 @@ import { Building2, UsersRound } from 'lucide-react';
 import { PageHeader } from '@/components/ds/PageHeader';
 import { SegmentedControl, type SegmentedControlItem } from '@/components/ds/SegmentedControl';
 import CompanyMembersCard from './Company/components/CompanyMembersCard';
-import TeamsComingSoon from './components/TeamsComingSoon';
+import TeamsCard from './Teams/components/TeamsCard';
 import type { OrganizationTab } from './types';
 import './Organization.css';
 
@@ -45,7 +45,7 @@ export default function Organization() {
                 value={activeTab}
                 onChange={handleTabChange}
             />
-            {activeTab === 'company' ? <CompanyMembersCard /> : <TeamsComingSoon />}
+            {activeTab === 'company' ? <CompanyMembersCard /> : <TeamsCard />}
         </main>
     );
 }

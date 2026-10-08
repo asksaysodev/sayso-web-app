@@ -1,0 +1,50 @@
+.allocated-hours-card {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+}
+
+.allocated-hours-card__main {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-16);
+    flex: 1;
+    min-width: 0;
+}
+
+.allocated-hours-card__main > .allocation-usage {
+    flex: 1;
+}
+
+.allocated-hours-card__tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-8);
+}
+
+.allocated-hours-card__tile--primary {
+    background-color: var(--primary-50);
+    color: var(--primary-500);
+}
+
+.allocated-hours-card__tile--warning {
+    background-color: var(--warning-bg);
+    color: var(--warning-icon);
+}
+
+.allocated-hours-card__tile--error {
+    background-color: var(--error-bg);
+    color: var(--error-icon);
+}
+
+@media (max-width: 767px) {
+    .allocated-hours-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-16);
+    }
+}

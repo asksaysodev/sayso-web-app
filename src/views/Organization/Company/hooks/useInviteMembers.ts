@@ -5,7 +5,7 @@ import reportApiError from '@/utils/reportApiError';
 import getApiErrorMessage from '@/utils/getApiErrorMessage';
 import sendTeamInvite from '../services/sendTeamInvite';
 import type { SkippedInvite } from '../types';
-import { COMPANY_MEMBERS_QUERY_KEY } from './queryKeys';
+import { COMPANY_MEMBERS_QUERY_KEY } from '@/views/Organization/shared/hooks/queryKeys';
 
 export interface InviteMembersInput {
     emails: string[];

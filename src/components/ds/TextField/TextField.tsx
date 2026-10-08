@@ -17,7 +17,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
     const generatedId = useId();
     const inputId = id ?? generatedId;
     const messageId = `${inputId}-message`;
-    const hasMessage = Boolean(error || helperText);
+    const hasMessage = !!(error || helperText);
 
     return (
         <div className={clsx('ds-field-group', className)}>
@@ -27,7 +27,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
                 leadingIcon={leadingIcon}
                 trailingIcon={trailingIcon}
                 disabled={disabled}
-                invalid={Boolean(error)}
+                invalid={!!error}
             >
                 <input
                     ref={ref}
