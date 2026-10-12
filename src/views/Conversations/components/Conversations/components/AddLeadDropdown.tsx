@@ -7,25 +7,13 @@ import useCrmLeads from '@/hooks/integrations/crm/useCrmLeads';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
 import CreateLeadModal from './CreateLeadModal';
 import CreateSureSendLeadModal from './CreateSureSendLeadModal';
+import LeadSkeleton from './LeadSkeleton';
 import '../styles/AddLeadDropdown.css';
 
 interface Props {
     trigger: React.ReactNode;
     currentLeadName?: string | null;
     onSelect: (lead: CrmLead | null) => void;
-}
-
-function LeadSkeleton() {
-    return (
-        <>
-            {[...Array(4)].map((_, i) => (
-                <div key={i} className="add-lead-skeleton-row">
-                    <div className="add-lead-skeleton-name" />
-                    <div className="add-lead-skeleton-sub" />
-                </div>
-            ))}
-        </>
-    );
 }
 
 export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: Props) {

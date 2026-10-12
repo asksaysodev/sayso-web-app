@@ -2,7 +2,7 @@
  * Coach session type definitions (conversations list and its nested relations).
  */
 
-import { InsightRating } from "@/views/Dashboard/types";
+import { InsightRating } from "@/views/Conversations/types";
 
 export type LeadType = 'buyer' | 'seller';
 

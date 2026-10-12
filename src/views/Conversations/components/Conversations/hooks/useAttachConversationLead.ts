@@ -9,7 +9,7 @@ const CONVERSATIONS_KEY = ['dashboard-conversations'];
 
 interface AttachLeadParams {
     conversationId: string;
-    lead: CrmLead | null; // null = unassign
+    lead: CrmLead | null;
 }
 
 export default function useAttachConversationLead() {

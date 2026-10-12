@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import * as Sentry from '@sentry/react';
 import {
@@ -32,6 +32,7 @@ interface FormValues {
     email: string;
 }
 
+const DEFAULT_VALUES: FormValues = { firstName: '', lastName: '', phone: '', email: '' };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
@@ -40,20 +41,13 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
     const [submitError, setSubmitError] = useState<string | null>(null);
 
     const { register, handleSubmit, reset, control, formState: { errors } } = useForm<FormValues>({
-        defaultValues: { firstName: '', lastName: '', phone: '', email: '' },
+        defaultValues: DEFAULT_VALUES,
     });
-
-    /* eslint-disable react-hooks/set-state-in-effect -- clears the form when the dialog closes */
-    useEffect(() => {
-        if (!open) {
-            reset();
-            setSubmitError(null);
-        }
-    }, [open, reset]);
-    /* eslint-enable react-hooks/set-state-in-effect */
 
     const handleClose = () => {
         if (isPending) return;
+        reset(DEFAULT_VALUES);
+        setSubmitError(null);
         onClose();
     };
 
@@ -81,7 +75,7 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
 
     return (
         <Dialog open={open} onOpenChange={isOpen => !isOpen && handleClose()}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="create-lead-modal">
                 <DialogHeader>
                     <DialogTitle>Create Lead</DialogTitle>
                     <DialogDescription>
@@ -90,9 +84,9 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="flex flex-col gap-4 py-2">
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="flex flex-col gap-1.5">
+                    <div className="create-lead-modal__fields">
+                        <div className="create-lead-modal__name-row">
+                            <div className="create-lead-modal__field">
                                 <Label htmlFor="cl-firstName">First name *</Label>
                                 <Input
                                     id="cl-firstName"
@@ -101,10 +95,10 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                                     {...register('firstName', { required: 'First name is required.' })}
                                 />
                                 {errors.firstName && (
-                                    <p className="text-xs text-destructive">{errors.firstName.message}</p>
+                                    <p className="create-lead-modal__error">{errors.firstName.message}</p>
                                 )}
                             </div>
-                            <div className="flex flex-col gap-1.5">
+                            <div className="create-lead-modal__field">
                                 <Label htmlFor="cl-lastName">Last name *</Label>
                                 <Input
                                     id="cl-lastName"
@@ -113,12 +107,12 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                                     {...register('lastName', { required: 'Last name is required.' })}
                                 />
                                 {errors.lastName && (
-                                    <p className="text-xs text-destructive">{errors.lastName.message}</p>
+                                    <p className="create-lead-modal__error">{errors.lastName.message}</p>
                                 )}
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-1.5">
+                        <div className="create-lead-modal__field">
                             <Label htmlFor="cl-phone">Phone *</Label>
                             <Controller
                                 name="phone"
@@ -140,11 +134,11 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                                 )}
                             />
                             {errors.phone && (
-                                <p className="text-xs text-destructive">{errors.phone.message}</p>
+                                <p className="create-lead-modal__error">{errors.phone.message}</p>
                             )}
                         </div>
 
-                        <div className="flex flex-col gap-1.5">
+                        <div className="create-lead-modal__field">
                             <Label htmlFor="cl-email">Email</Label>
                             <Input
                                 id="cl-email"
@@ -156,13 +150,13 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                                 })}
                             />
                             {errors.email && (
-                                <p className="text-xs text-destructive">{errors.email.message}</p>
+                                <p className="create-lead-modal__error">{errors.email.message}</p>
                             )}
                         </div>
                     </div>
 
                     {submitError && (
-                        <p className="text-xs text-destructive mt-2" role="alert">{submitError}</p>
+                        <p className="create-lead-modal__error create-lead-modal__error--submit" role="alert">{submitError}</p>
                     )}
 
                     <DialogFooter className="create-lead-modal-footer-wrapper">

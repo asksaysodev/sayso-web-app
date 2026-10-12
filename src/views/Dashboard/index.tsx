@@ -1,33 +1,25 @@
-import { useState } from "react";
-import ViewLayout from "@/components/layouts/ViewLayout";
-import "./styles.css";
-import InformativeCardsContainer from "./components/InformativeCardsContainer";
-import ViewLayoutRefreshButton from "@/components/layouts/components/ViewLayoutRefreshButton";
-import useRefreshDashboardData from "./hooks/useRefreshDashboardData";
-import useIsTeamAdmin from "@/hooks/useIsTeamAdmin";
-import Conversations from "./components/Conversations";
-import DashboardFilters from "./components/Filters/DashboardFilters";
-import FiltersButton from "./components/Filters/FiltersButton";
+import { useState } from 'react';
+import useIsTeamAdmin from '@/hooks/useIsTeamAdmin';
+import DashboardHeader from './components/DashboardHeader';
+import DashboardFilters from './components/Filters/DashboardFilters';
+import CoachTipsWidget from './components/Tips/CoachTipsWidget';
+import ActivityWidget from './components/Activity/ActivityWidget';
+import OverviewWidget from './components/Overview/OverviewWidget';
+import './Dashboard.css';
 
 export default function Dashboard() {
-    const { refreshDashboardData } = useRefreshDashboardData();
     const isAdmin = useIsTeamAdmin();
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
     return (
-        <ViewLayout
-            title='My Dashboard'
-            scrollable
-            right={
-                <>
-                    <ViewLayoutRefreshButton onClick={refreshDashboardData}/>
-                    {isAdmin && <FiltersButton onClick={() => setIsFiltersOpen(true)}/>}
-                </>
-            }
-        >
-            {isAdmin && <DashboardFilters open={isFiltersOpen} onOpenChange={setIsFiltersOpen}/>}
-            <InformativeCardsContainer />
-            <Conversations />
-        </ViewLayout>
-    )
+        <main className='dashboard-page'>
+            <DashboardHeader isAdmin={isAdmin} onOpenFilters={() => setIsFiltersOpen(true)} />
+            {isAdmin && <DashboardFilters open={isFiltersOpen} onOpenChange={setIsFiltersOpen} />}
+            <div className='dashboard-grid'>
+                <CoachTipsWidget />
+                <ActivityWidget />
+                <OverviewWidget />
+            </div>
+        </main>
+    );
 }

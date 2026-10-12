@@ -1,8 +1,10 @@
+const SKELETON_ROWS = ['conversation-1', 'conversation-2', 'conversation-3', 'conversation-4'];
+
 export default function ConversationsListSkeleton() {
     return (
         <>
-            {[...Array(4)].map((_, i) => (
-                <div key={i} className="conv-skeleton-item">
+            {SKELETON_ROWS.map((row) => (
+                <div key={row} className="conv-skeleton-item">
                     <div className="conv-skeleton-time" />
                     <div className="conv-skeleton-main">
                         <div className="conv-skeleton-summary" />

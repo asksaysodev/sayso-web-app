@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import * as Sentry from '@sentry/react';
 import {
@@ -22,14 +22,9 @@ import {
 import SaysoButton from '@/components/SaysoButton';
 import { useToast } from '@/context/ToastContext';
 import useCrmCreateLead from '@/hooks/integrations/crm/useCrmCreateLead';
-import apiClient from '@/config/axios';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
-
-interface SureSendStage {
-    id: string;
-    name: string;
-    active: boolean;
-}
+import useSureSendStages from '../hooks/useSureSendStages';
+import '../styles/CreateLeadModal.css';
 
 interface Props {
     open: boolean;
@@ -45,43 +40,23 @@ interface FormValues {
     stage: string;
 }
 
+const DEFAULT_VALUES: FormValues = { firstName: '', lastName: '', phone: '', email: '', stage: '' };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Props) {
     const { showToast } = useToast();
     const { createLead, isPending } = useCrmCreateLead();
     const [submitError, setSubmitError] = useState<string | null>(null);
-    const [stages, setStages] = useState<SureSendStage[]>([]);
-    const [stagesLoading, setStagesLoading] = useState(false);
-    const [stagesError, setStagesError] = useState(false);
+    const { stages, isLoading: stagesLoading, isError: stagesError } = useSureSendStages(open);
 
     const { register, control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
-        defaultValues: { firstName: '', lastName: '', phone: '', email: '', stage: '' },
+        defaultValues: DEFAULT_VALUES,
     });
-
-    /* eslint-disable react-hooks/set-state-in-effect -- clears the form on close, then loads SureSend stages on open */
-    useEffect(() => {
-        if (!open) {
-            reset();
-            setSubmitError(null);
-            setStagesError(false);
-            return;
-        }
-        setStagesLoading(true);
-        setStagesError(false);
-        apiClient.get<{ stages: SureSendStage[] }>('/suresend/stages')
-            .then(res => setStages(res.data?.stages ?? []))
-            .catch(err => {
-                Sentry.captureException(err);
-                setStages([]);
-                setStagesError(true);
-            })
-            .finally(() => setStagesLoading(false));
-    }, [open, reset]);
-    /* eslint-enable react-hooks/set-state-in-effect */
 
     const handleClose = () => {
         if (isPending) return;
+        reset(DEFAULT_VALUES);
+        setSubmitError(null);
         onClose();
     };
 
@@ -106,7 +81,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
 
     return (
         <Dialog open={open} onOpenChange={isOpen => !isOpen && handleClose()}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="create-lead-modal">
                 <DialogHeader>
                     <DialogTitle>Create Sure Send Lead</DialogTitle>
                     <DialogDescription>
@@ -115,9 +90,9 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="flex flex-col gap-4 py-2">
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="flex flex-col gap-1.5">
+                    <div className="create-lead-modal__fields">
+                        <div className="create-lead-modal__name-row">
+                            <div className="create-lead-modal__field">
                                 <Label htmlFor="ss-firstName">First name *</Label>
                                 <Input
                                     id="ss-firstName"
@@ -126,10 +101,10 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
                                     {...register('firstName', { required: 'First name is required.' })}
                                 />
                                 {errors.firstName && (
-                                    <p className="text-xs text-destructive">{errors.firstName.message}</p>
+                                    <p className="create-lead-modal__error">{errors.firstName.message}</p>
                                 )}
                             </div>
-                            <div className="flex flex-col gap-1.5">
+                            <div className="create-lead-modal__field">
                                 <Label htmlFor="ss-lastName">Last name *</Label>
                                 <Input
                                     id="ss-lastName"
@@ -138,12 +113,12 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
                                     {...register('lastName', { required: 'Last name is required.' })}
                                 />
                                 {errors.lastName && (
-                                    <p className="text-xs text-destructive">{errors.lastName.message}</p>
+                                    <p className="create-lead-modal__error">{errors.lastName.message}</p>
                                 )}
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-1.5">
+                        <div className="create-lead-modal__field">
                             <Label htmlFor="ss-phone">Phone *</Label>
                             <Controller
                                 name="phone"
@@ -165,11 +140,11 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
                                 )}
                             />
                             {errors.phone && (
-                                <p className="text-xs text-destructive">{errors.phone.message}</p>
+                                <p className="create-lead-modal__error">{errors.phone.message}</p>
                             )}
                         </div>
 
-                        <div className="flex flex-col gap-1.5">
+                        <div className="create-lead-modal__field">
                             <Label htmlFor="ss-email">Email *</Label>
                             <Input
                                 id="ss-email"
@@ -182,11 +157,11 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
                                 })}
                             />
                             {errors.email && (
-                                <p className="text-xs text-destructive">{errors.email.message}</p>
+                                <p className="create-lead-modal__error">{errors.email.message}</p>
                             )}
                         </div>
 
-                        <div className="flex flex-col gap-1.5">
+                        <div className="create-lead-modal__field">
                             <Label htmlFor="ss-stage">Stage *</Label>
                             <Controller
                                 name="stage"
@@ -214,32 +189,30 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Pr
                                             side="bottom"
                                             avoidCollisions={false}
                                         >
-                                            {stages
-                                                .filter(s => s.active)
-                                                .map(({ id, name }) => (
-                                                    <SelectItem key={id} value={name}>
-                                                        {name}
-                                                    </SelectItem>
+                                            {stages.map(({ id, name }) => (
+                                                <SelectItem key={id} value={name}>
+                                                    {name}
+                                                </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
                                 )}
                             />
                             {stagesError ? (
-                                <p className="text-xs text-destructive">
+                                <p className="create-lead-modal__error">
                                     Couldn’t load stages. Close and reopen to try again.
                                 </p>
                             ) : errors.stage && (
-                                <p className="text-xs text-destructive">{errors.stage.message}</p>
+                                <p className="create-lead-modal__error">{errors.stage.message}</p>
                             )}
                         </div>
                     </div>
 
                     {submitError && (
-                        <p className="text-xs text-destructive mt-2" role="alert">{submitError}</p>
+                        <p className="create-lead-modal__error create-lead-modal__error--submit" role="alert">{submitError}</p>
                     )}
 
-                    <DialogFooter className="mt-2">
+                    <DialogFooter className="create-lead-modal__footer">
                         <SaysoButton
                             type="button"
                             label="Cancel"

@@ -590,3 +590,7 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+.conv-signals-tooltip-arrow {
+    fill: hsl(var(--primary));
+}

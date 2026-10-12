@@ -3,6 +3,7 @@ interface Props {
 }
 
 function getInitials(name: string): string {
+    if (!name || typeof name !== 'string') return "";
     return name
         .split(' ')
         .filter(Boolean)

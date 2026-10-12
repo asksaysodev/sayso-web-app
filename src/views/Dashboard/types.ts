@@ -1,5 +1,4 @@
 export type WeeklyActivityDirection = 'prev' | 'next';
-export type InsightRating = null | 'up' | 'down';
 
 export interface ConversationTimeProps {
     totalMinutes: number;
@@ -27,3 +26,12 @@ export interface FilterOptionList {
     isRetrying: boolean;
     retry: () => void;
 }
+
+/** Query params every `/dashboard/*` request carries. Empty for members. */
+export interface DashboardRequestParams {
+    scope?: 'company' | DashboardSelectionScope;
+    scopeId?: string;
+}
+
+/** Background/icon color pair for a widget's icon tile or state circle. */
+export type WidgetTone = 'primary' | 'info';
