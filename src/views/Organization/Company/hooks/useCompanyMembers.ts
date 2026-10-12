@@ -4,10 +4,15 @@ import reportApiError from '@/utils/reportApiError';
 import getCompanyMembers from '../services/getCompanyMembers';
 import { COMPANY_MEMBERS_QUERY_KEY } from '@/views/Organization/shared/hooks/queryKeys';
 
-export default function useCompanyMembers() {
+/**
+ * Every member and open invite in the company.
+ * @param enabled - Pass `false` to skip the fetch until it's needed.
+ */
+export default function useCompanyMembers(enabled = true) {
     const { data, isLoading, isError, error, isFetching, refetch } = useQuery({
         queryKey: COMPANY_MEMBERS_QUERY_KEY,
         queryFn: getCompanyMembers,
+        enabled,
     });
 
     useEffect(() => {
