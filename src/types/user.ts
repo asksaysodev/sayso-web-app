@@ -66,23 +66,6 @@ export interface AccountUsage {
   periodEnd: string | null;
 }
 
-export interface WeeklyActivity {
-  totalMinutes: number;
-  hasNextWeek: boolean;
-  hasPreviousWeek: boolean;
-  dailyActivity: DailyActivity[];
-}
-
-export interface DailyActivity {
-  date: {
-    date: string;
-    dayShort: string;
-  };
-  activity: {
-    minutes: number;
-  } | null;
-}
-
 export type SubscriptionStatus =
   | 'active'
   | 'canceled'

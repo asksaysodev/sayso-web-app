@@ -1,5 +1,3 @@
-export type WeeklyActivityDirection = 'prev' | 'next';
-
 export type DashboardSelectionScope = 'team' | 'account';
 
 /** A team or a member picked in the Filters panel. `null` everywhere means company level. */
@@ -52,4 +50,30 @@ export interface DashboardOverview {
     appointmentsBooked: number;
     previousAppointmentsBooked: number;
     appointmentsDelta: number;
+}
+
+export interface DashboardDailyActivity {
+    date: {
+        date: string;
+        dayLong: string;
+        dayShort: string;
+    };
+    activity: {
+        minutes: number;
+        sessions: number;
+        features: string[];
+        bookedAppointments: number;
+    } | null;
+}
+
+export interface DashboardActivity {
+    scope: DashboardResponseScope;
+    scopeId: string;
+    weekOffset: number;
+    startDate: string;
+    endDate: string;
+    hasPreviousWeek: boolean;
+    hasNextWeek: boolean;
+    totalMinutes: number;
+    dailyActivity: DashboardDailyActivity[];
 }
