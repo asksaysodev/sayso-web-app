@@ -96,3 +96,8 @@
     font-size: var(--text-body-md-size);
     color: var(--text-secondary);
 }
+
+.dashboard-widget__icon--error {
+    background-color: var(--error-bg);
+    color: var(--error-icon);
+}

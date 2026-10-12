@@ -1,11 +1,5 @@
 export type WeeklyActivityDirection = 'prev' | 'next';
 
-export interface ConversationTimeProps {
-    totalMinutes: number;
-    isRefetching: boolean;
-    isLoading: boolean;
-}
-
 export type DashboardSelectionScope = 'team' | 'account';
 
 /** A team or a member picked in the Filters panel. `null` everywhere means company level. */
@@ -34,4 +28,28 @@ export interface DashboardRequestParams {
 }
 
 /** Background/icon color pair for a widget's icon tile or state circle. */
-export type WidgetTone = 'primary' | 'info';
+export type WidgetTone = 'primary' | 'info' | 'error';
+
+/** The level a `/dashboard/*` response was resolved at. A member's own view comes back as `account`. */
+export type DashboardResponseScope = 'company' | DashboardSelectionScope;
+
+export type OverviewPeriod = 'last_7_days' | 'last_14_days' | 'last_30_days' | 'last_3_months' | 'last_6_months';
+
+export interface OverviewPeriodOption {
+    value: OverviewPeriod;
+    label: string;
+    /** Completes "vs. previous …" on the appointments delta badge. */
+    comparison: string;
+}
+
+export interface DashboardOverview {
+    scope: DashboardResponseScope;
+    scopeId: string;
+    period: OverviewPeriod;
+    startDate: string;
+    endDate: string;
+    totalMinutes: number;
+    appointmentsBooked: number;
+    previousAppointmentsBooked: number;
+    appointmentsDelta: number;
+}
