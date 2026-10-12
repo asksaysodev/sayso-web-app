@@ -49,3 +49,9 @@ export interface StatusFilter {
     key: 'status';
     value: CompanyMemberStatus;
 }
+
+/** Shape of `GET /company` and `PATCH /company`. */
+export interface Company {
+    id: string;
+    company_name: string;
+}
