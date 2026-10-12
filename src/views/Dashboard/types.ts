@@ -77,3 +77,21 @@ export interface DashboardActivity {
     totalMinutes: number;
     dailyActivity: DashboardDailyActivity[];
 }
+
+export interface CoachTipBlock {
+    type: 'paragraph';
+    text: string;
+}
+
+export interface CoachTip {
+    title: string;
+    body: CoachTipBlock[];
+}
+
+export interface DashboardTips {
+    tips: CoachTip[];
+    /** `false` when the scope got the default tips instead of generated ones. */
+    custom: boolean;
+    scope: DashboardResponseScope;
+    scopeId: string;
+}

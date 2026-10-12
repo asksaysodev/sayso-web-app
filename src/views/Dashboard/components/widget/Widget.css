@@ -101,3 +101,7 @@
     background-color: var(--error-bg);
     color: var(--error-icon);
 }
+
+.dashboard-widget-state__action {
+    margin-top: var(--space-16);
+}
