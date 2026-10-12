@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { BookUser } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/components/ds/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Modal';
 import { NumberField } from '@/components/ds/NumberField';
 import { TextField } from '@/components/ds/TextField';
 import useCompanyMembers from '@/views/Organization/Company/hooks/useCompanyMembers';
@@ -38,70 +38,68 @@ export default function AddTeamModal({ onClose }: Props) {
     };
 
     return (
-        <Modal open onOpenChange={(open) => !open && !isPending && onClose()}>
-            <ModalContent hideClose={isPending}>
-                {created ? (
-                    <TeamCreated created={created} onClose={onClose} />
-                ) : (
-                    <form className='add-team-modal__form' onSubmit={handleSubmit}>
-                        <ModalHeader
-                            icon={<BookUser size={24} />}
-                            title='Add team'
-                            description='Create a new team, add its members, and their allocated hours.'
+        <Modal open onOpenChange={(open) => !open && !isPending && onClose()} hideClose={isPending}>
+            {created ? (
+                <TeamCreated created={created} onClose={onClose} />
+            ) : (
+                <form className='add-team-modal__form' onSubmit={handleSubmit}>
+                    <ModalHeader
+                        icon={<BookUser size={24} />}
+                        title='Add team'
+                        description='Create a new team, add its members, and their allocated hours.'
+                    />
+                    <ModalBody>
+                        <TextField
+                            label={
+                                <>
+                                    Team name<span className='add-team-modal__required'>*</span>
+                                </>
+                            }
+                            value={name}
+                            onChange={(event) => {
+                                setName(event.target.value);
+                                clearError();
+                            }}
+                            maxLength={TEAM_NAME_MAX_LENGTH}
+                            disabled={isPending}
+                            error={error?.field === 'name' ? error.message : undefined}
+                            autoFocus
                         />
-                        <ModalBody>
-                            <TextField
-                                label={
-                                    <>
-                                        Team name<span className='add-team-modal__required'>*</span>
-                                    </>
-                                }
-                                value={name}
-                                onChange={(event) => {
-                                    setName(event.target.value);
-                                    clearError();
-                                }}
-                                maxLength={TEAM_NAME_MAX_LENGTH}
-                                disabled={isPending}
-                                error={error?.field === 'name' ? error.message : undefined}
-                                autoFocus
-                            />
-                            <MemberPicker
-                                label='Add members'
-                                members={accounts}
-                                value={selectableIds}
-                                onChange={(ids) => {
-                                    setAccountIds(ids);
-                                    clearError();
-                                }}
-                                isLoading={membersLoading}
-                                isError={membersError}
-                                disabled={isPending}
-                            />
-                            <NumberField
-                                label='Set allocated hours'
-                                value={hourCap}
-                                onChange={(value) => {
-                                    setHourCap(value);
-                                    clearError();
-                                }}
-                                min={1}
-                                max={HOUR_CAP_MAX}
-                                disabled={isPending}
-                            />
-                            <ModalError message={error?.field === 'form' ? error.message : null} />
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button variant='secondary' onClick={onClose} disabled={isPending}>
-                                Cancel
-                            </Button>
-                            <Button type='submit' disabled={!trimmedName} loading={isPending}>
-                                Save
-                            </Button>
-                        </ModalFooter>
-                    </form>
-                )}
-            </ModalContent>
+                        <MemberPicker
+                            label='Add members'
+                            members={accounts}
+                            value={selectableIds}
+                            onChange={(ids) => {
+                                setAccountIds(ids);
+                                clearError();
+                            }}
+                            isLoading={membersLoading}
+                            isError={membersError}
+                            disabled={isPending}
+                        />
+                        <NumberField
+                            label='Set allocated hours'
+                            value={hourCap}
+                            onChange={(value) => {
+                                setHourCap(value);
+                                clearError();
+                            }}
+                            min={1}
+                            max={HOUR_CAP_MAX}
+                            disabled={isPending}
+                        />
+                        <ModalError message={error?.field === 'form' ? error.message : null} />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button variant='secondary' onClick={onClose} disabled={isPending}>
+                            Cancel
+                        </Button>
+                        <Button type='submit' disabled={!trimmedName} loading={isPending}>
+                            Save
+                        </Button>
+                    </ModalFooter>
+                </form>
+            )}
         </Modal>
     );
 }

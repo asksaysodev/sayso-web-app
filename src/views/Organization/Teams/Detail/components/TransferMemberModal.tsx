@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { ArrowLeftRight } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/components/ds/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Modal';
 import { SelectField, type SelectFieldOption } from '@/components/ds/SelectField';
 import useTeams from '@/views/Organization/shared/hooks/useTeams';
 import ModalError from '@/views/Organization/shared/components/ModalError';
@@ -39,52 +39,50 @@ export default function TransferMemberModal({ teamId, teamName, member, onClose 
     };
 
     return (
-        <Modal open onOpenChange={(open) => !open && !isPending && onClose()}>
-            <ModalContent hideClose={isPending}>
-                <form className='transfer-member-modal__form' onSubmit={handleSubmit}>
-                    <ModalHeader
-                        icon={<ArrowLeftRight size={24} />}
-                        title='Transfer member'
-                        description='Select which team you want to transfer the selected member to'
-                    />
-                    <ModalBody className='transfer-member-modal__body'>
-                        <SelectedMember member={member} />
-                        <div className='transfer-member-modal__teams'>
-                            <SelectField
-                                className='transfer-member-modal__team'
-                                label='From'
-                                options={[{ value: teamId, label: teamName }]}
-                                value={teamId}
-                                onChange={() => {}}
-                                disabled
-                            />
-                            <ArrowLeftRight className='transfer-member-modal__arrow' size={16} aria-hidden />
-                            <SelectField
-                                className='transfer-member-modal__team'
-                                label='To'
-                                options={toOptions}
-                                value={toTeamId}
-                                onChange={(value) => {
-                                    setToTeamId(value);
-                                    if (errorMessage) reset();
-                                }}
-                                placeholder={isLoading ? 'Loading teams…' : 'Select a team'}
-                                helperText={hasNoOtherTeams ? 'No other teams yet' : undefined}
-                                disabled={isPending || isLoading || hasNoOtherTeams}
-                            />
-                        </div>
-                        <ModalError message={errorMessage} />
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button variant='secondary' onClick={onClose} disabled={isPending}>
-                            Cancel
-                        </Button>
-                        <Button type='submit' disabled={toTeamId === undefined} loading={isPending}>
-                            Save
-                        </Button>
-                    </ModalFooter>
-                </form>
-            </ModalContent>
+        <Modal open onOpenChange={(open) => !open && !isPending && onClose()} hideClose={isPending}>
+            <form className='transfer-member-modal__form' onSubmit={handleSubmit}>
+                <ModalHeader
+                    icon={<ArrowLeftRight size={24} />}
+                    title='Transfer member'
+                    description='Select which team you want to transfer the selected member to'
+                />
+                <ModalBody className='transfer-member-modal__body'>
+                    <SelectedMember member={member} />
+                    <div className='transfer-member-modal__teams'>
+                        <SelectField
+                            className='transfer-member-modal__team'
+                            label='From'
+                            options={[{ value: teamId, label: teamName }]}
+                            value={teamId}
+                            onChange={() => {}}
+                            disabled
+                        />
+                        <ArrowLeftRight className='transfer-member-modal__arrow' size={16} aria-hidden />
+                        <SelectField
+                            className='transfer-member-modal__team'
+                            label='To'
+                            options={toOptions}
+                            value={toTeamId}
+                            onChange={(value) => {
+                                setToTeamId(value);
+                                if (errorMessage) reset();
+                            }}
+                            placeholder={isLoading ? 'Loading teams…' : 'Select a team'}
+                            helperText={hasNoOtherTeams ? 'No other teams yet' : undefined}
+                            disabled={isPending || isLoading || hasNoOtherTeams}
+                        />
+                    </div>
+                    <ModalError message={errorMessage} />
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant='secondary' onClick={onClose} disabled={isPending}>
+                        Cancel
+                    </Button>
+                    <Button type='submit' disabled={toTeamId === undefined} loading={isPending}>
+                        Save
+                    </Button>
+                </ModalFooter>
+            </form>
         </Modal>
     );
 }
