@@ -1,0 +1,39 @@
+.delete-playbook-modal__warnings {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.delete-playbook-modal__warning {
+    display: flex;
+    gap: var(--space-12);
+    margin: 0;
+    padding: var(--space-12) var(--space-16);
+    border-radius: var(--radius-8);
+    font-size: var(--text-body-md-size);
+    line-height: 20px;
+    text-align: left;
+}
+
+.delete-playbook-modal__warning svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.delete-playbook-modal__warning strong {
+    font-weight: var(--font-weight-semibold);
+}
+
+.delete-playbook-modal__warning--warning {
+    background-color: var(--warning-bg);
+    color: var(--warning-text);
+}
+
+.delete-playbook-modal__warning--warning svg {
+    color: var(--warning-icon);
+}
+
+.delete-playbook-modal__warning--error {
+    background-color: var(--error-bg);
+    color: var(--error-text);
+}

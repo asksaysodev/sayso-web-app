@@ -1,0 +1,15 @@
+.playbook-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.playbook-status-badge__spinner {
+    width: 10px;
+    height: 10px;
+    border: 1.5px solid currentColor;
+    border-top-color: transparent;
+    border-radius: var(--radius-full);
+    animation: playbooks-spin 0.8s linear infinite;
+}
