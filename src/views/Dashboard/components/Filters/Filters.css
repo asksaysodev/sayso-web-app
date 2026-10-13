@@ -1,7 +1,5 @@
-.dashboard-filters-button.ds-button {
+.dashboard-header .scope-filters-button.ds-button {
     margin-left: auto;
-    border-radius: var(--radius-full);
-    font-weight: var(--font-weight-regular);
 }
 
 .dashboard-scope-chips {
@@ -13,96 +11,23 @@
     font-family: var(--font-ds);
 }
 
-.dashboard-scope-chips__clear,
-.dashboard-filters__clear {
+.dashboard-scope-chips__clear {
     padding: var(--space-2) var(--space-4);
     border: none;
     border-radius: var(--radius-8);
     background: transparent;
     font-family: var(--font-ds);
     font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-brand);
     cursor: pointer;
 }
 
-.dashboard-scope-chips__clear {
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-brand);
-}
-
-.dashboard-filters__clear {
-    color: var(--neutral-600);
-}
-
-.dashboard-scope-chips__clear:hover,
-.dashboard-filters__clear:hover {
+.dashboard-scope-chips__clear:hover {
     text-decoration: underline;
 }
 
-.dashboard-scope-chips__clear:focus-visible,
-.dashboard-filters__clear:focus-visible {
+.dashboard-scope-chips__clear:focus-visible {
     outline: 2px solid var(--primary-300);
     outline-offset: 2px;
-}
-
-.dashboard-filters__draft {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: var(--space-16) var(--space-32);
-    background-color: var(--surface-subtle);
-}
-
-.dashboard-filters__search {
-    padding: var(--space-16) var(--space-32);
-}
-
-.dashboard-filters__section {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: var(--space-16) var(--space-32);
-}
-
-.dashboard-filters__section-title {
-    margin: 0;
-    font-size: var(--text-body-sm-size);
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    color: var(--neutral-500);
-}
-
-.dashboard-filters__options {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-16);
-}
-
-.dashboard-filters__state {
-    margin: 0;
-    font-size: var(--text-body-md-size);
-    color: var(--text-secondary);
-}
-
-.dashboard-filters__state--error {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-12);
-}
-
-.dashboard-filters__apply {
-    width: 170px;
-}
-
-@media (max-width: 480px) {
-    .dashboard-filters__draft,
-    .dashboard-filters__search,
-    .dashboard-filters__section {
-        padding-left: var(--space-16);
-        padding-right: var(--space-16);
-    }
-
-    .dashboard-filters__apply {
-        width: auto;
-    }
 }

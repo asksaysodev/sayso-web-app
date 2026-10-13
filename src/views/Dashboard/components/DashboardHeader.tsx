@@ -6,7 +6,7 @@ import formatRelativeDateTime from '@/utils/formatters/formatRelativeDateTime';
 import useDashboardLastUpdate from '../hooks/useDashboardLastUpdate';
 import useRefreshDashboardData from '../hooks/useRefreshDashboardData';
 import { DASHBOARD_QUERY_KEY } from '../queryKeys';
-import FiltersButton from './Filters/FiltersButton';
+import FiltersButton from '@/components/ScopeFilters/FiltersButton';
 
 interface Props {
     isAdmin: boolean;
