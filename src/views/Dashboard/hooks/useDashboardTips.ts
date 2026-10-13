@@ -9,7 +9,7 @@ import useResetScopeOnNotFound from './useResetScopeOnNotFound';
 
 export default function useDashboardTips() {
     const { params, key } = useDashboardRequestScope();
-    const { data, isError, error, refetch } = useQuery({
+    const { data, isError, isFetching, error, refetch } = useQuery({
         queryKey: dashboardQueryKeys.tips(key),
         queryFn: () => getDashboardTips(params),
         retry: shouldRetryQuery,
@@ -21,5 +21,5 @@ export default function useDashboardTips() {
         if (error) reportApiError(error, { feature: 'dashboard', operation: 'getDashboardTips' });
     }, [error]);
 
-    return { tips: data?.tips ?? null, scopeKey: key, isError, retry: refetch };
+    return { tips: data?.tips ?? null, scopeKey: key, isError, isRetrying: isError && isFetching, retry: refetch };
 }

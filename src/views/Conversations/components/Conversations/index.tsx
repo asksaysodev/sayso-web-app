@@ -67,8 +67,8 @@ export default function Conversations() {
     const [isScopeDrawerOpen, setIsScopeDrawerOpen] = useState(false);
     const debouncedSearch = useDebounce(searchInputValue, 500);
     const { globalUser } = useAuth();
-    const { isAdmin, selection, isOwnSelection, setSelection } = useConversationScope();
-    const requestScope = useConversationRequestScope();
+    const { isAdmin, selection, isOwnSelection, setSelection, resetToOwn } = useConversationScope();
+    const requestScope = useConversationRequestScope(isAdmin, selection);
     const { teams, members } = useScopeFilterOptions(isAdmin);
 
     useConversationsSocket();
@@ -93,15 +93,16 @@ export default function Conversations() {
     const scopeList = selection?.scope === 'team' ? teams : members;
     const isScopeStale = !!selection && !scopeList.isLoading && !scopeList.isError && scopeName === null;
 
-    const isResettingScope = useResetConversationScope(error, isScopeStale);
+    const isResettingScope = useResetConversationScope(error, isScopeStale, isOwnSelection, resetToOwn);
 
-    const searchBarFilters: SearchBarFilter[] = isAdmin && selection && scopeName
-        ? [{ key: 'scope', value: scopeName }, ...activeFilters]
-        : activeFilters;
+    const scopePill: SearchBarFilter[] = isAdmin && selection && scopeName ? [{ key: 'scope', value: scopeName }] : [];
+    const searchBarFilters: SearchBarFilter[] = [...scopePill, ...activeFilters];
 
     const setSearchBarFilters: Dispatch<SetStateAction<SearchBarFilter[]>> = (update) => {
-        const next = typeof update === 'function' ? update(searchBarFilters) : update;
-        setActiveFilters(next.filter((filter): filter is ConversationFilter => filter.key !== 'scope'));
+        setActiveFilters((prev) => {
+            const next = typeof update === 'function' ? update([...scopePill, ...prev]) : update;
+            return next.filter((filter): filter is ConversationFilter => filter.key !== 'scope');
+        });
     };
 
     const conversations = useMemo(() => {
@@ -230,7 +231,7 @@ export default function Conversations() {
                     )}
                 </div>
             </div>
-            {hasNextPage && (
+            {hasNextPage && !error && !isResettingScope && conversations.length > 0 && (
                 <button
                     className="load-more-conversations-button"
                     onClick={() => fetchNextPage()}

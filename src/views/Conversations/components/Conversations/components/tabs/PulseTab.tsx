@@ -14,7 +14,7 @@ export default function PulseTab({ pulse }: Props) {
     }
 
     const trendLabel = market.price_trend_change_percent != null
-        ? `${Math.abs(market.price_trend_change_percent)}%`
+        ? `${market.price_trend_change_percent > 0 ? '+' : ''}${market.price_trend_change_percent}%`
         : market.price_trend_direction ?? '—';
 
     const stats = [

@@ -1,0 +1,54 @@
+.playbooks-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16);
+}
+
+.playbooks-header__titles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.playbooks-header__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.playbooks-header__title {
+    margin: 0;
+    font-size: var(--text-h5-size);
+    line-height: var(--text-h5-line);
+    font-weight: var(--font-weight-semibold);
+}
+
+.playbooks-header__count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 24px;
+    height: 22px;
+    padding: 0 var(--space-8);
+    border-radius: var(--radius-full);
+    background-color: var(--surface-subtle);
+    color: var(--text-secondary);
+    font-size: var(--text-body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    font-variant-numeric: tabular-nums;
+}
+
+.playbooks-header__subtitle {
+    margin: 0;
+    font-size: var(--text-body-md-size);
+    line-height: 20px;
+    color: var(--text-secondary);
+}
+
+.playbooks-header__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-12);
+}

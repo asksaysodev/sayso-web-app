@@ -12,7 +12,7 @@ import './Overview.css';
 
 export default function OverviewWidget() {
     const [period, setPeriod] = useState<OverviewPeriod>(DEFAULT_OVERVIEW_PERIOD);
-    const { overview, isError, retry } = useDashboardOverview(period);
+    const { overview, isError, isRetrying, retry } = useDashboardOverview(period);
     const periodOption = OVERVIEW_PERIODS.find((option) => option.value === period) ?? OVERVIEW_PERIODS[0];
 
     return (
@@ -24,7 +24,7 @@ export default function OverviewWidget() {
             actions={<PeriodSelect value={periodOption} onChange={setPeriod} />}
         >
             {isError ? (
-                <WidgetErrorState subject='overview' onRetry={retry} />
+                <WidgetErrorState subject='overview' onRetry={retry} isRetrying={isRetrying} />
             ) : (
                 <div className='dashboard-overview__tiles'>
                     <ConversationTimeTile overview={overview} />

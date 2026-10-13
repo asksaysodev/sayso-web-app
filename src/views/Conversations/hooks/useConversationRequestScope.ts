@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
-import useConversationScope from './useConversationScope';
+import type { ScopeSelection } from '@/types/scope';
 import type { ConversationRequestParams } from '../types';
 
-export default function useConversationRequestScope(): { params: ConversationRequestParams; key: string } {
-    const { isAdmin, selection } = useConversationScope();
-
+export default function useConversationRequestScope(
+    isAdmin: boolean,
+    selection: ScopeSelection | null,
+): { params: ConversationRequestParams; key: string } {
     return useMemo(() => {
         if (!isAdmin) return { params: {}, key: 'self' };
         if (!selection) return { params: { scope: 'company' }, key: 'company' };
