@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { FileUp, Globe } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/components/ds/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Modal';
 import { TextField } from '@/components/ds/TextField';
 import { useUploadPlaybook } from '../hooks/useUploadPlaybook';
 import { validatePlaybookFile } from '../utils/playbookFile';
@@ -34,44 +34,42 @@ export default function UploadPlaybookModal({ onClose }: Props) {
     };
 
     return (
-        <Modal open onOpenChange={handleOpenChange}>
-            <ModalContent hideClose={isPending}>
-                <form className='upload-playbook-modal' onSubmit={handleSubmit}>
-                    <ModalHeader
-                        icon={<FileUp size={24} />}
-                        title='Upload public playbook'
-                        description='This script will be available to all Sayso users.'
+        <Modal open onOpenChange={handleOpenChange} hideClose={isPending}>
+            <form className='upload-playbook-modal' onSubmit={handleSubmit}>
+                <ModalHeader
+                    icon={<FileUp size={24} />}
+                    title='Upload public playbook'
+                    description='This script will be available to all Sayso users.'
+                />
+                <ModalBody>
+                    <PlaybookFileField file={file} error={fileError} disabled={isPending} onChange={setFile} />
+                    <TextField
+                        label='Name'
+                        placeholder='e.g. Expired Listings'
+                        value={alias}
+                        onChange={event => setAlias(event.target.value)}
+                        onBlur={() => setAliasTouched(true)}
+                        helperText='Users see this name in their playbook list.'
+                        error={aliasError}
+                        disabled={isPending}
+                        required
                     />
-                    <ModalBody>
-                        <PlaybookFileField file={file} error={fileError} disabled={isPending} onChange={setFile} />
-                        <TextField
-                            label='Name'
-                            placeholder='e.g. Expired Listings'
-                            value={alias}
-                            onChange={event => setAlias(event.target.value)}
-                            onBlur={() => setAliasTouched(true)}
-                            helperText='Users see this name in their playbook list.'
-                            error={aliasError}
-                            disabled={isPending}
-                            required
-                        />
-                        <p className='upload-playbook-modal__notice'>
-                            <Globe size={18} aria-hidden='true' />
-                            <span>
-                                <strong>Public script.</strong> Once processed, it shows up in every Sayso user's playbook list.
-                            </span>
-                        </p>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button variant='secondary' onClick={onClose} disabled={isPending}>
-                            Cancel
-                        </Button>
-                        <Button type='submit' disabled={!canSubmit} loading={isPending}>
-                            {isPending ? 'Uploading…' : 'Upload'}
-                        </Button>
-                    </ModalFooter>
-                </form>
-            </ModalContent>
+                    <p className='upload-playbook-modal__notice'>
+                        <Globe size={18} aria-hidden='true' />
+                        <span>
+                            <strong>Public script.</strong> Once processed, it shows up in every Sayso user's playbook list.
+                        </span>
+                    </p>
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant='secondary' onClick={onClose} disabled={isPending}>
+                        Cancel
+                    </Button>
+                    <Button type='submit' disabled={!canSubmit} loading={isPending}>
+                        {isPending ? 'Uploading…' : 'Upload'}
+                    </Button>
+                </ModalFooter>
+            </form>
         </Modal>
     );
 }
