@@ -4,8 +4,8 @@ import * as Sentry from '@sentry/react';
 import { useToast } from '@/context/ToastContext';
 import type { GetConversationsResponse } from '@/types/coach';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
+import { CONVERSATIONS_QUERY_KEY } from '../../../queryKeys';
 
-const CONVERSATIONS_KEY = ['dashboard-conversations'];
 
 interface AttachLeadParams {
     conversationId: string;
@@ -24,15 +24,15 @@ export default function useAttachConversationLead() {
                 crm_provider: lead?.providerId ?? null,
             }),
         onMutate: async ({ conversationId, lead }) => {
-            await queryClient.cancelQueries({ queryKey: CONVERSATIONS_KEY });
+            await queryClient.cancelQueries({ queryKey: CONVERSATIONS_QUERY_KEY });
 
             const previousData = queryClient.getQueriesData<InfiniteData<GetConversationsResponse>>({
-                queryKey: CONVERSATIONS_KEY,
+                queryKey: CONVERSATIONS_QUERY_KEY,
             });
 
             // Optimistically flip crm_lead_name so the card shows avatar+name immediately
             queryClient.setQueriesData<InfiniteData<GetConversationsResponse>>(
-                { queryKey: CONVERSATIONS_KEY },
+                { queryKey: CONVERSATIONS_QUERY_KEY },
                 (old) => {
                     if (!old) return old;
                     return {
@@ -59,7 +59,7 @@ export default function useAttachConversationLead() {
             Sentry.captureException(error);
         },
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+            queryClient.invalidateQueries({ queryKey: CONVERSATIONS_QUERY_KEY });
         },
     });
 

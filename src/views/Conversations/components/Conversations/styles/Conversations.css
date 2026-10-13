@@ -1,34 +1,33 @@
 /* ===== Conversations container ===== */
-.conversations-container {
-    border: 1px solid var(--sayso-border);
-    background: #fff;
-    width: 100%;
+.conversations-section {
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
-    box-shadow: var(--sayso-card-shadow);
+    gap: var(--space-16);
+    width: 100%;
+}
+
+.conversations-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+    width: 100%;
+    padding: var(--space-20);
+    border-radius: var(--radius-20);
+    background: var(--surface-bg);
+    box-shadow: var(--shadow-card);
 }
 
 .conversations-header {
     display: flex;
     flex: 0 0 auto;
     align-items: center;
-    justify-content: space-between;
-    padding: 24px;
-    transition: border-bottom 0.2s ease;
-}
-
-.conversations-header p {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--sayso-darkgray);
-    line-height: 100%;
-    margin: 0;
 }
 
 .conversations-header-right-content {
     display: flex;
-    gap: 16px;
+    align-items: center;
+    gap: var(--space-24);
+    width: 100%;
 }
 
 .conversations-filters-row {
@@ -38,6 +37,23 @@
 
 .conversations-search-row {
     display: flex;
+    flex: 1;
+    min-width: 0;
+}
+
+.conversations-search-row .search-bar {
+    flex: 1;
+    min-width: 0 !important;
+}
+
+.conversations-search-row [data-slot='input-group'],
+.conversations-search-row [data-slot='input-group'] input {
+    height: 44px !important;
+}
+
+.conversations-search-row [data-slot='input-group'] {
+    border-radius: var(--radius-8);
+    border-color: var(--surface-border) !important;
 }
 
 .conversations-list-container {
@@ -61,19 +77,24 @@
 }
 
 .load-more-conversations-button {
-    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-8);
+    align-self: center;
+    padding: var(--space-2) var(--space-4);
     border: none;
-    padding: 12px 0;
-    width: 100%;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--sayso-indigo);
+    border-radius: var(--radius-8);
+    background: none;
+    font-family: var(--font-ds);
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-brand);
     cursor: pointer;
-    text-align: center;
 }
 
 .load-more-conversations-button:hover {
-    opacity: 0.7;
+    text-decoration: underline;
 }
 
 .load-more-conversations-button:disabled {
@@ -130,17 +151,6 @@
         overflow: visible;
     }
 
-    .conversations-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 16px;
-    }
-
-    .conversations-header p {
-        font-size: 16px;
-    }
-
     .conversations-header-right-content {
         width: 100%;
         flex-direction: column;
@@ -163,13 +173,8 @@
 
 /* ===== Responsive — mobile ===== */
 @media (max-width: 640px) {
-    .conversations-header {
-        padding: 14px 16px;
-        gap: 10px;
-    }
-
-    .conversations-header p {
-        font-size: 15px;
+    .conversations-container {
+        padding: var(--space-16);
     }
 
     .conversations-header-right-content {
@@ -191,4 +196,12 @@
     100% {
         background-position: -200% 0;
     }
+}
+
+.scope-filter-pill-selector {
+    text-transform: none;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

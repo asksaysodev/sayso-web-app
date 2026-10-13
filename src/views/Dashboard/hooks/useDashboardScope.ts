@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useIsTeamAdmin from '@/hooks/useIsTeamAdmin';
-import parseDashboardSelection from '../utils/parseDashboardSelection';
-import type { DashboardSelection } from '../types';
+import parseScopeSelection from '@/utils/parseScopeSelection';
+import type { ScopeSelection } from '@/types/scope';
 
 /**
  * The Dashboard's team/member filter, kept in the URL so a scoped view survives reloads and can be shared.
@@ -13,12 +13,12 @@ export default function useDashboardScope() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const selection = useMemo(
-        () => (isAdmin ? parseDashboardSelection(searchParams) : null),
+        () => (isAdmin ? parseScopeSelection(searchParams) : null),
         [isAdmin, searchParams],
     );
 
     const setSelection = useCallback(
-        (next: DashboardSelection | null) => {
+        (next: ScopeSelection | null) => {
             setSearchParams(
                 (prev) => {
                     const params = new URLSearchParams(prev);

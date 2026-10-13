@@ -1,27 +1,8 @@
-export type DashboardSelectionScope = 'team' | 'account';
-
-/** A team or a member picked in the Filters panel. `null` everywhere means company level. */
-export interface DashboardSelection {
-    scope: DashboardSelectionScope;
-    id: string;
-}
-
-export interface FilterOption {
-    id: string;
-    label: string;
-}
-
-export interface FilterOptionList {
-    options: FilterOption[];
-    isLoading: boolean;
-    isError: boolean;
-    isRetrying: boolean;
-    retry: () => void;
-}
+import type { ScopeSelectionScope } from '@/types/scope';
 
 /** Query params every `/dashboard/*` request carries. Empty for members. */
 export interface DashboardRequestParams {
-    scope?: 'company' | DashboardSelectionScope;
+    scope?: 'company' | ScopeSelectionScope;
     scopeId?: string;
 }
 
@@ -29,7 +10,7 @@ export interface DashboardRequestParams {
 export type WidgetTone = 'primary' | 'info' | 'error';
 
 /** The level a `/dashboard/*` response was resolved at. A member's own view comes back as `account`. */
-export type DashboardResponseScope = 'company' | DashboardSelectionScope;
+export type DashboardResponseScope = 'company' | ScopeSelectionScope;
 
 export type OverviewPeriod = 'last_7_days' | 'last_14_days' | 'last_30_days' | 'last_3_months' | 'last_6_months';
 

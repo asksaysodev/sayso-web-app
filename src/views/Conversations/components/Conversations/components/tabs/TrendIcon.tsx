@@ -1,4 +1,4 @@
-import { LuArrowUp, LuArrowDown, LuMinus } from 'react-icons/lu';
+import { PiMinus, PiTrendDown, PiTrendUp } from 'react-icons/pi';
 
 interface Props {
     direction: string | null;
@@ -6,7 +6,7 @@ interface Props {
 
 export default function TrendIcon({ direction }: Props) {
     const dir = direction?.toLowerCase();
-    if (dir === 'up' || dir === 'rising' || dir === 'increasing') return <LuArrowUp size={14} color="#16a34a" />;
-    if (dir === 'down' || dir === 'falling' || dir === 'decreasing') return <LuArrowDown size={14} color="#dc2626" />;
-    return <LuMinus size={14} color="var(--sayso-lightgray)" />;
+    if (dir === 'up' || dir === 'rising' || dir === 'increasing') return <PiTrendUp size={20} color="var(--success-icon)" />;
+    if (dir === 'down' || dir === 'falling' || dir === 'decreasing') return <PiTrendDown size={20} color="var(--error-icon)" />;
+    return <PiMinus size={20} color="var(--text-secondary)" />;
 }

@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import reportApiError from '@/utils/reportApiError';
 import getDashboardOverview from '../services/getDashboardOverview';
 import { dashboardQueryKeys } from '../queryKeys';
-import shouldRetryDashboardQuery from '../utils/shouldRetryDashboardQuery';
+import shouldRetryQuery from '@/utils/shouldRetryQuery';
 import useDashboardRequestScope from './useDashboardRequestScope';
 import useResetScopeOnNotFound from './useResetScopeOnNotFound';
 import type { OverviewPeriod } from '../types';
@@ -13,7 +13,7 @@ export default function useDashboardOverview(period: OverviewPeriod) {
     const { data, isError, isFetching, error, refetch } = useQuery({
         queryKey: dashboardQueryKeys.overview(key, period),
         queryFn: () => getDashboardOverview(period, params),
-        retry: shouldRetryDashboardQuery,
+        retry: shouldRetryQuery,
     });
 
     useResetScopeOnNotFound(error);

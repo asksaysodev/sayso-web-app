@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react';
 import { supabase } from '@/config/supabase';
-const CONVERSATIONS_KEY = ['dashboard-conversations'];
+import { CONVERSATIONS_QUERY_KEY } from '../../../queryKeys';
 const MAX_RETRIES = 3;
 const BASE_BACKOFF_MS = 1000;
 // Must be longer than the longest backoff step (BASE_BACKOFF_MS * 2^(MAX_RETRIES-1) = 4s)
@@ -89,7 +89,7 @@ export default function useConversationsSocket() {
                     try {
                         const message = JSON.parse(event.data) as ConversationSocketMessage;
                         if (message.type === 'new_conversation' || message.type === 'conversation_updated') {
-                            queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+                            queryClient.invalidateQueries({ queryKey: CONVERSATIONS_QUERY_KEY });
                             return;
                         }
 
@@ -101,7 +101,7 @@ export default function useConversationsSocket() {
                             resyncTimerRef.current = setTimeout(() => {
                                 resyncTimerRef.current = null;
                                 if (unmountedRef.current) return;
-                                queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+                                queryClient.invalidateQueries({ queryKey: CONVERSATIONS_QUERY_KEY });
                             }, Math.random() * RESYNC_JITTER_MS);
                             return;
                         }
@@ -110,7 +110,7 @@ export default function useConversationsSocket() {
                         // connect, where the list query is already loading on its own.
                         if (message.type === 'connected') {
                             if (hasConnectedOnceRef.current) {
-                                queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+                                queryClient.invalidateQueries({ queryKey: CONVERSATIONS_QUERY_KEY });
                             }
                             hasConnectedOnceRef.current = true;
                         }

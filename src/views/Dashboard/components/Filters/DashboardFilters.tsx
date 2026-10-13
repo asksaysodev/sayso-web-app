@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import useDashboardScope from '../../hooks/useDashboardScope';
-import useFilterOptions from '../../hooks/useFilterOptions';
-import findSelectionLabel from '../../utils/findSelectionLabel';
-import FiltersDrawer from './FiltersDrawer';
+import FiltersDrawer from '@/components/ScopeFilters/FiltersDrawer';
+import useScopeFilterOptions from '@/hooks/useScopeFilterOptions';
+import findScopeSelectionLabel from '@/utils/findScopeSelectionLabel';
 import ScopeChipRow from './ScopeChipRow';
 import './Filters.css';
 
@@ -14,8 +14,8 @@ interface Props {
 /** Admin-only: the applied-filter chip row plus the Filters drawer. */
 export default function DashboardFilters({ open, onOpenChange }: Props) {
     const { selection, setSelection } = useDashboardScope();
-    const { teams, members } = useFilterOptions(open || selection !== null);
-    const selectionLabel = findSelectionLabel(selection, teams.options, members.options);
+    const { teams, members } = useScopeFilterOptions(open || selection !== null);
+    const selectionLabel = findScopeSelectionLabel(selection, teams.options, members.options);
 
     const selectionList = selection?.scope === 'team' ? teams : members;
     const isStale = selection !== null && !selectionList.isLoading && !selectionList.isError && selectionLabel === null;

@@ -20,6 +20,7 @@ const Subscription = lazyView(() => import('./views/Subscription'));
 const MFAVerify = lazyView(() => import('./views/MFAVerify'));
 const AcceptInvite = lazyView(() => import('./views/AcceptInvite'));
 const Organization = lazyView(() => import('./views/Organization'));
+const Conversations = lazyView(() => import('./views/Conversations'));
 const TeamDetail = lazyView(() => import('./views/Organization/Teams/Detail'));
 
 import SaysoLoader from './components/SaysoLoader';
@@ -76,6 +77,16 @@ export default function AppRoutes() {
                         <Layout>
                             <Dashboard />
                         </Layout>
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/conversations"
+                    element={
+                        <AuthGuard>
+                            <Layout>
+                                <Conversations />
+                            </Layout>
                         </AuthGuard>
                     }
                 />

@@ -2,12 +2,14 @@ import dayjs from "dayjs";
 import apiClient from "@/config/axios";
 import type { GetConversationsResponse } from "@/types/coach";
 import type { DateRange } from "react-day-picker";
+import type { ConversationRequestParams } from "../types";
 
 export default async function getConversations(
     page = 0,
     activeFilters: Array<{ key: string; value: string }> = [],
     dateRange?: DateRange,
-    search = ""
+    search = "",
+    scope: ConversationRequestParams = {}
 ): Promise<GetConversationsResponse> {
     const params = new URLSearchParams({ page: String(page) });
 
@@ -24,6 +26,8 @@ export default async function getConversations(
     if (dateRange?.from) params.set('from', dayjs(dateRange.from).format('YYYY-MM-DD'));
     if (dateRange?.to) params.set('to', dayjs(dateRange.to).format('YYYY-MM-DD'));
     if (search) params.set('keyword', search);
+    if (scope.scope) params.set('scope', scope.scope);
+    if (scope.scopeId) params.set('scopeId', scope.scopeId);
 
     const response = await apiClient.get(`conversations?${params}`);
 

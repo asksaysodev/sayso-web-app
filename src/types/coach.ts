@@ -44,6 +44,13 @@ export interface ConversationSmartCapture {
   created_at: string;
 }
 
+export interface ConversationOwner {
+  accountId: string;
+  name: string | null;
+  lastname: string | null;
+  email: string;
+}
+
 export interface ConversationItem {
   id: string;
   created_at: string;
@@ -56,6 +63,7 @@ export interface ConversationItem {
   insights: ConversationInsight[];
   pulse: ConversationPulse[];
   smart_captures: ConversationSmartCapture[];
+  owner?: ConversationOwner | null;
 }
 
 export interface GetConversationsResponse {

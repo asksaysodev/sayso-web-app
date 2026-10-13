@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import reportApiError from '@/utils/reportApiError';
 import getDashboardActivity from '../services/getDashboardActivity';
 import { dashboardQueryKeys } from '../queryKeys';
-import shouldRetryDashboardQuery from '../utils/shouldRetryDashboardQuery';
+import shouldRetryQuery from '@/utils/shouldRetryQuery';
 import useDashboardRequestScope from './useDashboardRequestScope';
 import useResetScopeOnNotFound from './useResetScopeOnNotFound';
 
@@ -12,7 +12,7 @@ export default function useDashboardActivity(weekOffset: number) {
     const { data, isError, isFetching, error, refetch } = useQuery({
         queryKey: dashboardQueryKeys.activity(key, weekOffset),
         queryFn: () => getDashboardActivity(weekOffset, params),
-        retry: shouldRetryDashboardQuery,
+        retry: shouldRetryQuery,
     });
 
     useResetScopeOnNotFound(error);
