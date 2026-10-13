@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { LuX } from 'react-icons/lu';
 import { Plus } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
@@ -8,14 +8,28 @@ import SearchBar, { SearchFilterConfig } from '@/components/ui/search-bar';
 import FilterPill from '@/components/ui/filter-pill';
 import TextFilterPill from '@/components/ui/text-filter-pill';
 import useDebounce from '@/hooks/useDebounce';
+import useScopeFilterOptions from '@/hooks/useScopeFilterOptions';
+import { useAuth } from '@/context/AuthContext';
+import FiltersButton from '@/components/ScopeFilters/FiltersButton';
+import FiltersDrawer from '@/components/ScopeFilters/FiltersDrawer';
+import findScopeSelectionLabel from '@/utils/findScopeSelectionLabel';
+import shouldRetryQuery from '@/utils/shouldRetryQuery';
+import displayName from '@/views/Organization/shared/utils/displayName';
 import getConversations from '../../services/getConversations';
 import { CONVERSATIONS_QUERY_KEY } from '../../queryKeys';
 import type { ConversationFilter } from '../../types';
+import useConversationScope from '../../hooks/useConversationScope';
+import useConversationRequestScope from '../../hooks/useConversationRequestScope';
+import useResetConversationScope from '../../hooks/useResetConversationScope';
+import getEmptyConversationsText from '../../utils/getEmptyConversationsText';
 import useConversationsSocket from './hooks/useConversationsSocket';
 import InsightsCalendarPopover, { INITIAL_DATE_RANGE } from '../InsightsCalendarPopover';
 import ConversationCollapsibleItem from './ConversationCollapsibleItem';
 import ConversationsListSkeleton from './ConversationsListSkeleton';
+import ScopeFilterPill from './components/ScopeFilterPill';
 import './styles/Conversations.css';
+
+type SearchBarFilter = ConversationFilter | { key: 'scope'; value: string };
 
 const AVAILABLE_FILTERS: SearchFilterConfig<ConversationFilter>[] = [
     {
@@ -49,7 +63,12 @@ export default function Conversations() {
     const [dateRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>(INITIAL_DATE_RANGE);
     const [openedConversations, setOpenedConversations] = useState<string[]>([]);
     const [activeFilters, setActiveFilters] = useState<ConversationFilter[]>([{ key: 'has_summary', value: 'true' }]);
+    const [isScopeDrawerOpen, setIsScopeDrawerOpen] = useState(false);
     const debouncedSearch = useDebounce(searchInputValue, 500);
+    const { globalUser } = useAuth();
+    const { isAdmin, selection, isOwnSelection, setSelection } = useConversationScope();
+    const requestScope = useConversationRequestScope();
+    const { teams, members } = useScopeFilterOptions(isAdmin);
 
     useConversationsSocket();
 
@@ -61,11 +80,28 @@ export default function Conversations() {
         fetchNextPage,
         hasNextPage,
     } = useInfiniteQuery({
-        queryKey: [...CONVERSATIONS_QUERY_KEY, activeFilters, dateRangeFilter, debouncedSearch],
-        queryFn: ({ pageParam }) => getConversations(pageParam, activeFilters, dateRangeFilter, debouncedSearch),
+        queryKey: [...CONVERSATIONS_QUERY_KEY, requestScope.key, activeFilters, dateRangeFilter, debouncedSearch],
+        queryFn: ({ pageParam }) => getConversations(pageParam, activeFilters, dateRangeFilter, debouncedSearch, requestScope.params),
         getNextPageParam: (lastPage, allPages) => lastPage.hasNextPage ? allPages.length : undefined,
         initialPageParam: 0,
+        retry: shouldRetryQuery,
     });
+
+    const scopeName = findScopeSelectionLabel(selection, teams.options, members.options)
+        ?? (isOwnSelection && globalUser ? displayName(globalUser) : null);
+    const scopeList = selection?.scope === 'team' ? teams : members;
+    const isScopeStale = !!selection && !scopeList.isLoading && !scopeList.isError && scopeName === null;
+
+    const isResettingScope = useResetConversationScope(error, isScopeStale);
+
+    const searchBarFilters: SearchBarFilter[] = isAdmin && selection && scopeName
+        ? [{ key: 'scope', value: scopeName }, ...activeFilters]
+        : activeFilters;
+
+    const setSearchBarFilters: Dispatch<SetStateAction<SearchBarFilter[]>> = (update) => {
+        const next = typeof update === 'function' ? update(searchBarFilters) : update;
+        setActiveFilters(next.filter((filter): filter is ConversationFilter => filter.key !== 'scope'));
+    };
 
     const conversations = useMemo(() => {
         if (!conversationsData?.pages) return [];
@@ -100,11 +136,19 @@ export default function Conversations() {
                             <SearchBar
                                 searchText={searchInputValue}
                                 onSearchTextChange={setSearchInputValue}
-                                activeFilters={activeFilters}
-                                setActiveFilters={setActiveFilters}
+                                activeFilters={searchBarFilters}
+                                setActiveFilters={setSearchBarFilters}
                                 availableFilters={AVAILABLE_FILTERS}
                                 placeholder="Search conversations..."
                                 filterPillRenderers={{
+                                    scope: (filter) => (
+                                        <ScopeFilterPill
+                                            label={selection?.scope === 'team' ? 'team' : 'user'}
+                                            value={filter.value}
+                                            onOpen={() => setIsScopeDrawerOpen(true)}
+                                            onRemove={() => setSelection(null)}
+                                        />
+                                    ),
                                     has_summary: (_filter, _onUpdate, onRemove) => (
                                         <div className="search-filter-pill">
                                             <span className="filter-pill-label">Summary Created</span>
@@ -150,19 +194,20 @@ export default function Conversations() {
                                 currentDateRange={dateRangeFilter}
                                 onResetDateRange={() => setDateRangeFilter(INITIAL_DATE_RANGE)}
                             />
+                            {isAdmin && <FiltersButton onClick={() => setIsScopeDrawerOpen(true)} />}
                         </div>
                     </div>
                 </div>
 
                 <div className="conversations-list-container">
-                    {error ? (
+                    {isResettingScope || (isLoading && conversations.length === 0) ? (
+                        <ConversationsListSkeleton />
+                    ) : error ? (
                         <div className="empty-conversations-container">
                             <p className="empty-conversations-text">
                                 Unable to load conversations. Please try again later.
                             </p>
                         </div>
-                    ) : isLoading && conversations.length === 0 ? (
-                        <ConversationsListSkeleton />
                     ) : conversations.length > 0 ? (
                         <>
                             {conversations.map(conv => (
@@ -177,9 +222,7 @@ export default function Conversations() {
                     ) : (
                         <div className="empty-conversations-container">
                             <p className="empty-conversations-text">
-                                {debouncedSearch || activeFilters.length > 0
-                                    ? 'No conversations match your filters.'
-                                    : 'No conversations yet.'}
+                                {getEmptyConversationsText(selection, isOwnSelection, !!debouncedSearch || activeFilters.length > 0)}
                             </p>
                         </div>
                     )}
@@ -194,6 +237,16 @@ export default function Conversations() {
                     {isFetchingNextPage ? 'Loading...' : 'Load more'}
                     {!isFetchingNextPage && <Plus size={20} />}
                 </button>
+            )}
+            {isAdmin && (
+                <FiltersDrawer
+                    open={isScopeDrawerOpen}
+                    onOpenChange={setIsScopeDrawerOpen}
+                    selection={selection}
+                    onApply={setSelection}
+                    teams={teams}
+                    members={members}
+                />
             )}
         </div>
     );

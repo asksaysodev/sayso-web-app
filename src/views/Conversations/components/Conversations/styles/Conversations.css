@@ -197,3 +197,11 @@
         background-position: -200% 0;
     }
 }
+
+.scope-filter-pill-selector {
+    text-transform: none;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
