@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { UserPlus } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/components/ds/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Modal';
 import useCompanyMembers from '@/views/Organization/Company/hooks/useCompanyMembers';
 import MemberPicker from '@/views/Organization/shared/components/MemberPicker/MemberPicker';
 import ModalError from '@/views/Organization/shared/components/ModalError';
@@ -29,39 +29,37 @@ export default function AddTeamMemberModal({ teamId, teamName, onClose }: Props)
     };
 
     return (
-        <Modal open onOpenChange={(open) => !open && !isPending && onClose()}>
-            <ModalContent hideClose={isPending}>
-                <form className='add-team-member-modal__form' onSubmit={handleSubmit}>
-                    <ModalHeader
-                        icon={<UserPlus size={24} />}
-                        title='Add member'
-                        description={`Add company members to ${teamName}.`}
+        <Modal open onOpenChange={(open) => !open && !isPending && onClose()} hideClose={isPending}>
+            <form className='add-team-member-modal__form' onSubmit={handleSubmit}>
+                <ModalHeader
+                    icon={<UserPlus size={24} />}
+                    title='Add member'
+                    description={`Add company members to ${teamName}.`}
+                />
+                <ModalBody>
+                    <MemberPicker
+                        label='Members'
+                        members={accounts}
+                        value={selectableIds}
+                        onChange={(ids) => {
+                            setAccountIds(ids);
+                            if (errorMessage) reset();
+                        }}
+                        isLoading={isLoading}
+                        isError={isError}
+                        disabled={isPending}
                     />
-                    <ModalBody>
-                        <MemberPicker
-                            label='Members'
-                            members={accounts}
-                            value={selectableIds}
-                            onChange={(ids) => {
-                                setAccountIds(ids);
-                                if (errorMessage) reset();
-                            }}
-                            isLoading={isLoading}
-                            isError={isError}
-                            disabled={isPending}
-                        />
-                        <ModalError message={errorMessage} />
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button variant='secondary' onClick={onClose} disabled={isPending}>
-                            Cancel
-                        </Button>
-                        <Button type='submit' disabled={selectableIds.length === 0} loading={isPending}>
-                            Save
-                        </Button>
-                    </ModalFooter>
-                </form>
-            </ModalContent>
+                    <ModalError message={errorMessage} />
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant='secondary' onClick={onClose} disabled={isPending}>
+                        Cancel
+                    </Button>
+                    <Button type='submit' disabled={selectableIds.length === 0} loading={isPending}>
+                        Save
+                    </Button>
+                </ModalFooter>
+            </form>
         </Modal>
     );
 }

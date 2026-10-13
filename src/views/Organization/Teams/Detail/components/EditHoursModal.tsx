@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/components/ds/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Modal';
 import { NumberField } from '@/components/ds/NumberField';
 import ModalError from '@/views/Organization/shared/components/ModalError';
 import { HOUR_CAP_MAX } from '../../constants';
@@ -43,60 +43,58 @@ export default function EditHoursModal({ team, onClose }: Props) {
     };
 
     return (
-        <Modal open onOpenChange={(open) => !open && !isPending && onClose()}>
-            <ModalContent hideClose={isPending}>
-                <form className='edit-hours-modal__form' onSubmit={handleSubmit}>
-                    <ModalHeader align='start' title='Allocated hours' description={team.name} />
-                    <ModalBody className='edit-hours-modal__body'>
-                        <div className='edit-hours-modal__used'>
-                            <AllocationUsage
-                                title='Used so far'
-                                usedHours={team.usedHours}
-                                capHours={hourCap}
-                                capPercent={preview.percent}
-                                status={preview.status}
-                                variant='panel'
-                            />
-                        </div>
-                        <div className='edit-hours-modal__fields'>
-                            <NumberField
-                                label='Allocated hours'
-                                value={hourCap}
-                                onChange={changeHourCap}
-                                min={1}
-                                max={HOUR_CAP_MAX}
-                                disabled={isPending}
-                            />
-                            <div className='edit-hours-modal__quick-add'>
-                                <span className='edit-hours-modal__quick-add-label'>Quick add</span>
-                                <div className='edit-hours-modal__quick-add-buttons'>
-                                    {QUICK_ADD_HOURS.map((hours) => (
-                                        <Button
-                                            key={hours}
-                                            variant='secondary'
-                                            size='sm'
-                                            leftIcon={<Plus size={16} />}
-                                            onClick={() => changeHourCap(Math.min((hourCap ?? 0) + hours, HOUR_CAP_MAX))}
-                                            disabled={isPending || hourCap === HOUR_CAP_MAX}
-                                        >
-                                            {hours} hs
-                                        </Button>
-                                    ))}
-                                </div>
+        <Modal open onOpenChange={(open) => !open && !isPending && onClose()} hideClose={isPending}>
+            <form className='edit-hours-modal__form' onSubmit={handleSubmit}>
+                <ModalHeader align='start' title='Allocated hours' description={team.name} />
+                <ModalBody className='edit-hours-modal__body'>
+                    <div className='edit-hours-modal__used'>
+                        <AllocationUsage
+                            title='Used so far'
+                            usedHours={team.usedHours}
+                            capHours={hourCap}
+                            capPercent={preview.percent}
+                            status={preview.status}
+                            variant='panel'
+                        />
+                    </div>
+                    <div className='edit-hours-modal__fields'>
+                        <NumberField
+                            label='Allocated hours'
+                            value={hourCap}
+                            onChange={changeHourCap}
+                            min={1}
+                            max={HOUR_CAP_MAX}
+                            disabled={isPending}
+                        />
+                        <div className='edit-hours-modal__quick-add'>
+                            <span className='edit-hours-modal__quick-add-label'>Quick add</span>
+                            <div className='edit-hours-modal__quick-add-buttons'>
+                                {QUICK_ADD_HOURS.map((hours) => (
+                                    <Button
+                                        key={hours}
+                                        variant='secondary'
+                                        size='sm'
+                                        leftIcon={<Plus size={16} />}
+                                        onClick={() => changeHourCap(Math.min((hourCap ?? 0) + hours, HOUR_CAP_MAX))}
+                                        disabled={isPending || hourCap === HOUR_CAP_MAX}
+                                    >
+                                        {hours} hs
+                                    </Button>
+                                ))}
                             </div>
-                            <ModalError message={error?.message ?? null} />
                         </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button variant='secondary' onClick={onClose} disabled={isPending}>
-                            Cancel
-                        </Button>
-                        <Button type='submit' disabled={!canSave} loading={isPending}>
-                            Save changes
-                        </Button>
-                    </ModalFooter>
-                </form>
-            </ModalContent>
+                        <ModalError message={error?.message ?? null} />
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant='secondary' onClick={onClose} disabled={isPending}>
+                        Cancel
+                    </Button>
+                    <Button type='submit' disabled={!canSave} loading={isPending}>
+                        Save changes
+                    </Button>
+                </ModalFooter>
+            </form>
         </Modal>
     );
 }

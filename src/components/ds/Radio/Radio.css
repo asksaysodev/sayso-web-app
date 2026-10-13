@@ -1,0 +1,52 @@
+.ds-radio {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    font-family: var(--font-ds);
+    font-size: var(--text-body-md-size);
+    color: var(--neutral-950);
+    cursor: pointer;
+}
+
+.ds-radio__input {
+    appearance: none;
+    display: grid;
+    place-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-full);
+    background-color: var(--surface-bg);
+    cursor: pointer;
+}
+
+.ds-radio__input:checked {
+    border-color: var(--primary-500);
+    background-color: var(--primary-500);
+}
+
+.ds-radio__input:checked::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background-color: var(--white);
+}
+
+.ds-radio__input:focus-visible {
+    outline: 2px solid var(--primary-300);
+    outline-offset: 2px;
+}
+
+.ds-radio__input:disabled,
+.ds-radio__input:disabled + .ds-radio__label {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.ds-radio__label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}

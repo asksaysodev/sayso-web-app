@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { TriangleAlert } from 'lucide-react';
 import { Button } from '../Button';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, type ModalTone } from '../Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader, type ModalTone } from '../Modal';
 
 export interface ConfirmModalProps {
     open: boolean;
@@ -40,19 +40,17 @@ export function ConfirmModal({
     };
 
     return (
-        <Modal open={open} onOpenChange={handleOpenChange}>
-            <ModalContent hideClose={loading} {...(!description && { 'aria-describedby': undefined })}>
-                <ModalHeader icon={headerIcon} tone={tone} title={title} description={description} />
-                {children && <ModalBody>{children}</ModalBody>}
-                <ModalFooter>
-                    <Button variant='secondary' onClick={() => handleOpenChange(false)} disabled={loading}>
-                        {cancelLabel}
-                    </Button>
-                    <Button variant={tone === 'danger' ? 'destructive' : 'primary'} onClick={onConfirm} loading={loading}>
-                        {confirmLabel}
-                    </Button>
-                </ModalFooter>
-            </ModalContent>
+        <Modal open={open} onOpenChange={handleOpenChange} hideClose={loading} {...(!description && { 'aria-describedby': undefined })}>
+            <ModalHeader icon={headerIcon} tone={tone} title={title} description={description} />
+            {children && <ModalBody>{children}</ModalBody>}
+            <ModalFooter>
+                <Button variant='secondary' onClick={() => handleOpenChange(false)} disabled={loading}>
+                    {cancelLabel}
+                </Button>
+                <Button variant={tone === 'danger' ? 'destructive' : 'primary'} onClick={onConfirm} loading={loading}>
+                    {confirmLabel}
+                </Button>
+            </ModalFooter>
         </Modal>
     );
 }

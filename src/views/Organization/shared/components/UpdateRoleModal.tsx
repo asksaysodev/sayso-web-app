@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { RefreshCw, User } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/components/ds/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Modal';
 import { SelectField, type SelectFieldOption } from '@/components/ds/SelectField';
 import { TextField } from '@/components/ds/TextField';
 import useUpdateMemberRole from '../hooks/useUpdateMemberRole';
@@ -34,43 +34,41 @@ export default function UpdateRoleModal({ target, onClose }: Props) {
     };
 
     return (
-        <Modal open onOpenChange={handleOpenChange}>
-            <ModalContent hideClose={isPending}>
-                <ModalHeader
-                    icon={<RefreshCw size={24} />}
-                    title='Update member role'
-                    description="Select an option below to change the user's role."
-                />
-                <ModalBody>
-                    <div className='update-role-modal__fields'>
-                        <TextField
-                            className='update-role-modal__member'
-                            label='Member'
-                            leadingIcon={<User size={20} />}
-                            value={target.email}
-                            disabled
-                            readOnly
-                        />
-                        <SelectField
-                            className='update-role-modal__role'
-                            label='Role'
-                            options={ROLE_OPTIONS}
-                            value={role}
-                            onChange={setRole}
-                            disabled={isPending}
-                        />
-                    </div>
-                    <ModalError message={errorMessage} />
-                </ModalBody>
-                <ModalFooter>
-                    <Button variant='secondary' onClick={onClose} disabled={isPending}>
-                        Cancel
-                    </Button>
-                    <Button onClick={handleSave} disabled={role === currentRole} loading={isPending}>
-                        Save
-                    </Button>
-                </ModalFooter>
-            </ModalContent>
+        <Modal open onOpenChange={handleOpenChange} hideClose={isPending}>
+            <ModalHeader
+                icon={<RefreshCw size={24} />}
+                title='Update member role'
+                description="Select an option below to change the user's role."
+            />
+            <ModalBody>
+                <div className='update-role-modal__fields'>
+                    <TextField
+                        className='update-role-modal__member'
+                        label='Member'
+                        leadingIcon={<User size={20} />}
+                        value={target.email}
+                        disabled
+                        readOnly
+                    />
+                    <SelectField
+                        className='update-role-modal__role'
+                        label='Role'
+                        options={ROLE_OPTIONS}
+                        value={role}
+                        onChange={setRole}
+                        disabled={isPending}
+                    />
+                </div>
+                <ModalError message={errorMessage} />
+            </ModalBody>
+            <ModalFooter>
+                <Button variant='secondary' onClick={onClose} disabled={isPending}>
+                    Cancel
+                </Button>
+                <Button onClick={handleSave} disabled={role === currentRole} loading={isPending}>
+                    Save
+                </Button>
+            </ModalFooter>
         </Modal>
     );
 }
