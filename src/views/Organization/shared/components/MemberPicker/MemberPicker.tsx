@@ -3,7 +3,7 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { X } from 'lucide-react';
 import clsx from 'clsx';
 import { FieldMessage, FieldShell } from '@/components/ds/FieldShell';
-import displayName from '@/views/Organization/shared/utils/displayName';
+import displayName from '@/utils/displayName';
 import MemberIdentity from './MemberIdentity';
 import type { PickerMember } from './types';
 import './MemberPicker.css';

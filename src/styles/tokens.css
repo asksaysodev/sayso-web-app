@@ -54,6 +54,7 @@
   --space-16: 16px;
   --space-20: 20px;
   --space-24: 24px;
+  --space-28: 28px;
   --space-32: 32px;
   --space-40: 40px;
   --space-60: 60px;
@@ -63,6 +64,7 @@
   --radius-12: 12px;
   --radius-16: 16px;
   --radius-20: 20px;
+  --radius-24: 24px;
   --radius-full: 999px;
 
   /* Elevation */

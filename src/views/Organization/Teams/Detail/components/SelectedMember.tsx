@@ -1,6 +1,6 @@
 import { Avatar } from '@/components/ds/Avatar';
 import { getInitials } from '@/utils/helpers/getInitials';
-import displayName from '@/views/Organization/shared/utils/displayName';
+import displayName from '@/utils/displayName';
 import type { TeamMember } from '../../types';
 import './SelectedMember.css';
 

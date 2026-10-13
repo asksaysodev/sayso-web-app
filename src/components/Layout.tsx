@@ -3,6 +3,7 @@ import { LuPanelLeft } from 'react-icons/lu';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import Sidebar from './Sidebar/Sidebar';
 import MobileSidebar from './Sidebar/MobileSidebar';
+import Topbar from './Topbar/Topbar';
 import NotificationWidget from './NotificationWidget';
 
 import './Layout.css';
@@ -29,6 +30,7 @@ export default function Layout({ children }: Props) {
             <LuPanelLeft size={18}/>
           </button>
         </div>
+        <Topbar />
         <div className="app-shell__content">
           {children}
         </div>

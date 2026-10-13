@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Check, User } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
 import { ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Modal';
-import displayName from '@/views/Organization/shared/utils/displayName';
+import displayName from '@/utils/displayName';
 import type { CreateTeamResponse } from '../types';
 import './TeamCreated.css';
 
