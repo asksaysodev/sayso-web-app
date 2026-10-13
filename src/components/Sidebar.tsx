@@ -2,13 +2,9 @@ import { useState } from 'react';
 
 import { NavLink } from 'react-router-dom'
 import {
-    LuUsers,
     LuLogOut,
-    LuSettings,
-    LuCreditCard,
     LuCircleHelp,
     LuPanelLeft,
-    LuShield,
 } from 'react-icons/lu'
 
 
@@ -20,12 +16,10 @@ import { useAuth } from '../context/AuthContext';
 
 import logoHorizontal from '/assets/logo-pos-horizontal.png';
 import '../styles/Sidebar.css';
-import useHasSubscription from '@/hooks/useHasSubscription';
 import DownloadDesktopAppButton from './DownloadDesktopAppButton';
-import useUserNotAdminOnTeams from '@/hooks/useUserNotAdminOnTeams';
 import LaunchCoachButton from './LaunchCoachButton';
-import { Building2, MessagesSquare, Store } from 'lucide-react';
-import useIsTeamAdmin from '@/hooks/useIsTeamAdmin';
+import { HELP_CENTER_URL } from '@/constants';
+import useNavItems from './Sidebar/useNavItems';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -33,15 +27,11 @@ interface SidebarProps {
 }
 
 const SVG_FONT_SIZE = 18;
-const HELP_CENTER_URL = "https://asksayso.notion.site/helpcenter"
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const [showSignOutModal, setShowSignOutModal] = useState(false);
-    const { globalUser, handleSignOut, isSuperAdmin } = useAuth();
-    const hasSubscription = useHasSubscription();
-
-    const userNotAdminOnTeams = useUserNotAdminOnTeams()
-    const isTeamAdmin = useIsTeamAdmin();
+    const { globalUser, handleSignOut } = useAuth();
+    const navItems = useNavItems();
     
     return (
         <>
@@ -65,65 +55,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     </button>
                 </div>
                 <div className='sidebar-nav-container'>
-                    {hasSubscription &&
-                        <NavLink to="/" onClick={onClose}>
+                    {navItems.map(({ to, label, icon: Icon }) => (
+                        <NavLink key={to} to={to} onClick={onClose}>
                             <div className="outline"></div>
                             <div className='sidebar-nav-item'>
-                                <LuUsers size={SVG_FONT_SIZE}/>
-                                <p>Dashboard</p>
+                                <Icon size={SVG_FONT_SIZE}/>
+                                <p>{label}</p>
                             </div>
                         </NavLink>
-                    }
-                    {isTeamAdmin &&
-                        <NavLink to="/organization" onClick={onClose}>
-                            <div className="outline"></div>
-                            <div className='sidebar-nav-item'>
-                                <Building2 size={SVG_FONT_SIZE}/>
-                                <p>Organization</p>
-                            </div>
-                        </NavLink>
-                    }
-                    <NavLink to="/marketplace" onClick={onClose}>
-                        <div className="outline"></div>
-                        <div className='sidebar-nav-item'>
-                            <Store size={SVG_FONT_SIZE}/>
-                            <p>Marketplace</p>
-                        </div>
-                    </NavLink>
-                    {isSuperAdmin && (
-                        <NavLink to="/admin" onClick={onClose}>
-                            <div className="outline"></div>
-                            <div className='sidebar-nav-item'>
-                                <LuShield size={SVG_FONT_SIZE}/>
-                                <p>Admin</p>
-                            </div>
-                        </NavLink>
-                    )}
-                    <NavLink to="/settings" onClick={onClose}>
-                        <div className="outline"></div>
-                        <div className='sidebar-nav-item'>
-                            <LuSettings size={SVG_FONT_SIZE}/>
-                            <p>Settings</p>
-                        </div>
-                    </NavLink>
-                    {!userNotAdminOnTeams && 
-                        <NavLink to="/subscription" onClick={onClose}>
-                            <div className="outline"></div>
-                            <div className='sidebar-nav-item'>
-                                <LuCreditCard size={SVG_FONT_SIZE}/>
-                                <p>Subscription</p>
-                            </div>
-                        </NavLink>
-                    }
-                    {hasSubscription &&
-                        <NavLink to="/conversations" onClick={onClose}>
-                            <div className="outline"></div>
-                            <div className='sidebar-nav-item'>
-                                <MessagesSquare size={SVG_FONT_SIZE}/>
-                                <p>Conversations</p>
-                            </div>
-                        </NavLink>
-                    }
+                    ))}
                 </div>
             </div>
             <div className="sidebar-footer">
