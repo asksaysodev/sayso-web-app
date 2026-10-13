@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { Building2, CreditCard, MessagesSquare, Settings, Shield, Store, Users } from 'lucide-react';
+import { Building2, CreditCard, MessagesSquare, Shield, Store, Users } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import useHasSubscription from '@/hooks/useHasSubscription';
 import useIsTeamAdmin from '@/hooks/useIsTeamAdmin';
@@ -23,7 +23,6 @@ export default function useNavItems(): NavItem[] {
             hasSubscription && { to: '/', label: 'Dashboard', icon: Users },
             { to: '/marketplace', label: 'Marketplace', icon: Store },
             isTeamAdmin && { to: '/organization', label: 'Organization', icon: Building2 },
-            { to: '/settings', label: 'Settings', icon: Settings },
             !userNotAdminOnTeams && { to: '/subscription', label: 'Subscription', icon: CreditCard },
             hasSubscription && { to: '/conversations', label: 'Conversations', icon: MessagesSquare },
             isSuperAdmin && { to: '/admin', label: 'Admin', icon: Shield },
