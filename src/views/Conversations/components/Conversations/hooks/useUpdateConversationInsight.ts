@@ -4,8 +4,8 @@ import { InsightRating } from '../../../types';
 import * as Sentry from '@sentry/react';
 import { useToast } from '@/context/ToastContext';
 import { GetConversationsResponse } from '@/types/coach';
+import { CONVERSATIONS_QUERY_KEY } from '../../../queryKeys';
 
-const CONVERSATIONS_KEY = ['dashboard-conversations'];
 
 export default function useUpdateConversationInsight() {
     const { showToast } = useToast();
@@ -15,14 +15,14 @@ export default function useUpdateConversationInsight() {
         mutationFn: ({ insightId, rating }: { insightId: string; rating: InsightRating }) =>
             updateInsight(insightId, rating),
         onMutate: async ({ insightId, rating }) => {
-            await queryClient.cancelQueries({ queryKey: CONVERSATIONS_KEY });
+            await queryClient.cancelQueries({ queryKey: CONVERSATIONS_QUERY_KEY });
 
             const previousData = queryClient.getQueriesData<InfiniteData<GetConversationsResponse>>({
-                queryKey: CONVERSATIONS_KEY,
+                queryKey: CONVERSATIONS_QUERY_KEY,
             });
 
             queryClient.setQueriesData<InfiniteData<GetConversationsResponse>>(
-                { queryKey: CONVERSATIONS_KEY },
+                { queryKey: CONVERSATIONS_QUERY_KEY },
                 (old) => {
                     if (!old) return old;
                     return {
@@ -50,7 +50,7 @@ export default function useUpdateConversationInsight() {
             Sentry.captureException(error);
         },
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+            queryClient.invalidateQueries({ queryKey: CONVERSATIONS_QUERY_KEY });
         },
     });
 

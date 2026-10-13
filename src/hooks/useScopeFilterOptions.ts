@@ -15,14 +15,14 @@ export default function useScopeFilterOptions(enabled: boolean): { teams: Filter
     const { members, ...membersState } = useCompanyMembers(enabled);
 
     const teamOptions = useMemo(() => {
-        return teams.map((team) => ({ id: team.id, label: team.name })).sort(byLabel),
+        return teams.map((team) => ({ id: team.id, label: team.name })).sort(byLabel);
     }, [teams]);
 
     const memberOptions = useMemo(() => {
         return members
             .filter((member) => !member.isInvite)
             .map((member) => ({ id: member.id, label: displayName(member) }))
-            .sort(byLabel),  
+            .sort(byLabel);
     }, [members]);
 
     return {

@@ -24,7 +24,7 @@ import useHasSubscription from '@/hooks/useHasSubscription';
 import DownloadDesktopAppButton from './DownloadDesktopAppButton';
 import useUserNotAdminOnTeams from '@/hooks/useUserNotAdminOnTeams';
 import LaunchCoachButton from './LaunchCoachButton';
-import { Building2, Store } from 'lucide-react';
+import { Building2, MessagesSquare, Store } from 'lucide-react';
 import useIsTeamAdmin from '@/hooks/useIsTeamAdmin';
 
 interface SidebarProps {
@@ -112,6 +112,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                             <div className='sidebar-nav-item'>
                                 <LuCreditCard size={SVG_FONT_SIZE}/>
                                 <p>Subscription</p>
+                            </div>
+                        </NavLink>
+                    }
+                    {hasSubscription &&
+                        <NavLink to="/conversations" onClick={onClose}>
+                            <div className="outline"></div>
+                            <div className='sidebar-nav-item'>
+                                <MessagesSquare size={SVG_FONT_SIZE}/>
+                                <p>Conversations</p>
                             </div>
                         </NavLink>
                     }
