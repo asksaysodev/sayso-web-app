@@ -6,9 +6,10 @@ import { ThumbsDown, ThumbsUp } from 'lucide-react';
 
 interface Props {
     insights: ConversationInsight[];
+    canRate: boolean;
 }
 
-export default function CueTab({ insights }: Props) {
+export default function CueTab({ insights, canRate }: Props) {
     const { updateInsightRating } = useUpdateConversationInsight();
 
     if (insights.length === 0) {
@@ -28,22 +29,24 @@ export default function CueTab({ insights }: Props) {
                     <div key={insight.id} className="conv-cue-row">
                         <span className="conv-cue-time">{dayjs(insight.created_at).format('h:mm A')}</span>
                         <span className="conv-cue-text">{insight.message}</span>
-                        <div className="conv-cue-fb">
-                            <button
-                                className={`conv-fb-btn${rating === 'up' ? ' conv-fb-btn-up' : ''}`}
-                                onClick={() => handleRate(insight.id, rating, 'up')}
-                                aria-label="Thumbs up"
-                            >
-                                <ThumbsUp size={16}/>
-                            </button>
-                            <button
-                                className={`conv-fb-btn${rating === 'down' ? ' conv-fb-btn-down' : ''}`}
-                                onClick={() => handleRate(insight.id, rating, 'down')}
-                                aria-label="Thumbs down"
-                            >
-                                <ThumbsDown size={16}/>
-                            </button>
-                        </div>
+                        {canRate && (
+                            <div className="conv-cue-fb">
+                                <button
+                                    className={`conv-fb-btn${rating === 'up' ? ' conv-fb-btn-up' : ''}`}
+                                    onClick={() => handleRate(insight.id, rating, 'up')}
+                                    aria-label="Thumbs up"
+                                >
+                                    <ThumbsUp size={16}/>
+                                </button>
+                                <button
+                                    className={`conv-fb-btn${rating === 'down' ? ' conv-fb-btn-down' : ''}`}
+                                    onClick={() => handleRate(insight.id, rating, 'down')}
+                                    aria-label="Thumbs down"
+                                >
+                                    <ThumbsDown size={16}/>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 );
             })}

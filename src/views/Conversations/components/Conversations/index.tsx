@@ -22,6 +22,7 @@ import useConversationScope from '../../hooks/useConversationScope';
 import useConversationRequestScope from '../../hooks/useConversationRequestScope';
 import useResetConversationScope from '../../hooks/useResetConversationScope';
 import getEmptyConversationsText from '../../utils/getEmptyConversationsText';
+import getConversationAccountId from '../../utils/getConversationAccountId';
 import useConversationsSocket from './hooks/useConversationsSocket';
 import InsightsCalendarPopover, { INITIAL_DATE_RANGE } from '../InsightsCalendarPopover';
 import ConversationCollapsibleItem from './ConversationCollapsibleItem';
@@ -215,6 +216,7 @@ export default function Conversations() {
                                     key={conv.id}
                                     conversation={conv}
                                     isOpen={openedConversations.includes(conv.id)}
+                                    isOwn={!!globalUser && getConversationAccountId(conv, selection) === globalUser.id}
                                     onToggle={() => handleToggle(conv.id)}
                                 />
                             ))}
