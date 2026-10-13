@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { LuPanelLeft } from 'react-icons/lu';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import Sidebar from './Sidebar/Sidebar';
 import MobileSidebar from './Sidebar/MobileSidebar';
@@ -21,16 +20,7 @@ export default function Layout({ children }: Props) {
       <Sidebar />
       <MobileSidebar open={sidebarOpen && isMobile} onOpenChange={setSidebarOpen} />
       <div className="app-shell__main">
-        <div className="mobile-header">
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setSidebarOpen(true)}
-            aria-label="Open menu"
-          >
-            <LuPanelLeft size={18}/>
-          </button>
-        </div>
-        <Topbar />
+        <Topbar onOpenMenu={() => setSidebarOpen(true)} />
         <div className="app-shell__content">
           {children}
         </div>

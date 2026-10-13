@@ -16,7 +16,7 @@ export default function UserMenu() {
             <MenuTrigger asChild>
                 <UserMenuTrigger user={globalUser} />
             </MenuTrigger>
-            <MenuContent className='user-menu' sideOffset={8}>
+            <MenuContent className='user-menu' sideOffset={8} collisionPadding={16}>
                 <UserMenuCard user={globalUser} />
                 <UserMenuActions />
                 <UserMenuLegalLinks />

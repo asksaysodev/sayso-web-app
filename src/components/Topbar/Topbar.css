@@ -61,3 +61,34 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.topbar__menu-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-8);
+    background-color: var(--white);
+    color: var(--neutral-950);
+    cursor: pointer;
+}
+
+.topbar__menu-button:focus-visible {
+    outline: 2px solid var(--primary-300);
+    outline-offset: 2px;
+}
+
+.topbar__logo {
+    width: 75px;
+    height: 24px;
+}
+
+@media (max-width: 767px) {
+    .topbar {
+        height: 72px;
+        padding: 0 var(--space-16);
+    }
+}

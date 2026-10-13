@@ -151,3 +151,11 @@
 .user-menu__legal-link:hover {
     text-decoration: underline;
 }
+
+@media (max-width: 767px) {
+    .user-menu__trigger-name,
+    .user-menu__trigger .user-menu__badge,
+    .user-menu__trigger-caret {
+        display: none;
+    }
+}
