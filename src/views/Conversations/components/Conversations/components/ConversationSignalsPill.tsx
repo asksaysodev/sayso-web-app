@@ -60,9 +60,7 @@ export default function ConversationSignalsPill({ insightCount, smartCaptures, p
                     </>
                 }
                 {
-                    smartCaptures.length > 0 && hasPulse &&
-                    
-                    <>
+                    smartCaptures.length > 0 && hasPulse && <>
                         <span className="conv-signals-div" />
                     </>
                 }

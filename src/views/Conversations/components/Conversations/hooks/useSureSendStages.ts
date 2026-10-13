@@ -8,16 +8,17 @@ import getSureSendStages from '@/services/integrations/suresend/getSureSendStage
  * @param enabled - Pass the modal's `open` so stages only load while it's showing.
  */
 export default function useSureSendStages(enabled: boolean) {
-    const { data, isLoading, isError, error } = useQuery({
+    const { data, isFetching, isError, error } = useQuery({
         queryKey: ['suresend-stages'],
         queryFn: getSureSendStages,
         select: (stages) => stages.filter((stage) => stage.active),
         enabled,
+        retry: false,
     });
 
     useEffect(() => {
         if (error) reportApiError(error, { feature: 'suresend', operation: 'getSureSendStages' });
     }, [error]);
 
-    return { stages: data ?? [], isLoading, isError };
+    return { stages: data ?? [], isLoading: isFetching, isError: isError && !isFetching };
 }

@@ -6,7 +6,7 @@ export default function useRefreshDashboardData() {
     const queryClient = useQueryClient();
 
     const refreshDashboardData = useCallback(() => {
-        queryClient.refetchQueries({ queryKey: DASHBOARD_QUERY_KEY });
+        queryClient.refetchQueries({ queryKey: DASHBOARD_QUERY_KEY, type: 'active' });
     }, [queryClient]);
 
     return { refreshDashboardData };

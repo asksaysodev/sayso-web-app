@@ -9,10 +9,10 @@ import './Tips.css';
 const SKELETON_CARDS = ['tip-1', 'tip-2', 'tip-3'];
 
 export default function CoachTipsWidget() {
-    const { tips, scopeKey, isError, retry } = useDashboardTips();
+    const { tips, scopeKey, isError, isRetrying, retry } = useDashboardTips();
 
     const renderBody = () => {
-        if (isError) return <WidgetErrorState subject='coach tips' onRetry={retry} />;
+        if (isError) return <WidgetErrorState subject='coach tips' onRetry={retry} isRetrying={isRetrying} />;
         if (!tips) {
             return (
                 <div className='dashboard-tips__grid'>

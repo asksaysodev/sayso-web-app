@@ -10,7 +10,7 @@ import type { OverviewPeriod } from '../types';
 
 export default function useDashboardOverview(period: OverviewPeriod) {
     const { params, key } = useDashboardRequestScope();
-    const { data, isError, error, refetch } = useQuery({
+    const { data, isError, isFetching, error, refetch } = useQuery({
         queryKey: dashboardQueryKeys.overview(key, period),
         queryFn: () => getDashboardOverview(period, params),
         retry: shouldRetryDashboardQuery,
@@ -22,5 +22,5 @@ export default function useDashboardOverview(period: OverviewPeriod) {
         if (error) reportApiError(error, { feature: 'dashboard', operation: 'getDashboardOverview' });
     }, [error]);
 
-    return { overview: data ?? null, isError, retry: refetch };
+    return { overview: data ?? null, isError, isRetrying: isError && isFetching, retry: refetch };
 }
