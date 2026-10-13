@@ -11,10 +11,10 @@ import './Activity.css';
 
 export default function ActivityWidget() {
     const [weekOffset, setWeekOffset] = useState(0);
-    const { activity, isError, retry } = useDashboardActivity(weekOffset);
+    const { activity, isError, isRetrying, retry } = useDashboardActivity(weekOffset);
 
     const renderBody = () => {
-        if (isError) return <WidgetErrorState subject='activity' onRetry={retry} />;
+        if (isError) return <WidgetErrorState subject='activity' onRetry={retry} isRetrying={isRetrying} />;
         if (!activity) return <ActivityChartSkeleton />;
         if (activity.totalMinutes === 0) {
             return (

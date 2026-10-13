@@ -1,0 +1,61 @@
+.playbook-file-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-8);
+    padding: 28px var(--space-24);
+    border: 1.5px dashed var(--neutral-400);
+    border-radius: var(--radius-12);
+    background-color: var(--surface-canvas);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.playbook-file-field:hover,
+.playbook-file-field--dragging {
+    border-color: var(--primary-500);
+    background-color: var(--primary-50);
+}
+
+.playbook-file-field__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.playbook-file-field:has(+ .playbook-file-field__input:focus-visible) {
+    outline: 2px solid var(--primary-300);
+    outline-offset: 2px;
+}
+
+.playbook-file-field__icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background-color: var(--surface-bg);
+    color: var(--primary-500);
+    box-shadow: var(--shadow-menu);
+}
+
+.playbook-file-field__title {
+    font-size: var(--text-body-lg-size);
+    line-height: 22px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.playbook-file-field__browse {
+    color: var(--primary-500);
+}
+
+.playbook-file-field__hint {
+    font-size: var(--text-body-md-size);
+    line-height: 20px;
+    color: var(--text-secondary);
+}
