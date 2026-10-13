@@ -1,0 +1,48 @@
+.company-name-field {
+    width: 100%;
+    max-width: 560px;
+}
+
+.company-name-field .ds-field:hover:not(.ds-field--disabled) {
+    border-color: var(--primary-200);
+    background-color: var(--surface-canvas);
+}
+
+.company-name-field .ds-field:focus-within {
+    border-color: var(--primary-500);
+    background-color: var(--surface-canvas);
+}
+
+.company-name-field .ds-field--invalid,
+.company-name-field .ds-field--invalid:hover {
+    border-color: var(--error-icon);
+}
+
+.company-name-field .ds-field__trailing {
+    color: var(--text-primary);
+}
+
+/* Figma empty state: the label sits alone at value size until the field is focused */
+.company-name-field--empty .ds-field:not(:focus-within) .ds-field__label {
+    font-size: var(--text-body-lg-size);
+    line-height: 22px;
+}
+
+.company-name-field--empty .ds-field:not(:focus-within) .ds-field__input {
+    height: 0;
+}
+
+.company-name-field__saved {
+    color: var(--primary-500);
+}
+
+.company-name-field__spinner {
+    color: var(--primary-500);
+    animation: company-name-field-spin 0.8s linear infinite;
+}
+
+@keyframes company-name-field-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

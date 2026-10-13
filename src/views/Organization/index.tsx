@@ -2,8 +2,11 @@ import { useSearchParams } from 'react-router-dom';
 import { Building2, UsersRound } from 'lucide-react';
 import { PageHeader } from '@/components/ds/PageHeader';
 import { SegmentedControl, type SegmentedControlItem } from '@/components/ds/SegmentedControl';
+import { useAuth } from '@/context/AuthContext';
+import CompanyNameField from './Company/components/CompanyNameField';
 import CompanyMembersCard from './Company/components/CompanyMembersCard';
 import TeamsCard from './Teams/components/TeamsCard';
+import canRenameCompany from './shared/utils/canRenameCompany';
 import type { OrganizationTab } from './types';
 import './Organization.css';
 
@@ -18,6 +21,7 @@ const isOrganizationTab = (value: string | null): value is OrganizationTab =>
     TABS.some((tab) => tab.value === value);
 
 export default function Organization() {
+    const { globalUser } = useAuth();
     const [searchParams, setSearchParams] = useSearchParams();
     const tabParam = searchParams.get('tab');
     const activeTab = isOrganizationTab(tabParam) ? tabParam : DEFAULT_TAB;
@@ -39,6 +43,7 @@ export default function Organization() {
                 title='Organization'
                 description='See how your org is doing as a whole, by team, or by individual — and manage who belongs where.'
             />
+            {activeTab === 'company' && canRenameCompany(globalUser?.role ?? null) && <CompanyNameField />}
             <SegmentedControl
                 aria-label='Organization view'
                 items={TABS}
