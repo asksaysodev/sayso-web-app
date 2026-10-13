@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import { LuPlus, LuMinus } from 'react-icons/lu';
+import { PiCaretDown } from 'react-icons/pi';
 import { SquarePen, UserPlus } from 'lucide-react';
 import { ConversationItem } from '@/types/coach';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
@@ -31,8 +31,8 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
     const { isConnected } = useCrmConnection();
 
     const pulse = conversation.pulse ?? [];
-    const time = dayjs(conversation.created_at).format('h:mm A');
-    const date = dayjs(conversation.created_at).format('ddd, MMM D');
+    const time = dayjs(conversation.created_at).format('hh:mm a');
+    const date = dayjs(conversation.created_at).format('ddd, MMM DD');
 	const isPendingSummary = conversation.summary === 'Creating conversation summary';
     const ownerName = conversation.owner ? displayName(conversation.owner) : null;
     const canAssignLead = isOwn && isConnected;
@@ -110,7 +110,6 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
 
                 <div className="conv-meter-wrapper">
                     <ConversationSignalsPill
-                        insightCount={(conversation.insights ?? []).length}
                         smartCaptures={conversation.smart_captures ?? []}
                         pulse={pulse}
                         appointmentBooked={conversation.appointment_booked}
@@ -118,7 +117,7 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
                 </div>
 
                 <span className="conv-toggle">
-                    {isOpen ? <LuMinus size={17} /> : <LuPlus size={17} />}
+                    <PiCaretDown size={16} />
                 </span>
             </div>
 
@@ -127,7 +126,7 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
                     <ConversationTabs value={activeTab} onChange={setActiveTab} />
                     <div className="conv-tabbody">
                         {activeTab === 'Cue' && <CueTab insights={conversation.insights ?? []} canRate={isOwn} />}
-                        {activeTab === 'Smart Capture' && <SmartCaptureTab smartCaptures={conversation.smart_captures ?? []} />}
+                        {activeTab === 'Smart Capture' && <SmartCaptureTab smartCaptures={conversation.smart_captures ?? []} appointmentBooked={conversation.appointment_booked} />}
                         {activeTab === 'Pulse' && <PulseTab pulse={pulse} />}
                     </div>
                 </div>

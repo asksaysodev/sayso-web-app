@@ -1,17 +1,17 @@
-import { LuMapPin, LuCalendarCheck } from 'react-icons/lu';
+import clsx from 'clsx';
+import { PiCalendarCheck, PiMapPin } from 'react-icons/pi';
 import type { ConversationSmartCapture, ConversationPulse } from '@/types/coach';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { LPMAMA_CONFIG } from '../constants/lpmama';
 import TooltipArrow from './ConversationSignalsTooltipArrow';
 
 interface Props {
-    insightCount: number;
     smartCaptures: ConversationSmartCapture[];
     pulse: ConversationPulse[];
     appointmentBooked: boolean | null;
 }
 
-export default function ConversationSignalsPill({ insightCount, smartCaptures, pulse, appointmentBooked }: Props) {
+export default function ConversationSignalsPill({ smartCaptures, pulse, appointmentBooked }: Props) {
     const capturedTopics = new Set(smartCaptures.map(sc => sc.topic));
     const hasPulse = pulse.length > 0;
     const hasAppointment = appointmentBooked === true;
@@ -20,77 +20,45 @@ export default function ConversationSignalsPill({ insightCount, smartCaptures, p
     return (
         <TooltipProvider delayDuration={150}>
             <div className="conv-signals">
-                {
-                    insightCount > 0 &&
-                    <>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <span className="conv-signals-count">{insightCount}</span>
-                            </TooltipTrigger>
-                            <TooltipContent>{insightCount} Cue Insights<TooltipArrow /></TooltipContent>
-                        </Tooltip>
-                        <span className="conv-signals-div" />
-                    </>
-                }
-                {
-                    smartCaptures.length > 0 &&
-                    <>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <div className="conv-signals-letters">
-                                    {LPMAMA_CONFIG.map((f) => {
-                                        const captured = capturedTopics.has(f.key);
-                                        return (
-                                            <span
-                                                key={f.key}
-                                                className="conv-signals-letter"
-                                                style={{
-                                                    color: captured ? 'var(--sayso-indigo)' : 'var(--sayso-indigo-washed)',
-                                                    fontWeight: captured ? '700' : '400'
-                                                }}
-                                            >
-                                                {f.letter}
-                                            </span>
-                                        );
-                                    })}
-                                </div>
-                            </TooltipTrigger>
-                            <TooltipContent>Smart Capture<TooltipArrow /></TooltipContent>
-                        </Tooltip>
-                    </>
-                }
-                {
-                    smartCaptures.length > 0 && hasPulse &&
-                    
-                    <>
-                        <span className="conv-signals-div" />
-                    </>
-                }
-                {hasPulse && (
-                    <>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <span className="conv-signals-icon">
-                                    <LuMapPin size={13} />
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="conv-signals-group">
+                            {LPMAMA_CONFIG.map((field) => (
+                                <span
+                                    key={field.key}
+                                    className={clsx('conv-signals-item', capturedTopics.has(field.key) && 'conv-signals-item--on')}
+                                >
+                                    {field.letter}
                                 </span>
-                            </TooltipTrigger>
-                            <TooltipContent>{`Market Pulse${pulseZip ? ` - ${pulseZip}` : ''}`}<TooltipArrow /></TooltipContent>
-                        </Tooltip>
-                    </>
-                )}
-                {hasAppointment && (
-                    <>
-                        <span className="conv-signals-div" />
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <span className="conv-signals-icon">
-                                    <LuCalendarCheck size={13} />
-                                </span>
-                            </TooltipTrigger>
-                            <TooltipContent>Appointment Booked<TooltipArrow /></TooltipContent>
-                        </Tooltip>
-                    </>
-                )}
+                            ))}
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Smart Capture<TooltipArrow /></TooltipContent>
+                </Tooltip>
+                <div className="conv-signals-group">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span className={clsx('conv-signals-item', hasPulse && 'conv-signals-item--on')}>
+                                <PiMapPin size={16} />
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {hasPulse ? `Market Pulse${pulseZip ? ` - ${pulseZip}` : ''}` : 'No Market Pulse'}
+                            <TooltipArrow />
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span className={clsx('conv-signals-item', hasAppointment && 'conv-signals-item--on')}>
+                                <PiCalendarCheck size={16} />
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {hasAppointment ? 'Appointment Booked' : 'No Appointment'}
+                            <TooltipArrow />
+                        </TooltipContent>
+                    </Tooltip>
+                </div>
             </div>
         </TooltipProvider>
     );

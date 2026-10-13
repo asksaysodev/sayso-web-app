@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { ConversationInsight } from '@/types/coach';
 import { InsightRating } from '../../../../types';
 import useUpdateConversationInsight from '../../hooks/useUpdateConversationInsight';
-import { ThumbsDown, ThumbsUp } from 'lucide-react';
+import { PiThumbsDown, PiThumbsUp } from 'react-icons/pi';
 
 interface Props {
     insights: ConversationInsight[];
@@ -13,7 +13,7 @@ export default function CueTab({ insights, canRate }: Props) {
     const { updateInsightRating } = useUpdateConversationInsight();
 
     if (insights.length === 0) {
-        return <div className="conv-cue-empty">No coaching insights recorded for this conversation.</div>;
+        return <div className="conv-tab-empty">No coaching insights recorded for this conversation.</div>;
     }
 
     const handleRate = (insightId: string, currentRating: InsightRating, newRating: InsightRating) => {
@@ -27,7 +27,7 @@ export default function CueTab({ insights, canRate }: Props) {
                 const rating = insight.rating as InsightRating;
                 return (
                     <div key={insight.id} className="conv-cue-row">
-                        <span className="conv-cue-time">{dayjs(insight.created_at).format('h:mm A')}</span>
+                        <span className="conv-cue-time">{dayjs(insight.created_at).format('hh:mm a')}</span>
                         <span className="conv-cue-text">{insight.message}</span>
                         {canRate && (
                             <div className="conv-cue-fb">
@@ -36,14 +36,14 @@ export default function CueTab({ insights, canRate }: Props) {
                                     onClick={() => handleRate(insight.id, rating, 'up')}
                                     aria-label="Thumbs up"
                                 >
-                                    <ThumbsUp size={16}/>
+                                    <PiThumbsUp size={16} />
                                 </button>
                                 <button
                                     className={`conv-fb-btn${rating === 'down' ? ' conv-fb-btn-down' : ''}`}
                                     onClick={() => handleRate(insight.id, rating, 'down')}
                                     aria-label="Thumbs down"
                                 >
-                                    <ThumbsDown size={16}/>
+                                    <PiThumbsDown size={16} />
                                 </button>
                             </div>
                         )}

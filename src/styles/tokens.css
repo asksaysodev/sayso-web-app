@@ -5,8 +5,10 @@
 :root {
   /* Neutrals */
   --white: #ffffff;
+  --neutral-50: #fbfbfb;
   --neutral-100: #f6f6f6;
   --neutral-200: #eaeaeb;
+  --neutral-300: #d7d7da;
   --neutral-400: #b5b5ba;
   --neutral-500: #71717a;
   --neutral-600: #62626a;
@@ -19,6 +21,7 @@
   --primary-300: #86adf2;
   --primary-500: #2367ee;
   --primary-800: #001f81;
+  --primary-900: #000f56;
   --text-brand: #054dd2;
 
   /* Surface */
