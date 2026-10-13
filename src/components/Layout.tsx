@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { LuPanelLeft } from 'react-icons/lu';
-import Sidebar from './Sidebar';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import Sidebar from './Sidebar/Sidebar';
+import MobileSidebar from './Sidebar/MobileSidebar';
 import NotificationWidget from './NotificationWidget';
 
 import './Layout.css';
@@ -11,10 +13,12 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 767px)');
 
   return (
     <div className="app-shell">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar />
+      <MobileSidebar open={sidebarOpen && isMobile} onOpenChange={setSidebarOpen} />
       <div className="app-shell__main">
         <div className="mobile-header">
           <button

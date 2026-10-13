@@ -35,6 +35,31 @@
     animation: ds-sheet-out 0.15s ease-in;
 }
 
+.ds-sheet--left {
+    right: auto;
+    left: 0;
+}
+
+.ds-sheet--left[data-state='open'] {
+    animation-name: ds-sheet-left-in;
+}
+
+.ds-sheet--left[data-state='closed'] {
+    animation-name: ds-sheet-left-out;
+}
+
+@keyframes ds-sheet-left-in {
+    from {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes ds-sheet-left-out {
+    to {
+        transform: translateX(-100%);
+    }
+}
+
 @keyframes ds-sheet-in {
     from {
         transform: translateX(100%);
