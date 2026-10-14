@@ -15,5 +15,13 @@ export const sentryConfig = {
   // are listed because the message differs between them — matching only the
   // navigatorLock wording is what let SAYSO-APP-A9 through after supabase.ts
   // switched to processLock.
-  ignoreErrors: [/Acquiring (an exclusive Navigator LockManager lock|process lock)/],
+  ignoreErrors: [
+    /Acquiring (an exclusive Navigator LockManager lock|process lock)/,
+    // ReferralRocket widget (index.html) rejects when its impression-count call
+    // fails. Message-level backstop for denyUrls below: unhandled rejections can
+    // arrive without stack frames, which denyUrls can't match (SAYSO-APP-BR).
+    /Failed to complete the action: Unexpected response status/,
+  ],
+  // Third-party scripts whose errors aren't ours to fix.
+  denyUrls: [/referralrocket\.io/],
 }
