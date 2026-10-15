@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import useTeams from '@/views/Organization/shared/hooks/useTeams';
 import useCompanyMembers from '@/views/Organization/Company/hooks/useCompanyMembers';
-import displayName from '@/views/Organization/shared/utils/displayName';
+import displayName from '@/utils/displayName';
 import type { FilterOption, FilterOptionList } from '@/types/scope';
 
 const byLabel = (a: FilterOption, b: FilterOption) => a.label.localeCompare(b.label);

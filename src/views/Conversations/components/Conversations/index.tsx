@@ -14,7 +14,7 @@ import FiltersButton from '@/components/ScopeFilters/FiltersButton';
 import FiltersDrawer from '@/components/ScopeFilters/FiltersDrawer';
 import findScopeSelectionLabel from '@/utils/findScopeSelectionLabel';
 import shouldRetryQuery from '@/utils/shouldRetryQuery';
-import displayName from '@/views/Organization/shared/utils/displayName';
+import displayName from '@/utils/displayName';
 import getConversations from '../../services/getConversations';
 import { CONVERSATIONS_QUERY_KEY } from '../../queryKeys';
 import type { ConversationFilter } from '../../types';

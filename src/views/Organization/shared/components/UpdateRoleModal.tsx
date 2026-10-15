@@ -6,7 +6,7 @@ import { SelectField, type SelectFieldOption } from '@/components/ds/SelectField
 import { TextField } from '@/components/ds/TextField';
 import useUpdateMemberRole from '../hooks/useUpdateMemberRole';
 import type { AssignableRole, RoleTarget } from '../types';
-import roleLabel from '../utils/roleLabel';
+import roleLabel from '@/utils/roleLabel';
 import ModalError from './ModalError';
 import './UpdateRoleModal.css';
 

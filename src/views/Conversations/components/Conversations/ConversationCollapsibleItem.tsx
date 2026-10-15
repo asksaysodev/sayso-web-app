@@ -16,7 +16,7 @@ import useAttachConversationLead from './hooks/useAttachConversationLead';
 import './styles/ConversationCollapsibleItem.css';
 import useCrmConnection from '@/hooks/integrations/crm/useCrmConnection';
 import ConversationPending from './ConversationPending';
-import displayName from '@/views/Organization/shared/utils/displayName';
+import displayName from '@/utils/displayName';
 
 interface Props {
     conversation: ConversationItem;

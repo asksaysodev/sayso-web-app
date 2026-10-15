@@ -1,5 +1,5 @@
 import { User } from 'lucide-react';
-import displayName from '@/views/Organization/shared/utils/displayName';
+import displayName from '@/utils/displayName';
 import type { PickerMember } from './types';
 
 interface Props {
