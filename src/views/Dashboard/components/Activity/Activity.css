@@ -59,6 +59,7 @@
     flex: 1;
     width: 100%;
     min-height: 80px;
+    max-width: 50px;
 }
 
 /* Absolute so the inline height % resolves against the flex-sized track. */
