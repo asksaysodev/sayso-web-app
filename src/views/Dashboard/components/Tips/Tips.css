@@ -52,8 +52,13 @@
     color: var(--text-primary);
 }
 
+/* Tip copy length varies; clamp so long tips can't grow the whole Tips card (Figma: 4 lines). */
 .dashboard-tip-card__text {
+    display: -webkit-box;
     margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
     font-size: var(--text-body-md-size);
     color: var(--text-secondary);
 }
