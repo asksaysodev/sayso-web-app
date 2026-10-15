@@ -41,6 +41,27 @@
     color: var(--error-icon);
 }
 
+.allocated-hours-card__empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-4);
+    min-height: 48px;
+}
+
+.allocated-hours-card__title {
+    font-size: var(--text-h5-size);
+    line-height: var(--text-h5-line);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.allocated-hours-card__text {
+    margin: 0;
+    font-size: var(--text-body-md-size);
+    color: var(--text-secondary);
+}
+
 @media (max-width: 767px) {
     .allocated-hours-card {
         flex-direction: column;

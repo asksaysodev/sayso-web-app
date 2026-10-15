@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Clock, Pencil } from 'lucide-react';
+import { Clock, Pencil, Plus } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
 import { Card } from '@/components/ds/Card';
 import type { TeamDetail } from '../../types';
@@ -15,6 +15,7 @@ interface Props {
 export default function AllocatedHoursCard({ team }: Props) {
     const [isEditOpen, setIsEditOpen] = useState(false);
     const tone = allocationTone(team.status)?.tone ?? 'primary';
+    const isUncapped = team.capHours === null;
 
     return (
         <Card className='allocated-hours-card'>
@@ -22,17 +23,29 @@ export default function AllocatedHoursCard({ team }: Props) {
                 <span className={`allocated-hours-card__tile allocated-hours-card__tile--${tone}`} aria-hidden='true'>
                     <Clock size={32} />
                 </span>
-                <AllocationUsage
-                    title='Allocated hours'
-                    usedHours={team.usedHours}
-                    capHours={team.capHours}
-                    capPercent={team.capPercent}
-                    status={team.status}
-                    variant='card'
-                />
+                {isUncapped ? (
+                    <div className='allocated-hours-card__empty'>
+                        <span className='allocated-hours-card__title'>Allocated hours</span>
+                        <p className='allocated-hours-card__text'>This team has no allocated hours.</p>
+                    </div>
+                ) : (
+                    <AllocationUsage
+                        title='Allocated hours'
+                        usedHours={team.usedHours}
+                        capHours={team.capHours}
+                        capPercent={team.capPercent}
+                        status={team.status}
+                        variant='card'
+                    />
+                )}
             </div>
-            <Button variant='secondary' size='sm' leftIcon={<Pencil size={16} />} onClick={() => setIsEditOpen(true)}>
-                Edit hours
+            <Button
+                variant='secondary'
+                size='sm'
+                leftIcon={isUncapped ? <Plus size={16} /> : <Pencil size={16} />}
+                onClick={() => setIsEditOpen(true)}
+            >
+                {isUncapped ? 'Set hours' : 'Edit hours'}
             </Button>
             {isEditOpen && <EditHoursModal team={team} onClose={() => setIsEditOpen(false)} />}
         </Card>
