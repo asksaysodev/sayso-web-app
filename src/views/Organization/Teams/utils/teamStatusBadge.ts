@@ -4,7 +4,7 @@ import type { TeamStatus } from '@/views/Organization/shared/types';
 const STATUS_BADGES: Record<TeamStatus, { label: string; tone: BadgeTone; rank: number }> = {
     over: { label: 'Over', tone: 'error', rank: 0 },
     approaching: { label: 'Approaching', tone: 'warning', rank: 1 },
-    on_track: { label: 'On track', tone: 'neutral', rank: 2 },
+    on_track: { label: 'On track', tone: 'success', rank: 2 },
     no_cap: { label: 'No cap set', tone: 'neutral', rank: 3 },
 };
 

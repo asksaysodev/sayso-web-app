@@ -33,12 +33,14 @@
     flex: 1;
     flex-direction: column;
     justify-content: flex-end;
+    min-height: 0;
 }
 
 .dashboard-activity-chart__columns {
     display: flex;
-    align-items: flex-end;
+    flex: 1;
     gap: 48px;
+    min-height: 0;
 }
 
 .dashboard-activity-chart__column {
@@ -46,20 +48,26 @@
     flex: 1;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-end;
     gap: var(--space-8);
     min-width: 0;
 }
 
+/* Flexes with the card height instead of a fixed 155px (Figma size), so the row can shrink on short screens. */
 .dashboard-activity-chart__track {
-    display: flex;
-    align-items: flex-end;
+    position: relative;
+    flex: 1;
     width: 100%;
-    height: 155px;
+    min-height: 80px;
+    max-width: 50px;
 }
 
+/* Absolute so the inline height % resolves against the flex-sized track. */
 .dashboard-activity-chart__bar {
-    position: relative;
-    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     min-height: 2px;
     border-radius: 4px 4px 0 0;
     background-color: var(--primary-500);
@@ -105,6 +113,9 @@
 }
 
 .dashboard-activity-chart__bar-skeleton {
+    position: absolute;
+    bottom: 0;
+    left: 0;
     width: 100%;
     border-radius: 4px 4px 0 0;
 }
@@ -123,6 +134,14 @@
 @media (max-width: 1279px) {
     .dashboard-activity-chart__columns {
         gap: var(--space-24);
+    }
+}
+
+/* Single-column layout scrolls anyway; keep the design's fixed chart height. */
+@media (max-width: 1023px) {
+    .dashboard-activity-chart__track {
+        flex: none;
+        height: 155px;
     }
 }
 

@@ -1,4 +1,4 @@
-import { CircleHelp } from 'lucide-react';
+import { PiQuestion } from 'react-icons/pi';
 import { HELP_CENTER_URL } from '@/constants';
 import { openExternal } from '@/utils/helpers/openExternal';
 import SidebarTooltip from './SidebarTooltip';
@@ -18,7 +18,7 @@ export default function SidebarHelpItem({ collapsed }: Props) {
                 aria-label={collapsed ? LABEL : undefined}
                 onClick={() => openExternal(HELP_CENTER_URL)}
             >
-                <CircleHelp size={24} strokeWidth={1.5} className='sidebar__item-icon' />
+                <PiQuestion size={24} className='sidebar__item-icon' />
                 {!collapsed && <span className='sidebar__item-label'>{LABEL}</span>}
             </button>
         </SidebarTooltip>

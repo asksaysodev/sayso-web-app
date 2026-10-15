@@ -3,6 +3,11 @@
     font-weight: var(--font-weight-regular);
 }
 
+.scope-filters-button--icon.ds-button--icon {
+    width: 40px;
+    height: 40px;
+}
+
 .scope-filters__clear {
     padding: var(--space-2) var(--space-4);
     border: none;

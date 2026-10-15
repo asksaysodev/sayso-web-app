@@ -52,8 +52,13 @@
     color: var(--text-primary);
 }
 
+/* Tip copy length varies; clamp so long tips can't grow the whole Tips card (Figma: 4 lines). */
 .dashboard-tip-card__text {
+    display: -webkit-box;
     margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
     font-size: var(--text-body-md-size);
     color: var(--text-secondary);
 }
@@ -112,7 +117,7 @@
     gap: var(--space-8);
 }
 
-.dashboard-tips__nav .ds-button {
+.dashboard-tips__nav .ds-button:not(.ds-button--icon) {
     padding: 0 var(--space-24);
     font-weight: var(--font-weight-regular);
 }
@@ -139,6 +144,12 @@
 @media (max-width: 767px) {
     .dashboard-tips__grid {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* One tip per page on phones and the page scrolls anyway, so show the full copy. */
+    .dashboard-tip-card__text {
+        display: block;
+        -webkit-line-clamp: unset;
     }
 
     .dashboard-tips__empty.dashboard-widget-state {
