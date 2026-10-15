@@ -1,4 +1,4 @@
-import { ArrowLeftToLine, ArrowRightToLine } from 'lucide-react';
+import { PiArrowLineLeft, PiArrowLineRight } from 'react-icons/pi';
 import SidebarTooltip from './SidebarTooltip';
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function SidebarCollapseToggle({ collapsed, onToggle }: Props) {
-    const Icon = collapsed ? ArrowRightToLine : ArrowLeftToLine;
+    const Icon = collapsed ? PiArrowLineRight : PiArrowLineLeft;
 
     return (
         <SidebarTooltip label='Expand' enabled={collapsed}>
@@ -18,7 +18,7 @@ export default function SidebarCollapseToggle({ collapsed, onToggle }: Props) {
                 aria-expanded={!collapsed}
                 onClick={onToggle}
             >
-                <Icon size={24} strokeWidth={1.5} className='sidebar__item-icon' />
+                <Icon size={24} className='sidebar__item-icon' />
                 {!collapsed && <span className='sidebar__item-label'>Collapse</span>}
             </button>
         </SidebarTooltip>
