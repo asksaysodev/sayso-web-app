@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react';
 import clsx from 'clsx';
 import { Check, LoaderCircle, Pencil } from 'lucide-react';
 import { TextField } from '@/components/ds/TextField';
@@ -10,14 +10,18 @@ import './CompanyNameField.css';
 const SAVED_ICON_MS = 2000;
 
 export default function CompanyNameField() {
-    const { company, isLoading } = useCompany();
+    const { company, isLoading, isError } = useCompany();
     const { renameCompany, isPending, errorMessage, reset } = useRenameCompany();
     const [draft, setDraft] = useState<string | null>(null);
     const [validationError, setValidationError] = useState<string | null>(null);
     const [justSaved, setJustSaved] = useState(false);
+    // Set by Enter so a failed save is retried only on purpose, not on every blur.
+    const retryRequested = useRef(false);
 
     const savedName = company?.company_name ?? '';
     const value = draft ?? savedName;
+    // Without the saved name the field would show blank, and saving would overwrite a name the user never saw.
+    const loadFailed = company === null && isError;
 
     useEffect(() => {
         if (!justSaved) return;
@@ -26,7 +30,10 @@ export default function CompanyNameField() {
     }, [justSaved]);
 
     const save = () => {
+        const retry = retryRequested.current;
+        retryRequested.current = false;
         if (isPending || draft === null) return;
+        if (errorMessage && !retry) return;
         const name = draft.trim();
         if (name === savedName) {
             setDraft(null);
@@ -56,7 +63,10 @@ export default function CompanyNameField() {
     };
 
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') event.currentTarget.blur();
+        if (event.key === 'Enter') {
+            retryRequested.current = true;
+            event.currentTarget.blur();
+        }
         if (event.key === 'Escape') {
             setDraft(null);
             setValidationError(null);
@@ -81,6 +91,8 @@ export default function CompanyNameField() {
             onBlur={save}
             onKeyDown={handleKeyDown}
             readOnly={isPending || isLoading}
+            disabled={loadFailed}
+            helperText={loadFailed ? "Couldn't load the organization name. Refresh to try again." : undefined}
             maxLength={COMPANY_NAME_MAX_LENGTH}
             trailingIcon={trailingIcon}
             error={validationError ?? errorMessage ?? undefined}
