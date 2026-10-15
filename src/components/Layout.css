@@ -1,0 +1,22 @@
+.app-shell {
+  display: flex;
+  height: 100dvh;
+  width: 100vw;
+  background-color: var(--white);
+  position: relative;
+}
+
+.app-shell__main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.app-shell__content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}

@@ -1,6 +1,6 @@
 import type { Comparator } from '@/hooks/useSortableRows';
-import displayName from '@/views/Organization/shared/utils/displayName';
-import roleLabel from '@/views/Organization/shared/utils/roleLabel';
+import displayName from '@/utils/displayName';
+import roleLabel from '@/utils/roleLabel';
 import type { TeamMember, TeamMemberSortKey } from '../types';
 
 const byText = (a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: 'base' });

@@ -1,6 +1,6 @@
 .view-layout-container {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     padding: 32px 48px;
     display: flex;
     flex-direction: column;
@@ -60,14 +60,4 @@
     .view-layout-container {
         padding: 24px 32px;
     }
-}
-
-.view-layout-refresh-button {
-    cursor: pointer;
-    color: var(--sayso-lightgray);
-    transition: transform 0.2s ease;
-}
-
-.view-layout-refresh-button:hover {
-    transform: translateY(-2px);
 }
