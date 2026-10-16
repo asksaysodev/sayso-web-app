@@ -9,6 +9,12 @@
     background-color: white;
 }
 
+/* Profile: fields sit straight on the page canvas. */
+.settings-panel.settings-panel--plain {
+    padding: 0;
+    background-color: transparent;
+}
+
 .settings-panel-title {
     width: 100%;
     display: flex;

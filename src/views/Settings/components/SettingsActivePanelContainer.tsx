@@ -41,7 +41,7 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
     if (selectedPanel === 'subscription') return <SettingsSubscription />;
 
     return (
-        <div className='settings-panel'>
+        <div className={`settings-panel${selectedPanel === 'personal' ? ' settings-panel--plain' : ''}`}>
             {/* Profile is just its fields, no title/description. */}
             {selectedPanel !== 'personal' && <SettingsActivePanelContainerHeader selectedPanel={selectedPanel} />}
             <div className='settings-panel-body'>
