@@ -22,6 +22,10 @@
     padding-left: var(--space-16);
 }
 
+.ds-field:hover:not(:focus-within):not([data-state='open']):not(.ds-field--disabled):not(.ds-field--invalid) {
+    border-color: var(--primary-200);
+}
+
 .ds-field:focus-within,
 .ds-field:focus-visible,
 .ds-field[data-state='open'] {
