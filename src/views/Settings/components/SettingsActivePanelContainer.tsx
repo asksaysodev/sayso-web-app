@@ -15,17 +15,16 @@ const isPlainPanel = (panel: SettingsPanel): panel is PlainPanel => (PLAIN_PANEL
 
 interface Props {
     selectedPanel: SettingsPanel;
-    setUnsavedChanges: (unsavedChanges: boolean) => void;
 }
 
-export default function SettingsActivePanelContainer({ selectedPanel, setUnsavedChanges }: Props) {
+export default function SettingsActivePanelContainer({ selectedPanel }: Props) {
 
     const { globalUser } = useAuth();
 
     const renderPanel = () => {
         switch(selectedPanel) {
             case 'profile': return (
-                <SettingsPersonalForm setUnsavedChanges={setUnsavedChanges} globalUser={globalUser} />
+                <SettingsPersonalForm globalUser={globalUser} />
             )
             case "files": return (
                 <SettingsFilesForm />

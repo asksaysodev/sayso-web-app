@@ -1,5 +1,4 @@
-import SaysoModal from "@/components/SaysoModal";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/ds/PageHeader";
 import "./styles.css";
@@ -12,7 +11,6 @@ import useCanManageBilling from "@/hooks/useCanManageBilling";
 
 export default function Settings() {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [showUnsavedChangesModal, setShowUnsavedChangesModal] = useState(false);
     const canAccessReferrals = useCanAccessReferrals();
     const canManageBilling = useCanManageBilling();
 
@@ -29,14 +27,16 @@ export default function Settings() {
         return panels;
     }, [canManageBilling, canAccessReferrals]);
 
-    const tabParam = searchParams.get("tab");
+    // The FUB OAuth callback returns to /settings?fub=… with no tab; its handler lives on Connections.
+    const isFubReturn = searchParams.has("fub");
+    const tabParam = searchParams.get("tab") ?? (isFubReturn ? SettingsPanelEnum.CONNECTIONS : null);
     const selectedPanel = tabParam && availablePanels.includes(tabParam as SettingsPanel)
         ? tabParam as SettingsPanel
         : DEFAULT_SETTINGS_PANEL;
 
-    // An unknown or not-allowed ?tab= falls back to the default; rewrite the URL so the breadcrumb matches.
+    // Write the shown panel to the URL when ?tab= is missing (FUB return), unknown or not allowed, so the breadcrumb matches.
     useEffect(() => {
-        if (tabParam === null || tabParam === selectedPanel) return;
+        if (tabParam === null || searchParams.get("tab") === selectedPanel) return;
         setSearchParams(
             (prev) => {
                 const next = new URLSearchParams(prev);
@@ -45,10 +45,7 @@ export default function Settings() {
             },
             { replace: true },
         );
-    }, [tabParam, selectedPanel, setSearchParams]);
-
-    const [nextPanel, setNextPanel] = useState<SettingsPanel | null>(null);
-    const [unsavedChanges, setUnsavedChanges] = useState(false);
+    }, [tabParam, selectedPanel, searchParams, setSearchParams]);
 
     const openPanel = (panel: SettingsPanel) => {
         setSearchParams(
@@ -62,43 +59,11 @@ export default function Settings() {
     }
 
     const handleSelectPanel = (panel: SettingsPanel) => {
-        if (panel === selectedPanel) return;
-        if(unsavedChanges) {
-            setNextPanel(panel);
-            setShowUnsavedChangesModal(true)
-        } else {
-            openPanel(panel);
-        }
-    }
-
-    const handleModalConfirm = () => {
-        setShowUnsavedChangesModal(false);
-        setNextPanel(null);
-    }
-
-    const handleModalDeny = () => {
-        setShowUnsavedChangesModal(false);
-        openPanel(nextPanel as SettingsPanel);
-        setUnsavedChanges(false);
-        setNextPanel(null);
+        if (panel !== selectedPanel) openPanel(panel);
     }
 
 	return (
 		<main className='account-settings-page'>
-			{
-				showUnsavedChangesModal && (
-					<SaysoModal
-						title="Unsaved Changes"
-						text={`You have unsaved changes. Are you sure you want to switch to another panel?`}
-						isDelete={false}
-						primaryText="Continue Editing"
-						secondaryText="Yes, Switch"
-						onDeny={() => handleModalDeny()}
-						onConfirm={() => handleModalConfirm()}
-					/>
-				)
-			}
-
 			<PageHeader
 				title='Settings'
 				description='Manage your plan, billing and team access.'
@@ -111,7 +76,7 @@ export default function Settings() {
 					onSelectPanel={handleSelectPanel}
 				/>
 				<div className='account-settings-content'>
-					<SettingsActivePanelContainer selectedPanel={selectedPanel} setUnsavedChanges={setUnsavedChanges} />
+					<SettingsActivePanelContainer selectedPanel={selectedPanel} />
 				</div>
 			</div>
 		</main>

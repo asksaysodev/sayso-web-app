@@ -3,6 +3,7 @@ import { Badge } from "@/components/ds/Badge";
 import SettingsCard from "../SettingsCard";
 import ManageConnectionModal from "./ManageConnectionModal";
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { useFUB } from "@/hooks/useFUB";
@@ -57,29 +58,34 @@ export default function FUBConnection() {
         setFubConnected(globalUser?.fub_connected || false);
     }, [globalUser]);
 
+    // Handles the OAuth callback's ?fub=connected|denied|error once, then drops the param through the router
+    // (history.replaceState would leave the router's copy behind and bring it back on the next tab change).
+    const [searchParams, setSearchParams] = useSearchParams();
+    const fubStatus = searchParams.get('fub');
     const oauthHandled = useRef(false);
     useEffect(() => {
-        if (oauthHandled.current) return;
-
-        const params = new URLSearchParams(window.location.search);
-        const fubStatus = params.get('fub');
-        if (!fubStatus) { oauthHandled.current = true; return; }
+        if (oauthHandled.current || !fubStatus) return;
 
         if (fubStatus === 'connected') {
             if (!globalUser?.email) return;
-            oauthHandled.current = true;
             showToast('success', 'Follow Up Boss connected!');
             updateGlobalUser(globalUser.email);
-        } else {
-            oauthHandled.current = true;
-            if (fubStatus === 'denied') showToast('warning', 'Follow Up Boss connection cancelled.');
-            else if (fubStatus === 'error') showToast('error', 'Something went wrong connecting Follow Up Boss.');
+        } else if (fubStatus === 'denied') {
+            showToast('warning', 'Follow Up Boss connection cancelled.');
+        } else if (fubStatus === 'error') {
+            showToast('error', 'Something went wrong connecting Follow Up Boss.');
         }
+        oauthHandled.current = true;
 
-        params.delete('fub');
-        const next = params.toString();
-        window.history.replaceState({}, '', `${window.location.pathname}${next ? `?${next}` : ''}`);
-    }, [globalUser]);
+        setSearchParams(
+            (prev) => {
+                const next = new URLSearchParams(prev);
+                next.delete('fub');
+                return next;
+            },
+            { replace: true },
+        );
+    }, [fubStatus, globalUser, showToast, updateGlobalUser, setSearchParams]);
 
     return (
         <>

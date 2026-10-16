@@ -29,9 +29,10 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
     const [isVerifying, setIsVerifying] = useState(false);
     const codeInput = useRef<CodeInputHandle>(null);
 
+    // Runs after re-render, so the boxes are enabled again: on reaching step 2 and after a failed verify.
     useEffect(() => {
-        if (step === 'verify') codeInput.current?.focus();
-    }, [step]);
+        if (step === 'verify' && !isVerifying) codeInput.current?.focus();
+    }, [step, isVerifying, error]);
 
     const handleCodeChange = (next: string) => {
         setCode(next);
@@ -55,7 +56,6 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
         } else {
             setError(result.error?.message || 'Invalid code. Please try again.');
             setCode('');
-            codeInput.current?.focus();
         }
     };
 
