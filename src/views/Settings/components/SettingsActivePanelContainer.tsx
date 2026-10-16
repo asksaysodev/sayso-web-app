@@ -7,6 +7,8 @@ import SettingsSecurity from "./SettingsSecurity";
 import SettingsReferralForm from "./SettingsReferralForm";
 import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsForm";
 import SettingsUsage from "./SettingsUsage";
+import ActiveSubscriptionInformation from "@/views/Subscription/components/ActiveSubscriptionInformation";
+import "@/views/Subscription/styles.css";
 
 interface Props {
     selectedPanel: SettingsPanel;
@@ -30,6 +32,10 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
             )
             case "security": return (
                 <SettingsSecurity />
+            )
+            // Interim: current subscription UI until the new view lands (SAYSO-497).
+            case "subscription": return (
+                <ActiveSubscriptionInformation />
             )
             case "referral": return (
                 <SettingsReferralForm />

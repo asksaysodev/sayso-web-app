@@ -1,7 +1,7 @@
 .dashboard-overview.ds-card {
     gap: var(--space-16);
     padding: var(--space-20);
-    border-radius: var(--radius-20);
+    border-radius: var(--radius-16);
 }
 
 .dashboard-overview__tiles {

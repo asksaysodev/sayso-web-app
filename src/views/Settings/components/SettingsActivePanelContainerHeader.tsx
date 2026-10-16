@@ -23,6 +23,10 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
             title: 'Security',
             description: 'Manage security settings for your account'
         },
+        [SettingsPanelEnum.SUBSCRIPTION]: {
+            title: 'Subscription',
+            description: 'Manage your plan, invoices and billing information'
+        },
         [SettingsPanelEnum.REFERRAL]: {
             title: 'Referrals',
             description: 'Share your unique link and earn rewards when friends subscribe to Sayso.'
