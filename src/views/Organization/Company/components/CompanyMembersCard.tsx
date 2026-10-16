@@ -2,27 +2,17 @@ import { useMemo, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
 import { Card } from '@/components/ds/Card';
-import SearchBar, { type SearchFilterConfig } from '@/components/ui/search-bar';
+import SearchBar from '@/components/ui/search-bar';
 import { useAuth } from '@/context/AuthContext';
 import useCompanyMembers from '../hooks/useCompanyMembers';
 import useResendInvite from '../hooks/useResendInvite';
-import type { CompanyMemberRow, CompanyViewer, MemberRowAction, StatusFilter } from '../types';
+import type { CompanyMemberRow, CompanyViewer, MemberRowAction } from '../types';
 import filterRows from '../utils/filterRows';
 import CompanyMembersTable from './CompanyMembersTable';
 import InviteMemberModal from './InviteMemberModal';
 import RemoveMemberModal from './RemoveMemberModal';
-import StatusFilterPill from './StatusFilterPill';
 import UpdateRoleModal from '@/views/Organization/shared/components/UpdateRoleModal';
 import '@/views/Organization/shared/styles/orgCard.css';
-
-const AVAILABLE_FILTERS: SearchFilterConfig<StatusFilter>[] = [
-    {
-        key: 'status',
-        label: 'status',
-        description: 'Filter by member status',
-        defaultValue: () => ({ key: 'status', value: 'active' }),
-    },
-];
 
 type OpenModal =
     | { kind: 'invite' }
@@ -35,15 +25,13 @@ export default function CompanyMembersCard() {
     const { members, isLoading, isError, isRetrying, retry } = useCompanyMembers();
     const { resendInvite } = useResendInvite();
     const [searchText, setSearchText] = useState('');
-    const [activeFilters, setActiveFilters] = useState<StatusFilter[]>([]);
     const [openModal, setOpenModal] = useState<OpenModal>(null);
 
     const viewer: CompanyViewer = { id: globalUser?.id ?? '', role: globalUser?.role ?? null };
-    const statusFilter = activeFilters.find((filter) => filter.key === 'status')?.value;
 
     const filteredRows = useMemo(
-        () => filterRows(members, searchText, statusFilter),
-        [members, searchText, statusFilter],
+        () => filterRows(members, searchText),
+        [members, searchText],
     );
 
     const closeModal = () => setOpenModal(null);
@@ -72,15 +60,7 @@ export default function CompanyMembersCard() {
                         <SearchBar
                             searchText={searchText}
                             onSearchTextChange={setSearchText}
-                            activeFilters={activeFilters}
-                            setActiveFilters={setActiveFilters}
-                            availableFilters={AVAILABLE_FILTERS}
                             placeholder='Search...'
-                            filterPillRenderers={{
-                                status: (filter, onUpdate, onRemove) => (
-                                    <StatusFilterPill filter={filter} onUpdate={onUpdate} onRemove={onRemove} />
-                                ),
-                            }}
                         />
                     </div>
                     <Button leftIcon={<Plus size={20} />} onClick={() => setOpenModal({ kind: 'invite' })}>
@@ -95,7 +75,7 @@ export default function CompanyMembersCard() {
                 isError={isError}
                 isRetrying={isRetrying}
                 onRetry={retry}
-                isFiltered={Boolean(searchText.trim() || statusFilter)}
+                isFiltered={Boolean(searchText.trim())}
                 onAction={handleAction}
             />
             {openModal?.kind === 'invite' && <InviteMemberModal onClose={closeModal} />}
