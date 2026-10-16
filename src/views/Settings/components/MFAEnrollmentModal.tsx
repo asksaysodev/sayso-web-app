@@ -84,6 +84,7 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
                         <CopyBox
                             value={enrollmentData.secret}
                             monospace
+                            tone='neutral'
                             onCopyError={() => showToast('error', "Couldn't copy the code. Select it and copy manually.")}
                         />
                     </div>

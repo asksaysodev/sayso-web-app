@@ -12,13 +12,15 @@ export interface CopyBoxProps {
     copyLabel?: string;
     /** Monospace, letter-spaced value (codes, secrets). */
     monospace?: boolean;
+    /** `brand` (blue tint, default) or `neutral` (grey). */
+    tone?: 'brand' | 'neutral';
     onCopied?: () => void;
     onCopyError?: () => void;
     className?: string;
 }
 
 /** Tinted read-only box with a copy button: reads as "copy this", not as an input. */
-export function CopyBox({ value, copyLabel = 'Copy', monospace = false, onCopied, onCopyError, className }: CopyBoxProps) {
+export function CopyBox({ value, copyLabel = 'Copy', monospace = false, tone = 'brand', onCopied, onCopyError, className }: CopyBoxProps) {
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
@@ -38,7 +40,7 @@ export function CopyBox({ value, copyLabel = 'Copy', monospace = false, onCopied
     };
 
     return (
-        <div className={clsx('ds-copy-box', className)}>
+        <div className={clsx('ds-copy-box', tone === 'neutral' && 'ds-copy-box--neutral', className)}>
             <span className={clsx('ds-copy-box__value', monospace && 'ds-copy-box__value--mono')} title={value}>
                 {value}
             </span>

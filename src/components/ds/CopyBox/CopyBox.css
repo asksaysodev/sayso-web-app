@@ -29,3 +29,12 @@
     font-size: var(--text-body-md-size);
     letter-spacing: 0.08em;
 }
+
+.ds-copy-box--neutral {
+    border-color: var(--neutral-200);
+    background-color: var(--neutral-100);
+}
+
+.ds-copy-box--neutral .ds-copy-box__value {
+    color: var(--text-primary);
+}
