@@ -58,83 +58,6 @@
     width: 100%;
 }
 
-.form-line-input-container{
-    width: 100%;
-    height: 40px;
-    padding: 0 12px;
-    margin-top: 8px;
-    border: 1px solid var(--sayso-border);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    cursor: not-allowed;
-    background-color: var(--sayso-border);
-    opacity: 0.6;
-    color: var(--sayso-dark);
-}
-
-.form-line-input-container.editable{
-    cursor: default;
-    background-color: white;
-    opacity: 1;
-}
-
-.form-line-input-container:focus-within{
-    border: 1px solid var(--sayso-indigo);
-}
-
-.form-line-input-container.saving{
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.form-line-container-label-title {
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--sayso-darkgray);
-}
-
-.form-line-input-container p{
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--sayso-darkgray);
-}
-
-.form-line-input-container svg{
-    cursor: pointer;
-}
-
-.form-line-input-container input{
-    width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
-    font-size: 14px;
-    font-weight: 400;
-    padding: 0;
-    color: var(--sayso-darkgray);
-}
-
-.form-line-input-icon-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: start;
-    font-size: 18px;
-    gap: 8px;
-}
-
-.form-line-input-icon-container-loader{
-    cursor: not-allowed;
-    animation: spin 1s linear infinite;
-    font-size: 14px;
-    opacity: 0.7;
-
-}
-
-
 @keyframes spin {
     from {
         transform: rotate(0deg);
@@ -190,56 +113,62 @@
 }
 
 /* Referral Settings */
-.settings-referral {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.referral-card {
+    max-width: 640px;
 }
 
-.settings-referral-description {
-    font-size: 14px;
-    color: var(--sayso-lightgray);
-    margin: 0;
-}
-
-.settings-referral-loading {
+/* Tinted read-only box: the link reads as something to copy, not an input. */
+.referral-link {
     display: flex;
     align-items: center;
-    gap: 8px;
-    color: var(--sayso-lightgray);
-    font-size: 14px;
+    gap: var(--space-12);
+    min-height: 56px;
+    padding: var(--space-8) var(--space-8) var(--space-8) var(--space-16);
+    border: 1px dashed var(--primary-200);
+    border-radius: var(--radius-8);
+    background-color: var(--primary-50);
+    box-sizing: border-box;
 }
 
-.settings-referral-error {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--sayso-destructive);
-    font-size: 14px;
+.referral-link__url {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-size: var(--text-body-lg-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-800);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    user-select: all;
 }
 
-.settings-referral-link-wrapper {
-    width: 100%;
-    max-width: 480px;
+.referral-link--state {
+    padding-right: var(--space-16);
+    border-style: solid;
+    border-color: var(--surface-border);
+    background-color: var(--neutral-50);
+    font-size: var(--text-body-md-size);
+    color: var(--text-secondary);
 }
 
-@media (max-width: 1023px) {
-    .settings-referral-link-wrapper {
-        max-width: 100%;
+.referral-link--error {
+    color: var(--error-text);
+}
+
+.referral-link--error .ds-button {
+    margin-left: auto;
+}
+
+.referral-link__spinner {
+    animation: referral-link-spin 0.8s linear infinite;
+}
+
+@keyframes referral-link-spin {
+    to {
+        transform: rotate(360deg);
     }
 }
 
-.settings-referral-retry-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--sayso-indigo);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 0;
-    text-decoration: underline;
-}
 
 /* MFA Enrollment Modal */
 .mfa-modal-overlay {

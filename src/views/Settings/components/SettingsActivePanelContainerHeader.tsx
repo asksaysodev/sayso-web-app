@@ -1,8 +1,8 @@
 import { SettingsPanel, SettingsPanelEnum } from "../types"
 
 interface Props {
-    // Subscription, Profile, Connections and Security render without a panel header.
-    selectedPanel: Exclude<SettingsPanel, 'subscription' | 'personal' | 'connections' | 'security'>;
+    // Only Files still renders the panel header.
+    selectedPanel: Exclude<SettingsPanel, 'subscription' | 'personal' | 'connections' | 'security' | 'referral'>;
 }
 
 export default function SettingsActivePanelContainerHeader({ selectedPanel }: Props) {
@@ -12,10 +12,6 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
             title: 'Context Files',
             description: 'Upload files to give your coach more context about your company or product'
         },
-        [SettingsPanelEnum.REFERRAL]: {
-            title: 'Referrals',
-            description: 'Share your unique link and earn rewards when friends subscribe to Sayso.'
-        }
     }
 
     return (

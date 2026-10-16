@@ -12,14 +12,16 @@ interface Props {
     /** Shown top-right, e.g. a "Connected" badge. */
     status?: ReactNode;
     description: ReactNode;
+    /** Extra content between the description and the footer. */
+    children?: ReactNode;
     /** Detail text in the footer, left of the action. */
     meta?: ReactNode;
-    action: ReactNode;
+    action?: ReactNode;
     className?: string;
 }
 
-/** Card used by the Connections and Security tabs. */
-export default function SettingsCard({ tile, title, detail, status, description, meta, action, className }: Props) {
+/** Card used by the Connections, Security and Referrals tabs. */
+export default function SettingsCard({ tile, title, detail, status, description, children, meta, action, className }: Props) {
     return (
         <Card className={clsx('settings-card', className)}>
             <div className='settings-card__top'>
@@ -31,10 +33,13 @@ export default function SettingsCard({ tile, title, detail, status, description,
                 {status}
             </div>
             <p className='settings-card__description'>{description}</p>
-            <div className='settings-card__foot'>
-                <span className='settings-card__meta'>{meta}</span>
-                {action}
-            </div>
+            {children}
+            {(meta || action) && (
+                <div className='settings-card__foot'>
+                    <span className='settings-card__meta'>{meta}</span>
+                    {action}
+                </div>
+            )}
         </Card>
     );
 }
