@@ -1,9 +1,10 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { ShieldCheck } from 'lucide-react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import clsx from 'clsx';
 import { Button } from '@/components/ds/Button';
+import { CodeInput, type CodeInputHandle } from '@/components/ds/CodeInput';
 import { CopyBox } from '@/components/ds/CopyBox';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Modal';
-import { TextField } from '@/components/ds/TextField';
+import { Modal, ModalFooter, ModalHeader } from '@/components/ds/Modal';
+import { StepIndicator } from '@/components/ds/StepIndicator';
 import { useToast } from '@/context/ToastContext';
 import { EnrollTOTPResult } from '@/types/supabaseMFA';
 import { verifyTOTPCode } from '@/services/mfaServices';
@@ -26,16 +27,21 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
     const [code, setCode] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isVerifying, setIsVerifying] = useState(false);
+    const codeInput = useRef<CodeInputHandle>(null);
 
-    const handleCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setCode(event.target.value.replace(/\D/g, '').slice(0, CODE_LENGTH));
+    useEffect(() => {
+        if (step === 'verify') codeInput.current?.focus();
+    }, [step]);
+
+    const handleCodeChange = (next: string) => {
+        setCode(next);
         setError(null);
     };
 
-    const handleVerify = async (event?: FormEvent) => {
-        event?.preventDefault();
+    const handleVerify = async (event: FormEvent) => {
+        event.preventDefault();
         if (code.length !== CODE_LENGTH) {
-            setError(`Please enter a ${CODE_LENGTH}-digit code`);
+            setError(`Please enter the ${CODE_LENGTH}-digit code`);
             return;
         }
 
@@ -49,6 +55,7 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
         } else {
             setError(result.error?.message || 'Invalid code. Please try again.');
             setCode('');
+            codeInput.current?.focus();
         }
     };
 
@@ -59,7 +66,6 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
     return (
         <Modal open onOpenChange={handleOpenChange} hideClose={isVerifying} className='mfa-enroll-modal'>
             <ModalHeader
-                icon={<ShieldCheck size={24} />}
                 title='Set up two-factor authentication'
                 description={
                     step === 'qr'
@@ -67,41 +73,39 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
                         : `Enter the ${CODE_LENGTH}-digit code from your authenticator app.`
                 }
             />
+            <StepIndicator count={2} current={step === 'qr' ? 1 : 2} />
 
-            <ModalBody>
-                <p className='mfa-enroll-modal__step'>Step {step === 'qr' ? 1 : 2} of 2</p>
-                {step === 'qr' ? (
-                    <>
-                        <div className='mfa-enroll-modal__qr'>
-                            <img src={enrollmentData.qrCode} alt='QR code for your authenticator app' />
-                        </div>
-                        <div className='mfa-enroll-modal__manual'>
-                            <p className='mfa-enroll-modal__label'>Can't scan? Enter this code manually</p>
-                            <CopyBox
-                                value={enrollmentData.secret}
-                                monospace
-                                onCopyError={() => showToast('error', "Couldn't copy the code. Select it and copy manually.")}
-                            />
-                        </div>
-                    </>
-                ) : (
-                    <form id={VERIFY_FORM_ID} onSubmit={handleVerify}>
-                        <TextField
-                            label='Verification code'
-                            className='mfa-enroll-modal__code'
-                            inputMode='numeric'
-                            autoComplete='one-time-code'
-                            placeholder='000000'
-                            value={code}
-                            onChange={handleCodeChange}
-                            maxLength={CODE_LENGTH}
-                            autoFocus
-                            disabled={isVerifying}
-                            error={error ?? undefined}
+            {/* Both steps share one grid cell, so the modal keeps the same size and everything stays put. */}
+            <div className='mfa-enroll-modal__steps'>
+                <div className={clsx('mfa-enroll-modal__step', step !== 'qr' && 'mfa-enroll-modal__step--hidden')}>
+                    <img className='mfa-enroll-modal__qr' src={enrollmentData.qrCode} alt='QR code for your authenticator app' />
+                    <div className='mfa-enroll-modal__manual'>
+                        <p className='mfa-enroll-modal__label'>Can't scan? Enter this code manually</p>
+                        <CopyBox
+                            value={enrollmentData.secret}
+                            monospace
+                            onCopyError={() => showToast('error', "Couldn't copy the code. Select it and copy manually.")}
                         />
-                    </form>
-                )}
-            </ModalBody>
+                    </div>
+                </div>
+                <form
+                    id={VERIFY_FORM_ID}
+                    className={clsx('mfa-enroll-modal__step', step !== 'verify' && 'mfa-enroll-modal__step--hidden')}
+                    onSubmit={handleVerify}
+                >
+                    <CodeInput
+                        ref={codeInput}
+                        value={code}
+                        onChange={handleCodeChange}
+                        length={CODE_LENGTH}
+                        disabled={isVerifying}
+                        invalid={!!error}
+                    />
+                    <p className='mfa-enroll-modal__error' role='alert'>
+                        {error}
+                    </p>
+                </form>
+            </div>
 
             <ModalFooter>
                 <Button variant='secondary' onClick={onCancel} disabled={isVerifying}>
@@ -110,12 +114,8 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
                 {step === 'qr' ? (
                     <Button onClick={() => setStep('verify')}>Next</Button>
                 ) : (
-                    <Button
-                        type='submit'
-                        form={VERIFY_FORM_ID}
-                        disabled={code.length !== CODE_LENGTH}
-                        loading={isVerifying}
-                    >
+                    // Linked via `form`, so it's the form's default button: Enter in a box submits.
+                    <Button type='submit' form={VERIFY_FORM_ID} disabled={code.length !== CODE_LENGTH} loading={isVerifying}>
                         Verify
                     </Button>
                 )}
