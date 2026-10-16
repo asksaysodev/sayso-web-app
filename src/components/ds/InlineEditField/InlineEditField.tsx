@@ -16,7 +16,7 @@ export interface InlineEditFieldProps
     validate?: (value: string) => string | null;
     /** Display formatting, applied to the saved value and while typing (e.g. phone numbers). */
     format?: (value: string) => string;
-    /** False renders a read-only field with no pencil. */
+    /** False renders a disabled field (ds disabled look) with no pencil. */
     editable?: boolean;
     onDirtyChange?: (dirty: boolean) => void;
 }
@@ -132,7 +132,6 @@ export function InlineEditField({
             {...props}
             className={clsx(
                 'ds-inline-edit',
-                !editable && 'ds-inline-edit--static',
                 value === '' && 'ds-inline-edit--empty',
                 className,
             )}
@@ -140,7 +139,8 @@ export function InlineEditField({
             onChange={handleChange}
             onBlur={editable ? save : undefined}
             onKeyDown={editable ? handleKeyDown : undefined}
-            readOnly={!editable || isSaving || readOnly}
+            readOnly={isSaving || readOnly}
+            disabled={!editable || props.disabled}
             trailingIcon={trailingIcon}
             helperText={helperText}
             error={error ?? undefined}

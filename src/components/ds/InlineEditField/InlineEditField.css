@@ -12,14 +12,6 @@
     background-color: var(--surface-canvas);
 }
 
-/* Read-only fields keep the resting look. */
-.ds-inline-edit--static .ds-field:hover:not(.ds-field--disabled),
-.ds-inline-edit--static .ds-field:focus-within {
-    border-color: var(--surface-border);
-    background-color: var(--surface-bg);
-    box-shadow: none;
-}
-
 .ds-inline-edit .ds-field--invalid,
 .ds-inline-edit .ds-field--invalid:hover {
     border-color: var(--error-icon);
