@@ -42,7 +42,8 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
 
     return (
         <div className='settings-panel'>
-            <SettingsActivePanelContainerHeader selectedPanel={selectedPanel} />
+            {/* Profile is just its fields, no title/description. */}
+            {selectedPanel !== 'personal' && <SettingsActivePanelContainerHeader selectedPanel={selectedPanel} />}
             <div className='settings-panel-body'>
                 {renderPanel()}
             </div>

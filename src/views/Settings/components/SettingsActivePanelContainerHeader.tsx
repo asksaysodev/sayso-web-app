@@ -1,17 +1,13 @@
 import { SettingsPanel, SettingsPanelEnum } from "../types"
 
 interface Props {
-    // Subscription renders its own cards without a panel header.
-    selectedPanel: Exclude<SettingsPanel, 'subscription'>;
+    // Subscription and Profile render without a panel header.
+    selectedPanel: Exclude<SettingsPanel, 'subscription' | 'personal'>;
 }
 
 export default function SettingsActivePanelContainerHeader({ selectedPanel }: Props) {
 
     const panelFormContent = {
-        [SettingsPanelEnum.PERSONAL]: {
-            title: 'Profile',
-            description: 'Fill in general info about yourself'
-        },
         [SettingsPanelEnum.FILES]: {
             title: 'Context Files',
             description: 'Upload files to give your coach more context about your company or product'

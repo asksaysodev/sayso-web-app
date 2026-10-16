@@ -1,0 +1,55 @@
+.ds-inline-edit {
+    width: 100%;
+}
+
+.ds-inline-edit .ds-field:hover:not(.ds-field--disabled) {
+    border-color: var(--primary-200);
+    background-color: var(--surface-canvas);
+}
+
+.ds-inline-edit .ds-field:focus-within {
+    border-color: var(--primary-500);
+    background-color: var(--surface-canvas);
+}
+
+/* Read-only fields keep the resting look. */
+.ds-inline-edit--static .ds-field:hover:not(.ds-field--disabled),
+.ds-inline-edit--static .ds-field:focus-within {
+    border-color: var(--surface-border);
+    background-color: var(--surface-bg);
+    box-shadow: none;
+}
+
+.ds-inline-edit .ds-field--invalid,
+.ds-inline-edit .ds-field--invalid:hover {
+    border-color: var(--error-icon);
+}
+
+.ds-inline-edit .ds-field__trailing {
+    color: var(--text-primary);
+}
+
+/* Figma empty state: the label sits alone at value size until the field is focused */
+.ds-inline-edit--empty .ds-field:not(:focus-within) .ds-field__label {
+    font-size: var(--text-body-lg-size);
+    line-height: 22px;
+}
+
+.ds-inline-edit--empty .ds-field:not(:focus-within) .ds-field__input {
+    height: 0;
+}
+
+.ds-inline-edit__saved {
+    color: var(--primary-500);
+}
+
+.ds-inline-edit__spinner {
+    color: var(--primary-500);
+    animation: ds-inline-edit-spin 0.8s linear infinite;
+}
+
+@keyframes ds-inline-edit-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

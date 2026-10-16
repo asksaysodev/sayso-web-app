@@ -35,41 +35,22 @@
 
 .settings-panel-body{
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+}
+
+.settings-panel-title + .settings-panel-body {
     margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
 }
 
-.settings-personal{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
-}
-
-.settings-personal-form{
-    width: 100%;
+.settings-personal-form {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0 20px;
-    align-items: start;
-    justify-content: start;
-
-    /* border: 1px solid blue; */
-}
-
-.settings-personal-form label{
-    /* width: 540px; */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-16) var(--space-20);
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
 }
-
 
 .form-line-input-container{
     width: 100%;
