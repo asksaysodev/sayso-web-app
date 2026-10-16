@@ -23,7 +23,7 @@ export interface InlineEditFieldProps
 
 /**
  * Text field that saves itself on blur or Enter; Escape reverts.
- * Trailing icon shows pencil → spinner while saving → check once saved.
+ * Trailing slot shows pencil → Save (once edited) → spinner while saving → check once saved.
  */
 export function InlineEditField({
     value: savedValue,
@@ -46,10 +46,13 @@ export function InlineEditField({
 
     const formattedSaved = format(savedValue);
     const value = draft ?? formattedSaved;
+    const isDirty = draft !== null && draft.trim() !== formattedSaved.trim();
+    // Guards against blur and the Save click both firing a save in the same tick.
+    const savingRef = useRef(false);
 
     useEffect(() => {
-        onDirtyChange?.(draft !== null && draft !== formattedSaved);
-    }, [draft, formattedSaved, onDirtyChange]);
+        onDirtyChange?.(isDirty);
+    }, [isDirty, onDirtyChange]);
 
     useEffect(() => {
         if (!justSaved) return;
@@ -60,7 +63,7 @@ export function InlineEditField({
     const save = async () => {
         const retry = retryRequested.current;
         retryRequested.current = false;
-        if (isSaving || draft === null) return;
+        if (savingRef.current || draft === null) return;
         if (error && !retry) return;
         const next = draft.trim();
         if (next === formattedSaved.trim()) {
@@ -72,6 +75,7 @@ export function InlineEditField({
             setError(validationError);
             return;
         }
+        savingRef.current = true;
         setIsSaving(true);
         try {
             await onSave(next);
@@ -80,6 +84,7 @@ export function InlineEditField({
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
         } finally {
+            savingRef.current = false;
             setIsSaving(false);
         }
     };
@@ -103,6 +108,19 @@ export function InlineEditField({
 
     const trailingIcon = !editable ? undefined : isSaving ? (
         <LoaderCircle size={20} className='ds-inline-edit__spinner' aria-label='Saving' />
+    ) : isDirty ? (
+        <button
+            type='button'
+            className='ds-inline-edit__save'
+            // Keep focus in the input so blur doesn't save first; the click does it.
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => {
+                retryRequested.current = true;
+                void save();
+            }}
+        >
+            Save
+        </button>
     ) : justSaved ? (
         <Check size={20} className='ds-inline-edit__saved' aria-label='Saved' />
     ) : (

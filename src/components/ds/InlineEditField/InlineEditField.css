@@ -39,6 +39,31 @@
     height: 0;
 }
 
+.ds-inline-edit .ds-field__trailing:has(.ds-inline-edit__save) {
+    pointer-events: auto;
+}
+
+.ds-inline-edit__save {
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--radius-8);
+    background: transparent;
+    font-family: var(--font-ds);
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-brand);
+    cursor: pointer;
+}
+
+.ds-inline-edit__save:hover {
+    text-decoration: underline;
+}
+
+.ds-inline-edit__save:focus-visible {
+    outline: 2px solid var(--primary-300);
+    outline-offset: 2px;
+}
+
 .ds-inline-edit__saved {
     color: var(--primary-500);
 }
