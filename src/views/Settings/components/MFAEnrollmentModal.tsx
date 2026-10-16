@@ -1,10 +1,18 @@
-import { useState } from 'react';
-import { LuCopy, LuCheck, LuLoader } from 'react-icons/lu';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { ShieldCheck } from 'lucide-react';
+import { Button } from '@/components/ds/Button';
+import { CopyBox } from '@/components/ds/CopyBox';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Modal';
+import { TextField } from '@/components/ds/TextField';
+import { useToast } from '@/context/ToastContext';
 import { EnrollTOTPResult } from '@/types/supabaseMFA';
 import { verifyTOTPCode } from '@/services/mfaServices';
 import '../styles.css';
 
 type Step = 'qr' | 'verify';
+
+const CODE_LENGTH = 6;
+const VERIFY_FORM_ID = 'mfa-verify-form';
 
 interface Props {
     enrollmentData: EnrollTOTPResult;
@@ -13,35 +21,27 @@ interface Props {
 }
 
 export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel }: Props) {
+    const { showToast } = useToast();
     const [step, setStep] = useState<Step>('qr');
     const [code, setCode] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isVerifying, setIsVerifying] = useState(false);
-    const [copied, setCopied] = useState(false);
 
-    const handleCopySecret = async () => {
-        await navigator.clipboard.writeText(enrollmentData.secret);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
-    const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.replace(/\D/g, '').slice(0, 6);
-        setCode(value);
+    const handleCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setCode(event.target.value.replace(/\D/g, '').slice(0, CODE_LENGTH));
         setError(null);
     };
 
-    const handleVerify = async () => {
-        if (code.length !== 6) {
-            setError('Please enter a 6-digit code');
+    const handleVerify = async (event?: FormEvent) => {
+        event?.preventDefault();
+        if (code.length !== CODE_LENGTH) {
+            setError(`Please enter a ${CODE_LENGTH}-digit code`);
             return;
         }
 
         setIsVerifying(true);
         setError(null);
-
         const result = await verifyTOTPCode(enrollmentData.factorId, code);
-
         setIsVerifying(false);
 
         if (result.success) {
@@ -52,110 +52,74 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
         }
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && step === 'verify' && code.length === 6) {
-            handleVerify();
-        }
+    const handleOpenChange = (open: boolean) => {
+        if (!open && !isVerifying) onCancel();
     };
 
     return (
-        <div className="mfa-modal-overlay">
-            <div className="mfa-modal">
-                <div className="mfa-modal-header">
-                    <h2>Set up Two-Factor Authentication</h2>
-                    <p className="mfa-modal-subtitle">
-                        {step === 'qr'
-                            ? 'Scan the QR code with your authenticator app'
-                            : 'Enter the 6-digit code from your app'
-                        }
-                    </p>
-                </div>
+        <Modal open onOpenChange={handleOpenChange} hideClose={isVerifying} className='mfa-enroll-modal'>
+            <ModalHeader
+                icon={<ShieldCheck size={24} />}
+                title='Set up two-factor authentication'
+                description={
+                    step === 'qr'
+                        ? 'Scan the QR code with your authenticator app.'
+                        : `Enter the ${CODE_LENGTH}-digit code from your authenticator app.`
+                }
+            />
 
-                <div className="mfa-modal-content">
-                    {step === 'qr' ? (
-                        <>
-                            <div className="mfa-qr-container">
-                                <img
-                                    src={enrollmentData.qrCode}
-                                    alt="QR Code for authenticator app"
-                                    className="mfa-qr-code"
-                                />
-                            </div>
+            <ModalBody>
+                <p className='mfa-enroll-modal__step'>Step {step === 'qr' ? 1 : 2} of 2</p>
+                {step === 'qr' ? (
+                    <>
+                        <div className='mfa-enroll-modal__qr'>
+                            <img src={enrollmentData.qrCode} alt='QR code for your authenticator app' />
+                        </div>
+                        <div className='mfa-enroll-modal__manual'>
+                            <p className='mfa-enroll-modal__label'>Can't scan? Enter this code manually</p>
+                            <CopyBox
+                                value={enrollmentData.secret}
+                                monospace
+                                onCopyError={() => showToast('error', "Couldn't copy the code. Select it and copy manually.")}
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <form id={VERIFY_FORM_ID} onSubmit={handleVerify}>
+                        <TextField
+                            label='Verification code'
+                            className='mfa-enroll-modal__code'
+                            inputMode='numeric'
+                            autoComplete='one-time-code'
+                            placeholder='000000'
+                            value={code}
+                            onChange={handleCodeChange}
+                            maxLength={CODE_LENGTH}
+                            autoFocus
+                            disabled={isVerifying}
+                            error={error ?? undefined}
+                        />
+                    </form>
+                )}
+            </ModalBody>
 
-                            <div className="mfa-secret-container">
-                                <p className="mfa-secret-label">Can't scan? Enter this code manually:</p>
-                                <div className="mfa-secret-box">
-                                    <code className="mfa-secret-code">{enrollmentData.secret}</code>
-                                    <button
-                                        type="button"
-                                        onClick={handleCopySecret}
-                                        className="mfa-copy-btn"
-                                        title="Copy to clipboard"
-                                    >
-                                        {copied ? <LuCheck size={16} /> : <LuCopy size={16} />}
-                                    </button>
-                                </div>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <div className="mfa-verify-container">
-                                <input
-                                    type="text"
-                                    inputMode="numeric"
-                                    autoComplete="one-time-code"
-                                    value={code}
-                                    onChange={handleCodeChange}
-                                    onKeyDown={handleKeyDown}
-                                    placeholder="000000"
-                                    className={`mfa-code-input ${error ? 'mfa-code-input-error' : ''}`}
-                                    maxLength={6}
-                                    autoFocus
-                                    disabled={isVerifying}
-                                />
-                                {error && <p className="mfa-error">{error}</p>}
-                            </div>
-                        </>
-                    )}
-                </div>
-
-                <div className="mfa-modal-actions">
-                    <button
-                        type="button"
-                        onClick={onCancel}
-                        className="mfa-btn mfa-btn-secondary"
-                        disabled={isVerifying}
+            <ModalFooter>
+                <Button variant='secondary' onClick={onCancel} disabled={isVerifying}>
+                    Cancel
+                </Button>
+                {step === 'qr' ? (
+                    <Button onClick={() => setStep('verify')}>Next</Button>
+                ) : (
+                    <Button
+                        type='submit'
+                        form={VERIFY_FORM_ID}
+                        disabled={code.length !== CODE_LENGTH}
+                        loading={isVerifying}
                     >
-                        Cancel
-                    </button>
-
-                    {step === 'qr' ? (
-                        <button
-                            type="button"
-                            onClick={() => setStep('verify')}
-                            className="mfa-btn mfa-btn-primary"
-                        >
-                            Next
-                        </button>
-                    ) : (
-                        <button
-                            type="button"
-                            onClick={handleVerify}
-                            className="mfa-btn mfa-btn-primary"
-                            disabled={code.length !== 6 || isVerifying}
-                        >
-                            {isVerifying ? (
-                                <>
-                                    <LuLoader className="mfa-spinner" size={16} />
-                                    Verifying...
-                                </>
-                            ) : (
-                                'Verify'
-                            )}
-                        </button>
-                    )}
-                </div>
-            </div>
-        </div>
+                        Verify
+                    </Button>
+                )}
+            </ModalFooter>
+        </Modal>
     );
 }
