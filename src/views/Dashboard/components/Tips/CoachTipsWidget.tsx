@@ -28,7 +28,7 @@ export default function CoachTipsWidget() {
     return (
         <WidgetCard
             className='dashboard-grid__tips dashboard-tips'
-            icon={<img src={saysoLogo} width={28} height={28} alt='' />}
+            icon={<img src={saysoLogo} width={24} height={24} alt='' />}
             title='Coach Tips'
         >
             {renderBody()}
