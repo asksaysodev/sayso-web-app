@@ -72,6 +72,9 @@
     border-radius: 4px 4px 0 0;
     background-color: var(--primary-500);
     transition: height 0.3s ease;
+    /* Grow from the baseline on mount, as in production. Bars are keyed by date, so it replays on week change. */
+    transform-origin: bottom;
+    animation: dashboard-activity-bar-grow 0.6s ease-out;
 }
 
 .dashboard-activity-chart__tooltip {
@@ -152,5 +155,20 @@
 
     .dashboard-week-selector__label {
         min-width: 0;
+    }
+}
+
+@keyframes dashboard-activity-bar-grow {
+    from {
+        transform: scaleY(0);
+    }
+    to {
+        transform: scaleY(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-activity-chart__bar {
+        animation: none;
     }
 }
