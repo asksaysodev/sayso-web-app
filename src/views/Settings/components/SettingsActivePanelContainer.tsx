@@ -8,6 +8,11 @@ import SettingsReferralForm from "./SettingsReferralForm";
 import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsForm";
 import SettingsSubscription from "./SettingsSubscription";
 
+// Profile and Connections render without the white panel and header.
+const PLAIN_PANELS = ['personal', 'connections'] as const;
+type PlainPanel = (typeof PLAIN_PANELS)[number];
+const isPlainPanel = (panel: SettingsPanel): panel is PlainPanel => (PLAIN_PANELS as readonly string[]).includes(panel);
+
 interface Props {
     selectedPanel: SettingsPanel;
     setUnsavedChanges: (unsavedChanges: boolean) => void;
@@ -41,9 +46,9 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
     if (selectedPanel === 'subscription') return <SettingsSubscription />;
 
     return (
-        <div className={`settings-panel${selectedPanel === 'personal' ? ' settings-panel--plain' : ''}`}>
-            {/* Profile is just its fields, no title/description. */}
-            {selectedPanel !== 'personal' && <SettingsActivePanelContainerHeader selectedPanel={selectedPanel} />}
+        <div className={`settings-panel${isPlainPanel(selectedPanel) ? ' settings-panel--plain' : ''}`}>
+            {/* Plain panels sit on the page canvas with no title/description. */}
+            {!isPlainPanel(selectedPanel) && <SettingsActivePanelContainerHeader selectedPanel={selectedPanel} />}
             <div className='settings-panel-body'>
                 {renderPanel()}
             </div>

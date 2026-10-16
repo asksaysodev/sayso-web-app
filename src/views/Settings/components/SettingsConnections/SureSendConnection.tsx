@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from 'react';
 import * as Sentry from '@sentry/react';
+import { Button } from "@/components/ds/Button";
 import ConnectionItem from "./ConnectionItem";
 import SureSendConnectModal from "./SureSendConnectModal";
 import ManageConnectionModal from "./ManageConnectionModal";
@@ -63,9 +64,12 @@ export default function SureSendConnection() {
                 category={CATEGORY}
                 description={DESCRIPTION}
                 connected={connected}
-                connectedMeta={formatSureSendMeta(globalUser?.suresend_account_name, globalUser?.suresend_token_scope)}
-                handleConnection={() => setConnectModalOpen(true)}
-                handleManage={() => setManageOpen(true)}
+                meta={connected ? formatSureSendMeta(globalUser?.suresend_account_name, globalUser?.suresend_token_scope) : undefined}
+                action={connected ? (
+                    <Button variant='secondary' onClick={() => setManageOpen(true)}>Manage</Button>
+                ) : (
+                    <Button onClick={() => setConnectModalOpen(true)}>Connect</Button>
+                )}
             />
             <SureSendConnectModal
                 open={connectModalOpen}

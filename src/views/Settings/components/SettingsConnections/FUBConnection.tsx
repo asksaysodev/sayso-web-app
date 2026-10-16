@@ -1,3 +1,4 @@
+import { Button } from "@/components/ds/Button";
 import ConnectionItem from "./ConnectionItem";
 import ManageConnectionModal from "./ManageConnectionModal";
 import { useEffect, useRef, useState } from "react";
@@ -87,8 +88,11 @@ export default function FUBConnection() {
                 category="Real-estate CRM"
                 description={DESCRIPTION}
                 connected={fubConnected}
-                handleConnection={handleConnect}
-                handleManage={() => setManageOpen(true)}
+                action={fubConnected ? (
+                    <Button variant='secondary' onClick={() => setManageOpen(true)}>Manage</Button>
+                ) : (
+                    <Button onClick={handleConnect}>Connect</Button>
+                )}
             />
             <ManageConnectionModal
                 open={manageOpen}

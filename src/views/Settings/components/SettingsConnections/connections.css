@@ -1,113 +1,82 @@
 /* ── Grid ── */
 .connections-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 380px));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: var(--space-16);
     width: 100%;
 }
 
-/* ── Card base ── */
+/* ── Card (ds Card: white, radius 16, card shadow) ── */
 .connection-card {
-    background: #fff;
-    border: 1px solid var(--sayso-border);
-    border-radius: 12px;
-    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    min-height: 200px;
-    position: relative;
-    overflow: hidden;
-    transition: transform .18s cubic-bezier(.2,.7,.2,1), box-shadow .18s, border-color .18s;
+    gap: var(--space-16);
+    text-align: left;
 }
 
-/* ── Request integration card ── */
-.connection-card--request {
-    border-style: dashed;
-    border-color: #d4d9e5;
-    background: #fafbfc;
-    cursor: default;
-}
-
-.connection-card--request:hover {
-    transform: none;
-    box-shadow: none;
-    border-color: #c4c9d6;
-}
-
-.connection-request-tile {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    background: #f0f2f7;
-    color: #9aa3b6;
-}
-
-/* ── Card sections ── */
-.connection-card-top {
+.connection-card__top {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--space-12);
 }
 
-.connection-card-top-info {
+.connection-card__heading {
+    display: flex;
     flex: 1;
+    flex-direction: column;
+    gap: var(--space-2);
     min-width: 0;
 }
 
-.connection-card-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--sayso-darkgray);
-    letter-spacing: -0.005em;
+.connection-card__title {
+    margin: 0;
+    font-size: var(--text-h5-size);
+    line-height: var(--text-h5-line);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
 }
 
-.connection-card-cat {
-    font-size: 11.5px;
-    font-weight: 500;
-    color: var(--sayso-lightgray);
-    margin-top: 1px;
+.connection-card__category {
+    margin: 0;
+    font-size: var(--text-body-sm-size);
+    color: var(--text-secondary);
 }
 
-.connection-card-desc {
-    color: var(--sayso-lightgray);
-    font-size: 13.5px;
-    line-height: 1.55;
+/* Grows so every card's footer lines up at the bottom, whatever the copy length. */
+.connection-card__description {
     flex: 1;
     margin: 0;
+    font-size: var(--text-body-md-size);
+    line-height: 20px;
+    color: var(--text-secondary);
 }
 
-.connection-card-foot {
+.connection-card__foot {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    margin-top: auto;
+    gap: var(--space-12);
 }
 
-/* ── Logo tile (square, tinted) ── */
+.connection-card__meta {
+    min-width: 0;
+    overflow: hidden;
+    font-size: var(--text-body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Logo tile (square, tinted); also used by the manage/connect modals ── */
 .connection-tile {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-}
-
-.connection-tile svg {
-    width: 24px;
-    height: 24px;
-}
-
-.connection-tile--slack {
-    background: #f5edf6;
-    color: #7c3a8a;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-8);
 }
 
 .connection-tile--fub {
@@ -118,132 +87,9 @@
     background: #e7eff7;
 }
 
-/* ── Status pill ── */
-.connection-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 999px;
-    letter-spacing: 0.01em;
-}
-
-.connection-status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    flex-shrink: 0;
-    position: relative;
-}
-
-.connection-status--connected {
-    background: #e6f4ec;
-    color: var(--sayso-success);
-}
-
-.connection-status--disconnected {
-    color: #9aa3b6;
-    background: transparent;
-    padding-left: 0;
-    font-weight: 500;
-}
-
-/* ── Meta (channel name, etc.) ── */
-.connection-meta {
-    font-size: 12.5px;
-    color: var(--sayso-lightgray);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.connection-meta-hash {
-    color: #6b7280;
-    font-weight: 500;
-}
-
-/* ── Pill buttons ── */
-.connection-btn {
-    border: 1px solid var(--sayso-border);
-    background: #fff;
-    color: var(--sayso-darkgray);
-    border-radius: 999px;
-    padding: 8px 14px 8px 16px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: border-color .18s, background .18s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-    font-family: inherit;
-}
-
-.connection-btn .connection-btn-arr {
-    display: inline-flex;
-    transition: transform .2s ease;
-}
-
-.connection-card:hover .connection-btn:not(.connection-btn--ghost):not(.connection-btn--danger) .connection-btn-arr {
-    transform: translateX(3px);
-}
-
-.connection-btn:hover {
-    border-color: #b8c1d3;
-    background: #f8f9fb;
-}
-
-.connection-btn--primary {
-    background: var(--sayso-indigo);
-    color: #fff;
-    border-color: var(--sayso-indigo);
-}
-
-.connection-btn--primary:hover {
-    background: var(--sayso-indigo);
-    border-color: var(--sayso-indigo);
-    color: #fff;
-    opacity: 0.88;
-}
-
-
-.connection-btn--danger {
-    background: var(--sayso-destructive);
-    color: #fff;
-    border-color: var(--sayso-destructive);
-}
-
-.connection-btn--danger:hover {
-    background: var(--sayso-destructive);
-    border-color: var(--sayso-destructive);
-    color: #fff;
-    opacity: 0.88;
-}
-
-.connection-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.connection-btn--ghost {
-    border-color: transparent;
-    background: transparent;
-    color: var(--sayso-lightgray);
-    padding: 6px 4px;
-}
-
-.connection-btn--ghost:hover {
-    border-color: transparent;
-    background: transparent;
-    color: var(--sayso-darkgray);
-}
-
-.connection-btn--ghost:hover .connection-btn-arr {
-    transform: translateX(3px);
+.connection-tile--request {
+    background: var(--neutral-50);
+    color: var(--neutral-500);
 }
 
 /* ── SureSend Modals — shared tokens ── */

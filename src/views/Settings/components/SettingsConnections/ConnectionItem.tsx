@@ -1,81 +1,36 @@
-import { LuLoader } from "react-icons/lu";
-
-const ArrowIcon = () => (
-    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 8h10m-4-4 4 4-4 4" />
-    </svg>
-);
+import type { ReactNode } from 'react';
+import { Badge } from '@/components/ds/Badge';
+import { Card } from '@/components/ds/Card';
 
 interface Props {
-    logoTile: React.ReactNode;
+    logoTile: ReactNode;
     title: string;
+    /** Small detail line under the title (e.g. "Real-estate CRM"). */
     category: string;
     description: string;
-    loading?: boolean;
-    connected: boolean;
-    connectedMeta?: string;
-    handleConnection: () => void;
-    handleManage?: () => void;
+    /** Detail text in the footer, left of the CTA (e.g. connected account). */
+    meta?: ReactNode;
+    connected?: boolean;
+    action: ReactNode;
+    className?: string;
 }
 
-export default function ConnectionItem({
-    logoTile,
-    title,
-    category,
-    description,
-    loading = false,
-    connected,
-    connectedMeta,
-    handleConnection,
-    handleManage,
-}: Props) {
+export default function ConnectionItem({ logoTile, title, category, description, meta, connected = false, action, className }: Props) {
     return (
-        <div className="connection-card">
-            <div className="connection-card-top">
+        <Card className={className ? `connection-card ${className}` : 'connection-card'}>
+            <div className='connection-card__top'>
                 {logoTile}
-                <div className="connection-card-top-info">
-                    <div className="connection-card-name">{title}</div>
-                    <div className="connection-card-cat">{category}</div>
+                <div className='connection-card__heading'>
+                    <h2 className='connection-card__title'>{title}</h2>
+                    <p className='connection-card__category'>{category}</p>
                 </div>
-                {connected && (
-                    <span className="connection-status connection-status--connected">
-                        <span className="connection-status-dot" />
-                        Connected
-                    </span>
-                )}
+                {connected && <Badge tone='success'>Connected</Badge>}
             </div>
-
-            <p className="connection-card-desc">{description}</p>
-
-            <div className="connection-card-foot">
-                {connected ? (
-                    <>
-                        {connectedMeta ? (
-                            <span className="connection-meta">
-                                <span className="connection-meta-hash">{connectedMeta}</span>
-                            </span>
-                        ) : <span />}
-                        <button className="connection-btn" onClick={handleManage}>
-                            Manage
-                            <span className="connection-btn-arr"><ArrowIcon /></span>
-                        </button>
-                    </>
-                ) : (
-                    <>
-                        <span className="connection-status connection-status--disconnected"></span>
-                        <button
-                            className="connection-btn connection-btn--primary"
-                            onClick={handleConnection}
-                            disabled={loading}
-                        >
-                            Connect
-                            <span className="connection-btn-arr">
-                                {loading ? <LuLoader className="loading-icon" /> : <ArrowIcon />}
-                            </span>
-                        </button>
-                    </>
-                )}
+            <p className='connection-card__description'>{description}</p>
+            <div className='connection-card__foot'>
+                <span className='connection-card__meta'>{meta}</span>
+                {action}
             </div>
-        </div>
+        </Card>
     );
 }
