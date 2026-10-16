@@ -39,7 +39,7 @@ export default function Conversations() {
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const debouncedSearch = useDebounce(searchInputValue, 500);
     const { globalUser } = useAuth();
-    const { isAdmin, selection, isOwnSelection, setSelection, resetToOwn } = useConversationScope();
+    const { isAdmin, selection, isOwnSelection, setSelection, resetToCompany } = useConversationScope();
     const requestScope = useConversationRequestScope(isAdmin, selection);
     const { teams, members } = useScopeFilterOptions(isAdmin);
 
@@ -67,7 +67,7 @@ export default function Conversations() {
     const scopeList = selection?.scope === 'team' ? teams : members;
     const isScopeStale = !!selection && !scopeList.isLoading && !scopeList.isError && scopeName === null;
 
-    const isResettingScope = useResetConversationScope(error, isScopeStale, isOwnSelection, resetToOwn);
+    const isResettingScope = useResetConversationScope(error, isScopeStale, selection, isAdmin, resetToCompany);
 
     const searchChips: SearchChip[] = [
         ...(isAdmin && selection && scopeName

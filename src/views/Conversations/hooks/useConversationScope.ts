@@ -13,10 +13,10 @@ export default function useConversationScope() {
 
     const ownSelection = useMemo<ScopeSelection>(() => ({ scope: 'account', id: ownAccountId }), [ownAccountId]);
 
+    // Admins default to the whole company (null); the URL only carries a team/member pick.
     const selection = useMemo(() => {
         if (!isAdmin) return ownSelection;
-        if (searchParams.get('scope') === 'company') return null;
-        return parseScopeSelection(searchParams) ?? ownSelection;
+        return parseScopeSelection(searchParams);
     }, [isAdmin, searchParams, ownSelection]);
 
     const isOwnSelection = selection?.scope === 'account' && selection.id === ownAccountId;
@@ -27,9 +27,6 @@ export default function useConversationScope() {
                 (prev) => {
                     const params = new URLSearchParams(prev);
                     if (!next) {
-                        params.set('scope', 'company');
-                        params.delete('scopeId');
-                    } else if (next.scope === 'account' && next.id === ownAccountId) {
                         params.delete('scope');
                         params.delete('scopeId');
                     } else {
@@ -41,10 +38,10 @@ export default function useConversationScope() {
                 { replace: true },
             );
         },
-        [setSearchParams, ownAccountId],
+        [setSearchParams],
     );
 
-    const resetToOwn = useCallback(() => setSelection(ownSelection), [setSelection, ownSelection]);
+    const resetToCompany = useCallback(() => setSelection(null), [setSelection]);
 
-    return { isAdmin, selection, isOwnSelection, setSelection, resetToOwn };
+    return { isAdmin, selection, isOwnSelection, setSelection, resetToCompany };
 }
