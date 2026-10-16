@@ -24,7 +24,6 @@ export default function Settings() {
             SettingsPanelEnum.FILES,
             SettingsPanelEnum.CONNECTIONS,
             SettingsPanelEnum.SECURITY,
-            SettingsPanelEnum.USAGE,
         ];
         if (canManageBilling) panels.push(SettingsPanelEnum.SUBSCRIPTION);
         if (canAccessReferrals) panels.push(SettingsPanelEnum.REFERRAL);

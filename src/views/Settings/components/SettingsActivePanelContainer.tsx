@@ -6,9 +6,7 @@ import SettingsActivePanelContainerHeader from "./SettingsActivePanelContainerHe
 import SettingsSecurity from "./SettingsSecurity";
 import SettingsReferralForm from "./SettingsReferralForm";
 import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsForm";
-import SettingsUsage from "./SettingsUsage";
-import ActiveSubscriptionInformation from "@/views/Subscription/components/ActiveSubscriptionInformation";
-import "@/views/Subscription/styles.css";
+import SettingsSubscription from "./SettingsSubscription";
 
 interface Props {
     selectedPanel: SettingsPanel;
@@ -33,19 +31,15 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
             case "security": return (
                 <SettingsSecurity />
             )
-            // Interim: current subscription UI until the new view lands (SAYSO-497).
-            case "subscription": return (
-                <ActiveSubscriptionInformation />
-            )
             case "referral": return (
                 <SettingsReferralForm />
-            )
-            case "usage": return (
-                <SettingsUsage />
             )
         }
     }
     
+    // Subscription is a stack of cards on the page canvas, no panel chrome.
+    if (selectedPanel === 'subscription') return <SettingsSubscription />;
+
     return (
         <div className='settings-panel'>
             <SettingsActivePanelContainerHeader selectedPanel={selectedPanel} />

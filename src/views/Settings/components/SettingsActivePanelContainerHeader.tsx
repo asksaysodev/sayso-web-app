@@ -1,7 +1,8 @@
 import { SettingsPanel, SettingsPanelEnum } from "../types"
 
 interface Props {
-    selectedPanel: SettingsPanel;
+    // Subscription renders its own cards without a panel header.
+    selectedPanel: Exclude<SettingsPanel, 'subscription'>;
 }
 
 export default function SettingsActivePanelContainerHeader({ selectedPanel }: Props) {
@@ -23,17 +24,9 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
             title: 'Security',
             description: 'Manage security settings for your account'
         },
-        [SettingsPanelEnum.SUBSCRIPTION]: {
-            title: 'Subscription',
-            description: 'Manage your plan, invoices and billing information'
-        },
         [SettingsPanelEnum.REFERRAL]: {
             title: 'Referrals',
             description: 'Share your unique link and earn rewards when friends subscribe to Sayso.'
-        },
-        [SettingsPanelEnum.USAGE]: {
-            title: 'Usage',
-            description: 'Track the coaching minutes you have used in your current billing period'
         }
     }
 

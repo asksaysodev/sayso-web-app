@@ -1,4 +1,4 @@
-export type SettingsPanel = 'personal' | 'files' | 'connections' | 'security' | 'subscription' | 'referral' | 'usage';
+export type SettingsPanel = 'personal' | 'files' | 'connections' | 'security' | 'subscription' | 'referral';
 
 export enum SettingsPanelEnum {
     PERSONAL = 'personal',
@@ -6,6 +6,5 @@ export enum SettingsPanelEnum {
     CONNECTIONS = 'connections',
     SECURITY = 'security',
     SUBSCRIPTION = 'subscription',
-    REFERRAL = 'referral',
-    USAGE = 'usage'
+    REFERRAL = 'referral'
 }

@@ -1,0 +1,269 @@
+.settings-subscription {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+    width: 100%;
+    font-family: var(--font-ds);
+    text-align: left;
+}
+
+.subscription-card {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--surface-border);
+}
+
+.subscription-card__title {
+    margin: 0;
+    font-size: var(--text-h5-size);
+    line-height: var(--text-h5-line);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.subscription-card--state {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}
+
+.subscription-card__spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--neutral-200);
+    border-top-color: var(--primary-500);
+    border-radius: var(--radius-full);
+    animation: subscription-spin 0.8s linear infinite;
+}
+
+@keyframes subscription-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Plan card ── */
+.plan-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-32);
+}
+
+.plan-card__summary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.plan-card__top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-12);
+}
+
+.plan-card__name {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    min-width: 0;
+}
+
+.plan-card__name h2 {
+    margin: 0;
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-line);
+    letter-spacing: var(--text-h3-tracking);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-800);
+}
+
+.plan-card__status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    font-size: var(--text-body-md-size);
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.plan-card__status-dot {
+    width: 6px;
+    height: 6px;
+    margin: 2px;
+    border-radius: var(--radius-full);
+}
+
+.plan-card__status-dot--success { background-color: var(--success-icon); }
+.plan-card__status-dot--primary { background-color: var(--primary-500); }
+.plan-card__status-dot--warning { background-color: var(--warning-icon); }
+.plan-card__status-dot--error { background-color: var(--error-icon); }
+
+.plan-card__price {
+    margin: 0;
+    font-size: var(--text-body-lg-size);
+    color: var(--neutral-600);
+    white-space: nowrap;
+}
+
+.plan-card__price strong {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--neutral-800);
+}
+
+.plan-card__meta {
+    margin: 0;
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}
+
+.plan-card__usage {
+    display: flex;
+    align-items: center;
+    gap: var(--space-16);
+    margin: 0;
+    font-size: var(--text-h5-size);
+    line-height: var(--text-h5-line);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+}
+
+.plan-card__usage svg {
+    flex-shrink: 0;
+    color: var(--neutral-800);
+}
+
+.plan-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+    flex-wrap: wrap;
+}
+
+.plan-card__footnote {
+    margin: 0;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-8);
+    background-color: var(--neutral-50);
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-disabled);
+}
+
+/* ── Invoices card ── */
+.invoices-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+}
+
+.subscription-invoices {
+    table-layout: fixed;
+}
+
+.subscription-invoices th:nth-child(-n + 3) {
+    width: calc((100% - 48px) / 3);
+}
+
+.subscription-invoices th:nth-child(4) {
+    width: 48px;
+}
+
+.subscription-invoices .ds-table__head-cell {
+    text-transform: uppercase;
+}
+
+.subscription-invoices__row--link {
+    cursor: pointer;
+}
+
+.subscription-invoices__date {
+    font-size: var(--text-body-lg-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.subscription-invoices__muted {
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}
+
+.subscription-invoices__chevron {
+    text-align: right;
+}
+
+.subscription-invoices__view {
+    display: inline-flex;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--neutral-600);
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.subscription-invoices__view:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-8);
+}
+
+/* ── Subscription management card ── */
+.management-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-24);
+}
+
+.management-card__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-24);
+    min-width: 0;
+}
+
+.management-card__description {
+    margin: var(--space-8) 0 0;
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}
+
+.management-card__cancel {
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--radius-8);
+    background: none;
+    font-family: var(--font-ds);
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.management-card__cancel:hover {
+    color: var(--text-primary);
+}
+
+.management-card__cancel:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+@media (max-width: 767px) {
+    .plan-card__top,
+    .management-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .plan-card__usage {
+        font-size: var(--text-body-lg-size);
+    }
+}

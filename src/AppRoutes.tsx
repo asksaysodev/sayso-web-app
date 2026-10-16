@@ -149,7 +149,8 @@ export default function AppRoutes() {
                             {userNotAdminOnTeams
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
-                                    ? <Layout><Subscription /></Layout>
+                                    // Subscribers manage their plan in Account settings; this route is the pricing page.
+                                    ? <Navigate to="/settings?tab=subscription" replace />
                                     : <Subscription />
                             }
                         </AuthGuard>
