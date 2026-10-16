@@ -6,21 +6,25 @@ import SettingsActivePanelContainerHeader from "./SettingsActivePanelContainerHe
 import SettingsSecurity from "./SettingsSecurity";
 import SettingsReferralForm from "./SettingsReferralForm";
 import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsForm";
-import SettingsUsage from "./SettingsUsage";
+import SettingsSubscription from "./SettingsSubscription";
+
+// These render without the white panel and header.
+const PLAIN_PANELS = ['profile', 'connections', 'security', 'referral'] as const;
+type PlainPanel = (typeof PLAIN_PANELS)[number];
+const isPlainPanel = (panel: SettingsPanel): panel is PlainPanel => (PLAIN_PANELS as readonly string[]).includes(panel);
 
 interface Props {
     selectedPanel: SettingsPanel;
-    setUnsavedChanges: (unsavedChanges: boolean) => void;
 }
 
-export default function SettingsActivePanelContainer({ selectedPanel, setUnsavedChanges }: Props) {
+export default function SettingsActivePanelContainer({ selectedPanel }: Props) {
 
     const { globalUser } = useAuth();
 
     const renderPanel = () => {
         switch(selectedPanel) {
-            case 'personal': return (
-                <SettingsPersonalForm setUnsavedChanges={setUnsavedChanges} globalUser={globalUser} />
+            case 'profile': return (
+                <SettingsPersonalForm globalUser={globalUser} />
             )
             case "files": return (
                 <SettingsFilesForm />
@@ -34,15 +38,16 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
             case "referral": return (
                 <SettingsReferralForm />
             )
-            case "usage": return (
-                <SettingsUsage />
-            )
         }
     }
     
+    // Subscription is a stack of cards on the page canvas, no panel chrome.
+    if (selectedPanel === 'subscription') return <SettingsSubscription />;
+
     return (
-        <div className='settings-panel'>
-            <SettingsActivePanelContainerHeader selectedPanel={selectedPanel} />
+        <div className={`settings-panel${isPlainPanel(selectedPanel) ? ' settings-panel--plain' : ''}`}>
+            {/* Plain panels sit on the page canvas with no title/description. */}
+            {!isPlainPanel(selectedPanel) && <SettingsActivePanelContainerHeader selectedPanel={selectedPanel} />}
             <div className='settings-panel-body'>
                 {renderPanel()}
             </div>

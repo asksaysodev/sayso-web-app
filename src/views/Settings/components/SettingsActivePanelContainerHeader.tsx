@@ -1,36 +1,17 @@
 import { SettingsPanel, SettingsPanelEnum } from "../types"
 
 interface Props {
-    selectedPanel: SettingsPanel;
+    // Only Files still renders the panel header.
+    selectedPanel: Exclude<SettingsPanel, 'subscription' | 'profile' | 'connections' | 'security' | 'referral'>;
 }
 
 export default function SettingsActivePanelContainerHeader({ selectedPanel }: Props) {
 
     const panelFormContent = {
-        [SettingsPanelEnum.PERSONAL]: {
-            title: 'Profile',
-            description: 'Fill in general info about yourself'
-        },
         [SettingsPanelEnum.FILES]: {
             title: 'Context Files',
             description: 'Upload files to give your coach more context about your company or product'
         },
-        [SettingsPanelEnum.CONNECTIONS]: {
-            title: 'Connections',
-            description: 'Connect your software and external accounts'
-        },
-        [SettingsPanelEnum.SECURITY]: {
-            title: 'Security',
-            description: 'Manage security settings for your account'
-        },
-        [SettingsPanelEnum.REFERRAL]: {
-            title: 'Referrals',
-            description: 'Share your unique link and earn rewards when friends subscribe to Sayso.'
-        },
-        [SettingsPanelEnum.USAGE]: {
-            title: 'Usage',
-            description: 'Track the coaching minutes you have used in your current billing period'
-        }
     }
 
     return (

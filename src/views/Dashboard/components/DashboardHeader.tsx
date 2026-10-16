@@ -18,10 +18,6 @@ export default function DashboardHeader({ isAdmin, onOpenFilters }: Props) {
     const isFetching = useIsFetching({ queryKey: DASHBOARD_QUERY_KEY }) > 0;
     const lastUpdate = useDashboardLastUpdate();
 
-    const lastUpdateText = lastUpdate !== null && (
-        <p className='dashboard-header__last-update'>Last update: {formatRelativeDateTime(lastUpdate)}</p>
-    );
-
     return (
         <header className={clsx('dashboard-header', isAdmin && 'dashboard-header--admin')}>
             <div className='dashboard-header__text'>
@@ -38,9 +34,12 @@ export default function DashboardHeader({ isAdmin, onOpenFilters }: Props) {
                         <RefreshCw size={24} className={clsx(isFetching && 'dashboard-header__refresh-icon--spinning')} />
                     </Button>
                 </div>
-                {isAdmin && lastUpdateText}
+                {/* Always rendered so the header keeps the same height as other pages' headers while loading. */}
+                <p className='dashboard-header__last-update'>
+                    {lastUpdate !== null ? `Last update: ${formatRelativeDateTime(lastUpdate)}` : '\u00a0'}
+                </p>
             </div>
-            {isAdmin ? <FiltersButton onClick={onOpenFilters} /> : lastUpdateText}
+            {isAdmin && <FiltersButton onClick={onOpenFilters} />}
         </header>
     );
 }

@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from 'react';
 import * as Sentry from '@sentry/react';
-import ConnectionItem from "./ConnectionItem";
+import { Button } from "@/components/ds/Button";
+import { Badge } from "@/components/ds/Badge";
+import SettingsCard from "../SettingsCard";
 import SureSendConnectModal from "./SureSendConnectModal";
 import ManageConnectionModal from "./ManageConnectionModal";
 import SureSendTile from "./SureSendTile";
@@ -57,15 +59,18 @@ export default function SureSendConnection() {
 
     return (
         <>
-            <ConnectionItem
-                logoTile={<SureSendTile />}
+            <SettingsCard
+                tile={<SureSendTile />}
                 title={TITLE}
-                category={CATEGORY}
+                detail={CATEGORY}
                 description={DESCRIPTION}
-                connected={connected}
-                connectedMeta={formatSureSendMeta(globalUser?.suresend_account_name, globalUser?.suresend_token_scope)}
-                handleConnection={() => setConnectModalOpen(true)}
-                handleManage={() => setManageOpen(true)}
+                status={connected && <Badge tone="success">Connected</Badge>}
+                meta={connected ? formatSureSendMeta(globalUser?.suresend_account_name, globalUser?.suresend_token_scope) : undefined}
+                action={connected ? (
+                    <Button variant='secondary' onClick={() => setManageOpen(true)}>Manage</Button>
+                ) : (
+                    <Button onClick={() => setConnectModalOpen(true)}>Connect</Button>
+                )}
             />
             <SureSendConnectModal
                 open={connectModalOpen}

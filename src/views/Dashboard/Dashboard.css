@@ -1,7 +1,7 @@
 .dashboard-page {
     display: flex;
     flex-direction: column;
-    gap: var(--space-16);
+    gap: var(--space-24);
     flex: 1;
     min-width: 0;
     height: 100%;
@@ -15,16 +15,15 @@
 
 .dashboard-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-24);
-    padding-bottom: var(--space-12);
 }
 
 .dashboard-header__text {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-8);
     min-width: 0;
 }
 
@@ -64,7 +63,8 @@
 
 .dashboard-header__last-update {
     margin: 0;
-    font-size: var(--text-body-md-size);
+    font-size: var(--text-h5-size);
+    line-height: var(--text-h5-line);
     color: var(--text-secondary);
     white-space: nowrap;
 }
@@ -92,7 +92,6 @@
 /* Short viewports (e.g. 13" laptops): tighten vertical rhythm so the page fits without scrolling. */
 @media (min-width: 768px) and (max-height: 960px) {
     .dashboard-page {
-        padding-top: var(--space-16);
         padding-bottom: var(--space-24);
     }
 
@@ -114,9 +113,5 @@
         height: auto;
         padding: var(--space-16);
         gap: var(--space-16);
-    }
-
-    .dashboard-header {
-        padding-bottom: var(--space-8);
     }
 }

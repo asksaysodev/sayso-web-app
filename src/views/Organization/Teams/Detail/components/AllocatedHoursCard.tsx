@@ -41,8 +41,8 @@ export default function AllocatedHoursCard({ team }: Props) {
             </div>
             <Button
                 variant='secondary'
-                size='sm'
-                leftIcon={isUncapped ? <Plus size={16} /> : <Pencil size={16} />}
+                size='md'
+                leftIcon={isUncapped ? <Plus size={20} /> : <Pencil size={20} />}
                 onClick={() => setIsEditOpen(true)}
             >
                 {isUncapped ? 'Set hours' : 'Edit hours'}

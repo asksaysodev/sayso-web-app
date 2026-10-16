@@ -1,5 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ds/Button';
 import useTeam from '../hooks/useTeam';
 import AllocatedHoursCard from './components/AllocatedHoursCard';
@@ -7,7 +6,6 @@ import TeamDetailHeader from './components/TeamDetailHeader';
 import TeamDetailStatus from './components/TeamDetailStatus';
 import TeamMembersCard from './components/TeamMembersCard';
 import '@/views/Organization/Organization.css';
-import './TeamDetail.css';
 
 export default function TeamDetail() {
     const { teamId = '' } = useParams();
@@ -47,10 +45,6 @@ export default function TeamDetail() {
 
     return (
         <main className='organization-page'>
-            <Link to='/organization?tab=teams' className='team-detail__back'>
-                <ArrowLeft size={16} aria-hidden />
-                Teams
-            </Link>
             {renderContent()}
         </main>
     );
