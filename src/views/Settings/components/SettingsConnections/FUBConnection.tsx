@@ -1,5 +1,6 @@
 import { Button } from "@/components/ds/Button";
-import ConnectionItem from "./ConnectionItem";
+import { Badge } from "@/components/ds/Badge";
+import SettingsCard from "../SettingsCard";
 import ManageConnectionModal from "./ManageConnectionModal";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -82,12 +83,12 @@ export default function FUBConnection() {
 
     return (
         <>
-            <ConnectionItem
-                logoTile={<FUBTile />}
+            <SettingsCard
+                tile={<FUBTile />}
                 title={TITLE}
-                category="Real-estate CRM"
+                detail="Real-estate CRM"
                 description={DESCRIPTION}
-                connected={fubConnected}
+                status={fubConnected && <Badge tone="success">Connected</Badge>}
                 action={fubConnected ? (
                     <Button variant='secondary' onClick={() => setManageOpen(true)}>Manage</Button>
                 ) : (

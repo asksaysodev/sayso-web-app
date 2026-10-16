@@ -1,8 +1,8 @@
 import { SettingsPanel, SettingsPanelEnum } from "../types"
 
 interface Props {
-    // Subscription, Profile and Connections render without a panel header.
-    selectedPanel: Exclude<SettingsPanel, 'subscription' | 'personal' | 'connections'>;
+    // Subscription, Profile, Connections and Security render without a panel header.
+    selectedPanel: Exclude<SettingsPanel, 'subscription' | 'personal' | 'connections' | 'security'>;
 }
 
 export default function SettingsActivePanelContainerHeader({ selectedPanel }: Props) {
@@ -11,10 +11,6 @@ export default function SettingsActivePanelContainerHeader({ selectedPanel }: Pr
         [SettingsPanelEnum.FILES]: {
             title: 'Context Files',
             description: 'Upload files to give your coach more context about your company or product'
-        },
-        [SettingsPanelEnum.SECURITY]: {
-            title: 'Security',
-            description: 'Manage security settings for your account'
         },
         [SettingsPanelEnum.REFERRAL]: {
             title: 'Referrals',

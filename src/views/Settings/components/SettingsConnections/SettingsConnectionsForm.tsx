@@ -2,7 +2,7 @@ import { CircleHelp } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
 import { useAuth } from '@/context/AuthContext';
 import { openExternal } from '@/utils/helpers/openExternal';
-import ConnectionItem from './ConnectionItem';
+import SettingsCard, { SettingsCardTile } from '../SettingsCard';
 import FUBConnection from './FUBConnection';
 import SureSendConnection from './SureSendConnection';
 import './connections.css';
@@ -13,14 +13,14 @@ function RequestIntegrationCard() {
     const bodyValue = encodeURIComponent(`Which integration would you like Sayso to support? Any details about your use case will help us prioritize.`);
 
     return (
-        <ConnectionItem
-            logoTile={
-                <div className='connection-tile connection-tile--request'>
+        <SettingsCard
+            tile={
+                <SettingsCardTile>
                     <CircleHelp size={24} aria-hidden />
-                </div>
+                </SettingsCardTile>
             }
             title="Don't see your integration?"
-            category='Request it'
+            detail='Request it'
             description='More integrations are on the way. Reach out to your account manager to request one.'
             action={
                 <Button
@@ -36,7 +36,7 @@ function RequestIntegrationCard() {
 
 export default function SettingsConnectionsForm() {
     return (
-        <div className='connections-grid'>
+        <div className='settings-cards-grid'>
             <FUBConnection />
             <SureSendConnection />
             <RequestIntegrationCard />

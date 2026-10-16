@@ -8,7 +8,9 @@ import { EnrollTOTPResult } from "@/types/supabaseMFA";
 import { useToast } from "@/context/ToastContext";
 import * as Sentry from "@sentry/react";
 import type { Factor } from "@supabase/supabase-js";
-import SecuritySettingContainer from "./SecuritySettingContainer";
+import { ShieldCheck } from "lucide-react";
+import { Badge } from "@/components/ds/Badge";
+import SettingsCard, { SettingsCardTile } from "./SettingsCard";
 
 export default function TwoFactorAuthSecurityOption() {
     const { showToast } = useToast();
@@ -118,20 +120,28 @@ export default function TwoFactorAuthSecurityOption() {
 
     return (
         <>
-            <SecuritySettingContainer
+            <SettingsCard
+                tile={
+                    <SettingsCardTile>
+                        <ShieldCheck size={24} aria-hidden />
+                    </SettingsCardTile>
+                }
                 title="Two-factor authentication"
+                detail="Authenticator app"
+                status={isMFAEnabled && <Badge tone="success">Enabled</Badge>}
                 description={
                     isMFAEnabled
                         ? "Your account is protected with 2FA"
                         : "Enable 2FA to add an extra layer of security to your account"
                 }
-                rightContent={
+                action={
                     isLoading || isEnrolling ? (
                         <LuLoader className="animate-spin" size={20} />
                     ) : (
                         <Switch
                             checked={isMFAEnabled}
                             onCheckedChange={handleToggleMFA}
+                            aria-label="Two-factor authentication"
                             className="data-[state=checked]:bg-[var(--sayso-blue)] data-[state=unchecked]:bg-input"
                         />
                     )

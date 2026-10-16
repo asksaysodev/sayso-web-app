@@ -8,8 +8,8 @@ import SettingsReferralForm from "./SettingsReferralForm";
 import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsForm";
 import SettingsSubscription from "./SettingsSubscription";
 
-// Profile and Connections render without the white panel and header.
-const PLAIN_PANELS = ['personal', 'connections'] as const;
+// Profile, Connections and Security render without the white panel and header.
+const PLAIN_PANELS = ['personal', 'connections', 'security'] as const;
 type PlainPanel = (typeof PLAIN_PANELS)[number];
 const isPlainPanel = (panel: SettingsPanel): panel is PlainPanel => (PLAIN_PANELS as readonly string[]).includes(panel);
 

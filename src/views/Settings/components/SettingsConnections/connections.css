@@ -1,73 +1,3 @@
-/* ── Grid ── */
-.connections-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
-    gap: var(--space-16);
-    width: 100%;
-}
-
-/* ── Card (ds Card: white, radius 16, card shadow) ── */
-.connection-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-16);
-    text-align: left;
-}
-
-.connection-card__top {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-12);
-}
-
-.connection-card__heading {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: var(--space-2);
-    min-width: 0;
-}
-
-.connection-card__title {
-    margin: 0;
-    font-size: var(--text-h5-size);
-    line-height: var(--text-h5-line);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-primary);
-}
-
-.connection-card__category {
-    margin: 0;
-    font-size: var(--text-body-sm-size);
-    color: var(--text-secondary);
-}
-
-/* Grows so every card's footer lines up at the bottom, whatever the copy length. */
-.connection-card__description {
-    flex: 1;
-    margin: 0;
-    font-size: var(--text-body-md-size);
-    line-height: 20px;
-    color: var(--text-secondary);
-}
-
-.connection-card__foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-12);
-}
-
-.connection-card__meta {
-    min-width: 0;
-    overflow: hidden;
-    font-size: var(--text-body-sm-size);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-secondary);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 /* ── Logo tile (square, tinted); also used by the manage/connect modals ── */
 .connection-tile {
     display: flex;
@@ -85,11 +15,6 @@
 
 .connection-tile--suresend {
     background: #e7eff7;
-}
-
-.connection-tile--request {
-    background: var(--neutral-50);
-    color: var(--neutral-500);
 }
 
 /* ── SureSend Modals — shared tokens ── */
