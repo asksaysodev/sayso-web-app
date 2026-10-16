@@ -8,6 +8,8 @@ interface Props {
     onSelect: (selection: ScopeSelection) => void;
     teams: FilterOptionList;
     members: FilterOptionList;
+    /** Show the search box above the sections. */
+    searchable?: boolean;
 }
 
 const matching = (options: FilterOption[], query: string) => {
@@ -15,7 +17,7 @@ const matching = (options: FilterOption[], query: string) => {
 }
 
 /** Team + Members radio sections with a shared search box. */
-export default function ScopeFilterSections({ draft, onSelect, teams, members }: Props) {
+export default function ScopeFilterSections({ draft, onSelect, teams, members, searchable = true }: Props) {
     const [searchText, setSearchText] = useState('');
 
     const query = searchText.trim().toLowerCase();
@@ -24,13 +26,15 @@ export default function ScopeFilterSections({ draft, onSelect, teams, members }:
 
     return (
         <>
-            <div className='scope-filters__search'>
-                <SearchBar
-                    searchText={searchText}
-                    onSearchTextChange={setSearchText}
-                    placeholder='Search team or members'
-                />
-            </div>
+            {searchable && (
+                <div className='scope-filters__search'>
+                    <SearchBar
+                        searchText={searchText}
+                        onSearchTextChange={setSearchText}
+                        placeholder='Search team or members'
+                    />
+                </div>
+            )}
             <FiltersSection
                 title='Team'
                 noun='teams'

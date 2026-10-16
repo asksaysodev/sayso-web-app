@@ -4,7 +4,6 @@ import { Button } from '@/components/ds/Button';
 import { Checkbox } from '@/components/ds/Checkbox';
 import { Radio } from '@/components/ds/Radio';
 import { Sheet, SheetBody, SheetFooter, SheetHeader } from '@/components/ds/Sheet';
-import { TextField } from '@/components/ds/TextField';
 import ScopeFilterSections from '@/components/ScopeFilters/ScopeFilterSections';
 import type { FilterOptionList, ScopeSelection } from '@/types/scope';
 import {
@@ -93,21 +92,13 @@ function DrawerContent({ filters, scope, onApply }: Pick<Props, 'filters' | 'sco
                         ))}
                     </div>
                 </section>
-                <section className='scope-filters__section' aria-label='Lead name'>
-                    <h3 className='scope-filters__section-title'>Lead name</h3>
-                    <TextField
-                        label='Name'
-                        placeholder='Search by name…'
-                        value={draft.leadName}
-                        onChange={(event) => update({ leadName: event.target.value })}
-                    />
-                </section>
                 {scope && (
                     <ScopeFilterSections
                         draft={scopeDraft}
                         onSelect={setScopeDraft}
                         teams={scope.teams}
                         members={scope.members}
+                        searchable={false}
                     />
                 )}
             </SheetBody>

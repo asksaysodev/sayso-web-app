@@ -7,14 +7,12 @@ export interface ConversationFilterState {
     hasSummary: boolean;
     leadType: LeadTypeValue;
     appointment: AppointmentValue;
-    leadName: string;
 }
 
 export const DEFAULT_CONVERSATION_FILTERS: ConversationFilterState = {
     hasSummary: true,
     leadType: 'all',
     appointment: 'all',
-    leadName: '',
 };
 
 export const CLEARED_CONVERSATION_FILTERS: ConversationFilterState = {
@@ -43,7 +41,6 @@ export function toRequestFilters(state: ConversationFilterState): ConversationFi
     if (state.hasSummary) filters.push({ key: 'has_summary', value: 'true' });
     if (state.leadType !== 'all') filters.push({ key: 'lead_type', value: state.leadType });
     if (state.appointment !== 'all') filters.push({ key: 'appointment_booked', value: state.appointment });
-    if (state.leadName.trim()) filters.push({ key: 'lead_name', value: state.leadName.trim() });
     return filters;
 }
 
@@ -71,9 +68,6 @@ export function getConversationFilterChips(state: ConversationFilterState): Conv
             label: `Appointment: ${optionLabel(APPOINTMENT_OPTIONS, state.appointment)}`,
             clear: (s) => ({ ...s, appointment: 'all' }),
         });
-    }
-    if (state.leadName.trim()) {
-        chips.push({ key: 'lead_name', label: `Lead name: ${state.leadName.trim()}`, clear: (s) => ({ ...s, leadName: '' }) });
     }
     return chips;
 }
