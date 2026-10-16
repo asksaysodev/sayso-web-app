@@ -1,15 +1,14 @@
 import SaysoModal from "@/components/SaysoModal";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/ds/PageHeader";
 import "./styles.css";
-import { SettingsPanel, SettingsPanelEnum } from "./types";
+import { DEFAULT_SETTINGS_PANEL, SettingsPanel, SettingsPanelEnum } from "./types";
 import SettingsNav from "./components/SettingsNav";
 import SettingsActivePanelContainer from "./components/SettingsActivePanelContainer";
 import useCanAccessReferrals from "@/hooks/useCanAccessReferrals";
 import useCanManageBilling from "@/hooks/useCanManageBilling";
 
-const DEFAULT_PANEL = SettingsPanelEnum.PERSONAL;
 
 export default function Settings() {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -20,7 +19,7 @@ export default function Settings() {
     // Panels this user may open. Files stays reachable by URL only (hidden from the nav, as before).
     const availablePanels = useMemo(() => {
         const panels: SettingsPanel[] = [
-            SettingsPanelEnum.PERSONAL,
+            SettingsPanelEnum.PROFILE,
             SettingsPanelEnum.FILES,
             SettingsPanelEnum.CONNECTIONS,
             SettingsPanelEnum.SECURITY,
@@ -33,7 +32,20 @@ export default function Settings() {
     const tabParam = searchParams.get("tab");
     const selectedPanel = tabParam && availablePanels.includes(tabParam as SettingsPanel)
         ? tabParam as SettingsPanel
-        : DEFAULT_PANEL;
+        : DEFAULT_SETTINGS_PANEL;
+
+    // An unknown or not-allowed ?tab= falls back to the default; rewrite the URL so the breadcrumb matches.
+    useEffect(() => {
+        if (tabParam === null || tabParam === selectedPanel) return;
+        setSearchParams(
+            (prev) => {
+                const next = new URLSearchParams(prev);
+                next.set("tab", selectedPanel);
+                return next;
+            },
+            { replace: true },
+        );
+    }, [tabParam, selectedPanel, setSearchParams]);
 
     const [nextPanel, setNextPanel] = useState<SettingsPanel | null>(null);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -88,7 +100,7 @@ export default function Settings() {
 			}
 
 			<PageHeader
-				title='Account settings'
+				title='Settings'
 				description='Manage your plan, billing and team access.'
 			/>
 

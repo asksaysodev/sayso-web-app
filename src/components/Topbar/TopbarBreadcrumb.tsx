@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import useNavItems from '@/components/Sidebar/useNavItems';
 import { teamDetailQueryKey } from '@/views/Organization/shared/hooks/queryKeys';
 import type { TeamDetail } from '@/views/Organization/Teams/types';
+import { DEFAULT_SETTINGS_PANEL, SETTINGS_PANEL_LABELS, type SettingsPanel } from '@/views/Settings/types';
 
 interface Crumb {
     label: string;
@@ -11,7 +12,11 @@ interface Crumb {
 }
 
 const ORGANIZATION_PATH = '/organization';
+const SETTINGS_PATH = '/settings';
 const TEAM_DETAIL_PATH = '/organization/teams/:teamId';
+
+const isSettingsPanel = (value: string | null): value is SettingsPanel =>
+    value !== null && value in SETTINGS_PANEL_LABELS;
 
 const ORGANIZATION_TABS: Record<string, string> = {
     company: 'Company',
@@ -30,6 +35,12 @@ export default function TopbarBreadcrumb() {
         enabled: false,
     });
 
+    if (pathname === SETTINGS_PATH) {
+        const tab = new URLSearchParams(search).get('tab');
+        const panel = isSettingsPanel(tab) ? tab : DEFAULT_SETTINGS_PANEL;
+        return <Breadcrumb crumbs={[{ label: 'Settings', to: SETTINGS_PATH }, { label: SETTINGS_PANEL_LABELS[panel] }]} />;
+    }
+
     if (!current) return null;
 
     const crumbs: Crumb[] = [{ label: current.label }];
@@ -43,6 +54,10 @@ export default function TopbarBreadcrumb() {
         crumbs.push({ label: ORGANIZATION_TABS[tab] ?? ORGANIZATION_TABS.company });
     }
 
+    return <Breadcrumb crumbs={crumbs} />;
+}
+
+function Breadcrumb({ crumbs }: { crumbs: Crumb[] }) {
     return (
         <nav aria-label='Breadcrumb' className='topbar__breadcrumb'>
             {crumbs.map((crumb, index) => {

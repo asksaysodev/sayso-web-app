@@ -9,7 +9,7 @@ import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsFo
 import SettingsSubscription from "./SettingsSubscription";
 
 // These render without the white panel and header.
-const PLAIN_PANELS = ['personal', 'connections', 'security', 'referral'] as const;
+const PLAIN_PANELS = ['profile', 'connections', 'security', 'referral'] as const;
 type PlainPanel = (typeof PLAIN_PANELS)[number];
 const isPlainPanel = (panel: SettingsPanel): panel is PlainPanel => (PLAIN_PANELS as readonly string[]).includes(panel);
 
@@ -24,7 +24,7 @@ export default function SettingsActivePanelContainer({ selectedPanel, setUnsaved
 
     const renderPanel = () => {
         switch(selectedPanel) {
-            case 'personal': return (
+            case 'profile': return (
                 <SettingsPersonalForm setUnsavedChanges={setUnsavedChanges} globalUser={globalUser} />
             )
             case "files": return (

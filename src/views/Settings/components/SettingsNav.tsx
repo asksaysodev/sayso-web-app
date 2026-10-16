@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import type { IconType } from 'react-icons';
 import { PiCreditCard, PiGift, PiLock, PiPlugsConnected, PiUserCircle } from 'react-icons/pi';
-import { SettingsPanel, SettingsPanelEnum } from '../types';
+import { SETTINGS_PANEL_LABELS, SettingsPanel, SettingsPanelEnum } from '../types';
 
 interface NavItem {
     value: SettingsPanel;
@@ -10,11 +10,11 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-    { value: SettingsPanelEnum.PERSONAL, label: 'Profile', icon: PiUserCircle },
-    { value: SettingsPanelEnum.CONNECTIONS, label: 'Connections', icon: PiPlugsConnected },
-    { value: SettingsPanelEnum.SECURITY, label: 'Security', icon: PiLock },
-    { value: SettingsPanelEnum.SUBSCRIPTION, label: 'Subscription', icon: PiCreditCard },
-    { value: SettingsPanelEnum.REFERRAL, label: 'Referrals', icon: PiGift },
+    { value: SettingsPanelEnum.PROFILE, label: SETTINGS_PANEL_LABELS.profile, icon: PiUserCircle },
+    { value: SettingsPanelEnum.CONNECTIONS, label: SETTINGS_PANEL_LABELS.connections, icon: PiPlugsConnected },
+    { value: SettingsPanelEnum.SECURITY, label: SETTINGS_PANEL_LABELS.security, icon: PiLock },
+    { value: SettingsPanelEnum.SUBSCRIPTION, label: SETTINGS_PANEL_LABELS.subscription, icon: PiCreditCard },
+    { value: SettingsPanelEnum.REFERRAL, label: SETTINGS_PANEL_LABELS.referral, icon: PiGift },
 ];
 
 interface Props {
