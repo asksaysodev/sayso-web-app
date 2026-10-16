@@ -5,6 +5,11 @@
     box-shadow: 0 6px 28px rgba(99, 120, 200, 0.18), 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
+.dashboard-tips .dashboard-widget__icon {
+    width: 16px;
+    height: 16px;
+}
+
 .dashboard-tips .dashboard-widget__heading {
     gap: 10px;
 }
