@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Download, Rocket } from 'lucide-react';
+import { PiDownload, PiRocket } from 'react-icons/pi';
 import clsx from 'clsx';
 import { Button } from '@/components/ds/Button';
 import { LAUNCH_COACH_URL } from '@/constants';
@@ -31,7 +31,7 @@ export default function SidebarActions({ collapsed, hideLaunchCoach = false, onN
                         variant='primary'
                         className={actionClass}
                         aria-label={collapsed ? LAUNCH_LABEL : undefined}
-                        leftIcon={<Rocket size={collapsed ? 24 : 20} strokeWidth={1.5} />}
+                        leftIcon={<PiRocket size={collapsed ? 24 : 20} />}
                         onClick={() => { window.location.href = LAUNCH_COACH_URL; }}
                     >
                         {!collapsed && LAUNCH_LABEL}
@@ -43,7 +43,7 @@ export default function SidebarActions({ collapsed, hideLaunchCoach = false, onN
                     variant='secondary'
                     className={actionClass}
                     aria-label={collapsed ? DOWNLOAD_LABEL : undefined}
-                    leftIcon={<Download size={collapsed ? 24 : 20} strokeWidth={1.5} />}
+                    leftIcon={<PiDownload size={collapsed ? 24 : 20} />}
                     onClick={handleDownload}
                 >
                     {!collapsed && DOWNLOAD_LABEL}

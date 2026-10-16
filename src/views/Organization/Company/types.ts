@@ -45,11 +45,6 @@ export type MemberRowAction = 'updateRole' | 'resendInvite' | 'revokeInvite' | '
 
 export type MemberSortKey = 'member' | 'email' | 'role' | 'status';
 
-export interface StatusFilter {
-    key: 'status';
-    value: CompanyMemberStatus;
-}
-
 /** Shape of `GET /company` and `PATCH /company`. */
 export interface Company {
     id: string;

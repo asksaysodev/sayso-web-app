@@ -1,0 +1,89 @@
+.ds-inline-edit {
+    width: 100%;
+}
+
+.ds-inline-edit .ds-field:hover:not(.ds-field--disabled) {
+    border-color: var(--primary-200);
+    background-color: var(--surface-canvas);
+}
+
+.ds-inline-edit .ds-field:focus-within {
+    border-color: var(--primary-500);
+    background-color: var(--surface-canvas);
+}
+
+.ds-inline-edit .ds-field--invalid,
+.ds-inline-edit .ds-field--invalid:hover {
+    border-color: var(--error-icon);
+}
+
+.ds-inline-edit .ds-field__trailing {
+    color: var(--text-primary);
+}
+
+/* Figma empty state: the label sits alone at value size until the field is focused */
+.ds-inline-edit--empty .ds-field:not(:focus-within) .ds-field__label {
+    font-size: var(--text-body-lg-size);
+    line-height: 22px;
+}
+
+.ds-inline-edit--empty .ds-field:not(:focus-within) .ds-field__input {
+    height: 0;
+}
+
+.ds-inline-edit .ds-field__trailing:has(.ds-inline-edit__save) {
+    pointer-events: auto;
+}
+
+.ds-inline-edit__save {
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--radius-8);
+    background: transparent;
+    font-family: var(--font-ds);
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-brand);
+    cursor: pointer;
+}
+
+.ds-inline-edit__save:hover {
+    text-decoration: underline;
+}
+
+.ds-inline-edit__save:focus-visible {
+    outline: 2px solid var(--primary-300);
+    outline-offset: 2px;
+}
+
+.ds-inline-edit__saved {
+    color: var(--primary-500);
+}
+
+.ds-inline-edit__spinner {
+    color: var(--primary-500);
+    animation: ds-inline-edit-spin 0.8s linear infinite;
+}
+
+@keyframes ds-inline-edit-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Non-editable: lighter fill than the ds disabled default, with readable text. */
+.ds-inline-edit .ds-field--disabled {
+    border-color: var(--neutral-200);
+    background-color: var(--neutral-100);
+    color: var(--text-primary);
+}
+
+.ds-inline-edit .ds-field--disabled .ds-field__label {
+    color: var(--text-secondary);
+}
+
+.ds-inline-edit .ds-field--disabled .ds-field__input {
+    color: var(--text-primary);
+    -webkit-text-fill-color: var(--text-primary);
+    opacity: 1;
+}

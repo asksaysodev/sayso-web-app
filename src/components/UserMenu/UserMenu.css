@@ -127,6 +127,17 @@
     color: var(--error-text);
 }
 
+/* Hover/keyboard focus: no fill, just stronger text. */
+.ds-menu__item.user-menu__item[data-highlighted] {
+    background-color: transparent;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.ds-menu__item--destructive.user-menu__item[data-highlighted] {
+    color: var(--error-text);
+}
+
 .ds-menu__separator.user-menu__separator {
     margin: var(--space-4) 0;
     background-color: var(--neutral-200);

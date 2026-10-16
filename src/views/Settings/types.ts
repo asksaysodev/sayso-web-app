@@ -1,10 +1,22 @@
-export type SettingsPanel = 'personal' | 'files' | 'connections' | 'security' | 'referral' | 'usage';
+export type SettingsPanel = 'profile' | 'files' | 'connections' | 'security' | 'subscription' | 'referral';
 
 export enum SettingsPanelEnum {
-    PERSONAL = 'personal',
+    PROFILE = 'profile',
     FILES = 'files',
     CONNECTIONS = 'connections',
     SECURITY = 'security',
-    REFERRAL = 'referral',
-    USAGE = 'usage'
+    SUBSCRIPTION = 'subscription',
+    REFERRAL = 'referral'
 }
+
+export const DEFAULT_SETTINGS_PANEL: SettingsPanel = SettingsPanelEnum.PROFILE;
+
+/** Shown in the settings nav and the topbar breadcrumb. */
+export const SETTINGS_PANEL_LABELS: Record<SettingsPanel, string> = {
+    profile: 'Profile',
+    files: 'Context files',
+    connections: 'Connections',
+    security: 'Security',
+    subscription: 'Subscription',
+    referral: 'Referrals',
+};
