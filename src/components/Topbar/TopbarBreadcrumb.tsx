@@ -11,15 +11,15 @@ interface Crumb {
     to?: string;
 }
 
-const ORGANIZATION_PATH = '/organization';
+const COMPANY_PATH = '/company';
 const SETTINGS_PATH = '/settings';
-const TEAM_DETAIL_PATH = '/organization/teams/:teamId';
+const TEAM_DETAIL_PATH = '/company/teams/:teamId';
 
 const isSettingsPanel = (value: string | null): value is SettingsPanel =>
     value !== null && value in SETTINGS_PANEL_LABELS;
 
-const ORGANIZATION_TABS: Record<string, string> = {
-    company: 'Company',
+const COMPANY_TABS: Record<string, string> = {
+    company: 'Members',
     teams: 'Teams',
 };
 
@@ -46,12 +46,12 @@ export default function TopbarBreadcrumb() {
     const crumbs: Crumb[] = [{ label: current.label }];
 
     if (teamId) {
-        crumbs[0].to = ORGANIZATION_PATH;
-        crumbs.push({ label: 'Teams', to: `${ORGANIZATION_PATH}?tab=teams` });
+        crumbs[0].to = COMPANY_PATH;
+        crumbs.push({ label: 'Teams', to: `${COMPANY_PATH}?tab=teams` });
         if (teamDetail) crumbs.push({ label: teamDetail.team.name });
-    } else if (pathname === ORGANIZATION_PATH) {
+    } else if (pathname === COMPANY_PATH) {
         const tab = new URLSearchParams(search).get('tab') ?? 'company';
-        crumbs.push({ label: ORGANIZATION_TABS[tab] ?? ORGANIZATION_TABS.company });
+        crumbs.push({ label: COMPANY_TABS[tab] ?? COMPANY_TABS.company });
     }
 
     return <Breadcrumb crumbs={crumbs} />;

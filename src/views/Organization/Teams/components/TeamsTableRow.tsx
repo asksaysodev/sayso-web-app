@@ -14,7 +14,7 @@ interface Props {
 export default function TeamsTableRow({ team }: Props) {
     const navigate = useNavigate();
     const status = teamStatusBadge(team.status);
-    const href = `/organization/teams/${team.id}`;
+    const href = `/company/teams/${team.id}`;
 
     return (
         <TableRow className='teams-table__row' onClick={() => navigate(href)}>

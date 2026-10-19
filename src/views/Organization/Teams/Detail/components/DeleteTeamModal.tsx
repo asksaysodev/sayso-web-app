@@ -13,7 +13,7 @@ export default function DeleteTeamModal({ teamId, onClose }: Props) {
     const { deleteTeam, isPending, errorMessage } = useDeleteTeam();
 
     const handleConfirm = () => {
-        deleteTeam(teamId, { onSuccess: () => navigate('/organization?tab=teams', { replace: true }) });
+        deleteTeam(teamId, { onSuccess: () => navigate('/company?tab=teams', { replace: true }) });
     };
 
     return (

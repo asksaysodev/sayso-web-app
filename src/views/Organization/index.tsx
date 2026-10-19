@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
-import { Building2, UsersRound } from 'lucide-react';
+import { UserRound, UsersRound } from 'lucide-react';
 import { PageHeader } from '@/components/ds/PageHeader';
 import { SegmentedControl, type SegmentedControlItem } from '@/components/ds/SegmentedControl';
 import CompanyMembersCard from './Company/components/CompanyMembersCard';
@@ -8,7 +8,7 @@ import type { OrganizationTab } from './types';
 import './Organization.css';
 
 const TABS: SegmentedControlItem<OrganizationTab>[] = [
-    { value: 'company', label: 'Company', icon: <Building2 size={16} /> },
+    { value: 'company', label: 'Members', icon: <UserRound size={16} /> },
     { value: 'teams', label: 'Teams', icon: <UsersRound size={16} /> },
 ];
 
@@ -36,11 +36,11 @@ export default function Organization() {
     return (
         <main className='organization-page'>
             <PageHeader
-                title='Organization'
-                description='See how your org is doing as a whole, by team, or by individual — and manage who belongs where.'
+                title='Company'
+                description='See how your company is doing as a whole, by team, or by individual — and manage who belongs where.'
             />
             <SegmentedControl
-                aria-label='Organization view'
+                aria-label='Company view'
                 items={TABS}
                 value={activeTab}
                 onChange={handleTabChange}
