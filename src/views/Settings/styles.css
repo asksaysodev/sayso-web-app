@@ -114,10 +114,6 @@
 }
 
 /* Referral Settings */
-.referral-card {
-    max-width: 640px;
-}
-
 .referral-link--state {
     display: flex;
     align-items: center;
