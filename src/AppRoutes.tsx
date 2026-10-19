@@ -185,8 +185,8 @@ export default function AppRoutes() {
     )
 }
 
-/** /organization[/…][?…] → /company[/…][?…] */
+/** /organization[/…][?…][#…] → /company[/…][?…][#…] */
 function OrganizationRedirect() {
-    const { pathname, search } = useLocation();
-    return <Navigate to={pathname.replace(/^\/organization/, '/company') + search} replace />;
+    const { pathname, search, hash } = useLocation();
+    return <Navigate to={pathname.replace(/^\/organization/, '/company') + search + hash} replace />;
 }

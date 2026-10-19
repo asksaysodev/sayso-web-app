@@ -5,7 +5,7 @@ import OverviewTileSkeleton from './OverviewTileSkeleton';
 import type { DashboardOverview, DashboardResponseScope } from '../../types';
 
 const SCOPE_CAPTIONS: Record<DashboardResponseScope, string> = {
-    company: 'Across this organization',
+    company: 'Across this company',
     team: 'Across this team',
     account: 'For this account',
 };

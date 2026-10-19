@@ -131,6 +131,9 @@ export function InlineEditField({
         }
     };
 
+    // Disabled (e.g. load failed) or read-only (e.g. still loading): no pencil, so it can't unlock the field.
+    const canStartEditing = !props.disabled && !readOnly;
+
     const trailingIcon = !editable ? undefined : isSaving ? (
         <LoaderCircle size={20} className='ds-inline-edit__spinner' aria-label='Saving' />
     ) : isDirty ? (
@@ -145,7 +148,7 @@ export function InlineEditField({
         </button>
     ) : justSaved ? (
         <Check size={20} className='ds-inline-edit__saved' aria-label='Saved' />
-    ) : isEditing ? undefined : (
+    ) : isEditing || !canStartEditing ? undefined : (
         <button
             type='button'
             className='ds-inline-edit__edit'

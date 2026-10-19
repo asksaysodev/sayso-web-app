@@ -22,7 +22,7 @@
 
 .dashboard-tips__grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--dashboard-tips-columns, 3), minmax(0, 1fr));
     gap: var(--space-12);
 }
 
@@ -96,7 +96,8 @@
 .dashboard-tip-card__body {
     display: -webkit-box;
     width: 100%;
-    height: calc(var(--dashboard-tip-lines) * 20px);
+    /* Lines plus the 4px gap between paragraphs, so the last (ellipsized) line isn't clipped. */
+    height: calc(var(--dashboard-tip-lines) * 20px + var(--dashboard-tip-paragraph-gaps, 0) * var(--space-4));
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: var(--dashboard-tip-lines);
@@ -198,6 +199,11 @@
     }
 
     /* One tip per page on phones and the page scrolls anyway, so show the full copy. */
+    /* Unclamped copy: size each card to its own tip, not the tallest one in the track. */
+    .dashboard-tips__track {
+        align-items: flex-start;
+    }
+
     .dashboard-tip-card__body {
         display: block;
         height: auto;
