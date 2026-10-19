@@ -51,7 +51,8 @@
     margin-top: 24px;
 }
 
-.settings-personal-form {
+.settings-personal-form,
+.settings-company-form {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-16) var(--space-20);
@@ -213,7 +214,8 @@
         font-size: 20px;
     }
 
-    .settings-personal-form {
+    .settings-personal-form,
+    .settings-company-form {
         grid-template-columns: 1fr;
     }
 }
