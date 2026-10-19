@@ -7,7 +7,7 @@ import { useAccounts } from '@/hooks/useAccounts';
 
 type EditableField = 'name' | 'lastname' | 'phone';
 
-// Fields save themselves on blur/Enter/Save, so there is no "unsaved changes" state to guard.
+// Fields save on Enter/Save; an unsaved draft stays in its field with the Save button showing.
 interface Props {
     globalUser: Account | null;
 }

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import type { IconType } from 'react-icons';
-import { PiCreditCard, PiGift, PiLock, PiPlugsConnected, PiUserCircle } from 'react-icons/pi';
+import { PiBuildings, PiCreditCard, PiGift, PiLock, PiPlugsConnected, PiUserCircle } from 'react-icons/pi';
 import { SETTINGS_PANEL_LABELS, SettingsPanel, SettingsPanelEnum } from '../types';
 
 interface NavItem {
@@ -11,6 +11,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
     { value: SettingsPanelEnum.PROFILE, label: SETTINGS_PANEL_LABELS.profile, icon: PiUserCircle },
+    { value: SettingsPanelEnum.COMPANY, label: SETTINGS_PANEL_LABELS.company, icon: PiBuildings },
     { value: SettingsPanelEnum.CONNECTIONS, label: SETTINGS_PANEL_LABELS.connections, icon: PiPlugsConnected },
     { value: SettingsPanelEnum.SECURITY, label: SETTINGS_PANEL_LABELS.security, icon: PiLock },
     { value: SettingsPanelEnum.SUBSCRIPTION, label: SETTINGS_PANEL_LABELS.subscription, icon: PiCreditCard },

@@ -40,17 +40,18 @@ export default function SettingsReferralForm() {
     };
 
     return (
-        <SettingsCard
-            className='referral-card'
-            tile={
-                <SettingsCardTile>
-                    <Gift size={24} aria-hidden />
-                </SettingsCardTile>
-            }
-            title='Your referral link'
-            description='Share your unique link and earn rewards when friends subscribe to Sayso.'
-        >
-            {renderLink()}
-        </SettingsCard>
+        <div className='settings-cards-grid'>
+            <SettingsCard
+                tile={
+                    <SettingsCardTile>
+                        <Gift size={24} aria-hidden />
+                    </SettingsCardTile>
+                }
+                title='Your referral link'
+                description='Share your unique link and earn rewards when friends subscribe to Sayso.'
+            >
+                {renderLink()}
+            </SettingsCard>
+        </div>
     );
 }

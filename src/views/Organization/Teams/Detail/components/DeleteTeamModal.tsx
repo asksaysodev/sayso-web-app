@@ -13,7 +13,7 @@ export default function DeleteTeamModal({ teamId, onClose }: Props) {
     const { deleteTeam, isPending, errorMessage } = useDeleteTeam();
 
     const handleConfirm = () => {
-        deleteTeam(teamId, { onSuccess: () => navigate('/organization?tab=teams', { replace: true }) });
+        deleteTeam(teamId, { onSuccess: () => navigate('/company?tab=teams', { replace: true }) });
     };
 
     return (
@@ -22,7 +22,7 @@ export default function DeleteTeamModal({ teamId, onClose }: Props) {
             onOpenChange={(open) => !open && onClose()}
             tone='danger'
             title='Are you sure you want to delete this team?'
-            description='Its members stay in your organization without a team. This action cannot be undone.'
+            description='Its members stay in your company without a team. This action cannot be undone.'
             confirmLabel='Yes, delete'
             onConfirm={handleConfirm}
             loading={isPending}

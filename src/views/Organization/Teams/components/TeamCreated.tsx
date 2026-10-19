@@ -52,7 +52,7 @@ export default function TeamCreated({ created, onClose }: Props) {
                     variant='secondary'
                     onClick={() => {
                         onClose();
-                        navigate(`/organization/teams/${team.id}`);
+                        navigate(`/company/teams/${team.id}`);
                     }}
                 >
                     Edit

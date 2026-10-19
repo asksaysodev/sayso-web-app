@@ -100,20 +100,6 @@
 .plan-card__status-dot--warning { background-color: var(--warning-icon); }
 .plan-card__status-dot--error { background-color: var(--error-icon); }
 
-.plan-card__price {
-    margin: 0;
-    font-size: var(--text-body-lg-size);
-    color: var(--neutral-600);
-    white-space: nowrap;
-}
-
-.plan-card__price strong {
-    font-size: 20px;
-    line-height: 24px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-800);
-}
-
 .plan-card__meta {
     margin: 0;
     font-size: var(--text-body-lg-size);
@@ -123,17 +109,14 @@
 .plan-card__usage {
     display: flex;
     align-items: center;
-    gap: var(--space-16);
+    gap: var(--space-8);
     margin: 0;
-    font-size: var(--text-h5-size);
-    line-height: var(--text-h5-line);
-    font-weight: var(--font-weight-semibold);
+    font-size: var(--text-body-lg-size);
     color: var(--text-secondary);
 }
 
 .plan-card__usage svg {
     flex-shrink: 0;
-    color: var(--neutral-800);
 }
 
 .plan-card__footer {
@@ -142,16 +125,6 @@
     justify-content: space-between;
     gap: var(--space-12);
     flex-wrap: wrap;
-}
-
-.plan-card__footnote {
-    margin: 0;
-    padding: var(--space-4) var(--space-8);
-    border-radius: var(--radius-8);
-    background-color: var(--neutral-50);
-    font-size: var(--text-body-md-size);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-disabled);
 }
 
 /* ── Invoices card ── */
@@ -260,9 +233,5 @@
     .management-card {
         flex-direction: column;
         align-items: flex-start;
-    }
-
-    .plan-card__usage {
-        font-size: var(--text-body-lg-size);
     }
 }

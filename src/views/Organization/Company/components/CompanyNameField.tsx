@@ -6,9 +6,9 @@ import { COMPANY_NAME_MAX_LENGTH } from '../constants';
 import './CompanyNameField.css';
 
 const validateName = (name: string) => {
-    if (name === '') return 'Organization name is required';
+    if (name === '') return 'Company name is required';
     if (name.length > COMPANY_NAME_MAX_LENGTH) {
-        return `Organization name must be ${COMPANY_NAME_MAX_LENGTH} characters or fewer`;
+        return `Company name must be ${COMPANY_NAME_MAX_LENGTH} characters or fewer`;
     }
     return null;
 };
@@ -24,20 +24,20 @@ export default function CompanyNameField() {
         try {
             await renameCompany(name);
         } catch (error) {
-            throw new Error(getApiErrorMessage(error, 'Failed to rename organization. Please try again.'));
+            throw new Error(getApiErrorMessage(error, 'Failed to rename company. Please try again.'));
         }
     };
 
     return (
         <InlineEditField
             className='company-name-field'
-            label='Organization name'
+            label='Company name'
             value={company?.company_name ?? ''}
             onSave={save}
             validate={validateName}
             readOnly={isLoading}
             disabled={loadFailed}
-            helperText={loadFailed ? "Couldn't load the organization name. Refresh to try again." : undefined}
+            helperText={loadFailed ? "Couldn't load the company name. Refresh to try again." : undefined}
             maxLength={COMPANY_NAME_MAX_LENGTH}
         />
     );

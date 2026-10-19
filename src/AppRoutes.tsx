@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import AuthGuard from './components/guards/AuthGuard';
 import GuestGuard from './components/guards/GuestGuard';
@@ -91,7 +91,7 @@ export default function AppRoutes() {
                     }
                 />
                 <Route
-                    path="/organization"
+                    path="/company"
                     element={
                         <AuthGuard>
                             {isTeamAdmin
@@ -102,7 +102,7 @@ export default function AppRoutes() {
                     }
                 />
                 <Route
-                    path="/organization/teams/:teamId"
+                    path="/company/teams/:teamId"
                     element={
                         <AuthGuard>
                             {isTeamAdmin
@@ -112,6 +112,8 @@ export default function AppRoutes() {
                         </AuthGuard>
                     }
                 />
+                {/* Pre-rename URLs (SAYSO-504): keep old links and bookmarks working. */}
+                <Route path="/organization/*" element={<OrganizationRedirect />} />
                 <Route
                     path="/marketplace"
                     element={
@@ -181,4 +183,10 @@ export default function AppRoutes() {
             </Routes>
         </Suspense>
     )
+}
+
+/** /organization[/…][?…][#…] → /company[/…][?…][#…] */
+function OrganizationRedirect() {
+    const { pathname, search, hash } = useLocation();
+    return <Navigate to={pathname.replace(/^\/organization/, '/company') + search + hash} replace />;
 }
