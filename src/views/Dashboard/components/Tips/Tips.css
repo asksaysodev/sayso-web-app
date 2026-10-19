@@ -26,7 +26,36 @@
     gap: var(--space-12);
 }
 
+/* Carousel: every tip sits in one row and the track slides by whole cards (start set by TipsPager). */
+.dashboard-tips__viewport {
+    overflow: hidden;
+    /* Room for the cards' drop shadow, which overflow: hidden would clip. */
+    padding-block: 2px;
+    margin-block: -2px;
+}
+
+.dashboard-tips__track {
+    --dashboard-tips-gap: var(--space-12);
+    display: flex;
+    gap: var(--dashboard-tips-gap);
+    transform: translateX(
+        calc(-1 * var(--dashboard-tips-start, 0) * (100% + var(--dashboard-tips-gap)) / var(--dashboard-tips-columns, 3))
+    );
+    transition: transform 0.4s ease;
+}
+
+.dashboard-tips__track > .dashboard-tip-card {
+    flex: 0 0 calc((100% - (var(--dashboard-tips-columns, 3) - 1) * var(--dashboard-tips-gap)) / var(--dashboard-tips-columns, 3));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-tips__track {
+        transition: none;
+    }
+}
+
 .dashboard-tip-card {
+    --dashboard-tip-lines: 9;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -60,15 +89,28 @@
     color: var(--text-primary);
 }
 
-/* Tip copy length varies; clamp so long tips can't grow the whole Tips card (Figma: 4 lines). */
-.dashboard-tip-card__text {
+/*
+ * A tip's body can be several paragraphs; stack them with no spacing and clamp the whole body to a fixed
+ * number of lines so every card, and the Tips row, has the same height whatever the copy.
+ */
+.dashboard-tip-card__body {
     display: -webkit-box;
-    margin: 0;
+    width: 100%;
+    height: calc(var(--dashboard-tip-lines) * 20px);
     overflow: hidden;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: var(--dashboard-tip-lines);
     font-size: var(--text-body-md-size);
+    line-height: 20px;
     color: var(--text-secondary);
+}
+
+.dashboard-tip-card__text {
+    margin: 0;
+}
+
+.dashboard-tip-card__text + .dashboard-tip-card__text {
+    margin-top: var(--space-4);
 }
 
 .dashboard-tip-card__number-skeleton {
@@ -134,7 +176,8 @@
     border-color: var(--neutral-100);
 }
 
-.dashboard-tips__back.ds-button:disabled:not(.ds-button--loading) {
+.dashboard-tips__back.ds-button:disabled:not(.ds-button--loading),
+.dashboard-tips__next.ds-button:disabled:not(.ds-button--loading) {
     background-color: var(--surface-bg);
     border-color: var(--neutral-100);
     color: var(--text-disabled);
@@ -155,10 +198,12 @@
     }
 
     /* One tip per page on phones and the page scrolls anyway, so show the full copy. */
-    .dashboard-tip-card__text {
+    .dashboard-tip-card__body {
         display: block;
+        height: auto;
         -webkit-line-clamp: unset;
     }
+
 
     .dashboard-tips__empty.dashboard-widget-state {
         padding: var(--space-24) var(--space-16);
