@@ -1,0 +1,5 @@
+.member-row-menu__trigger.ds-button--ghost:hover:not(:disabled),
+.member-row-menu__trigger.ds-button--ghost[data-state='open'] {
+    background-color: transparent;
+    color: var(--primary-500);
+}

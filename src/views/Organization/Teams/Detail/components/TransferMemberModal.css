@@ -1,0 +1,39 @@
+.transfer-member-modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+}
+
+.transfer-member-modal__body {
+    gap: var(--space-24);
+}
+
+.transfer-member-modal__teams {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-16);
+}
+
+.transfer-member-modal__team {
+    flex: 1;
+    min-width: 0;
+}
+
+.transfer-member-modal__arrow {
+    flex-shrink: 0;
+    margin-top: 20px;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 600px) {
+    .transfer-member-modal__teams {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .transfer-member-modal__arrow {
+        align-self: center;
+        margin-top: 0;
+        transform: rotate(90deg);
+    }
+}

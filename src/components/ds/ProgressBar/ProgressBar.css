@@ -1,0 +1,36 @@
+.ds-progress {
+    position: relative;
+    height: 8px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.ds-progress__fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.2s ease;
+}
+
+.ds-progress--primary {
+    background-color: var(--primary-50);
+}
+
+.ds-progress--primary .ds-progress__fill {
+    background-color: var(--primary-500);
+}
+
+.ds-progress--warning {
+    background-color: var(--warning-bg);
+}
+
+.ds-progress--warning .ds-progress__fill {
+    background-color: var(--warning-icon);
+}
+
+.ds-progress--error {
+    background-color: var(--error-bg);
+}
+
+.ds-progress--error .ds-progress__fill {
+    background-color: var(--error-text);
+}

@@ -1,0 +1,28 @@
+.skipped-invites {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-12) var(--space-16);
+    border-radius: var(--radius-8);
+    background-color: var(--warning-bg);
+    font-size: var(--text-body-md-size);
+    line-height: 20px;
+    color: var(--text-primary);
+    text-align: left;
+}
+
+.skipped-invites__title {
+    margin: 0;
+    font-weight: var(--font-weight-semibold);
+}
+
+.skipped-invites__list {
+    margin: 0;
+    padding-left: var(--space-20);
+    list-style: disc;
+    color: var(--text-secondary);
+}
+
+.skipped-invites__email {
+    color: var(--text-primary);
+}

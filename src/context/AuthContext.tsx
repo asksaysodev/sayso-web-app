@@ -173,6 +173,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setMfaRequired(false);
     setCurrentAAL(null);
     setMfaFactors([]);
+    // Cached queries belong to the session that fetched them — the next sign-in in this
+    // tab must not be served another account's (or company's) data while it is still fresh.
+    queryClient.clear();
   }
 
   /**
@@ -278,6 +281,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         setAuthToken(session?.access_token ?? null)
         setLoading(false)
+
+        // Covers a sign-out from another tab, which never reaches resetUser.
+        if (event === 'SIGNED_OUT') queryClient.clear()
 
         if (JSON.stringify(newUser) !== JSON.stringify(prevUserRef.current)) {
           setUser(newUser)

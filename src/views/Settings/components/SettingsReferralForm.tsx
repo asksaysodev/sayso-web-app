@@ -1,58 +1,57 @@
-import { useState } from 'react';
-import { LuCopy, LuCheck, LuCircleAlert } from 'react-icons/lu';
+import { CircleAlert, Gift, LoaderCircle } from 'lucide-react';
+import { Button } from '@/components/ds/Button';
+import { CopyBox } from '@/components/ds/CopyBox';
 import { useToast } from '@/context/ToastContext';
 import useReferralLink from '../hooks/useReferralLink';
+import SettingsCard, { SettingsCardTile } from './SettingsCard';
 
 export default function SettingsReferralForm() {
     const { showToast } = useToast();
     const { referralLink, isLoading, isError, refetch } = useReferralLink();
-    const [copied, setCopied] = useState(false);
 
-    const handleCopy = async () => {
-        if (!referralLink) return;
-        await navigator.clipboard.writeText(referralLink);
-        setCopied(true);
-        showToast('success', 'Referral link copied!');
-        setTimeout(() => setCopied(false), 2000);
+    const renderLink = () => {
+        if (isLoading) {
+            return (
+                <div className='referral-link--state'>
+                    <LoaderCircle size={16} className='referral-link__spinner' aria-hidden />
+                    Loading your referral link…
+                </div>
+            );
+        }
+        if (isError || !referralLink) {
+            return (
+                <div className='referral-link--state referral-link--error'>
+                    <CircleAlert size={16} aria-hidden />
+                    <span>Couldn't load your referral link.</span>
+                    <Button variant='secondary' size='sm' onClick={() => refetch()}>
+                        Try again
+                    </Button>
+                </div>
+            );
+        }
+        return (
+            <CopyBox
+                value={referralLink}
+                copyLabel='Copy link'
+                onCopied={() => showToast('success', 'Referral link copied!')}
+                onCopyError={() => showToast('error', "Couldn't copy the link. Select it and copy manually.")}
+            />
+        );
     };
 
     return (
-        <div className='settings-referral'>
-            {isLoading && (
-                <div className='settings-referral-loading'>
-                    <div className='team-members-loader' />
-                    <span>Loading your referral link...</span>
-                </div>
-            )}
-            {isError && (
-                <div className='settings-referral-error'>
-                    <LuCircleAlert size={16} />
-                    <span>{"Couldn't load your referral link. Please try again or contact support."}</span>
-                    <button onClick={() => refetch()} className='settings-referral-retry-btn'>
-                        Retry
-                    </button>
-                </div>
-            )}
-            {!isLoading && !isError && referralLink && (
-                <div className='settings-referral-link-wrapper'>
-                <div className='form-line-input-container editable'>
-                    <input
-                        type='text'
-                        readOnly
-                        value={referralLink}
-                        onFocus={e => e.target.select()}
-                    />
-                    <button
-                        type='button'
-                        onClick={handleCopy}
-                        className='mfa-copy-btn'
-                        title='Copy referral link'
-                    >
-                        {copied ? <LuCheck size={16} /> : <LuCopy size={16} />}
-                    </button>
-                </div>
-                </div>
-            )}
+        <div className='settings-cards-grid'>
+            <SettingsCard
+                tile={
+                    <SettingsCardTile>
+                        <Gift size={24} aria-hidden />
+                    </SettingsCardTile>
+                }
+                title='Your referral link'
+                description='Share your unique link and earn rewards when friends subscribe to Sayso.'
+            >
+                {renderLink()}
+            </SettingsCard>
         </div>
     );
 }

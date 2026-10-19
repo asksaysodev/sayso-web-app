@@ -5,10 +5,8 @@ import BillingTabSelector from "./components/BillingTabSelector";
 import PricingComponent from "./components/PricingComponent";
 import { useQuery } from "@tanstack/react-query";
 import getSubscriptionPlans from "./services/getSubscriptionPlans";
-import ActiveSubscriptionInformation from "./components/ActiveSubscriptionInformation";
 import SaysoLoader from "@/components/SaysoLoader";
 import { BillingInterval, BillingIntervalEnum } from "./types";
-import useHasSubscription from "@/hooks/useHasSubscription";
 import { useAuth } from "@/context/AuthContext";
 import OfferBanner from "@/components/OfferBanner";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -17,7 +15,6 @@ import { clearOfferToken, getOfferToken } from "@/utils/offerToken";
 
 export default function Subscription() {
 	const [selectedBillingTab, setSelectedBillingTab] = useState<BillingInterval>(BillingIntervalEnum.MONTH);
-    const hasSubscription = useHasSubscription();
     const { attributionPending, handleSignOut } = useAuth();
     const navigate = useNavigate();
 
@@ -53,45 +50,43 @@ export default function Subscription() {
 	const showLoader = isLoadingSubscriptionPlans || attributionPending;
 
 	return (
-		<ViewLayout title={hasSubscription ? "Subscription" : undefined} scrollable className="subscription-view">
-			{hasSubscription
-				? <ActiveSubscriptionInformation />
-				: showLoader
-					? <SaysoLoader />
-					: <>
-						<div className="subscription-topbar">
-							<button type="button" className="subscription-signout" onClick={onSignOut}>
-								<LuLogOut size={16} />
-								Sign out
-							</button>
-						</div>
-						<OfferBanner />
-						<div className="select-your-plan-header">
-							<h1 className="select-your-plan-title">
-							    Select your plan
-							</h1>
-							<p className="select-your-plan-description">
-			                    Once you get your subscription you will get the app to download. MacOS Ventura 13.0+ required
-							</p>
-						</div>
-						<BillingTabSelector
-							selectedBillingTab={selectedBillingTab}
-							setSelectedBillingTab={setSelectedBillingTab}
-						/>
-						<div className="pricing-components-grid">
-							{subscriptionPlans?.map((plan) => (
-								plan?.id
-								? (
-									<PricingComponent
-										key={plan.id}
-										plan={plan}
-										selectedBillingTab={selectedBillingTab}
-									/>
-								)
-								: null
-							))}
-						</div>
-					</>
+		<ViewLayout scrollable className="subscription-view">
+			{showLoader
+				? <SaysoLoader />
+				: <>
+					<div className="subscription-topbar">
+						<button type="button" className="subscription-signout" onClick={onSignOut}>
+							<LuLogOut size={16} />
+							Sign out
+						</button>
+					</div>
+					<OfferBanner />
+					<div className="select-your-plan-header">
+						<h1 className="select-your-plan-title">
+						    Select your plan
+						</h1>
+						<p className="select-your-plan-description">
+		                    Once you get your subscription you will get the app to download. MacOS Ventura 13.0+ required
+						</p>
+					</div>
+					<BillingTabSelector
+						selectedBillingTab={selectedBillingTab}
+						setSelectedBillingTab={setSelectedBillingTab}
+					/>
+					<div className="pricing-components-grid">
+						{subscriptionPlans?.map((plan) => (
+							plan?.id
+							? (
+								<PricingComponent
+									key={plan.id}
+									plan={plan}
+									selectedBillingTab={selectedBillingTab}
+								/>
+							)
+							: null
+						))}
+					</div>
+				</>
 			}
 		</ViewLayout>
   	);

@@ -1,0 +1,147 @@
+.dashboard-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: var(--space-20) var(--space-32) var(--space-32);
+    overflow-y: auto;
+    background-color: var(--surface-canvas);
+    font-family: var(--font-ds);
+    color: var(--text-primary);
+    text-align: left;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-24);
+}
+
+.dashboard-header__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    min-width: 0;
+}
+
+.dashboard-header__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.dashboard-header__title {
+    margin: 0;
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-line);
+    letter-spacing: var(--text-h3-tracking);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.dashboard-header__refresh.ds-button {
+    width: 28px;
+    height: 28px;
+}
+
+.dashboard-header__refresh.ds-button:disabled {
+    color: var(--text-secondary);
+}
+
+.dashboard-header__refresh-icon--spinning {
+    animation: dashboard-refresh-spin 0.8s linear infinite;
+}
+
+@keyframes dashboard-refresh-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.dashboard-header__last-update {
+    margin: 0;
+    font-size: var(--text-h5-size);
+    line-height: var(--text-h5-line);
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+/*
+ * Coach Tips is a fixed-height row (tip copy is capped to a set number of lines); the widgets row
+ * grows to fill the rest of the page and never shrinks below its content. With every min height
+ * coming from content, the page only scrolls once the window is shorter than that.
+ */
+.dashboard-grid {
+    --dashboard-grid-gap: var(--space-24);
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--dashboard-grid-gap);
+}
+
+.dashboard-grid__tips {
+    flex: none;
+}
+
+.dashboard-grid__widgets {
+    display: grid;
+    flex: 1 0 auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--dashboard-grid-gap);
+}
+
+/* Compact empty/error state so it is no taller than the chart/tiles it replaces and can't grow the row. */
+.dashboard-grid__widgets .dashboard-widget-state {
+    gap: var(--space-8);
+    padding: var(--space-16) var(--space-24);
+}
+
+.dashboard-grid__widgets .dashboard-widget-state__icon {
+    width: 40px;
+    height: 40px;
+}
+
+.dashboard-grid__widgets .dashboard-widget-state__icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.dashboard-grid__widgets .dashboard-widget-state__action {
+    margin-top: var(--space-4);
+}
+
+@media (max-width: 1023px) {
+    .dashboard-grid__widgets {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* Short viewports (e.g. 13" laptops): tighten vertical rhythm so the page fits without scrolling. */
+@media (min-width: 768px) and (max-height: 960px) {
+    .dashboard-page {
+        padding-bottom: var(--space-24);
+    }
+
+    .dashboard-grid {
+        --dashboard-grid-gap: var(--space-16);
+    }
+
+    .dashboard-grid .dashboard-widget.ds-card {
+        gap: var(--space-20);
+    }
+
+    .dashboard-grid .dashboard-tip-card {
+        --dashboard-tip-lines: 8;
+    }
+}
+
+@media (max-width: 767px) {
+    .dashboard-page {
+        height: auto;
+        padding: var(--space-16);
+        gap: var(--space-16);
+    }
+}

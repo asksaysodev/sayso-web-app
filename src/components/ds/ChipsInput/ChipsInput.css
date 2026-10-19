@@ -1,0 +1,54 @@
+.ds-chips {
+    cursor: text;
+}
+
+.ds-chips.ds-field--disabled {
+    cursor: not-allowed;
+}
+
+.ds-chips__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.ds-chips__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    max-width: 100%;
+    padding: var(--space-2) var(--space-4) var(--space-2) var(--space-12);
+    border: 1px solid var(--primary-200);
+    border-radius: var(--radius-full);
+    background-color: var(--primary-50);
+    font-size: var(--text-body-md-size);
+    line-height: 20px;
+    color: var(--text-primary);
+    overflow-wrap: anywhere;
+}
+
+.ds-chips__remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.ds-chips__remove:hover:not(:disabled) {
+    background-color: var(--primary-200);
+    color: var(--text-primary);
+}
+
+.ds-chips__input {
+    flex: 1;
+    width: auto;
+    min-width: 120px;
+}

@@ -1,0 +1,107 @@
+.dashboard-widget.ds-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-32);
+    min-width: 0;
+    padding: var(--space-24);
+}
+
+.dashboard-widget__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    min-height: 32px;
+}
+
+.dashboard-widget__heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    min-width: 0;
+}
+
+.dashboard-widget__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.dashboard-widget__header .dashboard-widget__icon--primary,
+.dashboard-widget__header .dashboard-widget__icon--info {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-8);
+}
+
+.dashboard-widget__icon--primary {
+    background-color: var(--primary-50);
+    color: var(--primary-500);
+}
+
+.dashboard-widget__icon--info {
+    background-color: var(--info-bg);
+    color: var(--info-text);
+}
+
+.dashboard-widget__title {
+    margin: 0;
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-secondary);
+}
+
+.dashboard-widget__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    flex-shrink: 0;
+}
+
+.dashboard-widget-state {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-16);
+    padding: var(--space-32) var(--space-24);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-20);
+    background-color: var(--surface-canvas);
+    text-align: center;
+}
+
+.dashboard-widget-state__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--space-4);
+    border-radius: var(--radius-full);
+}
+
+.dashboard-widget-state__title {
+    margin: 0;
+    font-size: var(--text-h5-size);
+    line-height: var(--text-h5-line);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.dashboard-widget-state__text {
+    margin: 0;
+    font-size: var(--text-body-md-size);
+    color: var(--text-secondary);
+}
+
+.dashboard-widget__icon--error {
+    background-color: var(--error-bg);
+    color: var(--error-icon);
+}
+
+.dashboard-widget-state__action {
+    margin-top: var(--space-16);
+}

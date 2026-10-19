@@ -1,0 +1,18 @@
+.calendar-buttons-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0px 12px 12px 12px;
+}
+
+[data-slot="calendar"] button[data-selected-single="true"],
+[data-slot="calendar"] button[data-range-start="true"],
+[data-slot="calendar"] button[data-range-end="true"] {
+    background-color: var(--sayso-blue) !important;
+}
+
+[data-slot="calendar"] button[data-range-middle="true"] {
+    background-color: var(--sayso-active-lightblue) !important;
+}

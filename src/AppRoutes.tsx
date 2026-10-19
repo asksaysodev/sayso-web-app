@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import AuthGuard from './components/guards/AuthGuard';
 import GuestGuard from './components/guards/GuestGuard';
@@ -19,16 +19,21 @@ const Admin = lazyView(() => import('./views/Admin'));
 const Subscription = lazyView(() => import('./views/Subscription'));
 const MFAVerify = lazyView(() => import('./views/MFAVerify'));
 const AcceptInvite = lazyView(() => import('./views/AcceptInvite'));
+const Organization = lazyView(() => import('./views/Organization'));
+const Conversations = lazyView(() => import('./views/Conversations'));
+const TeamDetail = lazyView(() => import('./views/Organization/Teams/Detail'));
 
 import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
 import useUserNotAdminOnTeams from './hooks/useUserNotAdminOnTeams';
+import useIsTeamAdmin from './hooks/useIsTeamAdmin';
 import Download from './views/Download';
 
 
 export default function AppRoutes() {
     const hasSubscription = useHasSubscription();
     const userNotAdminOnTeams = useUserNotAdminOnTeams();
+    const isTeamAdmin = useIsTeamAdmin();
 
     return (
         <Suspense fallback={<SaysoLoader />}>
@@ -76,6 +81,40 @@ export default function AppRoutes() {
                     }
                 />
                 <Route
+                    path="/conversations"
+                    element={
+                        <AuthGuard>
+                            <Layout>
+                                <Conversations />
+                            </Layout>
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/company"
+                    element={
+                        <AuthGuard>
+                            {isTeamAdmin
+                                ? <Layout><Organization /></Layout>
+                                : <Navigate to="/" replace />
+                            }
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/company/teams/:teamId"
+                    element={
+                        <AuthGuard>
+                            {isTeamAdmin
+                                ? <Layout><TeamDetail /></Layout>
+                                : <Navigate to="/" replace />
+                            }
+                        </AuthGuard>
+                    }
+                />
+                {/* Pre-rename URLs (SAYSO-504): keep old links and bookmarks working. */}
+                <Route path="/organization/*" element={<OrganizationRedirect />} />
+                <Route
                     path="/marketplace"
                     element={
                         <AuthGuard>
@@ -112,7 +151,8 @@ export default function AppRoutes() {
                             {userNotAdminOnTeams
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
-                                    ? <Layout><Subscription /></Layout>
+                                    // Subscribers manage their plan in Account settings; this route is the pricing page.
+                                    ? <Navigate to="/settings?tab=subscription" replace />
                                     : <Subscription />
                             }
                         </AuthGuard>
@@ -143,4 +183,10 @@ export default function AppRoutes() {
             </Routes>
         </Suspense>
     )
+}
+
+/** /organization[/…][?…][#…] → /company[/…][?…][#…] */
+function OrganizationRedirect() {
+    const { pathname, search, hash } = useLocation();
+    return <Navigate to={pathname.replace(/^\/organization/, '/company') + search + hash} replace />;
 }

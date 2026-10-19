@@ -1,0 +1,84 @@
+.allocation-usage {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    min-width: 0;
+}
+
+.allocation-usage__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16);
+    white-space: nowrap;
+}
+
+.allocation-usage__title {
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.allocation-usage--card .allocation-usage__title {
+    font-size: var(--text-h5-size);
+    line-height: var(--text-h5-line);
+}
+
+.allocation-usage--panel .allocation-usage__title {
+    font-size: var(--text-body-lg-size);
+}
+
+.allocation-usage__hours {
+    display: inline-flex;
+    gap: var(--space-4);
+    font-size: var(--text-body-lg-size);
+    color: var(--neutral-400);
+}
+
+.allocation-usage__used {
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.allocation-usage__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-24);
+}
+
+.allocation-usage__progress {
+    flex: 1;
+    min-width: 0;
+}
+
+.allocation-usage__percent {
+    min-width: 36px;
+    font-size: var(--text-body-md-size);
+    line-height: 18px;
+    font-weight: var(--font-weight-semibold);
+    text-align: right;
+}
+
+.allocation-usage__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    margin: 0;
+    font-size: var(--text-body-md-size);
+    line-height: 18px;
+    color: var(--text-secondary);
+}
+
+.allocation-usage__meter--primary .allocation-usage__percent,
+.allocation-usage__meter--primary .allocation-usage__status {
+    color: var(--text-brand);
+}
+
+.allocation-usage__meter--warning .allocation-usage__percent,
+.allocation-usage__meter--warning .allocation-usage__status {
+    color: var(--warning-text);
+}
+
+.allocation-usage__meter--error .allocation-usage__percent,
+.allocation-usage__meter--error .allocation-usage__status {
+    color: var(--error-text);
+}

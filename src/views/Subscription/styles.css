@@ -337,60 +337,11 @@
     color: #374151;
 }
 
-/* Active Plan Information Container */
-.active-plan-information-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    /*gap: 32px;*/
-    border: 1px solid var(--sayso-border);
-    border-radius: 12px;
-}
-
-.subscription-section {
-    background-color: #ffffff;
-    /*border: 1px solid var(--sayso-border);*/
-    border-radius: 12px;
-    /*padding: 32px;*/
-    padding: 1.5rem;
-    color: var(--sayso-dark);
-    text-align: start !important;
-}
-.section-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0 0 24px 0;
-    color: #334155;
-}
-
-.subscription-section-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 /* Plan Header Section */
 .plan-header {
     display: flex;
     align-items: flex-start;
     gap: 24px;
-}
-
-.plan-icon {
-    width: 60px;
-    height: 60px;
-    background-color: var(--sayso-indigo);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.plan-details {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
 }
 
 .plan-name {
@@ -399,37 +350,6 @@
     margin: 0;
     color: #334155;
     text-transform: capitalize;
-}
-
-.plan-billing-period {
-    font-size: 0.875rem;
-    font-weight: 400;
-    margin: 0;
-    color: #64748b;
-}
-
-.plan-renewal-text {
-    font-size: 0.875rem;
-    font-weight: 400;
-    margin: 0;
-    color: #64748b;
-}
-
-.adjust-plan-button {
-    background-color: transparent;
-    border: 1px solid var(--sayso-border);
-    color: var(--sayso-dark);
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    text-transform: capitalize;
-}
-
-.adjust-plan-button:hover {
-    background-color: #f3f4f6;
-    border-color: var(--sayso-border);
 }
 
 /* Payment Section */
@@ -461,168 +381,11 @@
     border-color: var(--sayso-border);
 }
 
-/* Invoices Table */
-.invoices-table-empty {
-    display: flex;
-    /* justify-content: center; */
-    color: var(--sayso-lightgray);
-    font-size: 14px;
-    font-weight: 500;
-}
-.invoices-table {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.invoices-table-header {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 16px;
-}
-
 .invoice-row {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
     gap: 16px;
     align-items: center;
-}
-
-.invoice-col-date,
-.invoice-col-total,
-.invoice-col-status,
-.invoice-col-actions {
-    font-size: 15px;
-    color: var(--sayso-dark);
-}
-
-.invoices-table-header .invoice-col-date,
-.invoices-table-header .invoice-col-total,
-.invoices-table-header .invoice-col-status,
-.invoices-table-header .invoice-col-actions {
-    font-weight: 600;
-}
-
-.view-invoice-button {
-    background-color: transparent;
-    border: none;
-    color: var(--sayso-dark);
-    padding: 0;
-    font-size: 15px;
-    font-weight: 400;
-    text-decoration: underline;
-    text-align: left;
-    transition: opacity 0.2s ease;
-}
-
-.view-invoice-button:hover {
-    opacity: 0.7;
-}
-
-/* Cancellation Section */
-.cancel-plan-text {
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--sayso-dark);
-}
-
-.cancel-button {
-    background-color: #dc2626;
-    border: none;
-    color: white;
-    padding: 10px 32px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.cancel-button:hover {
-    background-color: #b91c1c;
-}
-
-/* ===== Error State ===== */
-.subscription-error-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 40px 20px;
-}
-
-.subscription-error-message {
-    font-size: 16px;
-    font-weight: 500;
-    color: #6b7280;
-    text-align: center;
-}
-
-/* ===== Subscription Skeletons ===== */
-/* Plan Header Skeleton */
-.plan-icon-skeleton {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-}
-
-.plan-name-skeleton {
-    width: 120px;
-    height: 24px;
-    margin-bottom: 8px;
-}
-
-.plan-billing-period-skeleton {
-    width: 80px;
-    height: 16px;
-    margin-bottom: 8px;
-}
-
-.plan-renewal-text-skeleton {
-    width: 280px;
-    height: 16px;
-}
-
-/* Invoices Table Skeleton */
-.invoice-row-skeleton {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--sayso-border);
-}
-
-.invoice-col-skeleton {
-    height: 20px;
-}
-
-.invoice-col-date-skeleton {
-    width: 100px;
-}
-
-.invoice-col-total-skeleton {
-    width: 60px;
-}
-
-.invoice-col-status-skeleton {
-    width: 70px;
-}
-
-.invoice-col-actions-skeleton {
-    width: 60px;
-}
-
-/* Cancellation Section Skeleton */
-.cancel-plan-text-skeleton {
-    width: 100px;
-    height: 20px;
-}
-
-.cancel-button-skeleton {
-    width: 100px;
-    height: 44px;
-    border-radius: 8px;
 }
 
 @media (max-width: 767px) {
@@ -685,86 +448,23 @@
         box-sizing: border-box;
     }
 
-    /* Active subscription sections */
-    .subscription-section {
-        padding: 20px 16px;
-    }
-
-    .section-title {
-        font-size: 16px;
-        margin-bottom: 16px;
-    }
-
-    .subscription-section-content {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-
-    .subscription-section-content:has(.cancel-plan-text) {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .cancel-plan-text {
-        font-size: 14px;
-    }
-
-    .subscription-section-content:has(.cancel-plan-text) .sayso-button {
-        padding: 8px 16px;
-        font-size: 13px;
-    }
-
     .plan-header {
         gap: 16px;
-    }
-
-    .plan-icon {
-        width: 48px;
-        height: 48px;
     }
 
     .plan-name {
         font-size: 16px;
     }
 
-    .plan-billing-period {
-        font-size: 14px;
-    }
-
-    .adjust-plan-button,
-    .update-button,
-    .cancel-button {
+    .update-button {
         width: 100%;
         text-align: center;
         padding: 8px 16px;
         font-size: 13px;
     }
 
-    /* Invoices table — smaller to fit all columns */
-    .invoices-table {
-        gap: 8px;
-    }
-
-    .invoices-table-header,
     .invoice-row {
         gap: 8px;
     }
 
-    .invoice-col-date,
-    .invoice-col-total,
-    .invoice-col-status,
-    .invoice-col-actions {
-        font-size: 13px;
-    }
-
-    .view-invoice-button {
-        font-size: 13px;
-    }
-
-    /* Active plan info */
-    .active-plan-information-container {
-        gap: 20px;
-    }
 }

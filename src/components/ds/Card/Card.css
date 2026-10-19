@@ -1,0 +1,8 @@
+.ds-card {
+    background-color: var(--surface-bg);
+    border-radius: var(--radius-16);
+    box-shadow: var(--shadow-card);
+    padding: var(--space-20);
+    font-family: var(--font-ds);
+    color: var(--text-primary);
+}

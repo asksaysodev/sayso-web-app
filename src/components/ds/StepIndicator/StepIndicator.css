@@ -1,0 +1,41 @@
+.ds-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-8);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-ds);
+}
+
+.ds-steps__step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background-color: var(--neutral-100);
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.ds-steps__step--reached {
+    background-color: var(--primary-500);
+    color: var(--white);
+}
+
+.ds-steps__line {
+    width: 80px;
+    height: 1px;
+    background-color: var(--neutral-200);
+    transition: background-color 0.2s ease;
+}
+
+.ds-steps__line--reached {
+    background-color: var(--primary-500);
+}

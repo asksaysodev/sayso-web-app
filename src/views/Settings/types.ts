@@ -1,16 +1,24 @@
-import { AccountStatus } from "@/types/user";
+export type SettingsPanel = 'profile' | 'company' | 'files' | 'connections' | 'security' | 'subscription' | 'referral';
 
-export type SettingsPanel = 'personal' | 'company' | 'files' | 'connections' | 'security' | 'referral' | 'usage';
-
-export type MemberStatusFilterValue = AccountStatus;
-export type MemberStatusFilter = { key: 'status'; value: MemberStatusFilterValue };
-export type MemberActiveFilter = MemberStatusFilter;
 export enum SettingsPanelEnum {
-    PERSONAL = 'personal',
+    PROFILE = 'profile',
     COMPANY = 'company',
     FILES = 'files',
     CONNECTIONS = 'connections',
     SECURITY = 'security',
-    REFERRAL = 'referral',
-    USAGE = 'usage'
+    SUBSCRIPTION = 'subscription',
+    REFERRAL = 'referral'
 }
+
+export const DEFAULT_SETTINGS_PANEL: SettingsPanel = SettingsPanelEnum.PROFILE;
+
+/** Shown in the settings nav and the topbar breadcrumb. */
+export const SETTINGS_PANEL_LABELS: Record<SettingsPanel, string> = {
+    profile: 'Profile',
+    company: 'Company',
+    files: 'Context files',
+    connections: 'Connections',
+    security: 'Security',
+    subscription: 'Subscription',
+    referral: 'Referrals',
+};

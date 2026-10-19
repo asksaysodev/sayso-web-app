@@ -1,16 +1,13 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { DASHBOARD_QUERY_KEY } from '../queryKeys';
 
 export default function useRefreshDashboardData() {
     const queryClient = useQueryClient();
 
-    const refreshDashboardData = () => {
-        queryClient.refetchQueries({ queryKey: ['dashboard-conversation-time'] });
-        queryClient.refetchQueries({ queryKey: ['dashboard-weekly-activity'] });
-        queryClient.refetchQueries({ queryKey: ['dashboard-conversations'] });
-        queryClient.refetchQueries({ queryKey: ['coach-tips'] });
-    }
+    const refreshDashboardData = useCallback(() => {
+        queryClient.refetchQueries({ queryKey: DASHBOARD_QUERY_KEY, type: 'active' });
+    }, [queryClient]);
 
-    return {
-        refreshDashboardData,
-    }
+    return { refreshDashboardData };
 }

@@ -9,7 +9,7 @@ export interface ValidateInviteResponse {
 }
 
 export default async function validateInvite(token: string): Promise<ValidateInviteResponse> {
-    const response = await apiClient.get(`accounts/company/invite/validate`, {
+    const response = await apiClient.get(`company/invite/validate`, {
         params: { token },
     });
 

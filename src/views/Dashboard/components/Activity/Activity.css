@@ -1,0 +1,174 @@
+.dashboard-week-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.dashboard-week-selector__button.ds-button {
+    color: var(--text-primary);
+}
+
+.dashboard-week-selector__button.ds-button:disabled:not(.ds-button--loading) {
+    background-color: var(--surface-bg);
+    border-color: var(--surface-border);
+    color: var(--text-disabled);
+}
+
+.dashboard-week-selector__label {
+    min-width: 80px;
+    font-size: var(--text-body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.dashboard-week-selector__label-skeleton {
+    width: 80px;
+    height: 14px;
+}
+
+.dashboard-activity-chart {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 0;
+}
+
+.dashboard-activity-chart__columns {
+    display: flex;
+    flex: 1;
+    gap: 48px;
+    min-height: 0;
+}
+
+.dashboard-activity-chart__column {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-8);
+    min-width: 0;
+}
+
+/* Flexes with the card height instead of a fixed 155px (Figma size), so the row can shrink on short screens. */
+.dashboard-activity-chart__track {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    min-height: 80px;
+    max-width: 50px;
+}
+
+/* Absolute so the inline height % resolves against the flex-sized track. */
+.dashboard-activity-chart__bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 2px;
+    border-radius: 4px 4px 0 0;
+    background-color: var(--primary-500);
+    transition: height 0.3s ease;
+    /* Grow from the baseline on mount, as in production. Bars are keyed by date, so it replays on week change. */
+    transform-origin: bottom;
+    animation: dashboard-activity-bar-grow 0.6s ease-out;
+}
+
+.dashboard-activity-chart__tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    z-index: 1;
+    padding: var(--space-4) var(--space-8);
+    border-radius: 6px;
+    background-color: var(--neutral-950);
+    color: var(--white);
+    font-size: var(--text-body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity 0.15s ease;
+}
+
+.dashboard-activity-chart__bar:hover .dashboard-activity-chart__tooltip {
+    opacity: 1;
+}
+
+.dashboard-activity-chart__day {
+    font-size: var(--text-body-md-size);
+    color: var(--text-secondary);
+}
+
+.dashboard-activity-chart__total {
+    display: flex;
+    align-items: flex-end;
+    min-height: 36px;
+    margin: 0;
+    font-size: var(--text-body-md-size);
+    font-weight: 500;
+    line-height: 24px;
+    color: var(--text-secondary);
+}
+
+.dashboard-activity-chart__bar-skeleton {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+}
+
+.dashboard-activity-chart__day-skeleton {
+    width: 12px;
+    height: 16px;
+}
+
+.dashboard-activity-chart__total-skeleton {
+    width: 180px;
+    height: 16px;
+    margin-top: 20px;
+}
+
+@media (max-width: 1279px) {
+    .dashboard-activity-chart__columns {
+        gap: var(--space-24);
+    }
+}
+
+/* Single-column layout scrolls anyway; keep the design's fixed chart height. */
+@media (max-width: 1023px) {
+    .dashboard-activity-chart__track {
+        flex: none;
+        height: 155px;
+    }
+}
+
+@media (max-width: 479px) {
+    .dashboard-activity-chart__columns {
+        gap: var(--space-8);
+    }
+
+    .dashboard-week-selector__label {
+        min-width: 0;
+    }
+}
+
+@keyframes dashboard-activity-bar-grow {
+    from {
+        transform: scaleY(0);
+    }
+    to {
+        transform: scaleY(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-activity-chart__bar {
+        animation: none;
+    }
+}

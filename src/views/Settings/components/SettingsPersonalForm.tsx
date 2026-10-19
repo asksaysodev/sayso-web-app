@@ -1,49 +1,63 @@
-import { Account } from "@/types/user";
-import FormLineAccount from "../../../components/FormLineAccount";
+import { Account } from '@/types/user';
+import { InlineEditField } from '@/components/ds/InlineEditField';
+import { formatPhoneInput, isValidPhone, toE164 } from '@/components/ui/PhoneInput';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
+import { useAccounts } from '@/hooks/useAccounts';
 
+type EditableField = 'name' | 'lastname' | 'phone';
+
+// Fields save on Enter/Save; an unsaved draft stays in its field with the Save button showing.
 interface Props {
-    setUnsavedChanges: (unsavedChanges: boolean) => void;
     globalUser: Account | null;
 }
 
-export default function SettingsPersonalForm({ setUnsavedChanges, globalUser }: Props) {
+const required = (label: string) => (value: string) => (value === '' ? `${label} is required` : null);
+
+const validatePhone = (value: string) => (value === '' || isValidPhone(value) ? null : 'Please enter a valid phone number');
+
+export default function SettingsPersonalForm({ globalUser }: Props) {
+    const { showToast } = useToast();
+    const { updateAccount } = useAccounts();
+    const { updateGlobalUser } = useAuth();
+
+    const save = (field: EditableField) => async (value: string) => {
+        const fieldValue = field === 'phone' ? (value ? toE164(value) : null) : value;
+        try {
+            await updateAccount({ [field]: fieldValue } as Record<string, string | null>);
+        } catch {
+            throw new Error('Failed to update account. Please try again.');
+        }
+        showToast('success', 'Account updated successfully!');
+        if (globalUser?.email) await updateGlobalUser(globalUser.email);
+    };
+
     return (
-        <div className='settings-personal'>
-            <form className='settings-personal-form'>
-                <FormLineAccount
-                    label='Name'
-                    name='name'
-                    placeholder='Name'
-                    value={globalUser?.name || ''}
-                    editable={true}
-                    setUnsavedChanges={setUnsavedChanges}
-                />
-                <FormLineAccount
-                    label='Last Name'
-                    name='lastname'
-                    placeholder='Last Name'
-                    value={globalUser?.lastname || ''}
-                    editable={true}
-                    setUnsavedChanges={setUnsavedChanges}
-                />
-                <FormLineAccount
-                    label='Email'
-                    name='email'
-                    placeholder='Email'
-                    value={globalUser?.email || ''}
-                    editable={false}
-                    setUnsavedChanges={setUnsavedChanges}
-                />
-                <FormLineAccount
-                    label='Phone'
-                    name='phone'
-                    type='phone'
-                    placeholder='Phone'
-                    value={globalUser?.phone || ''}
-                    editable={true}
-                    setUnsavedChanges={setUnsavedChanges}
-                />
-            </form>
-        </div>
-    )
+        <form className='settings-personal-form' onSubmit={(event) => event.preventDefault()}>
+            <InlineEditField
+                label='Name'
+                name='name'
+                value={globalUser?.name ?? ''}
+                onSave={save('name')}
+                validate={required('Name')}
+            />
+            <InlineEditField
+                label='Last name'
+                name='lastname'
+                value={globalUser?.lastname ?? ''}
+                onSave={save('lastname')}
+                validate={required('Last name')}
+            />
+            <InlineEditField label='Email' name='email' value={globalUser?.email ?? ''} editable={false} onSave={async () => {}} />
+            <InlineEditField
+                label='Phone'
+                name='phone'
+                type='tel'
+                value={globalUser?.phone ?? ''}
+                format={formatPhoneInput}
+                onSave={save('phone')}
+                validate={validatePhone}
+            />
+        </form>
+    );
 }

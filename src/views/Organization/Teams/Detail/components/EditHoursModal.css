@@ -1,0 +1,39 @@
+.edit-hours-modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+}
+
+.edit-hours-modal__body {
+    gap: var(--space-40);
+}
+
+.edit-hours-modal__used {
+    padding: var(--space-20);
+    border-radius: var(--radius-20);
+    background-color: var(--neutral-100);
+}
+
+.edit-hours-modal__fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+}
+
+.edit-hours-modal__quick-add {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+}
+
+.edit-hours-modal__quick-add-label {
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+}
+
+.edit-hours-modal__quick-add-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+}

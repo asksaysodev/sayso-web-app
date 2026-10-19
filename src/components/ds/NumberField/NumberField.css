@@ -1,0 +1,32 @@
+/* FieldShell disables pointer events on the trailing slot; the stepper needs them. */
+.ds-number .ds-field__trailing {
+    pointer-events: auto;
+}
+
+.ds-number__stepper {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.ds-number__step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 18px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.ds-number__step:hover:not(:disabled) {
+    background-color: var(--surface-subtle);
+}
+
+.ds-number__step:disabled {
+    color: var(--text-disabled);
+    cursor: not-allowed;
+}

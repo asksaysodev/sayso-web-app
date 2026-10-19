@@ -1,0 +1,45 @@
+.team-members-table {
+    table-layout: fixed;
+}
+
+.team-members-table th:nth-child(1),
+.team-members-table th:nth-child(2) {
+    width: 28%;
+}
+
+.team-members-table th:nth-child(3) {
+    width: 16%;
+}
+
+.team-members-table th:nth-child(5) {
+    width: 56px;
+}
+
+.team-members-table td {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.team-members-table__member {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    min-width: 0;
+}
+
+.team-members-table__name {
+    overflow: hidden;
+    font-size: var(--text-body-lg-size);
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.team-members-table__muted {
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}
+
+.team-members-table__actions {
+    text-align: right;
+}

@@ -1,0 +1,33 @@
+.dashboard-header .scope-filters-button.ds-button {
+    margin-left: auto;
+}
+
+.dashboard-scope-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    font-family: var(--font-ds);
+}
+
+.dashboard-scope-chips__clear {
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--radius-8);
+    background: transparent;
+    font-family: var(--font-ds);
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-brand);
+    cursor: pointer;
+}
+
+.dashboard-scope-chips__clear:hover {
+    text-decoration: underline;
+}
+
+.dashboard-scope-chips__clear:focus-visible {
+    outline: 2px solid var(--primary-300);
+    outline-offset: 2px;
+}

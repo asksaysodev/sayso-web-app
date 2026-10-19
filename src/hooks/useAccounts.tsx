@@ -1,4 +1,4 @@
-import { Account, Company, SignupData, UpdateAccountData } from '@/types/user';
+import { Account, SignupData, UpdateAccountData } from '@/types/user';
 import apiClient from '../config/axios';
 
 export const useAccounts = () => {
@@ -41,33 +41,9 @@ export const useAccounts = () => {
 
   } 
 
-  const getCompanyById = async (companyId: string): Promise<Company> => {
-    try {
-      const response = await apiClient.get(`/accounts/company/${companyId}`);
-      return response.data.data;
-    } catch (error) {
-      console.error('Error getting company:', error);
-      throw error;
-    }
-  }
-
-  const updateCompany = async (updateData: Record<string, string | null>): Promise<void> => {
-    try {
-      if (!updateData) {
-        throw new Error('Update data is required');
-      }
-      await apiClient.put('/companies/update', { updateData });
-    } catch (error) {
-      console.error('Error in updateCompany:', error);
-      throw error;
-    }
-  };
-
   return {
     signup,
     getAccount,
-    updateAccount,
-    updateCompany,
-    getCompanyById
+    updateAccount
   };
 };
