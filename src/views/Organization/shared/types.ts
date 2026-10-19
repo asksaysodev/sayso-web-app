@@ -23,11 +23,13 @@ export interface TeamSummary {
 
 export type AssignableRole = Extract<UserRole, 'admin' | 'user'>;
 
-/** The member whose role `UpdateRoleModal` changes. */
+/** The member, or pending invite, whose role `UpdateRoleModal` changes. */
 export interface RoleTarget {
     id: string;
     email: string;
     role: UserRole;
+    /** The id is a `company_invites` id: the role applies when the invite is accepted. */
+    isInvite?: boolean;
 }
 
 /** How one row-menu action renders. */
