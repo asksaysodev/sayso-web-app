@@ -3,24 +3,19 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { LuX } from "react-icons/lu";
 import SaysoLoader from "../../components/SaysoLoader";
 import SaysoButton from "../../components/SaysoButton";
-import useIsTeamAdmin from "@/hooks/useIsTeamAdmin";
 import "./styles.css";
 
 export default function Checkout() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const isTeamAdmin = useIsTeamAdmin();
 
     const successParam = searchParams.get("success");
     const success = successParam === null ? null : successParam === "true";
 
     useEffect(() => {
-        if (success === null) {
-            navigate("/", { replace: true });
-        } else if (success === true) {
-            navigate(isTeamAdmin ? "/company" : "/download", { replace: true });
-        }
-    }, [success, isTeamAdmin, navigate]);
+        // Missing param or successful payment: everyone lands on the dashboard.
+        if (success !== false) navigate("/", { replace: true });
+    }, [success, navigate]);
 
     if (success !== false) {
         return (
