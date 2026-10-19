@@ -285,7 +285,7 @@
 
 .settings-nav__item--active,
 .settings-nav__item--active:hover {
-    background-color: var(--neutral-100);
+    background-color: var(--neutral-200);
     font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
 }

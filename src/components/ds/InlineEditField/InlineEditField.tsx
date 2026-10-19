@@ -22,8 +22,10 @@ export interface InlineEditFieldProps
 }
 
 /**
- * Text field that saves itself on blur or Enter; Escape reverts.
- * Trailing slot shows pencil → Save (once edited) → spinner while saving → check once saved.
+ * Text field that only becomes editable from its pencil button; clicks elsewhere on the field do nothing.
+ * Saves only on Enter or the Save button; Escape reverts. Blurring with no changes locks it again,
+ * blurring with changes keeps the draft and the Save button.
+ * Trailing slot shows pencil → nothing while editing unchanged → Save (once edited) → spinner while saving → check once saved.
  */
 export function InlineEditField({
     value: savedValue,
@@ -35,24 +37,36 @@ export function InlineEditField({
     readOnly,
     className,
     helperText,
+    label,
     ...props
 }: InlineEditFieldProps) {
     const [draft, setDraft] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [justSaved, setJustSaved] = useState(false);
-    // Set by Enter so a failed save is retried only on purpose, not on every blur.
-    const retryRequested = useRef(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const formattedSaved = format(savedValue);
     const value = draft ?? formattedSaved;
     const isDirty = draft !== null && draft.trim() !== formattedSaved.trim();
-    // Guards against blur and the Save click both firing a save in the same tick.
+    // Guards against Enter and the Save click both firing a save in the same tick.
     const savingRef = useRef(false);
 
     useEffect(() => {
         onDirtyChange?.(isDirty);
     }, [isDirty, onDirtyChange]);
+
+    useEffect(() => {
+        const input = inputRef.current;
+        if (!input) return;
+        if (isEditing) {
+            input.focus();
+            input.setSelectionRange(input.value.length, input.value.length);
+        } else if (document.activeElement === input) {
+            input.blur();
+        }
+    }, [isEditing]);
 
     useEffect(() => {
         if (!justSaved) return;
@@ -61,13 +75,15 @@ export function InlineEditField({
     }, [justSaved]);
 
     const save = async () => {
-        const retry = retryRequested.current;
-        retryRequested.current = false;
-        if (savingRef.current || draft === null) return;
-        if (error && !retry) return;
+        if (savingRef.current) return;
+        if (draft === null) {
+            setIsEditing(false);
+            return;
+        }
         const next = draft.trim();
         if (next === formattedSaved.trim()) {
             setDraft(null);
+            setIsEditing(false);
             return;
         }
         const validationError = validate?.(next) ?? null;
@@ -80,6 +96,7 @@ export function InlineEditField({
         try {
             await onSave(next);
             setDraft(null);
+            setIsEditing(false);
             setJustSaved(true);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
@@ -95,14 +112,22 @@ export function InlineEditField({
         setJustSaved(false);
     };
 
+    const handleBlur = () => {
+        if (isDirty || isSaving) return;
+        setDraft(null);
+        setError(null);
+        setIsEditing(false);
+    };
+
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            retryRequested.current = true;
-            event.currentTarget.blur();
+            event.preventDefault();
+            void save();
         }
         if (event.key === 'Escape') {
             setDraft(null);
             setError(null);
+            setIsEditing(false);
         }
     };
 
@@ -112,34 +137,44 @@ export function InlineEditField({
         <button
             type='button'
             className='ds-inline-edit__save'
-            // Keep focus in the input so blur doesn't save first; the click does it.
+            // Keep focus in the input while the click saves.
             onMouseDown={(event) => event.preventDefault()}
-            onClick={() => {
-                retryRequested.current = true;
-                void save();
-            }}
+            onClick={() => void save()}
         >
             Save
         </button>
     ) : justSaved ? (
         <Check size={20} className='ds-inline-edit__saved' aria-label='Saved' />
-    ) : (
-        <Pencil size={20} aria-hidden />
+    ) : isEditing ? undefined : (
+        <button
+            type='button'
+            className='ds-inline-edit__edit'
+            aria-label={typeof label === 'string' ? `Edit ${label}` : 'Edit'}
+            onClick={() => setIsEditing(true)}
+        >
+            <Pencil size={20} aria-hidden />
+        </button>
     );
+
+    const isLocked = editable && !isEditing;
 
     return (
         <TextField
             {...props}
+            ref={inputRef}
+            label={label}
             className={clsx(
                 'ds-inline-edit',
                 value === '' && 'ds-inline-edit--empty',
+                isLocked && 'ds-inline-edit--locked',
                 className,
             )}
             value={value}
             onChange={handleChange}
-            onBlur={editable ? save : undefined}
+            onBlur={editable ? handleBlur : undefined}
             onKeyDown={editable ? handleKeyDown : undefined}
-            readOnly={isSaving || readOnly}
+            readOnly={isSaving || isLocked || readOnly}
+            tabIndex={isLocked ? -1 : props.tabIndex}
             disabled={!editable || props.disabled}
             trailingIcon={trailingIcon}
             helperText={helperText}
