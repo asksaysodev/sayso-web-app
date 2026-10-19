@@ -13,8 +13,12 @@ export default function Checkout() {
     const success = successParam === null ? null : successParam === "true";
 
     useEffect(() => {
-        // Missing param or successful payment: everyone lands on the dashboard.
-        if (success !== false) navigate("/", { replace: true });
+        if (success === null) {
+            navigate("/", { replace: true });
+        } else if (success === true) {
+            // Every account goes to the app download after paying.
+            navigate("/download", { replace: true });
+        }
     }, [success, navigate]);
 
     if (success !== false) {
