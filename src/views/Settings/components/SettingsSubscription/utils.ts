@@ -5,13 +5,6 @@ import type { GetAccountSubscriptionResponse } from '@/views/Subscription/types'
 export type ActiveSubscription = GetAccountSubscriptionResponse['subscription'];
 export type Invoice = GetAccountSubscriptionResponse['invoices'][number];
 
-export const formatMoney = (cents: number, currency: string | null | undefined) =>
-    new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: (currency || 'usd').toUpperCase(),
-        minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
-    }).format(cents / 100);
-
 export const formatInvoiceTotal = (invoice: Invoice) => {
     // Unpaid invoices have amount_paid = 0; show what is owed instead.
     const cents = invoice.status === 'paid' ? invoice.amount_paid_in_cents : invoice.amount_due_in_cents;

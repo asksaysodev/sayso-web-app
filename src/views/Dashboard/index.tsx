@@ -17,8 +17,10 @@ export default function Dashboard() {
             {isAdmin && <DashboardFilters open={isFiltersOpen} onOpenChange={setIsFiltersOpen} />}
             <div className='dashboard-grid'>
                 <CoachTipsWidget />
-                <ActivityWidget />
-                <OverviewWidget />
+                <div className='dashboard-grid__widgets'>
+                    <ActivityWidget />
+                    <OverviewWidget />
+                </div>
             </div>
         </main>
     );

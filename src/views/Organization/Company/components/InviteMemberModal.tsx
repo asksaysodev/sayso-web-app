@@ -67,7 +67,7 @@ export default function InviteMemberModal({ onClose }: Props) {
             <ModalHeader
                 icon={<UserPlus size={24} />}
                 title='Invite team member'
-                description='Enter one or more email addresses to invite to your organization.'
+                description='Enter one or more email addresses to invite to your company.'
             />
             <ModalBody>
                 <ChipsInput

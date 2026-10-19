@@ -31,8 +31,43 @@
     height: 0;
 }
 
-.ds-inline-edit .ds-field__trailing:has(.ds-inline-edit__save) {
+.ds-inline-edit .ds-field__trailing:has(.ds-inline-edit__save, .ds-inline-edit__edit) {
     pointer-events: auto;
+}
+
+/* Locked until the pencil is clicked: the rest of the field ignores clicks and hover */
+.ds-inline-edit--locked .ds-field {
+    cursor: default;
+}
+
+.ds-inline-edit--locked .ds-field__main {
+    pointer-events: none;
+}
+
+.ds-inline-edit--locked .ds-field:hover:not(.ds-field--disabled) {
+    border-color: var(--surface-border);
+    background-color: var(--surface-bg);
+}
+
+.ds-inline-edit__edit {
+    display: inline-flex;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    opacity: 1;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.ds-inline-edit__edit:hover {
+    opacity: 0.7;
+}
+
+.ds-inline-edit__edit:focus-visible {
+    outline: 2px solid var(--primary-300);
+    outline-offset: 2px;
+    border-radius: var(--radius-8);
 }
 
 .ds-inline-edit__save {

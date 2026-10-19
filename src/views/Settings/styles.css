@@ -51,7 +51,8 @@
     margin-top: 24px;
 }
 
-.settings-personal-form {
+.settings-personal-form,
+.settings-company-form {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-16) var(--space-20);
@@ -113,10 +114,6 @@
 }
 
 /* Referral Settings */
-.referral-card {
-    max-width: 640px;
-}
-
 .referral-link--state {
     display: flex;
     align-items: center;
@@ -213,7 +210,8 @@
         font-size: 20px;
     }
 
-    .settings-personal-form {
+    .settings-personal-form,
+    .settings-company-form {
         grid-template-columns: 1fr;
     }
 }
@@ -285,7 +283,7 @@
 
 .settings-nav__item--active,
 .settings-nav__item--active:hover {
-    background-color: var(--neutral-100);
+    background-color: var(--neutral-200);
     font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
 }

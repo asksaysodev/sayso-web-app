@@ -12,7 +12,7 @@ export default function useRenameCompany() {
         mutationFn: renameCompany,
         onSuccess: (company) => {
             queryClient.setQueryData(COMPANY_QUERY_KEY, company);
-            showToast('success', 'Organization name updated.');
+            showToast('success', 'Company name updated.');
         },
         onError: (err) => {
             reportApiError(err, { feature: 'company', operation: 'renameCompany' });

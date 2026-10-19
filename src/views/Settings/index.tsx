@@ -7,25 +7,28 @@ import SettingsNav from "./components/SettingsNav";
 import SettingsActivePanelContainer from "./components/SettingsActivePanelContainer";
 import useCanAccessReferrals from "@/hooks/useCanAccessReferrals";
 import useCanManageBilling from "@/hooks/useCanManageBilling";
+import useCanRenameCompany from "@/hooks/useCanRenameCompany";
 
 
 export default function Settings() {
 	const [searchParams, setSearchParams] = useSearchParams();
     const canAccessReferrals = useCanAccessReferrals();
     const canManageBilling = useCanManageBilling();
+    const canRenameCompany = useCanRenameCompany();
 
     // Panels this user may open. Files stays reachable by URL only (hidden from the nav, as before).
     const availablePanels = useMemo(() => {
-        const panels: SettingsPanel[] = [
-            SettingsPanelEnum.PROFILE,
+        const panels: SettingsPanel[] = [SettingsPanelEnum.PROFILE];
+        if (canRenameCompany) panels.push(SettingsPanelEnum.COMPANY);
+        panels.push(
             SettingsPanelEnum.FILES,
             SettingsPanelEnum.CONNECTIONS,
             SettingsPanelEnum.SECURITY,
-        ];
+        );
         if (canManageBilling) panels.push(SettingsPanelEnum.SUBSCRIPTION);
         if (canAccessReferrals) panels.push(SettingsPanelEnum.REFERRAL);
         return panels;
-    }, [canManageBilling, canAccessReferrals]);
+    }, [canRenameCompany, canManageBilling, canAccessReferrals]);
 
     // The FUB OAuth callback returns to /settings?fub=… with no tab; its handler lives on Connections.
     const isFubReturn = searchParams.has("fub");

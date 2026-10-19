@@ -2,7 +2,7 @@ import { SettingsPanel, SettingsPanelEnum } from "../types"
 
 interface Props {
     // Only Files still renders the panel header.
-    selectedPanel: Exclude<SettingsPanel, 'subscription' | 'profile' | 'connections' | 'security' | 'referral'>;
+    selectedPanel: Exclude<SettingsPanel, 'subscription' | 'profile' | 'company' | 'connections' | 'security' | 'referral'>;
 }
 
 export default function SettingsActivePanelContainerHeader({ selectedPanel }: Props) {

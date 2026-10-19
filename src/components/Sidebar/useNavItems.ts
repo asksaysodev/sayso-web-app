@@ -20,7 +20,7 @@ export default function useNavItems(): NavItem[] {
         const items: (NavItem | false)[] = [
             hasSubscription && { to: '/', label: 'Dashboard', icon: PiSquaresFour },
             hasSubscription && { to: '/conversations', label: 'Conversations', icon: PiChats },
-            isTeamAdmin && { to: '/organization', label: 'Organization', icon: PiUsersFour },
+            isTeamAdmin && { to: '/company', label: 'Company', icon: PiUsersFour },
             isSuperAdmin && { to: '/admin', label: 'Admin', icon: PiShield },
         ];
         return items.filter((item): item is NavItem => Boolean(item));
