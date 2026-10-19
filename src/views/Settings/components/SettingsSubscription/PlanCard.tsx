@@ -6,7 +6,7 @@ import { Card } from '@/components/ds/Card';
 import { Button } from '@/components/ds/Button';
 import getAccountUsage from '@/services/getAccountUsage';
 import useStripeUpgrade from '@/views/Subscription/hooks/useStripeUpgrade';
-import { type ActiveSubscription, formatMoney, planStatus } from './utils';
+import { type ActiveSubscription, planStatus } from './utils';
 
 interface Props {
     subscription: ActiveSubscription;
@@ -30,8 +30,6 @@ export default function PlanCard({ subscription }: Props) {
 
     const planMinutes = (isTrialing ? subscription.includedMinutes?.trial : subscription.includedMinutes?.plan) ?? 0;
     const billingPeriod = subscription.billing?.cycle === 'month' ? 'Monthly' : 'Yearly';
-    const { priceInCents, currency } = subscription.price ?? {};
-    const interval = subscription.interval ?? subscription.billing?.cycle;
 
     const footnote = useMemo(() => {
         if (isPartnerFunded) {
@@ -58,12 +56,6 @@ export default function PlanCard({ subscription }: Props) {
                             {status.label}
                         </span>
                     </div>
-                    {priceInCents != null && !isPartnerFunded && (
-                        <p className='plan-card__price'>
-                            <strong>{formatMoney(priceInCents, currency)}</strong>
-                            {interval && <span> / {interval}</span>}
-                        </p>
-                    )}
                 </div>
                 <p className='plan-card__meta'>
                     {billingPeriod} · {Math.floor(planMinutes / 60)} hours / month
@@ -71,30 +63,30 @@ export default function PlanCard({ subscription }: Props) {
                 {isTrialing && (
                     <p className='plan-card__meta'>180 free trial minutes, then 1800 minutes included.</p>
                 )}
-                {usage && (
-                    <p className='plan-card__usage'>
-                        <PiSpeedometer size={24} aria-hidden />
-                        <span>
-                            {`You've used ${usage.usedMinutes} ${usage.usedMinutes === 1 ? 'minute' : 'minutes'} this period`}
-                            {usage.periodEnd && `, which ends on ${dayjs(usage.periodEnd).format('MMMM D, YYYY')}`}
-                        </span>
-                    </p>
+                {(footnote || isTrialing) && (
+                    <div className='plan-card__footer'>
+                        {footnote && <p className='plan-card__meta'>{footnote}</p>}
+                        {isTrialing && (
+                            <Button
+                                variant='secondary'
+                                size='sm'
+                                onClick={() => mutateUpgradeTrialSubscription()}
+                                loading={isPendingUpgradeTrialSubscription}
+                            >
+                                Upgrade to paid account
+                            </Button>
+                        )}
+                    </div>
                 )}
             </div>
-            {(footnote || isTrialing) && (
-                <div className='plan-card__footer'>
-                    {footnote && <p className='plan-card__footnote'>{footnote}</p>}
-                    {isTrialing && (
-                        <Button
-                            variant='secondary'
-                            size='sm'
-                            onClick={() => mutateUpgradeTrialSubscription()}
-                            loading={isPendingUpgradeTrialSubscription}
-                        >
-                            Upgrade to paid account
-                        </Button>
-                    )}
-                </div>
+            {usage && (
+                <p className='plan-card__usage'>
+                    <PiSpeedometer size={20} aria-hidden />
+                    <span>
+                        {`You've used ${usage.usedMinutes} ${usage.usedMinutes === 1 ? 'minute' : 'minutes'} this period`}
+                        {usage.periodEnd && `, which ends on ${dayjs(usage.periodEnd).format('MMMM D, YYYY')}`}
+                    </span>
+                </p>
             )}
         </Card>
     );
