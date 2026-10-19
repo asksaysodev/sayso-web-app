@@ -1,4 +1,5 @@
 import type { UserRole } from '@/types/user';
+import type { AssignableRole } from '@/views/Organization/shared/types';
 
 export type CompanyMemberStatus = 'active' | 'pending' | 'expired';
 
@@ -27,6 +28,7 @@ export interface SentInvite {
     email: string;
     status: string;
     expires_at: string;
+    role: AssignableRole;
     team_id: string | null;
 }
 
@@ -41,7 +43,7 @@ export interface CompanyViewer {
     role: UserRole | null;
 }
 
-export type MemberRowAction = 'updateRole' | 'resendInvite' | 'revokeInvite' | 'removeMember';
+export type MemberRowAction = 'updateRole' | 'changeInviteTeam' | 'resendInvite' | 'revokeInvite' | 'removeMember';
 
 export type MemberSortKey = 'member' | 'email' | 'role' | 'status';
 

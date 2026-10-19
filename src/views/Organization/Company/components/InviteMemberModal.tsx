@@ -8,11 +8,19 @@ import { useAuth } from '@/context/AuthContext';
 import useInviteMembers from '../hooks/useInviteMembers';
 import useTeams from '@/views/Organization/shared/hooks/useTeams';
 import ModalError from '@/views/Organization/shared/components/ModalError';
+import canChangeRoles from '@/views/Organization/shared/utils/canChangeRoles';
+import type { AssignableRole } from '@/views/Organization/shared/types';
+import roleLabel from '@/utils/roleLabel';
 import SkippedInvitesList from './SkippedInvitesList';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const normalizeEmail = (raw: string) => raw.trim().toLowerCase();
+
+const ROLE_OPTIONS: SelectFieldOption<AssignableRole>[] = [
+    { value: 'user', label: roleLabel('user') },
+    { value: 'admin', label: roleLabel('admin') },
+];
 
 interface Props {
     onClose: () => void;
@@ -27,7 +35,10 @@ export default function InviteMemberModal({ onClose }: Props) {
     const { invite, isPending, skipped, errorMessage, reset } = useInviteMembers();
     const [emails, setEmails] = useState<string[]>([]);
     const [teamId, setTeamId] = useState<string | null>(null);
+    const [role, setRole] = useState<AssignableRole>('user');
 
+    // Admins can only invite users, so they never see the picker; the server enforces the same rule.
+    const canPickRole = canChangeRoles(globalUser?.role ?? null);
     const ownEmail = globalUser?.email?.trim().toLowerCase();
 
     const teamOptions = useMemo<SelectFieldOption<string | null>[]>(
@@ -52,7 +63,7 @@ export default function InviteMemberModal({ onClose }: Props) {
 
     const handleSubmit = () => {
         invite(
-            { emails, teamId },
+            { emails, teamId, role: canPickRole ? role : undefined },
             {
                 onSuccess: (data) => {
                     if (data.skipped.length === 0) onClose();
@@ -80,6 +91,15 @@ export default function InviteMemberModal({ onClose }: Props) {
                     helperText='Press Enter, Space, Tab or Comma to add each email.'
                     disabled={isPending}
                 />
+                {canPickRole && (
+                    <SelectField
+                        label='Role'
+                        options={ROLE_OPTIONS}
+                        value={role}
+                        onChange={setRole}
+                        disabled={isPending}
+                    />
+                )}
                 <SelectField
                     label='Team'
                     options={teamOptions}
