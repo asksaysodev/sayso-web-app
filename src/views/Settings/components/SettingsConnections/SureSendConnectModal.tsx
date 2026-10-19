@@ -111,10 +111,20 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
                                 <div className="ss-field">
                                     <input
                                         id="suresend-token"
-                                        type={showToken ? 'text' : 'password'}
+                                        // Always type="text": browsers and password managers autofill any
+                                        // type="password" field regardless of autoComplete. Masking is CSS.
+                                        type="text"
+                                        className={showToken ? undefined : 'ss-token--masked'}
+                                        name="suresend-api-token"
                                         placeholder="Paste your API token"
                                         autoComplete="off"
+                                        autoCorrect="off"
+                                        autoCapitalize="off"
                                         spellCheck={false}
+                                        data-1p-ignore
+                                        data-lpignore="true"
+                                        data-bwignore
+                                        data-form-type="other"
                                         value={token}
                                         disabled={state === 'validating'}
                                         onChange={e => onInput(e.target.value)}
