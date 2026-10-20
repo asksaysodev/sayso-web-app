@@ -59,7 +59,7 @@ export default function CompanyMembersCard() {
     return (
         <Card className='org-card'>
             <div className='org-card__header'>
-                <h2 className='org-card__title'>Company members</h2>
+                <h2 className='org-card__title'>Members</h2>
                 <div className='org-card__controls'>
                     <div className='org-card__search'>
                         <SearchBar
