@@ -1,0 +1,24 @@
+.change-invite-team-modal__fields {
+    display: flex;
+    gap: var(--space-16);
+}
+
+.change-invite-team-modal__invitee {
+    flex: 1;
+    min-width: 0;
+}
+
+.change-invite-team-modal__team {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+    .change-invite-team-modal__fields {
+        flex-direction: column;
+    }
+
+    .change-invite-team-modal__team {
+        width: 100%;
+    }
+}

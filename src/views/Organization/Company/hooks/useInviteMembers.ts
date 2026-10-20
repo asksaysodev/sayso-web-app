@@ -5,11 +5,14 @@ import reportApiError from '@/utils/reportApiError';
 import getApiErrorMessage from '@/utils/getApiErrorMessage';
 import sendTeamInvite from '../services/sendTeamInvite';
 import type { SkippedInvite } from '../types';
+import type { AssignableRole } from '@/views/Organization/shared/types';
 import { COMPANY_MEMBERS_QUERY_KEY } from '@/views/Organization/shared/hooks/queryKeys';
 
 export interface InviteMembersInput {
     emails: string[];
     teamId: string | null;
+    /** Omitted = user. */
+    role?: AssignableRole;
 }
 
 const skippedFromError = (error: unknown): SkippedInvite[] => {    
@@ -25,7 +28,7 @@ export default function useInviteMembers() {
     const { showToast } = useToast();
 
     const { mutate, isPending, data, error, reset } = useMutation({
-        mutationFn: ({ emails, teamId }: InviteMembersInput) => sendTeamInvite(emails, teamId),
+        mutationFn: ({ emails, teamId, role }: InviteMembersInput) => sendTeamInvite(emails, teamId, role),
         onSuccess: ({ invites }) => {
             queryClient.invalidateQueries({ queryKey: COMPANY_MEMBERS_QUERY_KEY });
             showToast('success', invites.length === 1 ? 'Invite sent.' : `${invites.length} invites sent.`);

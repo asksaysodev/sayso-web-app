@@ -5,6 +5,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/components/ds/Moda
 import { SelectField, type SelectFieldOption } from '@/components/ds/SelectField';
 import { TextField } from '@/components/ds/TextField';
 import useUpdateMemberRole from '../hooks/useUpdateMemberRole';
+import useUpdateInviteRole from '../hooks/useUpdateInviteRole';
 import type { AssignableRole, RoleTarget } from '../types';
 import roleLabel from '@/utils/roleLabel';
 import ModalError from './ModalError';
@@ -23,28 +24,35 @@ interface Props {
 export default function UpdateRoleModal({ target, onClose }: Props) {
     const currentRole: AssignableRole = target.role === 'admin' ? 'admin' : 'user';
     const [role, setRole] = useState<AssignableRole>(currentRole);
-    const { updateRole, isPending, errorMessage } = useUpdateMemberRole();
+    const memberRole = useUpdateMemberRole();
+    const inviteRole = useUpdateInviteRole();
+    const { isPending, errorMessage } = target.isInvite ? inviteRole : memberRole;
 
     const handleOpenChange = (open: boolean) => {
         if (!open && !isPending) onClose();
     };
 
     const handleSave = () => {
-        updateRole({ memberId: target.id, role }, { onSuccess: onClose });
+        if (target.isInvite) inviteRole.updateInviteRole({ inviteId: target.id, role }, { onSuccess: onClose });
+        else memberRole.updateRole({ memberId: target.id, role }, { onSuccess: onClose });
     };
 
     return (
         <Modal open onOpenChange={handleOpenChange} hideClose={isPending}>
             <ModalHeader
                 icon={<RefreshCw size={24} />}
-                title='Update member role'
-                description="Select an option below to change the user's role."
+                title={target.isInvite ? 'Update invite role' : 'Update member role'}
+                description={
+                    target.isInvite
+                        ? 'Select the role the invitee gets when they accept the invite.'
+                        : "Select an option below to change the user's role."
+                }
             />
             <ModalBody>
                 <div className='update-role-modal__fields'>
                     <TextField
                         className='update-role-modal__member'
-                        label='Member'
+                        label={target.isInvite ? 'Invitee' : 'Member'}
                         leadingIcon={<User size={20} />}
                         value={target.email}
                         disabled
