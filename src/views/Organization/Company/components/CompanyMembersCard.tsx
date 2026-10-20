@@ -10,6 +10,7 @@ import type { CompanyMemberRow, CompanyViewer, MemberRowAction } from '../types'
 import filterRows from '../utils/filterRows';
 import CompanyMembersTable from './CompanyMembersTable';
 import InviteMemberModal from './InviteMemberModal';
+import ChangeInviteTeamModal from './ChangeInviteTeamModal';
 import RemoveMemberModal from './RemoveMemberModal';
 import UpdateRoleModal from '@/views/Organization/shared/components/UpdateRoleModal';
 import '@/views/Organization/shared/styles/orgCard.css';
@@ -17,6 +18,7 @@ import '@/views/Organization/shared/styles/orgCard.css';
 type OpenModal =
     | { kind: 'invite' }
     | { kind: 'updateRole'; row: CompanyMemberRow }
+    | { kind: 'changeInviteTeam'; row: CompanyMemberRow }
     | { kind: 'remove'; row: CompanyMemberRow }
     | null;
 
@@ -43,6 +45,9 @@ export default function CompanyMembersCard() {
                 break;
             case 'updateRole':
                 setOpenModal({ kind: 'updateRole', row });
+                break;
+            case 'changeInviteTeam':
+                setOpenModal({ kind: 'changeInviteTeam', row });
                 break;
             case 'removeMember':
             case 'revokeInvite':
@@ -80,6 +85,7 @@ export default function CompanyMembersCard() {
             />
             {openModal?.kind === 'invite' && <InviteMemberModal onClose={closeModal} />}
             {openModal?.kind === 'updateRole' && <UpdateRoleModal target={openModal.row} onClose={closeModal} />}
+            {openModal?.kind === 'changeInviteTeam' && <ChangeInviteTeamModal row={openModal.row} onClose={closeModal} />}
             {openModal?.kind === 'remove' && <RemoveMemberModal row={openModal.row} onClose={closeModal} />}
         </Card>
     );
