@@ -198,6 +198,10 @@ export default function MemberPicker({
                         sideOffset={4}
                         onOpenAutoFocus={(event) => event.preventDefault()}
                         onCloseAutoFocus={(event) => event.preventDefault()}
+                        // Portaled outside the host Modal, whose scroll lock cancels wheel/touch scrolls
+                        // that reach the document from outside it; stop them here so the list scrolls.
+                        onWheel={(event) => event.stopPropagation()}
+                        onTouchMove={(event) => event.stopPropagation()}
                         onInteractOutside={(event) => {
                             // Clicks in the field keep it open; the field owns focus and typing.
                             if (fieldRef.current?.contains(event.target as Node)) event.preventDefault();
