@@ -1,16 +1,14 @@
 import { createContext, useContext, useState, useRef } from 'react';
-import Toast from '../components/Toast';
+import Toast, { type ToastOptions, type ToastStatus } from '../components/Toast';
 
-type ToastStatus = 'success' | 'error' | 'warning';
-
-export interface Toast {
+export interface Toast extends ToastOptions {
   status: ToastStatus;
   text: string;
   autoClose?: boolean;
 }
 
 interface ToastContextValue {
-  showToast: (status: ToastStatus, text: string) => void;
+  showToast: (status: ToastStatus, text: string, options?: ToastOptions) => void;
   hideToast: () => void;
 }
 
@@ -21,14 +19,19 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     const [toast, setToast] = useState<Toast | null>(null);
     const autoHideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const showToast = (status: ToastStatus, text: string): void => {
+    const showToast = (status: ToastStatus, text: string, options: ToastOptions = {}): void => {
         // Clear any existing timeout
         if (autoHideTimeoutRef.current) {
             clearTimeout(autoHideTimeoutRef.current);
         }
         
-        setToast({ status, text });
-        
+        setToast({ status, text, ...options });
+
+        if (options.confirm || options.cancel) {
+            autoHideTimeoutRef.current = null;
+            return;
+        }
+
         autoHideTimeoutRef.current = setTimeout(() => {
             setToast(prev => prev ? { ...prev, autoClose: true } : null);
         }, 1500);
@@ -48,6 +51,9 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                 <Toast 
                     status={toast.status} 
                     text={toast.text} 
+                    description={toast.description}
+                    confirm={toast.confirm}
+                    cancel={toast.cancel}
                     onClose={hideToast}
                     autoClose={toast.autoClose}
                 />
