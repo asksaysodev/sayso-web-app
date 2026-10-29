@@ -29,6 +29,9 @@ function normalizeSureSendPerson(person: SureSendPerson): CrmLead {
 export const suresendProvider: CrmProvider = {
     id: 'suresend',
     label: 'SureSend',
+    iconSrc: '/assets/suresend-icon-color.svg',
+    tileBackground: '#e7eff7',
+    emailRequired: true,
 
     fetchLeads: async ({ search, limit, offset }) => {
         const page = Math.floor(offset / limit) + 1;

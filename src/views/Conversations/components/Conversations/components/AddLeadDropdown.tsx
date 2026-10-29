@@ -8,6 +8,7 @@ import useCrmLeadUrl from '@/hooks/integrations/crm/useCrmLeadUrl';
 import type { CrmLead, CrmProviderId } from '@/hooks/integrations/crm/types';
 import useRefreshLinkedLeadName from '../hooks/useRefreshLinkedLeadName';
 import CreateLeadModal from './CreateLeadModal';
+import CrmLeadEditModal from './CrmLeadEditModal';
 import CreateSureSendLeadModal from './CreateSureSendLeadModal';
 import LeadSkeleton from './LeadSkeleton';
 import '../styles/AddLeadDropdown.css';
@@ -85,10 +86,9 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect, cu
 
     const editModal = () => {
         if (!editOpen || !currentLeadId || !currentLeadProvider) return null;
-        const Modal = currentLeadProvider === 'suresend' ? CreateSureSendLeadModal : CreateLeadModal;
-        return <Modal
+        return <CrmLeadEditModal
             open={editOpen}
-            mode="edit"
+            providerId={currentLeadProvider}
             leadId={currentLeadId}
             onClose={() => setEditOpen(false)}
             onUpdated={({ leadId, crmLeadName }) =>

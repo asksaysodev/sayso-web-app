@@ -33,7 +33,14 @@ export interface CrmCreateLeadInput {
 
 export interface CrmProvider {
     id: CrmProviderId;
+    /** Display name shown everywhere the CRM is named in the UI. */
     label: string;
+    /** Public asset path of the CRM logo (e.g. `/assets/fub-icon.svg`). */
+    iconSrc: string;
+    /** Background of the tinted logo tile (any CSS color). */
+    tileBackground: string;
+    /** Whether the lead's email is mandatory in the create/edit forms. */
+    emailRequired: boolean;
     fetchLeads: (params: { search?: string; limit: number; offset: number }) => Promise<CrmLeadsPage>;
     createLead: (input: CrmCreateLeadInput) => Promise<CrmLead>;
     getLead: (id: string) => Promise<CrmLeadDetail>;

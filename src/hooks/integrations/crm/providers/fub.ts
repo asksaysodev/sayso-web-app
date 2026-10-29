@@ -29,6 +29,9 @@ function normalizeFubLead(lead: FubLead): CrmLead {
 export const fubProvider: CrmProvider = {
     id: 'fub',
     label: 'Follow Up Boss',
+    iconSrc: '/assets/fub-icon.svg',
+    tileBackground: '#e9f3ed',
+    emailRequired: false,
     fetchLeads: async ({ search, limit, offset }) => {
         const params = search
             ? { query: search, limit, offset }

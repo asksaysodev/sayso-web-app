@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import * as Sentry from '@sentry/react';
 import {
@@ -10,7 +10,7 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { PhoneInput, formatPhoneInput, isValidPhone, toE164 } from '@/components/ui/PhoneInput';
+import { PhoneInput, isValidPhone, toE164 } from '@/components/ui/PhoneInput';
 import { Label } from '@/components/ui/label';
 import {
     Select,
@@ -22,9 +22,6 @@ import {
 import SaysoButton from '@/components/SaysoButton';
 import { useToast } from '@/context/ToastContext';
 import useCrmCreateLead from '@/hooks/integrations/crm/useCrmCreateLead';
-import useCrmLead from '@/hooks/integrations/crm/useCrmLead';
-import useCrmUpdateLead from '@/hooks/integrations/crm/useCrmUpdateLead';
-import { CrmReauthRequiredError } from '@/hooks/integrations/crm/errors';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
 import useSureSendStages from '../hooks/useSureSendStages';
 import '../styles/CreateLeadModal.css';
@@ -32,11 +29,7 @@ import '../styles/CreateLeadModal.css';
 interface Props {
     open: boolean;
     onClose: () => void;
-    onCreated?: (lead: CrmLead) => void;
-    /** `edit` prefills from the linked lead (`leadId`) and saves via the CRM update endpoint (no stage). */
-    mode?: 'create' | 'edit';
-    leadId?: string | null;
-    onUpdated?: (result: { leadId: string; crmLeadName: string }) => void;
+    onCreated: (lead: CrmLead) => void;
 }
 
 interface FormValues {
@@ -50,34 +43,18 @@ interface FormValues {
 const DEFAULT_VALUES: FormValues = { firstName: '', lastName: '', phone: '', email: '', stage: '' };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode = 'create', leadId = null, onUpdated }: Props) {
-    const isEdit = mode === 'edit';
+export default function CreateSureSendLeadModal({ open, onClose, onCreated }: Props) {
     const { showToast } = useToast();
     const { createLead, isPending } = useCrmCreateLead();
-    const { updateLead, isPending: isUpdating } = useCrmUpdateLead('suresend', leadId);
-    const { data: existingLead, isFetching: leadLoading, isError: leadError, refetch: refetchLead } =
-        useCrmLead('suresend', leadId, open && isEdit);
     const [submitError, setSubmitError] = useState<string | null>(null);
-    const { stages, isLoading: stagesLoading, isError: stagesError } = useSureSendStages(open && !isEdit);
-    const busy = isPending || isUpdating;
+    const { stages, isLoading: stagesLoading, isError: stagesError } = useSureSendStages(open);
 
     const { register, control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
         defaultValues: DEFAULT_VALUES,
     });
 
-    useEffect(() => {
-        if (!isEdit || !existingLead) return;
-        reset({
-            firstName: existingLead.firstName ?? '',
-            lastName: existingLead.lastName ?? '',
-            phone: existingLead.phone ? formatPhoneInput(existingLead.phone) : '',
-            email: existingLead.email ?? '',
-            stage: '',
-        });
-    }, [isEdit, existingLead, reset]);
-
     const handleClose = () => {
-        if (busy) return;
+        if (isPending) return;
         reset(DEFAULT_VALUES);
         setSubmitError(null);
         onClose();
@@ -85,27 +62,6 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
 
     const onSubmit = async (values: FormValues) => {
         setSubmitError(null);
-        if (isEdit) {
-            try {
-                const result = await updateLead({
-                    firstName: values.firstName.trim(),
-                    lastName: values.lastName.trim(),
-                    phone: toE164(values.phone),
-                    email: values.email.trim(),
-                });
-                showToast('success', 'Lead updated.');
-                onUpdated?.({ leadId: result.lead.id, crmLeadName: result.crmLeadName });
-                handleClose();
-            } catch (error) {
-                if (error instanceof CrmReauthRequiredError) {
-                    setSubmitError('Your CRM connection expired. Reconnect it in Settings to edit leads.');
-                    return;
-                }
-                Sentry.captureException(error);
-                setSubmitError('Failed to update lead. Please try again.');
-            }
-            return;
-        }
         try {
             const lead = await createLead({
                 firstName: values.firstName.trim(),
@@ -115,7 +71,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
                 stage: values.stage,
             });
             showToast('success', `${lead.name} added to your CRM.`);
-            onCreated?.(lead);
+            onCreated(lead);
             handleClose();
         } catch (error) {
             Sentry.captureException(error);
@@ -127,22 +83,12 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
         <Dialog open={open} onOpenChange={isOpen => !isOpen && handleClose()}>
             <DialogContent className="create-lead-modal">
                 <DialogHeader>
-                    <DialogTitle>{isEdit ? 'Edit lead' : 'Create Sure Send Lead'}</DialogTitle>
+                    <DialogTitle>Create Sure Send Lead</DialogTitle>
                     <DialogDescription>
-                        {isEdit
-                            ? 'Update this contact in Sure Send.'
-                            : 'Add a new contact to Sure Send and link them to this conversation.'}
+                        Add a new contact to Sure Send and link them to this conversation.
                     </DialogDescription>
                 </DialogHeader>
 
-                {isEdit && leadLoading ? (
-                    <p className="create-lead-modal__status">Loading lead…</p>
-                ) : isEdit && leadError ? (
-                    <div className="create-lead-modal__status">
-                        <p className="create-lead-modal__error" role="alert">Failed to load lead.</p>
-                        <SaysoButton type="button" label="Retry" variant="outlined" size="sm" fullWidth={false} onClick={() => refetchLead()} />
-                    </div>
-                ) : (
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="create-lead-modal__fields">
                         <div className="create-lead-modal__name-row">
@@ -151,7 +97,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
                                 <Input
                                     id="ss-firstName"
                                     placeholder="Jane"
-                                    disabled={busy}
+                                    disabled={isPending}
                                     {...register('firstName', { required: 'First name is required.' })}
                                 />
                                 {errors.firstName && (
@@ -163,7 +109,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
                                 <Input
                                     id="ss-lastName"
                                     placeholder="Smith"
-                                    disabled={busy}
+                                    disabled={isPending}
                                     {...register('lastName', { required: 'Last name is required.' })}
                                 />
                                 {errors.lastName && (
@@ -185,7 +131,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
                                     <PhoneInput
                                         id="ss-phone"
                                         placeholder="+1 (555) 000-0000"
-                                        disabled={busy}
+                                        disabled={isPending}
                                         value={field.value}
                                         onChange={field.onChange}
                                         onBlur={field.onBlur}
@@ -204,7 +150,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
                                 id="ss-email"
                                 type="email"
                                 placeholder="jane@example.com"
-                                disabled={busy}
+                                disabled={isPending}
                                 {...register('email', {
                                     required: 'Email is required.',
                                     validate: v => EMAIL_RE.test(v.trim()) || 'Enter a valid email address.',
@@ -215,7 +161,6 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
                             )}
                         </div>
 
-                        {!isEdit && (
                         <div className="create-lead-modal__field">
                             <Label htmlFor="ss-stage">Stage *</Label>
                             <Controller
@@ -226,7 +171,7 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
                                     <Select
                                         value={field.value}
                                         onValueChange={field.onChange}
-                                        disabled={busy || (!isEdit && stagesLoading)}
+                                        disabled={isPending || stagesLoading}
                                     >
                                         <SelectTrigger id="ss-stage">
                                             <SelectValue
@@ -261,7 +206,6 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
                                 <p className="create-lead-modal__error">{errors.stage.message}</p>
                             )}
                         </div>
-                        )}
                     </div>
 
                     {submitError && (
@@ -276,20 +220,19 @@ export default function CreateSureSendLeadModal({ open, onClose, onCreated, mode
                             size="sm"
                             fullWidth={false}
                             onClick={handleClose}
-                            disabled={busy}
+                            disabled={isPending}
                         />
                         <SaysoButton
                             type="submit"
-                            label={isEdit ? (busy ? 'Saving…' : 'Save') : (isPending ? 'Creating…' : 'Create Lead')}
+                            label={isPending ? 'Creating…' : 'Create Lead'}
                             variant="sayso-indigo"
                             size="sm"
                             fullWidth={false}
-                            loading={busy}
-                            disabled={busy || (!isEdit && stagesLoading)}
+                            loading={isPending}
+                            disabled={isPending || stagesLoading}
                         />
                     </DialogFooter>
                 </form>
-                )}
             </DialogContent>
         </Dialog>
     );

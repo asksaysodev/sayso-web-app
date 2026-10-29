@@ -1,0 +1,20 @@
+.crm-provider-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.crm-provider-tile--md {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-8);
+}
+
+.crm-provider-tile--lg {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-16);
+    background: var(--white);
+    box-shadow: 0 6px 20px 0 rgba(29, 72, 113, 0.18);
+}
