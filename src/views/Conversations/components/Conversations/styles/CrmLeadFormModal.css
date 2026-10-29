@@ -9,7 +9,6 @@
     gap: var(--space-20);
     min-height: 320px;
     padding: var(--space-40) var(--space-28);
-    background-color: var(--surface-tint, #f2f6fe);
 }
 
 .crm-lead__sr-only {
