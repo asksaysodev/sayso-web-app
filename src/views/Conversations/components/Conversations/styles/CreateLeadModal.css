@@ -45,3 +45,12 @@
 .create-lead-modal-footer-wrapper .button-wrapper {
 	width: 50%;
 }
+
+.create-lead-modal__status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-8);
+    padding: var(--space-16) 0;
+    font-size: var(--text-body-lg-size);
+}

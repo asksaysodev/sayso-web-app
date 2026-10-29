@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import * as Sentry from '@sentry/react';
 import {
@@ -10,11 +10,13 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { PhoneInput, isValidPhone, toE164 } from '@/components/ui/PhoneInput';
+import { PhoneInput, formatPhoneInput, isValidPhone, toE164 } from '@/components/ui/PhoneInput';
 import { Label } from '@/components/ui/label';
 import SaysoButton from '@/components/SaysoButton';
 import { useToast } from '@/context/ToastContext';
 import useCrmCreateLead from '@/hooks/integrations/crm/useCrmCreateLead';
+import useCrmLead from '@/hooks/integrations/crm/useCrmLead';
+import useCrmUpdateLead from '@/hooks/integrations/crm/useCrmUpdateLead';
 import { CrmReauthRequiredError } from '@/hooks/integrations/crm/errors';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
 import '../styles/CreateLeadModal.css';
@@ -22,7 +24,11 @@ import '../styles/CreateLeadModal.css';
 interface Props {
     open: boolean;
     onClose: () => void;
-    onCreated: (lead: CrmLead) => void;
+    onCreated?: (lead: CrmLead) => void;
+    /** `edit` prefills from the linked lead (`leadId`) and saves via the CRM update endpoint. */
+    mode?: 'create' | 'edit';
+    leadId?: string | null;
+    onUpdated?: (result: { leadId: string; crmLeadName: string }) => void;
 }
 
 interface FormValues {
@@ -35,17 +41,32 @@ interface FormValues {
 const DEFAULT_VALUES: FormValues = { firstName: '', lastName: '', phone: '', email: '' };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
+export default function CreateLeadModal({ open, onClose, onCreated, mode = 'create', leadId = null, onUpdated }: Props) {
+    const isEdit = mode === 'edit';
     const { showToast } = useToast();
     const { createLead, isPending } = useCrmCreateLead();
+    const { updateLead, isPending: isUpdating } = useCrmUpdateLead('fub', leadId);
+    const { data: existingLead, isFetching: leadLoading, isError: leadError, refetch: refetchLead } =
+        useCrmLead('fub', leadId, open && isEdit);
     const [submitError, setSubmitError] = useState<string | null>(null);
+    const busy = isPending || isUpdating;
 
     const { register, handleSubmit, reset, control, formState: { errors } } = useForm<FormValues>({
         defaultValues: DEFAULT_VALUES,
     });
 
+    useEffect(() => {
+        if (!isEdit || !existingLead) return;
+        reset({
+            firstName: existingLead.firstName ?? '',
+            lastName: existingLead.lastName ?? '',
+            phone: existingLead.phone ? formatPhoneInput(existingLead.phone) : '',
+            email: existingLead.email ?? '',
+        });
+    }, [isEdit, existingLead, reset]);
+
     const handleClose = () => {
-        if (isPending) return;
+        if (busy) return;
         reset(DEFAULT_VALUES);
         setSubmitError(null);
         onClose();
@@ -53,6 +74,27 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
 
     const onSubmit = async (values: FormValues) => {
         setSubmitError(null);
+        if (isEdit) {
+            try {
+                const result = await updateLead({
+                    firstName: values.firstName.trim(),
+                    lastName: values.lastName.trim(),
+                    phone: toE164(values.phone),
+                    email: values.email.trim() || undefined,
+                });
+                showToast('success', 'Lead updated.');
+                onUpdated?.({ leadId: result.lead.id, crmLeadName: result.crmLeadName });
+                handleClose();
+            } catch (error) {
+                if (error instanceof CrmReauthRequiredError) {
+                    setSubmitError('Your CRM connection expired. Reconnect it in Settings to edit leads.');
+                    return;
+                }
+                Sentry.captureException(error);
+                setSubmitError('Failed to update lead. Please try again.');
+            }
+            return;
+        }
         try {
             const lead = await createLead({
                 firstName: values.firstName.trim(),
@@ -61,7 +103,7 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                 email: values.email.trim() || undefined,
             });
             showToast('success', `${lead.name} added to your CRM.`);
-            onCreated(lead);
+            onCreated?.(lead);
             handleClose();
         } catch (error) {
             if (error instanceof CrmReauthRequiredError) {
@@ -77,12 +119,24 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
         <Dialog open={open} onOpenChange={isOpen => !isOpen && handleClose()}>
             <DialogContent className="create-lead-modal">
                 <DialogHeader>
-                    <DialogTitle>Create Lead</DialogTitle>
+                    <DialogTitle>{isEdit ? 'Edit lead' : 'Create Lead'}</DialogTitle>
                     <DialogDescription>
-                        Add a new contact to your CRM and link them to this conversation.
+                        {isEdit
+                            ? 'Update this contact in your CRM.'
+                            : 'Add a new contact to your CRM and link them to this conversation.'}
                     </DialogDescription>
                 </DialogHeader>
 
+                {isEdit && leadLoading ? (
+                    <p className="create-lead-modal__status">Loading lead…</p>
+                ) : isEdit && leadError ? (
+                    <div className="create-lead-modal__status">
+                        <p className="create-lead-modal__error" role="alert">Failed to load lead.</p>
+                        <div className="button-wrapper">
+                            <SaysoButton type="button" label="Retry" variant="outlined" size="sm" onClick={() => refetchLead()} />
+                        </div>
+                    </div>
+                ) : (
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="create-lead-modal__fields">
                         <div className="create-lead-modal__name-row">
@@ -91,7 +145,7 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                                 <Input
                                     id="cl-firstName"
                                     placeholder="Jane"
-                                    disabled={isPending}
+                                    disabled={busy}
                                     {...register('firstName', { required: 'First name is required.' })}
                                 />
                                 {errors.firstName && (
@@ -103,7 +157,7 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                                 <Input
                                     id="cl-lastName"
                                     placeholder="Smith"
-                                    disabled={isPending}
+                                    disabled={busy}
                                     {...register('lastName', { required: 'Last name is required.' })}
                                 />
                                 {errors.lastName && (
@@ -125,7 +179,7 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                                     <PhoneInput
                                         id="cl-phone"
                                         placeholder="+1 (555) 000-0000"
-                                        disabled={isPending}
+                                        disabled={busy}
                                         value={field.value}
                                         onChange={field.onChange}
                                         onBlur={field.onBlur}
@@ -144,7 +198,7 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
                                 id="cl-email"
                                 type="email"
                                 placeholder="jane@example.com"
-                                disabled={isPending}
+                                disabled={busy}
                                 {...register('email', {
                                     validate: v => !v.trim() || EMAIL_RE.test(v.trim()) || 'Enter a valid email address.',
                                 })}
@@ -168,22 +222,23 @@ export default function CreateLeadModal({ open, onClose, onCreated }: Props) {
 								size="sm"
 								fullWidth={true}
 								onClick={handleClose}
-								disabled={isPending}
+								disabled={busy}
 							/>
 						</div>
 						<div className='button-wrapper'>
 							<SaysoButton
 								type="submit"
-								label={isPending ? 'Creating…' : 'Create Lead'}
+								label={isEdit ? (busy ? 'Saving…' : 'Save') : (isPending ? 'Creating…' : 'Create Lead')}
 								variant="sayso-indigo"
 								size="sm"
 								fullWidth={true}
-								loading={isPending}
-								disabled={isPending}
+								loading={busy}
+								disabled={busy}
 							/>
 						</div>
                     </DialogFooter>
                 </form>
+                )}
             </DialogContent>
         </Dialog>
     );

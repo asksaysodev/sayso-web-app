@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Search, Unlink, UserPlus } from 'lucide-react';
+import { ExternalLink, Pencil, Search, Unlink, UserPlus } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import useDebounce from '@/hooks/useDebounce';
 import useCrmConnection from '@/hooks/integrations/crm/useCrmConnection';
 import useCrmLeads from '@/hooks/integrations/crm/useCrmLeads';
-import type { CrmLead } from '@/hooks/integrations/crm/types';
+import useCrmLeadUrl from '@/hooks/integrations/crm/useCrmLeadUrl';
+import type { CrmLead, CrmProviderId } from '@/hooks/integrations/crm/types';
+import useRefreshLinkedLeadName from '../hooks/useRefreshLinkedLeadName';
 import CreateLeadModal from './CreateLeadModal';
 import CreateSureSendLeadModal from './CreateSureSendLeadModal';
 import LeadSkeleton from './LeadSkeleton';
@@ -14,16 +16,24 @@ interface Props {
     trigger: React.ReactNode;
     currentLeadName?: string | null;
     onSelect: (lead: CrmLead | null) => void;
+    /** Linked lead's CRM id/provider; with `canAssignLead` they enable "Open in CRM" / "Edit". */
+    currentLeadId?: string | null;
+    currentLeadProvider?: CrmProviderId | null;
+    canAssignLead?: boolean;
 }
 
-export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: Props) {
+export default function AddLeadDropdown({ trigger, currentLeadName, onSelect, currentLeadId, currentLeadProvider, canAssignLead = false }: Props) {
     const [open, setOpen] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
+    const [editOpen, setEditOpen] = useState(false);
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 350);
     const sentinelRef = useRef<HTMLDivElement>(null);
 
     const { isConnected, providerId } = useCrmConnection();
+    const refreshLinkedLeadName = useRefreshLinkedLeadName();
+    const hasLinkedLead = canAssignLead && !!currentLeadId && !!currentLeadProvider;
+    const leadUrl = useCrmLeadUrl(currentLeadProvider ?? null, currentLeadId ?? null, open && hasLinkedLead);
     const {
         leads,
         isLoading,
@@ -66,6 +76,24 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
     const handleCreateClick = () => {
         setOpen(false);
         setModalOpen(true);
+    };
+
+    const handleEditClick = () => {
+        setOpen(false);
+        setEditOpen(true);
+    };
+
+    const editModal = () => {
+        if (!editOpen || !currentLeadId || !currentLeadProvider) return null;
+        const Modal = currentLeadProvider === 'suresend' ? CreateSureSendLeadModal : CreateLeadModal;
+        return <Modal
+            open={editOpen}
+            mode="edit"
+            leadId={currentLeadId}
+            onClose={() => setEditOpen(false)}
+            onUpdated={({ leadId, crmLeadName }) =>
+                refreshLinkedLeadName({ leadId, providerId: currentLeadProvider, crmLeadName })}
+        />;
     };
 
     const handleLeadCreated = (lead: CrmLead) => {
@@ -171,6 +199,24 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                                     <UserPlus size={16} />
                                     Create lead
                                 </button>
+                                {hasLinkedLead && leadUrl && (
+                                    <a
+                                        className="add-lead-item"
+                                        href={leadUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={() => setOpen(false)}
+                                    >
+                                        <ExternalLink size={16} />
+                                        Open linked lead in CRM
+                                    </a>
+                                )}
+                                {hasLinkedLead && (
+                                    <button className="add-lead-item" onClick={handleEditClick}>
+                                        <Pencil size={16} />
+                                        Edit linked lead
+                                    </button>
+                                )}
                                 {currentLeadName && (
                                     <>
                                         <div className="add-lead-divider" />
@@ -189,6 +235,7 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                 </PopoverContent>
             </Popover>
             {leadModal()}
+            {editModal()}
         </>
     );
 }

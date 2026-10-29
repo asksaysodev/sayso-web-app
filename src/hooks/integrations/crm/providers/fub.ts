@@ -3,6 +3,7 @@ import createFubLead from '@/services/integrations/fub/createFubLead';
 import type { FubLead } from '@/types/fub';
 import type { CrmCreateLeadInput, CrmLead, CrmProvider } from '../types';
 import { crmReauthErrorFrom } from '../errors';
+import { getCrmLeadDetail, getFubAccountDomain, updateCrmLeadDetail } from '../services/crmLeadEditApi';
 
 function normalizeFubLead(lead: FubLead): CrmLead {
     const primaryEmail =
@@ -56,4 +57,22 @@ export const fubProvider: CrmProvider = {
             throw crmReauthErrorFrom(error, 'fub');
         }
     },
+
+    getLead: async id => {
+        try {
+            return await getCrmLeadDetail('fub', id);
+        } catch (error) {
+            throw crmReauthErrorFrom(error, 'fub');
+        }
+    },
+    updateLead: async (id, input) => {
+        try {
+            return await updateCrmLeadDetail('fub', id, input);
+        } catch (error) {
+            throw crmReauthErrorFrom(error, 'fub');
+        }
+    },
+    fetchLeadUrlContext: getFubAccountDomain,
+    buildLeadUrl: (id, domain) =>
+        domain ? `https://${domain}.followupboss.com/2/people/view/${encodeURIComponent(id)}` : null,
 };

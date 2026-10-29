@@ -59,6 +59,7 @@
 }
 
 .add-lead-create,
+.add-lead-item,
 .add-lead-remove {
     display: flex;
     align-items: center;
@@ -80,6 +81,15 @@
 }
 
 .add-lead-create:hover {
+    background: var(--primary-50);
+}
+
+.add-lead-item {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.add-lead-item:hover {
     background: var(--primary-50);
 }
 
