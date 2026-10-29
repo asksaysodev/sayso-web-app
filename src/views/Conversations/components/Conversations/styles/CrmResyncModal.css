@@ -21,3 +21,9 @@
         transform: rotate(360deg);
     }
 }
+
+/* Figma: the in-progress button is a lighter primary, not the full primary the DS keeps for loading */
+.crm-resync-modal--loading .ds-button--loading {
+    background-color: var(--primary-300);
+    border-color: var(--primary-300);
+}
