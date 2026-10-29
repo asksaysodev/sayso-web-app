@@ -1,0 +1,23 @@
+.crm-resync-modal .ds-modal__description strong {
+    font-weight: var(--font-weight-semibold);
+}
+
+.crm-resync-modal--confirm .ds-modal__icon {
+    background-color: var(--warning-bg);
+    color: var(--warning-icon);
+}
+
+.crm-resync-modal--error .ds-modal__icon {
+    background-color: var(--error-bg);
+    color: var(--error-icon);
+}
+
+.crm-resync-spinner {
+    animation: crm-resync-spin 0.8s linear infinite;
+}
+
+@keyframes crm-resync-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

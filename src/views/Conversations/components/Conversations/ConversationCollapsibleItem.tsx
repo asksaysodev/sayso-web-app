@@ -126,7 +126,7 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
                     <ConversationTabs value={activeTab} onChange={setActiveTab} />
                     <div className="conv-tabbody">
                         {activeTab === 'Cue' && <CueTab insights={conversation.insights ?? []} canRate={isOwn} />}
-                        {activeTab === 'Smart Capture' && <SmartCaptureTab smartCaptures={conversation.smart_captures ?? []} appointmentBooked={conversation.appointment_booked} />}
+                        {activeTab === 'Smart Capture' && <SmartCaptureTab conversation={conversation} canEdit={isOwn} />}
                         {activeTab === 'Pulse' && <PulseTab pulse={pulse} />}
                     </div>
                 </div>

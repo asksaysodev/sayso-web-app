@@ -58,6 +58,8 @@ export interface ConversationItem {
   duration_in_minutes: number | null;
   lead_type: LeadType | null;
   crm_lead_name: string | null;
+  crm_lead_id: string | null;
+  crm_provider: 'fub' | 'suresend' | null;
   summary: string | null;
   appointment_booked: boolean | null;
   insights: ConversationInsight[];
