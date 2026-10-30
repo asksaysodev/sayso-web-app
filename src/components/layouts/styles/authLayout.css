@@ -1,0 +1,183 @@
+/*
+ * Shared auth layout (SAYSO-562). Every login and sign-up view sits on this shell.
+ * Background glow = the sign-up one (Figma 557:11764): a 799px #86ADF2 circle at
+ * 20% opacity with a 60px Gaussian blur, fixed at the centre of the viewport.
+ */
+.authLayout {
+    --auth-layout-top-gap: 50px;
+    --auth-layout-content-width: 680px;
+
+    position: relative;
+    isolation: isolate;
+    /* The global .App wrapper centres its child vertically; pin to the top so tall
+       views (e.g. sign-up on mobile) scroll instead of being clipped above the fold. */
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--surface-subtle);
+    font-family: var(--font-ds);
+    /* Figma sets DM Sans to optical size 14 everywhere; `auto` makes large titles look condensed. */
+    font-variation-settings: 'opsz' 14;
+    color: var(--text-primary);
+    text-align: left;
+}
+
+.authLayoutGlow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: -1;
+    width: 799px;
+    height: 799px;
+    border-radius: 50%;
+    background-color: var(--primary-300);
+    opacity: 0.2;
+    filter: blur(60px);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+/* Top bar */
+.authLayoutTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16);
+    padding: var(--space-24) var(--space-32);
+    background-color: var(--neutral-50);
+}
+
+.authLayoutLogo {
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.authLayoutLogo img {
+    display: block;
+    height: 36px;
+    width: auto;
+    /* The PNG has an opaque white background; multiply blends it into the bar. */
+    mix-blend-mode: multiply;
+}
+
+.authLayoutHeaderLink {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    font-size: 12px;
+    color: var(--neutral-950);
+}
+
+.authLayoutTextLink {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-8);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-8);
+    font-size: 14px;
+    font-weight: var(--font-weight-semibold);
+    line-height: normal;
+    color: var(--text-brand);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.authLayoutTextLink:hover {
+    background-color: var(--primary-50);
+}
+
+.authLayoutTextLink:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+}
+
+/*
+ * Main column: title on top, content centred at 680px, and a left rail for the
+ * sign-up progress indicator aligned with the top of the content.
+ */
+.authLayoutMain {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--auth-layout-content-width)) minmax(0, 1fr);
+    grid-template-areas:
+        ".     title   ."
+        "aside content .";
+    column-gap: var(--space-32);
+    align-items: start;
+    padding: var(--auth-layout-top-gap) var(--space-32) 0;
+}
+
+.authLayoutTitle {
+    grid-area: title;
+    margin: 0 0 var(--space-40);
+    font-size: 40px;
+    font-weight: var(--font-weight-regular);
+    line-height: 44px;
+    letter-spacing: -0.8px;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.authLayoutAside {
+    grid-area: aside;
+    justify-self: start;
+}
+
+.authLayoutContent {
+    grid-area: content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+}
+
+/* Footer */
+.authLayoutFooter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-8);
+    margin-top: auto;
+    padding: var(--space-60) var(--space-16);
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+@media (max-width: 767px) {
+    .authLayoutTopBar {
+        padding: var(--space-16);
+    }
+
+    .authLayoutLogo img {
+        height: 28px;
+    }
+
+    .authLayoutMain {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "title"
+            "aside"
+            "content";
+        padding-left: var(--space-16);
+        padding-right: var(--space-16);
+    }
+
+    .authLayoutTitle {
+        font-size: 28px;
+        line-height: 32px;
+        letter-spacing: -0.56px;
+        margin-bottom: var(--space-24);
+    }
+
+    .authLayoutAside {
+        justify-self: stretch;
+        margin-bottom: var(--space-24);
+    }
+
+    .authLayoutFooter {
+        padding: var(--space-40) var(--space-16);
+    }
+}
