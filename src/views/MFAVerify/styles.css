@@ -1,37 +1,121 @@
-.mfa-verify-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+.mfaCard {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: 680px;
+  box-sizing: border-box;
+  padding: 32px;
+  background: var(--neutral-50);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.mfaCardHeading {
+  margin: 0;
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 500;
+  color: var(--primary-900);
+}
+
+.mfaCardSubtitle {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.mfaCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Boxes share the row width so six of them fit a 360px viewport. */
+.mfaCardCode {
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.mfaCardCode .ds-code-input__box {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 64px;
+  width: auto;
+  height: 40px;
+  font-size: 16px;
+}
+
+.mfaCardError {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--error-icon);
+}
+
+.mfaCardError svg {
+  flex-shrink: 0;
+}
+
+.mfaCardSuccessIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--primary-50);
+  color: var(--primary-500);
+}
+
+.mfaCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mfaCardBackLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-brand);
+  cursor: pointer;
+}
+
+.mfaCardBackLink:hover {
+  background: var(--primary-50);
+}
+
+@media (max-width: 767px) {
+  .mfaCard {
+    padding: 24px;
+  }
+
+  .mfaCardCode {
+    gap: 8px;
+  }
+
+  .mfaCardFooter {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .mfaCardSubmit {
     width: 100%;
-}
+  }
 
-.mfa-verify-input {
-    width: 100%;
-    max-width: 200px;
-    padding: 12px 16px;
-    font-size: 24px;
-    font-family: monospace;
-    text-align: center;
-    letter-spacing: 8px;
-    border: 1px solid var(--sayso-border);
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.2s;
-    color: var(--sayso-dark) !important;
-    background-color: white !important;
-}
-
-.mfa-verify-input:focus {
-    border-color: var(--sayso-indigo);
-}
-
-.mfa-verify-input::placeholder {
-    letter-spacing: 8px;
-    color: var(--sayso-border);
-}
-
-.mfa-verify-input:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  .mfaCardBackLink {
+    align-self: center;
+  }
 }
