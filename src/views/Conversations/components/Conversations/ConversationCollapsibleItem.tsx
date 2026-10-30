@@ -76,6 +76,9 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
 
                         {canAssignLead && <AddLeadDropdown
                             currentLeadName={conversation.crm_lead_name}
+                            currentLeadId={conversation.crm_lead_id}
+                            currentLeadProvider={conversation.crm_provider}
+                            canAssignLead={canAssignLead}
                             trigger={conversation.crm_lead_name
                                 ? (
                                     <button className="conv-client-btn">

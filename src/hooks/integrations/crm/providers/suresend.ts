@@ -3,6 +3,7 @@ import createSureSendLead from '@/services/integrations/suresend/createSureSendL
 import type { SureSendPerson } from '@/services/integrations/suresend/getSureSendPeople';
 import type { CrmCreateLeadInput, CrmLead, CrmProvider } from '../types';
 import { crmReauthErrorFrom } from '../errors';
+import { getCrmLeadDetail, updateCrmLeadDetail } from '../services/crmLeadEditApi';
 
 function normalizeSureSendPerson(person: SureSendPerson): CrmLead {
     const primaryEmail =
@@ -28,6 +29,9 @@ function normalizeSureSendPerson(person: SureSendPerson): CrmLead {
 export const suresendProvider: CrmProvider = {
     id: 'suresend',
     label: 'SureSend',
+    iconSrc: '/assets/suresend-icon-color.svg',
+    tileBackground: '#e7eff7',
+    emailRequired: true,
 
     fetchLeads: async ({ search, limit, offset }) => {
         const page = Math.floor(offset / limit) + 1;
@@ -65,4 +69,20 @@ export const suresendProvider: CrmProvider = {
             throw crmReauthErrorFrom(error, 'suresend');
         }
     },
+
+    getLead: async id => {
+        try {
+            return await getCrmLeadDetail('suresend', id);
+        } catch (error) {
+            throw crmReauthErrorFrom(error, 'suresend');
+        }
+    },
+    updateLead: async (id, input) => {
+        try {
+            return await updateCrmLeadDetail('suresend', id, input);
+        } catch (error) {
+            throw crmReauthErrorFrom(error, 'suresend');
+        }
+    },
+    buildLeadUrl: id => `https://suresend.ai/people/${encodeURIComponent(id)}`,
 };
