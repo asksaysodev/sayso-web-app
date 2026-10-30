@@ -15,9 +15,23 @@ export const validateStepOneFields = (formData: LoginFormData) => {
 };
 
 /**
- * Validates login form fields
+ * Validates login form fields (new login card copy)
  */
 export const validateLoginFields = (formData: LoginFormData) => {
+  const errors: Record<string, string> = {};
+  if (!formData.email) {
+    errors.email = 'Enter your email address.';
+  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    errors.email = 'Enter a valid email address.';
+  }
+  if (!formData.password) errors.password = 'Enter your password.';
+  return errors;
+};
+
+/**
+ * Validates the email/password basics for sign-up (legacy copy)
+ */
+const validateSignupCredentials = (formData: LoginFormData) => {
   const errors: Record<string, string> = {};
   if (!formData.email) {
     errors.email = 'Email is required';
@@ -29,10 +43,10 @@ export const validateLoginFields = (formData: LoginFormData) => {
 };
 
 /**
- * Validates signup form fields (extends login validation)
+ * Validates signup form fields (extends credentials validation)
  */
 export const validateSignupFields = (formData: LoginFormData) => {
-  const errors = validateLoginFields(formData);
+  const errors = validateSignupCredentials(formData);
   
   if (!errors.password && formData.password.length < 6) {
     errors.password = 'Password must be at least 6 characters';
