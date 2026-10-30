@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react';
 import clsx from 'clsx';
 import { Check, LoaderCircle, Pencil } from 'lucide-react';
 import { TextField, type TextFieldProps } from '../TextField';
+import { useInlineEdit } from './useInlineEdit';
 import './InlineEditField.css';
-
-const SAVED_ICON_MS = 2000;
 
 export interface InlineEditFieldProps
     extends Omit<TextFieldProps, 'value' | 'defaultValue' | 'onChange' | 'onBlur' | 'onKeyDown' | 'trailingIcon' | 'error'> {
@@ -40,96 +38,21 @@ export function InlineEditField({
     label,
     ...props
 }: InlineEditFieldProps) {
-    const [draft, setDraft] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [isSaving, setIsSaving] = useState(false);
-    const [justSaved, setJustSaved] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const inputRef = useRef<HTMLInputElement>(null);
-
     const formattedSaved = format(savedValue);
-    const value = draft ?? formattedSaved;
-    const isDirty = draft !== null && draft.trim() !== formattedSaved.trim();
-    // Guards against Enter and the Save click both firing a save in the same tick.
-    const savingRef = useRef(false);
-
-    useEffect(() => {
-        onDirtyChange?.(isDirty);
-    }, [isDirty, onDirtyChange]);
-
-    useEffect(() => {
-        const input = inputRef.current;
-        if (!input) return;
-        if (isEditing) {
-            input.focus();
-            input.setSelectionRange(input.value.length, input.value.length);
-        } else if (document.activeElement === input) {
-            input.blur();
-        }
-    }, [isEditing]);
-
-    useEffect(() => {
-        if (!justSaved) return;
-        const timer = setTimeout(() => setJustSaved(false), SAVED_ICON_MS);
-        return () => clearTimeout(timer);
-    }, [justSaved]);
-
-    const save = async () => {
-        if (savingRef.current) return;
-        if (draft === null) {
-            setIsEditing(false);
-            return;
-        }
-        const next = draft.trim();
-        if (next === formattedSaved.trim()) {
-            setDraft(null);
-            setIsEditing(false);
-            return;
-        }
-        const validationError = validate?.(next) ?? null;
-        if (validationError) {
-            setError(validationError);
-            return;
-        }
-        savingRef.current = true;
-        setIsSaving(true);
-        try {
-            await onSave(next);
-            setDraft(null);
-            setIsEditing(false);
-            setJustSaved(true);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
-        } finally {
-            savingRef.current = false;
-            setIsSaving(false);
-        }
-    };
-
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setDraft(format(event.target.value));
-        setError(null);
-        setJustSaved(false);
-    };
-
-    const handleBlur = () => {
-        if (isDirty || isSaving) return;
-        setDraft(null);
-        setError(null);
-        setIsEditing(false);
-    };
-
-    const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            void save();
-        }
-        if (event.key === 'Escape') {
-            setDraft(null);
-            setError(null);
-            setIsEditing(false);
-        }
-    };
+    const {
+        ref: inputRef,
+        value,
+        error,
+        isDirty,
+        isEditing,
+        isSaving,
+        justSaved,
+        save,
+        startEditing,
+        handleChange,
+        handleBlur,
+        handleKeyDown,
+    } = useInlineEdit<HTMLInputElement>({ savedValue: formattedSaved, onSave, validate, format, onDirtyChange });
 
     // Disabled (e.g. load failed) or read-only (e.g. still loading): no pencil, so it can't unlock the field.
     const canStartEditing = !props.disabled && !readOnly;
@@ -153,7 +76,7 @@ export function InlineEditField({
             type='button'
             className='ds-inline-edit__edit'
             aria-label={typeof label === 'string' ? `Edit ${label}` : 'Edit'}
-            onClick={() => setIsEditing(true)}
+            onClick={startEditing}
         >
             <Pencil size={20} aria-hidden />
         </button>

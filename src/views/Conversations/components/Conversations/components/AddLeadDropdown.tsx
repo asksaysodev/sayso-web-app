@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LuSearch, LuUserMinus, LuUserPlus } from 'react-icons/lu';
+import { Search, Unlink, UserPlus } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import useDebounce from '@/hooks/useDebounce';
 import useCrmConnection from '@/hooks/integrations/crm/useCrmConnection';
@@ -23,7 +23,7 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
     const debouncedSearch = useDebounce(search, 350);
     const sentinelRef = useRef<HTMLDivElement>(null);
 
-    const { isConnected, providerId, providerLabel } = useCrmConnection();
+    const { isConnected, providerId } = useCrmConnection();
     const {
         leads,
         isLoading,
@@ -118,31 +118,17 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                         </div>
                     ) : (
                         <>
-                            {currentLeadName && (
-                                <button
-                                    className="add-lead-remove"
-                                    onClick={() => { onSelect(null); setOpen(false); }}
-                                >
-                                    <LuUserMinus size={13} />
-                                    Remove "{currentLeadName}"
-                                </button>
-                            )}
                             <div className="add-lead-search">
-                                <LuSearch size={14} />
+                                <Search size={16} />
                                 <input
                                     autoFocus
-                                    placeholder={providerId === 'suresend' ? 'Search by email or phone' : `Search ${providerLabel} leads…`}
+                                    placeholder="Search by email or phone"
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
                                 />
                             </div>
 
                             <div className="add-lead-list">
-                                <button className="add-lead-create" onClick={handleCreateClick}>
-                                    <LuUserPlus size={13} />
-                                    Create lead
-                                </button>
-
                                 {isLoading ? (
                                     <LeadSkeleton />
                                 ) : error ? (
@@ -176,6 +162,25 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                                         {isFetchingNextPage && (
                                             <div className="add-lead-loading-more">Loading more…</div>
                                         )}
+                                    </>
+                                )}
+                            </div>
+
+                            <div className="add-lead-actions">
+                                <button className="add-lead-create" onClick={handleCreateClick}>
+                                    <UserPlus size={16} />
+                                    Create lead
+                                </button>
+                                {currentLeadName && (
+                                    <>
+                                        <div className="add-lead-divider" />
+                                        <button
+                                            className="add-lead-remove"
+                                            onClick={() => { onSelect(null); setOpen(false); }}
+                                        >
+                                            <Unlink size={16} />
+                                            Unlink from conversation
+                                        </button>
                                     </>
                                 )}
                             </div>

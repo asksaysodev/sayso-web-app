@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { PiCaretDown } from 'react-icons/pi';
-import { SquarePen, UserPlus } from 'lucide-react';
+import { Pencil, UserPlus } from 'lucide-react';
 import { ConversationItem } from '@/types/coach';
 import type { CrmLead } from '@/hooks/integrations/crm/types';
 import ConversationSignalsPill from './components/ConversationSignalsPill';
@@ -65,18 +65,7 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
                         <span className="conv-time-inline">{time} · {date}</span>
                         <span className="conv-meta-sep conv-meta-sep--after-time" />
 
-                        {ownerName && (
-                            <>
-                                <span className="conv-client">
-                                    <Avatar name={ownerName} />
-                                    {ownerName}
-                                </span>
-                                {(conversation.lead_type || hasLeadSection) && <span className="conv-meta-sep" />}
-                            </>
-                        )}
-
                         {conversation.lead_type && <LeadChip type={conversation.lead_type} />}
-                        {conversation.lead_type && hasLeadSection && <span className="conv-meta-sep" />}
 
                         {!isOwn && conversation.crm_lead_name && (
                             <span className="conv-client">
@@ -92,11 +81,11 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
                                     <button className="conv-client-btn">
                                         <Avatar name={conversation.crm_lead_name} />
                                         {conversation.crm_lead_name}
-                                        <SquarePen size={11} className="conv-client-edit-icon" />
+                                        <Pencil size={12} className="conv-client-edit-icon" />
                                     </button>
                                 ) : (
                                     <button className="conv-add-lead">
-                                        <UserPlus size={13} />
+                                        <UserPlus size={12} />
                                         Add lead
                                     </button>
                                 )
@@ -105,6 +94,13 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
                                 attachLead({ conversationId: conversation.id, lead });
                             }}
                         />}
+
+                        {ownerName && (
+                            <>
+                                {(conversation.lead_type || hasLeadSection) && <span className="conv-meta-sep" />}
+                                <span className="conv-agent">{ownerName}</span>
+                            </>
+                        )}
                     </div>
                 </div>
 
@@ -126,7 +122,7 @@ export default function ConversationCollapsibleItem({ conversation, isOpen, isOw
                     <ConversationTabs value={activeTab} onChange={setActiveTab} />
                     <div className="conv-tabbody">
                         {activeTab === 'Cue' && <CueTab insights={conversation.insights ?? []} canRate={isOwn} />}
-                        {activeTab === 'Smart Capture' && <SmartCaptureTab smartCaptures={conversation.smart_captures ?? []} appointmentBooked={conversation.appointment_booked} />}
+                        {activeTab === 'Smart Capture' && <SmartCaptureTab conversation={conversation} canEdit={isOwn} />}
                         {activeTab === 'Pulse' && <PulseTab pulse={pulse} />}
                     </div>
                 </div>
