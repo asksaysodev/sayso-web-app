@@ -17,6 +17,8 @@
     box-sizing: border-box;
     background-color: var(--surface-subtle);
     font-family: var(--font-ds);
+    /* Figma sets DM Sans to optical size 14 everywhere; `auto` makes large titles look condensed. */
+    font-variation-settings: 'opsz' 14;
     color: var(--text-primary);
     text-align: left;
 }
