@@ -1,16 +1,14 @@
-import { useNavigate } from 'react-router-dom';
-
 import LoginLoader from './components/LoginLoader';
-import LoginInFormInputs from './components/LoginInFormInputs';
+import LoginCard from './components/LoginCard';
 import SignUpStepOneFormInputs from './components/SignUpStepOneFormInputs';
 import SignUpStepTwoFormInputs from './components/SignUpStepTwoFormInputs';
 import useLoginForm from './hooks/useLoginForm';
 
 import './styles.css';
 import LoginLayout from '@/components/layouts/LoginLayout';
+import AuthLayout from '@/components/layouts/AuthLayout';
 
 const Login = () => {
-  const navigate = useNavigate();
   const {
     control,
     isLoggingIn,
@@ -45,15 +43,21 @@ const Login = () => {
     ? `You've been invited by ${invitation.partner_name} — ${invitation.plan_name} plan`
     : undefined;
 
+  if (isLoggingIn) {
+    return (
+      <AuthLayout
+        title="Sign in"
+        headerLink={{ prompt: "Don't have an account?", label: 'Sign up', to: '/login?signup=true' }}
+      >
+        <LoginCard control={control} isBtnLoading={isBtnLoading} onSubmit={handleSubmit} />
+      </AuthLayout>
+    );
+  }
+
   return (
-    <LoginLayout title={isLoggingIn ? 'Welcome Back!' : `Create Account`} description={invitedByNote} error={error}>
+    <LoginLayout title="Create Account" description={invitedByNote} error={error}>
       <form onSubmit={handleSubmit}>
-        {isLoggingIn ? (
-          <LoginInFormInputs
-            control={control}
-            isBtnLoading={isBtnLoading}
-          />
-        ) : (
+        {(
           signupStep === 1 ? (
             <SignUpStepOneFormInputs
               control={control}
@@ -69,13 +73,8 @@ const Login = () => {
         )}
       </form>
       <p className="toggleText" onClick={handleToggleMode}>
-        {isLoggingIn ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
+        Already have an account? Sign In
       </p>
-      {isLoggingIn && (
-        <p className="toggleText forgotPasswordText" onClick={() => navigate('/forgot-password')}>
-          Forgot password? Click here
-        </p>
-      )}
     </LoginLayout>
   )
 };

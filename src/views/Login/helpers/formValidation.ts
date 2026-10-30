@@ -1,4 +1,4 @@
-import { LoginFormData, ResetPasswordFormData } from "../types";
+import { LoginFormData } from "../types";
 import { isValidPhone } from "@/components/ui/PhoneInput";
 
 /**
@@ -15,9 +15,23 @@ export const validateStepOneFields = (formData: LoginFormData) => {
 };
 
 /**
- * Validates login form fields
+ * Validates login form fields (new login card copy)
  */
 export const validateLoginFields = (formData: LoginFormData) => {
+  const errors: Record<string, string> = {};
+  if (!formData.email) {
+    errors.email = 'Enter your email address.';
+  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    errors.email = 'Enter a valid email address.';
+  }
+  if (!formData.password) errors.password = 'Enter your password.';
+  return errors;
+};
+
+/**
+ * Validates the email/password basics for sign-up (legacy copy)
+ */
+const validateSignupCredentials = (formData: LoginFormData) => {
   const errors: Record<string, string> = {};
   if (!formData.email) {
     errors.email = 'Email is required';
@@ -29,10 +43,10 @@ export const validateLoginFields = (formData: LoginFormData) => {
 };
 
 /**
- * Validates signup form fields (extends login validation)
+ * Validates signup form fields (extends credentials validation)
  */
 export const validateSignupFields = (formData: LoginFormData) => {
-  const errors = validateLoginFields(formData);
+  const errors = validateSignupCredentials(formData);
   
   if (!errors.password && formData.password.length < 6) {
     errors.password = 'Password must be at least 6 characters';
@@ -44,25 +58,3 @@ export const validateSignupFields = (formData: LoginFormData) => {
   }
   return errors;
 };
-
-/**
- * Validates password reset fields (password + confirmation only)
- */
-export const validateResetPasswordFields = (formData: ResetPasswordFormData) => {
-  const errors: Record<string, string> = {};
-  
-  if (!formData.newPassword) {
-    errors.newPassword = 'Password is required';
-  } else if (formData.newPassword.length < 6) {
-    errors.newPassword = 'Password must be at least 6 characters';
-  }
-  
-  if (!formData.confirmPassword) {
-    errors.confirmPassword = 'Please confirm your password';
-  } else if (formData.newPassword !== formData.confirmPassword) {
-    errors.confirmPassword = 'Passwords do not match';
-  }
-  
-  return errors;
-};
-
