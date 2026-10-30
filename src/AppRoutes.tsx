@@ -22,6 +22,7 @@ const AcceptInvite = lazyView(() => import('./views/AcceptInvite'));
 const Organization = lazyView(() => import('./views/Organization'));
 const Conversations = lazyView(() => import('./views/Conversations'));
 const TeamDetail = lazyView(() => import('./views/Organization/Teams/Detail'));
+const Signup = lazyView(() => import('./views/Signup'));
 
 import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
@@ -40,10 +41,31 @@ export default function AppRoutes() {
             <Routes>
                 <Route
                     path="/login"
+                    element={<LoginRoute />}
+                />
+                <Route
+                    path="/signup"
                     element={
-                        <GuestGuard>
-                        <Login />
+                        <GuestGuard redirectTo="/signup/plan">
+                            <Signup />
                         </GuestGuard>
+                    }
+                />
+                {/* Placeholders until SAYSO-563/564 build these steps: they hand off to the current views. */}
+                <Route
+                    path="/signup/plan"
+                    element={
+                        <AuthGuard>
+                            <RedirectKeepingQuery to="/subscription" />
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/signup/download"
+                    element={
+                        <AuthGuard>
+                            <RedirectKeepingQuery to="/download" />
+                        </AuthGuard>
                     }
                 />
                 <Route
@@ -183,6 +205,33 @@ export default function AppRoutes() {
             </Routes>
         </Suspense>
     )
+}
+
+/**
+ * /login is login-only. Sign-up links in emails, the marketing site and the desktop app
+ * (?signup=true, ?referralCode=, ?invite=) move to /signup with every query param kept.
+ */
+function LoginRoute() {
+    const { search, hash } = useLocation();
+    const params = new URLSearchParams(search);
+    const isSignupLink = params.get('signup') === 'true'
+        || !!params.get('referralCode')
+        || !!params.get('invite');
+
+    if (isSignupLink) {
+        return <Navigate to={`/signup${search}${hash}`} replace />;
+    }
+
+    return (
+        <GuestGuard>
+            <Login />
+        </GuestGuard>
+    );
+}
+
+function RedirectKeepingQuery({ to }: { to: string }) {
+    const { search, hash } = useLocation();
+    return <Navigate to={`${to}${search}${hash}`} replace />;
 }
 
 /** /organization[/…][?…][#…] → /company[/…][?…][#…] */

@@ -9,8 +9,7 @@ import AuthLayout from '@/components/layouts/AuthLayout';
 import { Button } from '@/components/ds/Button';
 import { TextField } from '@/components/ds/TextField';
 import clearRecoveryPending from './services/clearRecoveryPending';
-import PasswordStrength from './PasswordStrength';
-import { getPasswordStrength } from './getPasswordStrength';
+import { PasswordStrength, getPasswordStrength } from '@/components/auth/PasswordStrength';
 import './styles.css';
 
 interface FieldErrors {
@@ -293,7 +292,7 @@ const ResetPassword = () => {
     return (
         <AuthLayout
             title="Create new password"
-            headerLink={{ prompt: "Don't have an account?", label: 'Sign up', to: '/login?signup=true' }}
+            headerLink={{ prompt: "Don't have an account?", label: 'Sign up', to: '/signup' }}
         >
             {renderCard()}
         </AuthLayout>
