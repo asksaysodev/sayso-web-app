@@ -1,7 +1,6 @@
 import LoginCard from './components/LoginCard';
 import useLoginForm from './hooks/useLoginForm';
 
-import './styles.css';
 import AuthLayout from '@/components/layouts/AuthLayout';
 
 const Login = () => {

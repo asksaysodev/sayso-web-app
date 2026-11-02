@@ -1,69 +1,149 @@
-.accept-invite-loading {
+/* Duplicated from Signup/ResetPassword card styles on purpose (views do not share CSS). */
+.acceptInviteCard {
     display: flex;
+    flex-direction: column;
+    gap: 48px;
+    width: 100%;
+    max-width: 680px;
+    box-sizing: border-box;
+    padding: 32px;
+    background: var(--neutral-50);
+    border-radius: 24px;
+    box-shadow: var(--shadow-card);
+    font-family: var(--font-ds);
+}
+
+.acceptInviteCard--center {
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
+    min-height: 200px;
 }
 
-.accept-invite-company-badge {
+.acceptInviteCardSpinner {
+    animation: acceptInviteCardSpin 0.8s linear infinite;
+}
+
+@keyframes acceptInviteCardSpin {
+    to { transform: rotate(360deg); }
+}
+
+.acceptInviteCardIcon {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background-color: var(--sayso-indigo-light, rgba(99, 102, 241, 0.08));
-    color: var(--sayso-indigo);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 12px;
-    font-weight: 500;
-    margin-bottom: 20px;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-bottom: 24px;
+    border-radius: 50%;
 }
 
-.accept-invite-name-row {
+.acceptInviteCardIcon--success { background: var(--primary-50); }
+.acceptInviteCardIcon--warning { background: var(--warning-bg); }
+
+.acceptInviteCardHeading {
+    margin: 0;
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: -0.12px;
+    font-weight: 400;
+    color: var(--primary-900);
+}
+
+.acceptInviteCardSubtitle {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.acceptInviteCardFields {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.acceptInviteCardRow {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.acceptInviteCardPasswordGroup {
+    display: flex;
+    flex-direction: column;
     gap: 12px;
 }
 
-.accept-invite-email-display {
+/* FieldShell trailing slot is pointer-events: none; re-enable for the toggle */
+.acceptInviteCardEyeToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.acceptInviteCardEyeToggle:disabled {
+    cursor: default;
+}
+
+.acceptInviteCardFooter {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 10px 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.acceptInviteCardFooter--end {
+    justify-content: flex-end;
+}
+
+.acceptInviteCardSubmit {
+    height: 44px;
+    gap: 8px;
+}
+
+.acceptInviteCardBackLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 4px;
     border-radius: 8px;
-    background-color: var(--sayso-bg-subtle, #f8f9fb);
-    border: 1px solid var(--sayso-border);
-}
-
-.accept-invite-email-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--sayso-lightgray);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.accept-invite-email-value {
-    font-size: 13px;
-    color: var(--sayso-darkgray);
-    font-weight: 400;
-}
-
-.accept-invite-invalid {
-    text-align: center;
-    padding: 12px 0 4px;
-    color: var(--sayso-lightgray);
     font-size: 14px;
-    line-height: 1.6;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-brand);
+    text-decoration: none;
 }
 
-.accept-invite-submit-error {
-    font-size: 13px;
-    color: var(--sayso-destructive, #ef4444);
-    margin: 0;
+.acceptInviteCardBackLink:hover {
+    background: var(--primary-50);
 }
 
-.accept-invite-error-actions {
-    margin-top: 20px;
+@media (max-width: 767px) {
+    .acceptInviteCard {
+        padding: 24px;
+    }
+
+    .acceptInviteCardRow {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 32px;
+    }
+
+    .acceptInviteCardFooter,
+    .acceptInviteCardFooter--end {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .acceptInviteCardSubmit {
+        width: 100%;
+    }
+
+    .acceptInviteCardBackLink {
+        align-self: center;
+    }
 }
