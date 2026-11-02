@@ -13,12 +13,13 @@ interface TriggerProps {
     selected: PricingOption | null;
     /** Final price of the selected package (discount applied). */
     selectedPrice: number;
+    open: boolean;
     onOpen: () => void;
 }
 
 /** Full-width "Select your package" control that replaces the hours chip on team cards. */
 export const PackageTrigger = forwardRef<HTMLButtonElement, TriggerProps>(function PackageTrigger(
-    { selected, selectedPrice, onOpen },
+    { selected, selectedPrice, open, onOpen },
     ref,
 ) {
     return (
@@ -26,8 +27,8 @@ export const PackageTrigger = forwardRef<HTMLButtonElement, TriggerProps>(functi
             ref={ref}
             type="button"
             className={clsx('signupPlanPkgTrigger', selected && 'signupPlanPkgTrigger--selected')}
-            aria-expanded={false}
-            aria-haspopup="true"
+            aria-expanded={open}
+            aria-haspopup="dialog"
             onClick={onOpen}
         >
             <span className="signupPlanPkgTriggerText">
@@ -44,7 +45,7 @@ export const PackageTrigger = forwardRef<HTMLButtonElement, TriggerProps>(functi
     );
 });
 
-interface PanelProps {
+interface OverlayProps {
     packages: PricingOption[];
     selected: PricingOption | null;
     discountDollars: number;
@@ -53,22 +54,25 @@ interface PanelProps {
     onClose: () => void;
 }
 
-/** Package options, expanded inside the card at full card width (pushes the content down). */
-export function PackagePanel({ packages, selected, discountDollars, hasReferralDiscount, onSelect, onClose }: PanelProps) {
-    const panelRef = useRef<HTMLDivElement>(null);
+/**
+ * Package options as an overlay covering the whole plan card (absolute, inset 0), so the card keeps
+ * its closed-state height. The options list scrolls when it does not fit.
+ */
+export function PackageOverlay({ packages, selected, discountDollars, hasReferralDiscount, onSelect, onClose }: OverlayProps) {
+    const overlayRef = useRef<HTMLDivElement>(null);
 
-    // Move focus into the options when the panel opens: the selected one, else the first.
+    // Move focus into the overlay when it opens: the selected option, else the first.
     useEffect(() => {
-        const options = panelRef.current?.querySelectorAll<HTMLButtonElement>('.signupPlanPkgOption');
-        const active = panelRef.current?.querySelector<HTMLButtonElement>('.signupPlanPkgOption--active');
+        const options = overlayRef.current?.querySelectorAll<HTMLButtonElement>('.signupPlanPkgOption');
+        const active = overlayRef.current?.querySelector<HTMLButtonElement>('.signupPlanPkgOption--active');
         (active ?? options?.[0])?.focus();
     }, []);
 
     return (
         <div
-            ref={panelRef}
-            className="signupPlanPkgPanel"
-            role="group"
+            ref={overlayRef}
+            className="signupPlanPkgOverlay"
+            role="dialog"
             aria-label="Team size & hours"
             onKeyDown={(event) => {
                 if (event.key === 'Escape') {
@@ -77,13 +81,13 @@ export function PackagePanel({ packages, selected, discountDollars, hasReferralD
                 }
             }}
         >
-            <div className="signupPlanPkgPanelHeader">
+            <div className="signupPlanPkgOverlayHeader">
                 <div>
-                    <p className="signupPlanPkgPanelTitle">Team size &amp; hours</p>
-                    <p className="signupPlanPkgPanelSubtitle">Pick the package that fits your team</p>
+                    <p className="signupPlanPkgOverlayTitle">Team size &amp; hours</p>
+                    <p className="signupPlanPkgOverlaySubtitle">Pick the package that fits your team</p>
                 </div>
                 <button type="button" className="signupPlanPkgClose" aria-label="Close package options" onClick={onClose}>
-                    <X size={16} strokeWidth={1.75} aria-hidden="true" />
+                    <X size={18} strokeWidth={1.75} aria-hidden="true" />
                 </button>
             </div>
 
@@ -104,11 +108,8 @@ export function PackagePanel({ packages, selected, discountDollars, hasReferralD
                             onClick={() => onSelect(option)}
                         >
                             <span className="signupPlanPkgDot" aria-hidden="true" />
-                            <span className="signupPlanPkgOptionText">
-                                <span className="signupPlanPkgOptionTitle">
-                                    {formatMinutesToHours(option.includedMinutesPerMonth)} hrs / month
-                                </span>
-                                <span className="signupPlanPkgOptionMeta">Estimated team size: {option.teamSize}</span>
+                            <span className="signupPlanPkgOptionTitle">
+                                {formatMinutesToHours(option.includedMinutesPerMonth)} hrs / month
                             </span>
                             <span className="signupPlanPkgOptionPrice">
                                 <span className="signupPlanPkgPriceNow">${formatPrice(afterDiscount(base, discountDollars))}</span>

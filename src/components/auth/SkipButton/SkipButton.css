@@ -1,0 +1,12 @@
+/* Ghost "Skip" (SAYSO-563 L12): no background, no border; adjusts the ds ghost variant only. */
+.ds-button.skipButton--ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--text-primary);
+    font-weight: var(--font-weight-regular);
+}
+
+.ds-button.skipButton--ghost:hover:not(:disabled) {
+    background-color: var(--neutral-100);
+    color: var(--text-primary);
+}

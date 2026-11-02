@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { Armchair, ChevronDown, ChevronUp, CircleUser, Clock, Gift, Users } from 'lucide-react';
+import { Armchair, ChevronRight, CircleUser, Clock, Gift, Users } from 'lucide-react';
 
 import { Button } from '@/components/ds/Button';
+import { Modal, ModalBody, ModalHeader } from '@/components/ds/Modal';
 import { useAuth } from '@/context/AuthContext';
 import useHasSubscription from '@/hooks/useHasSubscription';
 import useStripeCheckout from '@/views/Subscription/hooks/useStripeCheckout';
@@ -12,7 +13,7 @@ import centsToDollars from '@/utils/formatters/centsToDollars';
 import formatPrice from '@/utils/formatters/formatPrice';
 import { openExternal } from '@/utils/helpers/openExternal';
 
-import { PackagePanel, PackageTrigger } from './PackagePicker';
+import { PackageOverlay, PackageTrigger } from './PackagePicker';
 import PlanFeatures from './PlanFeatures';
 
 interface Props {
@@ -51,7 +52,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
         resetPackages();
     }, [selectedBillingTab]);
 
-    // Return focus to the trigger after the panel closes (the trigger remounts).
+    // Return focus to the trigger after the overlay closes (the card content is inert while it is open).
     useEffect(() => {
         if (!isPickerOpen && restoreTriggerFocus.current) {
             restoreTriggerFocus.current = false;
@@ -135,7 +136,6 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
 
     const ctaDisabled = isPendingGetStripeCheckoutPageUrl || hasSubscription || (needsPackage && !packageSelected);
     const hintId = `signup-plan-hint-${plan.id}`;
-    const featuresId = `signup-plan-features-${plan.id}`;
 
     return (
         <article className={clsx('signupPlanCard', showTrialBadge && 'signupPlanCard--hasBadge')}>
@@ -146,6 +146,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                 </div>
             )}
 
+            <div className="signupPlanCardContent" inert={isPickerOpen}>
             <header className="signupPlanCardHeading">
                 <Icon size={32} strokeWidth={1.5} aria-hidden="true" className="signupPlanCardIcon" />
                 <h2 className="signupPlanCardName">{planName}</h2>
@@ -187,23 +188,13 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                         <span>Custom seats and coaching hours</span>
                     </div>
                 ) : needsPackage ? (
-                    isPickerOpen ? (
-                        <PackagePanel
-                            packages={availablePackages}
-                            selected={packageSelected}
-                            discountDollars={discountDollars}
-                            hasReferralDiscount={hasReferralDiscount}
-                            onSelect={confirmPackage}
-                            onClose={closePicker}
-                        />
-                    ) : (
-                        <PackageTrigger
-                            ref={triggerRef}
-                            selected={packageSelected}
-                            selectedPrice={finalDisplayPrice}
-                            onOpen={() => setIsPickerOpen(true)}
-                        />
-                    )
+                    <PackageTrigger
+                        ref={triggerRef}
+                        selected={packageSelected}
+                        selectedPrice={finalDisplayPrice}
+                        open={isPickerOpen}
+                        onOpen={() => setIsPickerOpen(true)}
+                    />
                 ) : (
                     <div className="signupPlanChip">
                         <Clock size={24} strokeWidth={1.5} aria-hidden="true" />
@@ -221,8 +212,16 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                     >
                         {purchasable ? `Choose ${planName}` : 'Contact sales'}
                     </Button>
-                    {needsPackage && !packageSelected && (
-                        <p id={hintId} className="signupPlanCtaHint">Select a package to continue</p>
+                    {needsPackage && (
+                        // Always mounted so the card keeps its height once a package is picked;
+                        // hidden (and aria-hidden) after selection instead of removed.
+                        <p
+                            id={hintId}
+                            className={`signupPlanCtaHint${packageSelected ? ' signupPlanCtaHint--hidden' : ''}`}
+                            aria-hidden={packageSelected ? true : undefined}
+                        >
+                            Select a package to continue
+                        </p>
                     )}
                 </div>
             </div>
@@ -230,22 +229,33 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
             <div className="signupPlanIncluded">
                 <button
                     type="button"
-                    className={clsx('signupPlanIncludedToggle', isFeaturesOpen && 'signupPlanIncludedToggle--open')}
-                    aria-expanded={isFeaturesOpen}
-                    aria-controls={featuresId}
-                    onClick={() => setIsFeaturesOpen((open) => !open)}
+                    className="signupPlanIncludedToggle"
+                    aria-haspopup="dialog"
+                    onClick={() => setIsFeaturesOpen(true)}
                 >
-                    <span>{isFeaturesOpen ? 'Hide' : "See what's included"}</span>
-                    {isFeaturesOpen
-                        ? <ChevronUp size={16} strokeWidth={1.75} aria-hidden="true" />
-                        : <ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" />}
+                    <span>See what's included</span>
+                    <ChevronRight size={16} strokeWidth={1.75} aria-hidden="true" />
                 </button>
-                {isFeaturesOpen && (
-                    <div id={featuresId}>
-                        <PlanFeatures features={allFeatures} inheritsIndividual={isNewTeamPlan} />
-                    </div>
-                )}
             </div>
+            </div>
+
+            {isPickerOpen && needsPackage && (
+                <PackageOverlay
+                    packages={availablePackages}
+                    selected={packageSelected}
+                    discountDollars={discountDollars}
+                    hasReferralDiscount={hasReferralDiscount}
+                    onSelect={confirmPackage}
+                    onClose={closePicker}
+                />
+            )}
+
+            <Modal open={isFeaturesOpen} onOpenChange={setIsFeaturesOpen} aria-describedby={undefined}>
+                <ModalHeader align="start" title={`${planName}: what's included`} />
+                <ModalBody>
+                    <PlanFeatures features={allFeatures} inheritsIndividual={isNewTeamPlan} />
+                </ModalBody>
+            </Modal>
         </article>
     );
 }
