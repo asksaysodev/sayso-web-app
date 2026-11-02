@@ -319,7 +319,7 @@
     visibility: hidden;
     transform: translateY(100%);
     transition:
-        transform 0.32s cubic-bezier(0.22, 0.68, 0, 1.2),
+        transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
         visibility 0s linear 0.32s;
     will-change: transform;
 }
@@ -328,7 +328,7 @@
     visibility: visible;
     transform: translateY(0);
     transition:
-        transform 0.32s cubic-bezier(0.22, 0.68, 0, 1.2),
+        transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
         visibility 0s linear 0s;
 }
 
