@@ -37,7 +37,7 @@ export default function Checkout() {
                 </div>
                 <h2 className="checkout-title">Payment Canceled</h2>
                 <p className="checkout-description">Your payment was canceled. No charges were made.</p>
-                <SaysoButton label="View Plans" onClick={() => navigate("/subscription")} variant="outlined" fullWidth />
+                <SaysoButton label="View Plans" onClick={() => navigate("/signup/plan")} variant="outlined" fullWidth />
             </div>
         </div>
     );

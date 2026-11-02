@@ -16,7 +16,7 @@ const Settings = lazyView(() => import('./views/Settings'));
 const Marketplace = lazyView(() => import('./views/Marketplace'));
 const Checkout = lazyView(() => import('./views/Checkout'));
 const Admin = lazyView(() => import('./views/Admin'));
-const Subscription = lazyView(() => import('./views/Subscription'));
+const SignupPlan = lazyView(() => import('./views/SignupPlan'));
 const MFAVerify = lazyView(() => import('./views/MFAVerify'));
 const AcceptInvite = lazyView(() => import('./views/AcceptInvite'));
 const Organization = lazyView(() => import('./views/Organization'));
@@ -51,15 +51,21 @@ export default function AppRoutes() {
                         </GuestGuard>
                     }
                 />
-                {/* Placeholders until SAYSO-563/564 build these steps: they hand off to the current views. */}
                 <Route
                     path="/signup/plan"
                     element={
                         <AuthGuard>
-                            <RedirectKeepingQuery to="/subscription" />
+                            {userNotAdminOnTeams
+                                ? <Navigate to="/" replace />
+                                : hasSubscription
+                                    // Subscribers manage their plan in Account settings; this route is the pricing page.
+                                    ? <Navigate to="/settings?tab=subscription" replace />
+                                    : <SignupPlan />
+                            }
                         </AuthGuard>
                     }
                 />
+                {/* Placeholder until SAYSO-564 builds this step: it hands off to the current view. */}
                 <Route
                     path="/signup/download"
                     element={
@@ -175,7 +181,8 @@ export default function AppRoutes() {
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
                                     ? <Navigate to="/settings?tab=subscription" replace />
-                                    : <Subscription />
+                                    // One pricing view: the old URL keeps working for emails and bookmarks.
+                                    : <RedirectKeepingQuery to="/signup/plan" />
                             }
                         </AuthGuard>
                     }
