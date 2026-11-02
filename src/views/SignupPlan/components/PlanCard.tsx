@@ -239,8 +239,9 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
             </div>
             </div>
 
-            {isPickerOpen && needsPackage && (
+            {needsPackage && (
                 <PackageOverlay
+                    open={isPickerOpen}
                     packages={availablePackages}
                     selected={packageSelected}
                     discountDollars={discountDollars}

@@ -46,6 +46,7 @@ export const PackageTrigger = forwardRef<HTMLButtonElement, TriggerProps>(functi
 });
 
 interface OverlayProps {
+    open: boolean;
     packages: PricingOption[];
     selected: PricingOption | null;
     discountDollars: number;
@@ -58,22 +59,26 @@ interface OverlayProps {
  * Package options as an overlay covering the whole plan card (absolute, inset 0), so the card keeps
  * its closed-state height. The options list scrolls when it does not fit.
  */
-export function PackageOverlay({ packages, selected, discountDollars, hasReferralDiscount, onSelect, onClose }: OverlayProps) {
+export function PackageOverlay({ open, packages, selected, discountDollars, hasReferralDiscount, onSelect, onClose }: OverlayProps) {
     const overlayRef = useRef<HTMLDivElement>(null);
 
     // Move focus into the overlay when it opens: the selected option, else the first.
     useEffect(() => {
+        if (!open) return;
         const options = overlayRef.current?.querySelectorAll<HTMLButtonElement>('.signupPlanPkgOption');
         const active = overlayRef.current?.querySelector<HTMLButtonElement>('.signupPlanPkgOption--active');
         (active ?? options?.[0])?.focus();
-    }, []);
+    }, [open]);
 
+    // Always mounted so it can slide in and out; while closed it is hidden and inert.
     return (
         <div
             ref={overlayRef}
-            className="signupPlanPkgOverlay"
+            className={`signupPlanPkgOverlay${open ? ' signupPlanPkgOverlay--open' : ''}`}
             role="dialog"
             aria-label="Team size & hours"
+            aria-hidden={open ? undefined : true}
+            inert={!open}
             onKeyDown={(event) => {
                 if (event.key === 'Escape') {
                     event.stopPropagation();

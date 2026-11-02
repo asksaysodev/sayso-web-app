@@ -84,6 +84,8 @@
 
 .signupPlanCard {
     position: relative;
+    /* Clips the package overlay while it slides in from below the card. */
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -313,6 +315,28 @@
     padding: var(--space-32);
     border-radius: var(--radius-24);
     background-color: var(--neutral-50);
+    /* Slides up from the bottom of the card, as the previous pricing overlay did. */
+    visibility: hidden;
+    transform: translateY(100%);
+    transition:
+        transform 0.32s cubic-bezier(0.22, 0.68, 0, 1.2),
+        visibility 0s linear 0.32s;
+    will-change: transform;
+}
+
+.signupPlanPkgOverlay--open {
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+        transform 0.32s cubic-bezier(0.22, 0.68, 0, 1.2),
+        visibility 0s linear 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .signupPlanPkgOverlay,
+    .signupPlanPkgOverlay--open {
+        transition: none;
+    }
 }
 
 .signupPlanPkgOverlayHeader {
