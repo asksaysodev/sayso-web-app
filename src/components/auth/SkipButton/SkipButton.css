@@ -1,0 +1,13 @@
+/* Ghost "Skip" (SAYSO-563): no background, no border and no hover fill, only the pointer cursor. */
+.ds-button.skipButton--ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--text-primary);
+    font-weight: var(--font-weight-regular);
+    cursor: pointer;
+}
+
+.ds-button.skipButton--ghost:hover:not(:disabled) {
+    background-color: transparent;
+    color: var(--text-primary);
+}

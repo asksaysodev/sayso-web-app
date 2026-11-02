@@ -72,6 +72,11 @@
     color: var(--neutral-950);
 }
 
+.authLayoutHeaderAction {
+    display: flex;
+    align-items: center;
+}
+
 .authLayoutTextLink {
     display: inline-flex;
     align-items: center;
@@ -84,6 +89,14 @@
     color: var(--text-brand);
     text-decoration: none;
     white-space: nowrap;
+}
+
+/* The text-link look on a <button> (e.g. "Sign out"). */
+button.authLayoutTextLink {
+    border: none;
+    background: none;
+    font-family: inherit;
+    cursor: pointer;
 }
 
 .authLayoutTextLink:hover {
@@ -144,6 +157,13 @@
     padding: var(--space-60) var(--space-16);
     font-size: 14px;
     color: var(--text-primary);
+}
+
+/* Wide variant: two plan cards side by side. Falls back to the default width on narrower desktops so the left rail keeps its room. */
+@media (min-width: 1280px) {
+    .authLayout--wide {
+        --auth-layout-content-width: 912px;
+    }
 }
 
 @media (max-width: 767px) {
