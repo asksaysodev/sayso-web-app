@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { LuBuilding2 } from "react-icons/lu";
-import LoginLayout from "@/components/layouts/LoginLayout";
-import ControlledInputField from "@/components/forms/ControlledInputField";
-import LoginBtn from "@/components/LoginBtn";
-import EyeToggleShowPasswordButton from "@/views/Login/components/EyeToggleShowPasswordButton";
+import { Controller, useWatch } from "react-hook-form";
+import { ArrowRight, CircleAlert, LoaderCircle } from "lucide-react";
+import AuthLayout from "@/components/layouts/AuthLayout";
+import { Button } from "@/components/ds/Button";
+import { TextField } from "@/components/ds/TextField";
+import { PasswordStrength, getPasswordStrength } from "@/components/auth/PasswordStrength";
+import EyeToggle from "./components/EyeToggle";
+import { useToast } from "@/context/ToastContext";
 import { supabase } from "@/config/supabase";
 import { useAuth } from "@/context/AuthContext";
 import validateInvite from "./services/validateInvite";
@@ -15,8 +18,9 @@ import InviteUnavailable from "./components/InviteUnavailable";
 import reportApiError from "@/utils/reportApiError";
 import { useAccounts } from "@/hooks/useAccounts";
 import { toSignupError, ACCOUNT_CREATED_SIGN_IN_FAILED } from "@/utils/signupErrors";
-import SaysoLoader from "@/components/SaysoLoader";
 import "./styles.css";
+
+const errorIcon = <CircleAlert size={24} color="var(--error-icon)" aria-hidden="true" />;
 
 interface FormValues {
     name: string;
@@ -30,6 +34,7 @@ export default function AcceptInvite() {
     const navigate = useNavigate();
     const { updateGlobalUser } = useAuth();
     const { signup } = useAccounts();
+    const { showToast } = useToast();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -46,11 +51,16 @@ export default function AcceptInvite() {
         if (error) reportApiError(error, { feature: "accept-invite", operation: "validateInvite" });
     }, [error]);
 
-    const { control, handleSubmit, watch } = useForm<FormValues>({
+    const { control, handleSubmit, getValues } = useForm<FormValues>({
         defaultValues: { name: "", lastname: "", password: "", confirmPassword: "" },
     });
 
-    const { mutate, isPending, error: submitError } = useMutation({
+    const [name, lastname, password, confirmPassword] = useWatch({
+        control,
+        name: ["name", "lastname", "password", "confirmPassword"],
+    });
+
+    const { mutate, isPending } = useMutation({
         mutationFn: async (values: FormValues) => {
             // One server-side call creates the auth user, the account, and accepts the
             // invite (SAYSO-387). Previously this was supabase.auth.signUp() followed by
@@ -89,6 +99,9 @@ export default function AcceptInvite() {
         onSuccess: () => {
             navigate("/", { replace: true });
         },
+        onError: (err) => {
+            showToast("error", (err as Error).message || "Something went wrong. Please try again.");
+        },
     });
 
     const onSubmit = (values: FormValues) => {
@@ -101,9 +114,11 @@ export default function AcceptInvite() {
 
     if (isLoading) {
         return (
-            <div className="accept-invite-loading">
-                <SaysoLoader />
-            </div>
+            <AuthLayout title="You've been invited">
+                <div className="acceptInviteCard acceptInviteCard--center" role="status" aria-label="Checking invite">
+                    <LoaderCircle className="acceptInviteCardSpinner" size={32} color="var(--primary-500)" aria-hidden="true" />
+                </div>
+            </AuthLayout>
         );
     }
 
@@ -117,101 +132,148 @@ export default function AcceptInvite() {
         );
     }
 
-    return (
-        <LoginLayout
-            title="You've been invited!"
-            description={`You're joining ${invite.companyName}. Create your account to get started.`}
-        >
-            <div className="accept-invite-company-badge">
-                <LuBuilding2 size={14} />
-                <span>{invite.companyName}</span>
-            </div>
+    const joinLabel = `Join ${invite.companyName}`;
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="login-layout-form-inputs-wrapper">
-                    <div className="accept-invite-name-row">
-                        <ControlledInputField
+    return (
+        <AuthLayout title="You've been invited">
+            <form className="acceptInviteCard" onSubmit={handleSubmit(onSubmit)} noValidate>
+                <div>
+                    <h2 className="acceptInviteCardHeading">{joinLabel}</h2>
+                    <p className="acceptInviteCardSubtitle">
+                        {`You're joining ${invite.companyName}. Create your account to get started.`}
+                    </p>
+                </div>
+
+                <div className="acceptInviteCardFields">
+                    <div className="acceptInviteCardRow">
+                        <Controller
                             control={control}
                             name="name"
-                            label="First Name"
-                            labelCn="loginInFormInputLabel"
-                            placeholder="John"
-                            rules={{ required: "First name is required" }}
-                            disabled={isPending}
+                            rules={{ validate: (v) => !!v.trim() || "Enter your first name." }}
+                            render={({ field, fieldState }) => (
+                                <TextField
+                                    {...field}
+                                    autoComplete="given-name"
+                                    label="First name"
+                                    disabled={isPending}
+                                    error={fieldState.error?.message}
+                                    trailingIcon={fieldState.error ? errorIcon : undefined}
+                                />
+                            )}
                         />
-                        <ControlledInputField
+                        <Controller
                             control={control}
                             name="lastname"
-                            label="Last Name"
-                            labelCn="loginInFormInputLabel"
-                            placeholder="Smith"
-                            rules={{ required: "Last name is required" }}
-                            disabled={isPending}
+                            rules={{ validate: (v) => !!v.trim() || "Enter your last name." }}
+                            render={({ field, fieldState }) => (
+                                <TextField
+                                    {...field}
+                                    autoComplete="family-name"
+                                    label="Last name"
+                                    disabled={isPending}
+                                    error={fieldState.error?.message}
+                                    trailingIcon={fieldState.error ? errorIcon : undefined}
+                                />
+                            )}
                         />
                     </div>
 
-                    <div className="accept-invite-email-display">
-                        <span className="accept-invite-email-label">Email</span>
-                        <span className="accept-invite-email-value">{invite.email}</span>
-                    </div>
-
-                    <ControlledInputField
-                        type={showPassword ? "text" : "password"}
-                        control={control}
-                        name="password"
-                        label="Password"
-                        labelCn="loginInFormInputLabel"
-                        placeholder="Create a password"
-                        rules={{
-                            required: "Password is required",
-                            minLength: { value: 8, message: "Password must be at least 8 characters" },
-                        }}
-                        disabled={isPending}
-                        rightChildren={
-                            <EyeToggleShowPasswordButton
-                                showPassword={showPassword}
-                                setShowPassword={setShowPassword}
-                            />
-                        }
+                    <TextField
+                        type="email"
+                        autoComplete="email"
+                        label="Email"
+                        value={invite.email}
+                        disabled
+                        readOnly
                     />
 
-                    <ControlledInputField
-                        type={showConfirmPassword ? "text" : "password"}
+                    <div className="acceptInviteCardPasswordGroup">
+                        <Controller
+                            control={control}
+                            name="password"
+                            rules={{
+                                validate: (v) => {
+                                    if (!v) return "Enter a password.";
+                                    if (!getPasswordStrength(v).allRulesMet) {
+                                        return "This password doesn’t meet the password requirements. Choose a stronger password.";
+                                    }
+                                    return true;
+                                },
+                            }}
+                            render={({ field, fieldState }) => (
+                                <TextField
+                                    {...field}
+                                    type={showPassword ? "text" : "password"}
+                                    autoComplete="new-password"
+                                    label="Password"
+                                    disabled={isPending}
+                                    error={fieldState.error?.message}
+                                    trailingIcon={
+                                        fieldState.error ? (
+                                            errorIcon
+                                        ) : (
+                                            <EyeToggle
+                                                shown={showPassword}
+                                                disabled={isPending}
+                                                label="password"
+                                                onToggle={() => setShowPassword((prev) => !prev)}
+                                            />
+                                        )
+                                    }
+                                />
+                            )}
+                        />
+                        <PasswordStrength password={password ?? ""} />
+                    </div>
+
+                    <Controller
                         control={control}
                         name="confirmPassword"
-                        label="Confirm Password"
-                        labelCn="loginInFormInputLabel"
-                        placeholder="Repeat your password"
                         rules={{
-                            required: "Please confirm your password",
-                            validate: (val) =>
-                                val === watch("password") || "Passwords do not match",
+                            validate: (v) => {
+                                if (!v) return "Confirm your password.";
+                                if (v !== getValues("password")) return "Passwords don’t match.";
+                                return true;
+                            },
                         }}
-                        disabled={isPending}
-                        rightChildren={
-                            <EyeToggleShowPasswordButton
-                                showPassword={showConfirmPassword}
-                                setShowPassword={setShowConfirmPassword}
+                        render={({ field, fieldState }) => (
+                            <TextField
+                                {...field}
+                                type={showConfirmPassword ? "text" : "password"}
+                                autoComplete="new-password"
+                                label="Confirm password"
+                                disabled={isPending}
+                                error={fieldState.error?.message}
+                                trailingIcon={
+                                    fieldState.error ? (
+                                        errorIcon
+                                    ) : (
+                                        <EyeToggle
+                                            shown={showConfirmPassword}
+                                            disabled={isPending}
+                                            label="confirm password"
+                                            onToggle={() => setShowConfirmPassword((prev) => !prev)}
+                                        />
+                                    )
+                                }
                             />
-                        }
+                        )}
                     />
+                </div>
 
-                    {submitError && (
-                        <p className="accept-invite-submit-error">
-                            {(submitError as Error).message || "Something went wrong. Please try again."}
-                        </p>
-                    )}
-
-                    <div className="formActions">
-                        <LoginBtn
-                            type="submit"
-                            text={`Join ${invite.companyName}`}
-                            isLoading={isPending}
-                            isDisabled={isPending}
-                        />
-                    </div>
+                <div className="acceptInviteCardFooter acceptInviteCardFooter--end">
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className="acceptInviteCardSubmit"
+                        loading={isPending}
+                        disabled={!name?.trim() || !lastname?.trim() || !password || !confirmPassword}
+                    >
+                        {joinLabel}
+                        {!isPending && <ArrowRight size={20} aria-hidden="true" />}
+                    </Button>
                 </div>
             </form>
-        </LoginLayout>
+        </AuthLayout>
     );
 }

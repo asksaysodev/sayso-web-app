@@ -57,7 +57,7 @@ const PasswordRecovery = () => {
     return (
         <AuthLayout
             title="Reset password"
-            headerLink={{ prompt: "Don't have an account?", label: 'Sign up', to: '/login?signup=true' }}
+            headerLink={{ prompt: "Don't have an account?", label: 'Sign up', to: '/signup' }}
         >
             <form className="recoveryCard" onSubmit={handleSubmit} noValidate>
                 <div className="recoveryCardHeader">

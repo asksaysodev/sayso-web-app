@@ -1,21 +1,7 @@
 import { LoginFormData } from "../types";
-import { isValidPhone } from "@/components/ui/PhoneInput";
 
 /**
- * Validates signup step 1 fields (personal info)
- */
-export const validateStepOneFields = (formData: LoginFormData) => {
-  const errors: Record<string, string> = {};
-  if (!formData.name) errors.name = 'Name is required';
-  if (!formData.lastname) errors.lastname = 'Last name is required';
-  if (!formData.company) errors.company = 'Company is required';
-  const phoneFilled = formData.phone && formData.phone.trim() !== '+1';
-  if (phoneFilled && !isValidPhone(formData.phone)) errors.phone = 'Enter a valid phone number.';
-  return errors;
-};
-
-/**
- * Validates login form fields (new login card copy)
+ * Validates login form fields
  */
 export const validateLoginFields = (formData: LoginFormData) => {
   const errors: Record<string, string> = {};
@@ -25,36 +11,5 @@ export const validateLoginFields = (formData: LoginFormData) => {
     errors.email = 'Enter a valid email address.';
   }
   if (!formData.password) errors.password = 'Enter your password.';
-  return errors;
-};
-
-/**
- * Validates the email/password basics for sign-up (legacy copy)
- */
-const validateSignupCredentials = (formData: LoginFormData) => {
-  const errors: Record<string, string> = {};
-  if (!formData.email) {
-    errors.email = 'Email is required';
-  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    errors.email = 'Please enter a valid email';
-  }
-  if (!formData.password) errors.password = 'Password is required';
-  return errors;
-};
-
-/**
- * Validates signup form fields (extends credentials validation)
- */
-export const validateSignupFields = (formData: LoginFormData) => {
-  const errors = validateSignupCredentials(formData);
-  
-  if (!errors.password && formData.password.length < 6) {
-    errors.password = 'Password must be at least 6 characters';
-  }
-  if (!formData.repeatPassword) {
-    errors.repeatPassword = 'Please confirm your password';
-  } else if (formData.password !== formData.repeatPassword) {
-    errors.repeatPassword = 'Passwords do not match';
-  }
   return errors;
 };
