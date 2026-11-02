@@ -1,5 +1,5 @@
 export interface PasswordRule {
-    id: 'length' | 'number' | 'symbol';
+    id: 'length' | 'number';
     label: string;
     met: boolean;
 }
@@ -8,7 +8,7 @@ export type PasswordStrengthLevel = 'empty' | 'weak' | 'fair' | 'strong' | 'very
 
 export interface PasswordStrength {
     rules: PasswordRule[];
-    /** 0–4: rules met, plus 1 when length >= 12 and every rule is met. */
+    /** 0–4: rules met, plus 1 for a symbol and 1 for 12+ characters once every rule is met. */
     score: number;
     level: PasswordStrengthLevel;
     label: string;
@@ -19,11 +19,12 @@ export function getPasswordStrength(password: string): PasswordStrength {
     const rules: PasswordRule[] = [
         { id: 'length', label: 'At least 8 characters', met: password.length >= 8 },
         { id: 'number', label: 'At least one number', met: /\d/.test(password) },
-        { id: 'symbol', label: 'At least one symbol', met: /[^A-Za-z0-9\s]/.test(password) },
     ];
     const metCount = rules.filter(rule => rule.met).length;
     const allRulesMet = metCount === rules.length;
-    const score = metCount + (password.length >= 12 && allRulesMet ? 1 : 0);
+    // A symbol is no longer required (product decision), but it still makes a password stronger.
+    const hasSymbol = /[^A-Za-z0-9\s]/.test(password);
+    const score = metCount + (allRulesMet && hasSymbol ? 1 : 0) + (allRulesMet && password.length >= 12 ? 1 : 0);
 
     if (password.length === 0) {
         return { rules, score, level: 'empty', label: 'Enter a password', allRulesMet };
