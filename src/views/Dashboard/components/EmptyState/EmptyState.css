@@ -1,0 +1,124 @@
+.dashboardEmpty {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-32);
+    min-height: 0;
+    padding: var(--space-16) 0;
+    text-align: center;
+}
+
+.dashboardEmpty__illustration {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 96px;
+    height: 96px;
+    border-radius: var(--radius-full);
+    background-color: var(--primary-50);
+    box-shadow: var(--shadow-card);
+}
+
+.dashboardEmpty__logo {
+    width: 52px;
+    height: auto;
+}
+
+.dashboardEmpty__tile {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-8);
+    background-color: var(--white, #fff);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-card);
+}
+
+.dashboardEmpty__tile--top {
+    top: -24px;
+    left: -36px;
+}
+
+.dashboardEmpty__tile--bottom {
+    right: -36px;
+    bottom: -20px;
+}
+
+.dashboardEmpty__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+    max-width: 420px;
+}
+
+.dashboardEmpty__title {
+    margin: 0;
+    /* Figma Title/H2 (28/40); no h2 token exists yet. */
+    font-size: 28px;
+    line-height: 40px;
+    letter-spacing: -0.14px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.dashboardEmpty__body {
+    margin: 0;
+    font-size: var(--text-body-lg-size);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-secondary);
+}
+
+.dashboardEmpty__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-16);
+}
+
+.dashboardEmpty__note {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    margin: 0;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-8);
+    background-color: var(--neutral-50);
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}
+
+.dashboardEmpty__note svg {
+    flex-shrink: 0;
+}
+
+@media (max-width: 767px) {
+    .dashboardEmpty {
+        gap: var(--space-24);
+    }
+
+    .dashboardEmpty__title {
+        font-size: var(--text-h3-size);
+        line-height: var(--text-h3-line);
+    }
+
+    .dashboardEmpty__note {
+        font-size: var(--text-body-md-size);
+        text-align: left;
+    }
+
+    .dashboardEmpty__tile--top {
+        left: -28px;
+    }
+
+    .dashboardEmpty__tile--bottom {
+        right: -28px;
+    }
+}
