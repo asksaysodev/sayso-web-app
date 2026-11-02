@@ -20,10 +20,10 @@ export default function EmptyState() {
                 <div className='dashboardEmpty__illustration' aria-hidden='true'>
                     <img className='dashboardEmpty__logo' src='/assets/sayso.svg' alt='' />
                     <span className='dashboardEmpty__tile dashboardEmpty__tile--top'>
-                        <MessagesSquare size={20} />
+                        <MessagesSquare size={24} />
                     </span>
                     <span className='dashboardEmpty__tile dashboardEmpty__tile--bottom'>
-                        <BarChart3 size={20} />
+                        <BarChart3 size={24} />
                     </span>
                 </div>
                 <div className='dashboardEmpty__text'>
