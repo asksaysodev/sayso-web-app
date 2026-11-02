@@ -315,20 +315,24 @@
     padding: var(--space-32);
     border-radius: var(--radius-24);
     background-color: var(--neutral-50);
-    /* Slides up from the bottom of the card, as the previous pricing overlay did. */
+    /* Fades in while sliding down a short distance from the top; reverses on close. */
     visibility: hidden;
-    transform: translateY(100%);
+    opacity: 0;
+    transform: translateY(-12px);
     transition:
-        transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-        visibility 0s linear 0.32s;
-    will-change: transform;
+        opacity 0.22s ease-out,
+        transform 0.22s ease-out,
+        visibility 0s linear 0.22s;
+    will-change: opacity, transform;
 }
 
 .signupPlanPkgOverlay--open {
     visibility: visible;
+    opacity: 1;
     transform: translateY(0);
     transition:
-        transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.22s ease-out,
+        transform 0.22s ease-out,
         visibility 0s linear 0s;
 }
 
