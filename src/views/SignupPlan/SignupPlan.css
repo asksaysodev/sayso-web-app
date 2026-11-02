@@ -548,17 +548,6 @@
     color: var(--text-brand);
 }
 
-.signupPlanFeaturesIntro {
-    align-self: flex-start;
-    margin: 0;
-    padding: var(--space-4) var(--space-12);
-    border-radius: var(--radius-full);
-    background-color: var(--primary-50);
-    font-size: var(--text-body-md-size);
-    font-weight: var(--font-weight-semibold);
-    color: var(--primary-900);
-}
-
 /* Two columns on wider modals keep long lists short; one column on small screens. */
 .signupPlanFeatureList {
     display: grid;

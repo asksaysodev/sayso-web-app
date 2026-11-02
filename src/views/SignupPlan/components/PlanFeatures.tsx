@@ -30,10 +30,12 @@ export default function PlanFeatures({ features, inheritsIndividual }: Props) {
     if (inheritsIndividual) {
         return (
             <div className="signupPlanFeatures">
-                <p className="signupPlanFeaturesIntro">Everything in Individual +, plus:</p>
-                <ul className="signupPlanFeatureList">
-                    {features.map((feature) => <FeatureRow key={feature.id} feature={feature} />)}
-                </ul>
+                <section className="signupPlanFeatureSection">
+                    <h3 className="signupPlanFeaturesHead">Everything in Individual +, plus:</h3>
+                    <ul className="signupPlanFeatureList">
+                        {features.map((feature) => <FeatureRow key={feature.id} feature={feature} />)}
+                    </ul>
+                </section>
             </div>
         );
     }
