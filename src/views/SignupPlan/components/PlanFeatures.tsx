@@ -15,11 +15,22 @@ function FeatureRow({ feature }: { feature: PlanFeature }) {
     );
 }
 
+function FeatureSection({ title, features }: { title: string; features: PlanFeature[] }) {
+    return (
+        <section className="signupPlanFeatureSection">
+            <h3 className="signupPlanFeaturesHead">{title}</h3>
+            <ul className="signupPlanFeatureList">
+                {features.map((feature) => <FeatureRow key={feature.id} feature={feature} />)}
+            </ul>
+        </section>
+    );
+}
+
 export default function PlanFeatures({ features, inheritsIndividual }: Props) {
     if (inheritsIndividual) {
         return (
             <div className="signupPlanFeatures">
-                <p className="signupPlanFeaturesHead signupPlanFeaturesHead--intro">Everything in Individual +, plus:</p>
+                <p className="signupPlanFeaturesIntro">Everything in Individual +, plus:</p>
                 <ul className="signupPlanFeatureList">
                     {features.map((feature) => <FeatureRow key={feature.id} feature={feature} />)}
                 </ul>
@@ -32,18 +43,8 @@ export default function PlanFeatures({ features, inheritsIndividual }: Props) {
 
     return (
         <div className="signupPlanFeatures">
-            <p className="signupPlanFeaturesHead">FEATURES</p>
-            <ul className="signupPlanFeatureList">
-                {featureItems.map((feature) => <FeatureRow key={feature.id} feature={feature} />)}
-            </ul>
-            {benefitItems.length > 0 && (
-                <>
-                    <p className="signupPlanFeaturesHead">BENEFITS</p>
-                    <ul className="signupPlanFeatureList">
-                        {benefitItems.map((feature) => <FeatureRow key={feature.id} feature={feature} />)}
-                    </ul>
-                </>
-            )}
+            {featureItems.length > 0 && <FeatureSection title="Features" features={featureItems} />}
+            {benefitItems.length > 0 && <FeatureSection title="Benefits" features={benefitItems} />}
         </div>
     );
 }
