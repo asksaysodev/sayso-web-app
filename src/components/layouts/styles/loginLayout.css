@@ -1,15 +1,4 @@
-.loginLayoutContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-    background-color: var(--sayso-white);
-    /* padding: 20px; */
-    box-sizing: border-box;
-    text-align: left;
-  }
-
+/* Legacy auth card, rendered inside AuthLayout until each view is restyled. */
   .loginLayoutForm {
     background: #ffffff;
     padding: 32px 50px;
@@ -23,7 +12,7 @@
 
   .loginLayoutForm h2 {
     color: #2a3f5f;
-    margin-top: 36px;
+    margin-top: 0;
     margin-bottom: 8px;
     font-size: 18px;
     font-weight: 600;
@@ -71,10 +60,6 @@
   }
 
 @media (max-width: 767px) {
-    .loginLayoutContainer {
-        padding: 20px 16px;
-    }
-
     .loginLayoutForm {
         padding: 24px 20px;
         border-radius: 12px;
@@ -85,14 +70,9 @@
         width: 100vw;*/
     }
 
-    .loginLayoutForm img {
-        height: 80px !important;
-        margin: 12px auto !important;
-    }
-
     .loginLayoutForm h2 {
         font-size: 16px;
-        margin-top: 24px;
+        margin-top: 0;
         margin-bottom: 6px;
     }
 
