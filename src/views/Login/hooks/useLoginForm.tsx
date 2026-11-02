@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { LoginFormData } from '../types';
 import { getAAL } from '@/services/mfaServices';
 import getInvitation from '../services/getInvitation';
+import { useToast } from '@/context/ToastContext';
 import reportApiError from '@/utils/reportApiError';
 
 const INITIAL_VALUES: LoginFormData = {
@@ -32,6 +33,7 @@ export default function useLoginForm() {
   const [isLoading] = useState(false);
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const { signIn, signUp, checkIfNeedsMFA } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const signupParam = searchParams.get("signup");
@@ -164,7 +166,17 @@ export default function useLoginForm() {
     try {
       await performAuthentication(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Authentication failed. Please try again.');
+      const message = err instanceof Error ? err.message : 'Authentication failed. Please try again.';
+      if (isLoggingIn) {
+        showToast(
+          'error',
+          message === 'Invalid login credentials'
+            ? 'Email or password is incorrect. Please try again.'
+            : message
+        );
+      } else {
+        setError(message);
+      }
       console.error('Authentication error:', err);
       Sentry.captureException(err);
     } finally {

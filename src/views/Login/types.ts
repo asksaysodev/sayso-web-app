@@ -9,11 +9,6 @@ export interface LoginFormData {
     phone: string;
   }
 
-  export interface ResetPasswordFormData {
-    newPassword: string;
-    confirmPassword: string;
-  }
-
   export interface PasswordRecoveryFormData {
     email: string;
   }
