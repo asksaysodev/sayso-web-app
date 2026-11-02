@@ -564,54 +564,8 @@
     color: var(--text-primary);
 }
 
-.signupPlanFeatureIcon {
-    flex-shrink: 0;
-    color: var(--primary-500);
-}
-
-.signupPlanFeature--disabled,
-.signupPlanFeature--disabled .signupPlanFeatureIcon {
+.signupPlanFeature--disabled {
     color: var(--text-disabled);
-}
-
-.signupPlanFeatureInfo {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    color: var(--text-secondary);
-    border-radius: var(--radius-full);
-    cursor: help;
-}
-
-.signupPlanFeatureInfo:focus-visible {
-    outline: 2px solid var(--primary-300);
-    outline-offset: 2px;
-}
-
-.signupPlanFeatureTooltip {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    z-index: 20;
-    width: max-content;
-    max-width: 220px;
-    padding: 6px 10px;
-    border-radius: var(--radius-8);
-    background-color: var(--neutral-800);
-    color: var(--white);
-    font-size: var(--text-body-sm-size);
-    line-height: 1.35;
-    pointer-events: none;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(-50%);
-    transition: opacity 0.15s ease;
-}
-
-.signupPlanFeatureInfo:hover .signupPlanFeatureTooltip,
-.signupPlanFeatureInfo:focus-visible .signupPlanFeatureTooltip {
-    opacity: 1;
-    visibility: visible;
 }
 
 @media (max-width: 1279px) {
