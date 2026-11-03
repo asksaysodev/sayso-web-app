@@ -1,6 +1,6 @@
-import { forwardRef, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import clsx from 'clsx';
-import { ChevronDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 import formatMinutesToHours from '@/utils/formatters/formatMinutesToHours';
 import centsToDollars from '@/utils/formatters/centsToDollars';
@@ -9,43 +9,7 @@ import type { PricingOption } from '@/views/Subscription/types';
 
 const afterDiscount = (base: number, discount: number) => (discount > 0 ? Math.max(0, base - discount) : base);
 
-interface TriggerProps {
-    selected: PricingOption | null;
-    /** Final price of the selected package (discount applied). */
-    selectedPrice: number;
-    open: boolean;
-    onOpen: () => void;
-}
-
-/** Full-width "Select your package" control that replaces the hours chip on team cards. */
-export const PackageTrigger = forwardRef<HTMLButtonElement, TriggerProps>(function PackageTrigger(
-    { selected, selectedPrice, open, onOpen },
-    ref,
-) {
-    return (
-        <button
-            ref={ref}
-            type="button"
-            className={clsx('signupPlanPkgTrigger', selected && 'signupPlanPkgTrigger--selected')}
-            aria-expanded={open}
-            aria-haspopup="dialog"
-            onClick={onOpen}
-        >
-            <span className="signupPlanPkgTriggerText">
-                <span className="signupPlanPkgEyebrow">Team size &amp; hours</span>
-                <span className="signupPlanPkgValue">
-                    {selected
-                        ? `${formatMinutesToHours(selected.includedMinutesPerMonth)} hrs / month`
-                        : 'Select your package'}
-                </span>
-            </span>
-            {selected && <span className="signupPlanPkgTriggerPrice">${formatPrice(selectedPrice)}</span>}
-            <ChevronDown size={18} strokeWidth={1.75} aria-hidden="true" />
-        </button>
-    );
-});
-
-interface OverlayProps {
+interface Props {
     open: boolean;
     packages: PricingOption[];
     selected: PricingOption | null;
@@ -59,7 +23,7 @@ interface OverlayProps {
  * Package options as an overlay covering the whole plan card (absolute, inset 0), so the card keeps
  * its closed-state height. The options list scrolls when it does not fit.
  */
-export function PackageOverlay({ open, packages, selected, discountDollars, hasReferralDiscount, onSelect, onClose }: OverlayProps) {
+export default function PackageOverlay({ open, packages, selected, discountDollars, hasReferralDiscount, onSelect, onClose }: Props) {
     const overlayRef = useRef<HTMLDivElement>(null);
 
     // Move focus into the overlay when it opens: the selected option, else the first.

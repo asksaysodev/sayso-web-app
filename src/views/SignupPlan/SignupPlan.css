@@ -38,6 +38,25 @@
     margin-bottom: calc(var(--space-24) * -1);
 }
 
+.signupPlanToolbar .ds-segmented__item {
+    position: relative;
+}
+
+.signupPlanSave {
+    position: absolute;
+    top: -12px;
+    right: -14px;
+    padding: 2px var(--space-8);
+    border-radius: var(--radius-full);
+    background-color: var(--info-text);
+    color: var(--info-bg);
+    font-size: var(--text-body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: 16px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
 .signupPlanSpecial {
     display: flex;
     align-items: center;
@@ -206,13 +225,6 @@
 }
 
 /* CTA */
-.signupPlanCtaGroup {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-8);
-}
-
 .signupPlanCta.ds-button {
     width: 100%;
     border-radius: var(--radius-full);
@@ -228,17 +240,6 @@
     background-color: var(--primary-200);
 }
 
-.signupPlanCtaHint {
-    margin: 0;
-    font-size: var(--text-body-md-size);
-    text-align: center;
-    color: var(--text-secondary);
-}
-
-.signupPlanCtaHint--hidden {
-    visibility: hidden;
-}
-
 /* Package trigger ("Select your package") */
 .signupPlanPkgTrigger {
     display: flex;
@@ -246,7 +247,7 @@
     gap: var(--space-12);
     box-sizing: border-box;
     width: 100%;
-    padding: var(--space-12) var(--space-16);
+    padding: var(--space-16);
     border: 1px solid var(--neutral-300);
     border-radius: var(--radius-8);
     background-color: var(--surface-bg);
@@ -271,23 +272,9 @@
     color: var(--text-secondary);
 }
 
-.signupPlanPkgTriggerText {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-
-.signupPlanPkgEyebrow {
-    font-size: var(--text-caption-size);
-    line-height: var(--text-caption-line);
-    letter-spacing: var(--text-caption-tracking);
-    text-transform: uppercase;
-    color: var(--text-secondary);
-}
-
 .signupPlanPkgValue {
+    flex: 1;
+    min-width: 0;
     font-size: var(--text-body-lg-size);
     line-height: 22px;
     color: var(--text-disabled);
@@ -525,30 +512,42 @@
     outline-offset: 2px;
 }
 
+.signupPlanFeaturesModal.ds-modal {
+    width: 600px;
+}
+
 .signupPlanFeatures {
     display: flex;
     flex-direction: column;
-    gap: var(--space-20);
-    padding-top: var(--space-4);
+    gap: var(--space-12);
 }
 
-/* Each section after the first is separated by a hairline. */
-.signupPlanFeatureSection + .signupPlanFeatureSection {
-    padding-top: var(--space-20);
-    border-top: 1px solid var(--surface-border);
+.signupPlanFeatureSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+    padding: var(--space-20);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-16);
+    background-color: var(--surface-subtle);
 }
 
 .signupPlanFeaturesHead {
-    margin: 0 0 var(--space-12);
-    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    margin: 0;
+    font-size: var(--text-body-lg-size);
     font-weight: var(--font-weight-semibold);
-    line-height: 16px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-brand);
+    line-height: 22px;
+    color: var(--text-primary);
 }
 
-/* Two columns on wider modals keep long lists short; one column on small screens. */
+.signupPlanFeaturesHead svg {
+    flex-shrink: 0;
+    color: var(--primary-500);
+}
+
 .signupPlanFeatureList {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -559,30 +558,33 @@
 }
 
 .signupPlanFeature {
-    position: relative;
-    padding-left: var(--space-16);
-    font-size: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-8);
+    font-size: var(--text-body-md-size);
     line-height: 20px;
     color: var(--text-primary);
 }
 
-.signupPlanFeature::before {
-    content: '';
-    position: absolute;
-    top: 7px;
-    left: 0;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: var(--primary-300);
+.signupPlanFeatureIcon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-full);
+    background-color: var(--primary-50);
+    color: var(--primary-500);
 }
 
 .signupPlanFeature--disabled {
     color: var(--text-disabled);
 }
 
-.signupPlanFeature--disabled::before {
-    background-color: var(--neutral-300);
+.signupPlanFeature--disabled .signupPlanFeatureIcon {
+    background-color: var(--neutral-100);
+    color: var(--text-disabled);
 }
 
 @media (max-width: 599px) {
