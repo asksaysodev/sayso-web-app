@@ -65,12 +65,12 @@ export default function AppRoutes() {
                         </AuthGuard>
                     }
                 />
-                {/* Placeholder until SAYSO-564 builds this step: it hands off to the current view. */}
+                {/* Sign-up step 3 (SAYSO-564): the /download view plus the sign-up-only elements. */}
                 <Route
                     path="/signup/download"
                     element={
                         <AuthGuard>
-                            <RedirectKeepingQuery to="/download" />
+                            <Download signup />
                         </AuthGuard>
                     }
                 />
