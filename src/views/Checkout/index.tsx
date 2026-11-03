@@ -16,8 +16,8 @@ export default function Checkout() {
         if (success === null) {
             navigate("/", { replace: true });
         } else if (success === true) {
-            // Every account goes to the app download after paying.
-            navigate("/download", { replace: true });
+            // Every checkout starts from /signup/plan, so paying lands on sign-up step 3 (SAYSO-564).
+            navigate("/signup/download", { replace: true });
         }
     }, [success, navigate]);
 
