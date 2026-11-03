@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { LogOut } from 'lucide-react';
+import { LogOut, X } from 'lucide-react';
 
 import AuthLayout from '@/components/layouts/AuthLayout';
 import { SignupProgress } from '@/components/auth/SignupProgress';
 import { SkipButton } from '@/components/auth/SkipButton';
+import { Button } from '@/components/ds/Button';
 import { SegmentedControl } from '@/components/ds/SegmentedControl';
 import { useAuth } from '@/context/AuthContext';
 import useHasSubscription from '@/hooks/useHasSubscription';
 import { clearOfferToken, getOfferToken } from '@/utils/offerToken';
 import getSubscriptionPlans from '@/views/Subscription/services/getSubscriptionPlans';
+import useStripeCheckout from '@/views/Subscription/hooks/useStripeCheckout';
 import { BillingInterval, BillingIntervalEnum } from '@/views/Subscription/types';
 
+import { broadcastSignupCheckoutCanceled } from './hooks/signupCheckoutSignal';
+import useSignupCheckoutWaiting from './hooks/useSignupCheckoutWaiting';
 import PlanCard from './components/PlanCard';
 import SpecialPricingBanner from './components/SpecialPricingBanner';
 import './SignupPlan.css';
@@ -39,7 +43,7 @@ export default function SignupPlan() {
 
     // URL-first (reactive) with localStorage fallback so the query key and the
     // request stay in sync, and plans re-fetch when an offer token appears (SAYSO-317).
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const offerToken = searchParams.get('offer') ?? getOfferToken();
 
     const { data: subscriptionPlans, isLoading: isLoadingSubscriptionPlans } = useQuery({
@@ -57,6 +61,23 @@ export default function SignupPlan() {
         if (isNewGeneration) setSelectedBillingTab(BillingIntervalEnum.YEAR);
         didSetInitialBilling.current = true;
     }, [subscriptionPlans]);
+
+    const { waitingPriceId, startWaiting, stopWaiting } = useSignupCheckoutWaiting();
+    const { mutateGetStripeCheckoutPageUrl, isPendingGetStripeCheckoutPageUrl } = useStripeCheckout({
+        flow: 'signup',
+        onOpened: startWaiting,
+    });
+
+    // Stripe's cancel_url lands here in the checkout tab (?canceled=true): tell the waiting
+    // tab to back out, show a dismissible notice, and drop the param.
+    const [showCanceledNotice, setShowCanceledNotice] = useState(() => searchParams.get('canceled') === 'true');
+    useEffect(() => {
+        if (searchParams.get('canceled') !== 'true') return;
+        broadcastSignupCheckoutCanceled();
+        const next = new URLSearchParams(searchParams);
+        next.delete('canceled');
+        setSearchParams(next, { replace: true });
+    }, [searchParams, setSearchParams]);
 
     const showLoader = isLoadingSubscriptionPlans || attributionPending;
 
@@ -80,7 +101,42 @@ export default function SignupPlan() {
             aside={<SignupProgress current="plan" />}
             headerAction={signOutAction}
         >
-            {showLoader ? (
+            {showCanceledNotice && (
+                <div className="signupPlanNotice" role="status">
+                    <span>Payment canceled. You can pick a plan again.</span>
+                    <button
+                        type="button"
+                        className="signupPlanNoticeClose"
+                        aria-label="Dismiss"
+                        onClick={() => setShowCanceledNotice(false)}
+                    >
+                        <X size={16} strokeWidth={1.75} aria-hidden="true" />
+                    </button>
+                </div>
+            )}
+            {waitingPriceId ? (
+                <div className="signupPlanWaiting">
+                    <span className="signupPlanSpinner" aria-hidden="true" />
+                    <div role="status" aria-live="polite" className="signupPlanWaitingText">
+                        <h2 className="signupPlanWaitingTitle">Complete your payment in the new tab</h2>
+                        <p className="signupPlanWaitingSub">
+                            We'll take you to the next step automatically once your payment goes through.
+                        </p>
+                    </div>
+                    <div className="signupPlanWaitingActions">
+                        <Button
+                            loading={isPendingGetStripeCheckoutPageUrl}
+                            disabled={isPendingGetStripeCheckoutPageUrl}
+                            onClick={() => mutateGetStripeCheckoutPageUrl(waitingPriceId)}
+                        >
+                            Reopen checkout
+                        </Button>
+                        <Button variant="ghost" onClick={stopWaiting}>
+                            Choose a different plan
+                        </Button>
+                    </div>
+                </div>
+            ) : showLoader ? (
                 <div className="signupPlanLoading" role="status" aria-label="Loading plans">
                     <span className="signupPlanSpinner" aria-hidden="true" />
                 </div>
@@ -98,7 +154,13 @@ export default function SignupPlan() {
                     <div className="signupPlanCards">
                         {subscriptionPlans?.map((plan) =>
                             plan?.id ? (
-                                <PlanCard key={plan.id} plan={plan} selectedBillingTab={selectedBillingTab} />
+                                <PlanCard
+                                    key={plan.id}
+                                    plan={plan}
+                                    selectedBillingTab={selectedBillingTab}
+                                    onCheckout={mutateGetStripeCheckoutPageUrl}
+                                    isCheckoutPending={isPendingGetStripeCheckoutPageUrl}
+                                />
                             ) : null,
                         )}
                     </div>
