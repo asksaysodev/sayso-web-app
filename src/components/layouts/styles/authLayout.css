@@ -165,7 +165,6 @@ button.authLayoutTextLink {
     --auth-layout-content-width: 912px;
 }
 
-/* Both side columns keep the rail's width so the aside never overlaps the content and the content stays centred. */
 .authLayout--hasAside .authLayoutMain {
     grid-template-columns:
         minmax(var(--auth-layout-rail-width), 1fr)
@@ -173,9 +172,7 @@ button.authLayoutTextLink {
         minmax(var(--auth-layout-rail-width), 1fr);
 }
 
-/* Not enough room for a side rail: the aside moves above the content. */
 @media (max-width: 1279px) {
-    .authLayoutMain,
     .authLayout--hasAside .authLayoutMain {
         grid-template-columns: minmax(0, var(--auth-layout-content-width));
         grid-template-areas:

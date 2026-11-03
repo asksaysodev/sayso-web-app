@@ -45,6 +45,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const restoreTriggerFocus = useRef(false);
+    const pickerOpener = useRef<HTMLElement | null>(null);
 
     // Changing the billing interval invalidates the package picked for the other interval.
     useEffect(() => {
@@ -55,11 +56,12 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
         resetPackages();
     }, [selectedBillingTab]);
 
-    // Return focus to the trigger after the overlay closes (the card content is inert while it is open).
+    // Return focus to whatever opened the overlay (the card content is inert while it is open).
     useEffect(() => {
         if (!isPickerOpen && restoreTriggerFocus.current) {
             restoreTriggerFocus.current = false;
-            triggerRef.current?.focus();
+            (pickerOpener.current ?? triggerRef.current)?.focus();
+            pickerOpener.current = null;
         }
     }, [isPickerOpen]);
 
@@ -106,11 +108,17 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const isYearly = selectedBillingTab === BillingIntervalEnum.YEAR;
     const showPerMonth = isYearly && !hasPackages;
     const period = isYearly && !showPerMonth ? 'year' : 'month';
-    const toDisplay = (amount: number) => (showPerMonth ? amount / 12 : amount);
+    const formatDisplay = (amount: number) =>
+        showPerMonth ? formatPrice(amount / 12, { keepCents: true }) : formatPrice(amount);
 
     const includedMinutesPerMonth = effectivePricingOption?.includedMinutesPerMonth ?? includedMinutes ?? 0;
     const showTrialBadge = hasTrial && !!trialDays && trialIncludedMinutes != null;
     const Icon = accountType === 'team' ? Users : CircleUser;
+
+    const openPicker = () => {
+        pickerOpener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        setIsPickerOpen(true);
+    };
 
     const closePicker = () => {
         restoreTriggerFocus.current = true;
@@ -127,8 +135,8 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     };
 
     const handleCta = () => {
-        if (hasPackages && !packageSelected) {
-            setIsPickerOpen(true);
+        if (needsPackage && !packageSelected) {
+            openPicker();
             return;
         }
         if (purchasable && effectivePricingOption) {
@@ -162,11 +170,11 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                         <>
                             <div className="signupPlanPriceRow">
                                 {showFrom && <span className="signupPlanPriceFrom">from</span>}
-                                <span className="signupPlanPriceAmount">${formatPrice(toDisplay(finalDisplayPrice))}</span>
+                                <span className="signupPlanPriceAmount">${formatDisplay(finalDisplayPrice)}</span>
                                 <span className="signupPlanPricePeriod">/{period}</span>
                                 {discountDollars > 0 && (
-                                    <span className="signupPlanPriceStrike" aria-label={`was $${formatPrice(toDisplay(baseDisplayPrice))}`}>
-                                        ${formatPrice(toDisplay(baseDisplayPrice))}
+                                    <span className="signupPlanPriceStrike" aria-label={`was $${formatDisplay(baseDisplayPrice)}`}>
+                                        ${formatDisplay(baseDisplayPrice)}
                                     </span>
                                 )}
                             </div>
@@ -199,7 +207,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                         selected={packageSelected}
                         selectedPrice={finalDisplayPrice}
                         open={isPickerOpen}
-                        onOpen={() => setIsPickerOpen(true)}
+                        onOpen={openPicker}
                     />
                 ) : (
                     <div className="signupPlanChip">
