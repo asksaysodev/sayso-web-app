@@ -599,11 +599,14 @@
     }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 899px) {
     .signupPlanCards {
         grid-template-columns: minmax(0, 1fr);
+        max-width: 480px;
     }
+}
 
+@media (max-width: 767px) {
     .signupPlanCard {
         padding: var(--space-24);
     }

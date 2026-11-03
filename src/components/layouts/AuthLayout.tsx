@@ -37,7 +37,7 @@ interface Props {
  */
 export default function AuthLayout({ children, title, headerLink, aside, headerAction, wide }: Props) {
     return (
-        <div className={clsx('authLayout', wide && 'authLayout--wide')}>
+        <div className={clsx('authLayout', wide && 'authLayout--wide', aside && 'authLayout--hasAside')}>
             <div className="authLayoutGlow" aria-hidden="true" />
 
             <header className="authLayoutTopBar">
