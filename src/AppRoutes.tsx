@@ -28,6 +28,7 @@ import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
 import useUserNotAdminOnTeams from './hooks/useUserNotAdminOnTeams';
 import useIsTeamAdmin from './hooks/useIsTeamAdmin';
+import { isSignupCheckoutWaiting } from './views/SignupPlan/hooks/signupCheckoutSignal';
 import Download from './views/Download';
 
 
@@ -59,7 +60,8 @@ export default function AppRoutes() {
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
-                                    ? <Navigate to="/settings?tab=subscription" replace />
+                                    // Exception: the tab waiting on a sign-up checkout advances to step 3 (SAYSO-565).
+                                    ? <Navigate to={isSignupCheckoutWaiting() ? '/signup/download' : '/settings?tab=subscription'} replace />
                                     : <SignupPlan />
                             }
                         </AuthGuard>

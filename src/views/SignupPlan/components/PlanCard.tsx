@@ -6,7 +6,6 @@ import { Button } from '@/components/ds/Button';
 import { Modal, ModalBody, ModalHeader } from '@/components/ds/Modal';
 import { useAuth } from '@/context/AuthContext';
 import useHasSubscription from '@/hooks/useHasSubscription';
-import useStripeCheckout from '@/views/Subscription/hooks/useStripeCheckout';
 import { BillingInterval, BillingIntervalEnum, PricingOption, PricingPlan } from '@/views/Subscription/types';
 import formatMinutesToHours from '@/utils/formatters/formatMinutesToHours';
 import centsToDollars from '@/utils/formatters/centsToDollars';
@@ -19,9 +18,12 @@ import PlanFeatures from './PlanFeatures';
 interface Props {
     plan: PricingPlan;
     selectedBillingTab: BillingInterval;
+    /** Starts the sign-up checkout for a Stripe price (owned by the page, which shows the waiting state). */
+    onCheckout: (stripePriceId: string) => void;
+    isCheckoutPending: boolean;
 }
 
-export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnum.MONTH }: Props) {
+export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnum.MONTH, onCheckout, isCheckoutPending }: Props) {
     const {
         name: planName,
         features,
@@ -63,7 +65,6 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const hasSubscription = useHasSubscription();
     const { globalUser } = useAuth();
     const hasReferralDiscount = !!globalUser?.has_referral_discount && !hasSubscription;
-    const { isPendingGetStripeCheckoutPageUrl, mutateGetStripeCheckoutPageUrl } = useStripeCheckout();
 
     const availablePackages = useMemo(
         () => (pricingOptions ? pricingOptions.filter((opt) => opt.interval === selectedBillingTab) : []),
@@ -128,13 +129,13 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
             return;
         }
         if (purchasable && effectivePricingOption) {
-            mutateGetStripeCheckoutPageUrl(effectivePricingOption.stripePriceId);
+            onCheckout(effectivePricingOption.stripePriceId);
             return;
         }
         if (contactLink) openExternal(contactLink);
     };
 
-    const ctaDisabled = isPendingGetStripeCheckoutPageUrl || hasSubscription || (needsPackage && !packageSelected);
+    const ctaDisabled = isCheckoutPending || hasSubscription || (needsPackage && !packageSelected);
     const hintId = `signup-plan-hint-${plan.id}`;
 
     return (
@@ -205,7 +206,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                 <div className="signupPlanCtaGroup">
                     <Button
                         className={clsx('signupPlanCta', !purchasable && 'signupPlanCta--contact')}
-                        loading={isPendingGetStripeCheckoutPageUrl}
+                        loading={isCheckoutPending}
                         disabled={ctaDisabled}
                         aria-describedby={needsPackage && !packageSelected ? hintId : undefined}
                         onClick={handleCta}

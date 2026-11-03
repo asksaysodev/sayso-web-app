@@ -16,8 +16,9 @@ export default function Checkout() {
         if (success === null) {
             navigate("/", { replace: true });
         } else if (success === true) {
-            // Every checkout starts from /signup/plan, so paying lands on sign-up step 3 (SAYSO-564).
-            navigate("/signup/download", { replace: true });
+            // Only non-signup checkouts (e.g. Settings plan changes) return here; sign-up checkouts
+            // go straight to /signup/download (SAYSO-565).
+            navigate("/download", { replace: true });
         }
     }, [success, navigate]);
 
