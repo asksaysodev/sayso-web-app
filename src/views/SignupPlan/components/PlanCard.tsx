@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { Armchair, ChevronRight, CircleUser, Clock, Gift, Users } from 'lucide-react';
 
 import { Button } from '@/components/ds/Button';
-import { Modal, ModalBody, ModalHeader } from '@/components/ds/Modal';
 import { useAuth } from '@/context/AuthContext';
 import useHasSubscription from '@/hooks/useHasSubscription';
 import { BillingInterval, BillingIntervalEnum, PricingOption, PricingPlan } from '@/views/Subscription/types';
@@ -14,7 +13,8 @@ import { openExternal } from '@/utils/helpers/openExternal';
 
 import PackageOverlay from './PackageOverlay';
 import PackageTrigger from './PackageTrigger';
-import PlanFeatures from './PlanFeatures';
+import getPlanDetails from '../utils/getPlanDetails';
+import PlanDetailsModal from './PlanDetailsModal';
 
 interface Props {
     plan: PricingPlan;
@@ -27,7 +27,6 @@ interface Props {
 export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnum.MONTH, onCheckout, isCheckoutPending }: Props) {
     const {
         name: planName,
-        features,
         pricingOptions,
         purchasable,
         contactLink,
@@ -36,7 +35,6 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
         trialIncludedMinutes = null,
         hasTrial = false,
         hasPackages,
-        generation = null,
         accountType = null,
     } = plan;
 
@@ -60,7 +58,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     useEffect(() => {
         if (!isPickerOpen && restoreTriggerFocus.current) {
             restoreTriggerFocus.current = false;
-            (pickerOpener.current ?? triggerRef.current)?.focus();
+            (pickerOpener.current?.isConnected ? pickerOpener.current : triggerRef.current)?.focus();
             pickerOpener.current = null;
         }
     }, [isPickerOpen]);
@@ -79,10 +77,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
         [pricingOptions, selectedBillingTab],
     );
 
-    const allFeatures = useMemo(() => features?.features ?? [], [features]);
-
-    // New-generation team plans inherit the Individual + catalog.
-    const isNewTeamPlan = generation === 'new' && accountType === 'team';
+    const details = useMemo(() => getPlanDetails(plan), [plan]);
 
     const effectivePricingOption = hasPackages ? packageSelected : pricingOptionSelected;
 
@@ -106,10 +101,8 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const needsPackage = purchasable && hasPackages;
     const showFrom = needsPackage && !packageSelected;
     const isYearly = selectedBillingTab === BillingIntervalEnum.YEAR;
-    const showPerMonth = isYearly && !hasPackages;
-    const period = isYearly && !showPerMonth ? 'year' : 'month';
     const formatDisplay = (amount: number) =>
-        showPerMonth ? formatPrice(amount / 12, { keepCents: true }) : formatPrice(amount);
+        isYearly ? formatPrice(amount / 12, { keepCents: true }) : formatPrice(amount);
 
     const includedMinutesPerMonth = effectivePricingOption?.includedMinutesPerMonth ?? includedMinutes ?? 0;
     const showTrialBadge = hasTrial && !!trialDays && trialIncludedMinutes != null;
@@ -149,6 +142,18 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const ctaDisabled = isCheckoutPending || hasSubscription;
     const ctaLabel = !purchasable ? 'Contact sales' : showFrom ? 'Select plan' : `Choose ${planName}`;
 
+    const priceSub = isYearly
+        ? `Billed annually ${showFrom ? 'from' : 'at'} $${formatPrice(finalDisplayPrice)}`
+        : showFrom ? `Plans start at $${formatPrice(finalDisplayPrice)} / month` : 'Billed monthly';
+    const priceLabel = purchasable
+        ? `${showFrom ? 'from ' : ''}$${formatDisplay(finalDisplayPrice)}/month · ${priceSub}`
+        : "Let's talk · Pricing tailored to your team";
+
+    const handleDetailsCta = () => {
+        setIsFeaturesOpen(false);
+        handleCta();
+    };
+
     return (
         <article className={clsx('signupPlanCard', showTrialBadge && 'signupPlanCard--hasBadge')}>
             {showTrialBadge && (
@@ -171,20 +176,14 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                             <div className="signupPlanPriceRow">
                                 {showFrom && <span className="signupPlanPriceFrom">from</span>}
                                 <span className="signupPlanPriceAmount">${formatDisplay(finalDisplayPrice)}</span>
-                                <span className="signupPlanPricePeriod">/{period}</span>
+                                <span className="signupPlanPricePeriod">/month</span>
                                 {discountDollars > 0 && (
                                     <span className="signupPlanPriceStrike" aria-label={`was $${formatDisplay(baseDisplayPrice)}`}>
                                         ${formatDisplay(baseDisplayPrice)}
                                     </span>
                                 )}
                             </div>
-                            <p className="signupPlanPriceSub">
-                                {showFrom
-                                    ? `Plans start at $${formatPrice(finalDisplayPrice)} / ${period}`
-                                    : showPerMonth
-                                        ? `Billed annually at $${formatPrice(finalDisplayPrice)}`
-                                        : isYearly ? 'Billed annually' : 'Billed monthly'}
-                            </p>
+                            <p className="signupPlanPriceSub">{priceSub}</p>
                         </>
                     ) : (
                         <>
@@ -251,21 +250,17 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                 />
             )}
 
-            <Modal
-                className="signupPlanFeaturesModal"
+            <PlanDetailsModal
                 open={isFeaturesOpen}
                 onOpenChange={setIsFeaturesOpen}
-                aria-describedby={undefined}
-            >
-                <ModalHeader
-                    align="start"
-                    icon={<Icon size={24} strokeWidth={1.75} />}
-                    title={`What's included in ${planName}`}
-                />
-                <ModalBody>
-                    <PlanFeatures features={allFeatures} inheritsIndividual={isNewTeamPlan} />
-                </ModalBody>
-            </Modal>
+                planName={planName}
+                priceLabel={priceLabel}
+                details={details}
+                ctaLabel={purchasable ? `Choose ${planName}` : ctaLabel}
+                ctaDisabled={ctaDisabled}
+                ctaLoading={isCheckoutPending}
+                onCta={handleDetailsCta}
+            />
         </article>
     );
 }
