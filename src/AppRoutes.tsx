@@ -26,7 +26,7 @@ const Signup = lazyView(() => import('./views/Signup'));
 
 import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
-import useUserNotAdminOnTeams from './hooks/useUserNotAdminOnTeams';
+import useCanManageBilling from './hooks/useCanManageBilling';
 import useIsTeamAdmin from './hooks/useIsTeamAdmin';
 import { isSignupCheckoutWaiting } from './views/SignupPlan/hooks/signupCheckoutSignal';
 import Download from './views/Download';
@@ -34,7 +34,7 @@ import Download from './views/Download';
 
 export default function AppRoutes() {
     const hasSubscription = useHasSubscription();
-    const userNotAdminOnTeams = useUserNotAdminOnTeams();
+    const canManageBilling = useCanManageBilling();
     const isTeamAdmin = useIsTeamAdmin();
 
     return (
@@ -56,7 +56,7 @@ export default function AppRoutes() {
                     path="/signup/plan"
                     element={
                         <AuthGuard>
-                            {userNotAdminOnTeams
+                            {!canManageBilling
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
@@ -178,7 +178,7 @@ export default function AppRoutes() {
                     path="/subscription"
                     element={
                         <AuthGuard>
-                            {userNotAdminOnTeams
+                            {!canManageBilling
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
