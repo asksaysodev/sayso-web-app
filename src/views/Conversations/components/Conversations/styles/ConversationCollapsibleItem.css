@@ -117,7 +117,6 @@
     background: var(--surface-bg);
     font-size: var(--text-body-md-size);
     color: var(--neutral-600);
-    text-transform: uppercase;
     white-space: nowrap;
 }
 
@@ -143,6 +142,7 @@
 }
 
 .conv-client-edit-icon {
+    margin-left: var(--space-8);
     flex: none;
     color: var(--text-brand);
 }
@@ -311,6 +311,7 @@
 
 .conv-tabbody {
     padding-top: var(--space-8);
+    container: conv-tabbody / inline-size;
 }
 
 .conv-tab-empty {
@@ -383,7 +384,7 @@
 /* ===== Smart Capture tab ===== */
 .conv-sc-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-16);
     padding: var(--space-16);
 }
@@ -622,6 +623,65 @@
     color: var(--text-secondary);
 }
 
+/* ===== Smart Capture + Pulse cards — desktop & tablet (mobile keeps its own sizing) ===== */
+@media (min-width: 641px) {
+    .conv-sc-card,
+    .conv-pulse-card {
+        min-height: 150px;
+    }
+
+    .conv-sc-card {
+        justify-content: space-between;
+    }
+
+    .conv-sc-val,
+    .conv-pulse-val {
+        font-size: var(--text-body-lg-size);
+        line-height: normal;
+        letter-spacing: normal;
+    }
+}
+
+/* Card columns follow the tab body, not the viewport: the sidebar takes 72px or 240px of it */
+@container conv-tabbody (min-width: 660px) {
+    .conv-sc-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@container conv-tabbody (min-width: 1060px) {
+    .conv-pulse-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* All six in a row; "Booked" drops under the head since it can't fit beside the label */
+@container conv-tabbody (min-width: 1240px) {
+    .conv-sc-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .conv-sc-head {
+        flex-wrap: wrap;
+    }
+
+    /* Leaves room for the letter + action on the first row, not for "Booked", which wraps */
+    .conv-sc-label {
+        flex: 1 1 calc(100% - 100px);
+    }
+
+    .conv-sc-booked {
+        order: 1;
+    }
+
+    /* "Save" is wider than the pencil: clip the label rather than run under it */
+    .conv-sc-card--editing .conv-sc-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
 /* ===== Responsive — tablet ===== */
 @media (max-width: 1280px) {
     .conv-head {
@@ -641,9 +701,6 @@
         padding: var(--space-12) var(--space-16);
     }
 
-    .conv-sc-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
 
 /* ===== Responsive — mobile ===== */
