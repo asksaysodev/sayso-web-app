@@ -6,6 +6,7 @@ export type SignupStep = 'account' | 'plan' | 'download';
 
 interface Props {
     current: SignupStep;
+    hideSubscriptionStep?: boolean;
 }
 
 const STEPS: { id: SignupStep; label: string }[] = [
@@ -14,12 +15,13 @@ const STEPS: { id: SignupStep; label: string }[] = [
     { id: 'download', label: 'Download' },
 ];
 
-export default function SignupProgress({ current }: Props) {
-    const currentIndex = STEPS.findIndex(step => step.id === current);
+export default function SignupProgress({ current, hideSubscriptionStep = false }: Props) {
+    const steps = hideSubscriptionStep ? STEPS.filter(step => step.id !== 'plan') : STEPS;
+    const currentIndex = steps.findIndex(step => step.id === current);
 
     return (
         <ol className="signupProgress" aria-label="Sign-up progress">
-            {STEPS.map((step, index) => {
+            {steps.map((step, index) => {
                 const status = index < currentIndex ? 'completed' : index === currentIndex ? 'active' : 'upcoming';
                 return (
                     <li

@@ -14,6 +14,7 @@ import { isMobileViewport } from './utils/isMobileViewport';
 import { SignupProgress } from '@/components/auth/SignupProgress';
 import { SkipButton } from '@/components/auth/SkipButton';
 import { useAuth } from '@/context/AuthContext';
+import useIsInvitedTeamMember from '@/hooks/useIsInvitedTeamMember';
 import { openExternal } from '@/utils/helpers/openExternal';
 
 interface Props {
@@ -27,6 +28,7 @@ interface Props {
 
 export default function Download({ signup = false }: Props) {
     const { globalUser } = useAuth();
+    const isInvitedTeamMember = useIsInvitedTeamMember();
     const { siliconUrl, intelUrl, windowsUrl, version, isLoading } = useDownloadGithubRelease();
     const navigate = useNavigate();
 
@@ -64,7 +66,7 @@ export default function Download({ signup = false }: Props) {
         <div className={signup ? 'download-view-wrapper download-view-wrapper--signup' : 'download-view-wrapper'}>
             {signup && (
                 <div className='download-signup-progress'>
-                    <SignupProgress current='download' />
+                    <SignupProgress current='download' hideSubscriptionStep={isInvitedTeamMember} />
                 </div>
             )}
 
