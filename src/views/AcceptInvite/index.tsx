@@ -18,6 +18,7 @@ import InviteUnavailable from "./components/InviteUnavailable";
 import reportApiError from "@/utils/reportApiError";
 import { useAccounts } from "@/hooks/useAccounts";
 import { toSignupError, ACCOUNT_CREATED_SIGN_IN_FAILED } from "@/utils/signupErrors";
+import { SignupProgress } from "@/components/auth/SignupProgress";
 import "./styles.css";
 
 const errorIcon = <CircleAlert size={24} color="var(--error-icon)" aria-hidden="true" />;
@@ -97,7 +98,7 @@ export default function AcceptInvite() {
             await updateGlobalUser(invite!.email);
         },
         onSuccess: () => {
-            navigate("/", { replace: true });
+            navigate("/signup/download", { replace: true });
         },
         onError: (err) => {
             showToast("error", (err as Error).message || "Something went wrong. Please try again.");
@@ -114,7 +115,10 @@ export default function AcceptInvite() {
 
     if (isLoading) {
         return (
-            <AuthLayout title="You've been invited">
+            <AuthLayout
+                title="You've been invited"
+                aside={<SignupProgress current="account" hideSubscriptionStep />}
+            >
                 <div className="acceptInviteCard acceptInviteCard--center" role="status" aria-label="Checking invite">
                     <LoaderCircle className="acceptInviteCardSpinner" size={32} color="var(--primary-500)" aria-hidden="true" />
                 </div>
@@ -135,7 +139,10 @@ export default function AcceptInvite() {
     const joinLabel = `Join ${invite.companyName}`;
 
     return (
-        <AuthLayout title="You've been invited">
+        <AuthLayout
+            title="You've been invited"
+            aside={<SignupProgress current="account" hideSubscriptionStep />}
+        >
             <form className="acceptInviteCard" onSubmit={handleSubmit(onSubmit)} noValidate>
                 <div>
                     <h2 className="acceptInviteCardHeading">{joinLabel}</h2>
