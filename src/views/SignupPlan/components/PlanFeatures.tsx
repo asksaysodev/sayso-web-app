@@ -1,5 +1,8 @@
-import clsx from 'clsx';
+import { Gift, Sparkles } from 'lucide-react';
+
 import type { PlanFeature } from '@/views/Subscription/types';
+
+import FeatureSection from './FeatureSection';
 
 interface Props {
     features: PlanFeature[];
@@ -7,35 +10,11 @@ interface Props {
     inheritsIndividual: boolean;
 }
 
-function FeatureRow({ feature }: { feature: PlanFeature }) {
-    return (
-        <li className={clsx('signupPlanFeature', !feature.included && 'signupPlanFeature--disabled')}>
-            {feature.name}
-        </li>
-    );
-}
-
-function FeatureSection({ title, features }: { title: string; features: PlanFeature[] }) {
-    return (
-        <section className="signupPlanFeatureSection">
-            <h3 className="signupPlanFeaturesHead">{title}</h3>
-            <ul className="signupPlanFeatureList">
-                {features.map((feature) => <FeatureRow key={feature.id} feature={feature} />)}
-            </ul>
-        </section>
-    );
-}
-
 export default function PlanFeatures({ features, inheritsIndividual }: Props) {
     if (inheritsIndividual) {
         return (
             <div className="signupPlanFeatures">
-                <section className="signupPlanFeatureSection">
-                    <h3 className="signupPlanFeaturesHead">Everything in Individual +, plus:</h3>
-                    <ul className="signupPlanFeatureList">
-                        {features.map((feature) => <FeatureRow key={feature.id} feature={feature} />)}
-                    </ul>
-                </section>
+                <FeatureSection title="Everything in Individual +, plus" icon={Sparkles} features={features} />
             </div>
         );
     }
@@ -45,8 +24,8 @@ export default function PlanFeatures({ features, inheritsIndividual }: Props) {
 
     return (
         <div className="signupPlanFeatures">
-            {featureItems.length > 0 && <FeatureSection title="Features" features={featureItems} />}
-            {benefitItems.length > 0 && <FeatureSection title="Benefits" features={benefitItems} />}
+            {featureItems.length > 0 && <FeatureSection title="Features" icon={Sparkles} features={featureItems} />}
+            {benefitItems.length > 0 && <FeatureSection title="Benefits" icon={Gift} features={benefitItems} />}
         </div>
     );
 }

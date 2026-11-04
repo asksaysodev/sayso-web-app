@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { LogOut, X } from 'lucide-react';
@@ -21,9 +21,17 @@ import PlanCard from './components/PlanCard';
 import SpecialPricingBanner from './components/SpecialPricingBanner';
 import './SignupPlan.css';
 
-const BILLING_ITEMS: { value: BillingInterval; label: string }[] = [
+const BILLING_ITEMS: { value: BillingInterval; label: ReactNode }[] = [
     { value: BillingIntervalEnum.MONTH, label: 'Monthly' },
-    { value: BillingIntervalEnum.YEAR, label: 'Annually' },
+    {
+        value: BillingIntervalEnum.YEAR,
+        label: (
+            <>
+                Annually
+                <span className="signupPlanSave">Save 10%</span>
+            </>
+        ),
+    },
 ];
 
 /** Sign-up step 2 (SAYSO-563): the single pricing view, rendered at /signup/plan. */

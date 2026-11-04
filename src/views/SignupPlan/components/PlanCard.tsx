@@ -12,7 +12,8 @@ import centsToDollars from '@/utils/formatters/centsToDollars';
 import formatPrice from '@/utils/formatters/formatPrice';
 import { openExternal } from '@/utils/helpers/openExternal';
 
-import { PackageOverlay, PackageTrigger } from './PackagePicker';
+import PackageOverlay from './PackageOverlay';
+import PackageTrigger from './PackageTrigger';
 import PlanFeatures from './PlanFeatures';
 
 interface Props {
@@ -44,6 +45,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const restoreTriggerFocus = useRef(false);
+    const pickerOpener = useRef<HTMLElement | null>(null);
 
     // Changing the billing interval invalidates the package picked for the other interval.
     useEffect(() => {
@@ -54,11 +56,12 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
         resetPackages();
     }, [selectedBillingTab]);
 
-    // Return focus to the trigger after the overlay closes (the card content is inert while it is open).
+    // Return focus to whatever opened the overlay (the card content is inert while it is open).
     useEffect(() => {
         if (!isPickerOpen && restoreTriggerFocus.current) {
             restoreTriggerFocus.current = false;
-            triggerRef.current?.focus();
+            (pickerOpener.current ?? triggerRef.current)?.focus();
+            pickerOpener.current = null;
         }
     }, [isPickerOpen]);
 
@@ -103,11 +106,19 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const needsPackage = purchasable && hasPackages;
     const showFrom = needsPackage && !packageSelected;
     const isYearly = selectedBillingTab === BillingIntervalEnum.YEAR;
-    const period = isYearly ? 'year' : 'month';
+    const showPerMonth = isYearly && !hasPackages;
+    const period = isYearly && !showPerMonth ? 'year' : 'month';
+    const formatDisplay = (amount: number) =>
+        showPerMonth ? formatPrice(amount / 12, { keepCents: true }) : formatPrice(amount);
 
     const includedMinutesPerMonth = effectivePricingOption?.includedMinutesPerMonth ?? includedMinutes ?? 0;
     const showTrialBadge = hasTrial && !!trialDays && trialIncludedMinutes != null;
     const Icon = accountType === 'team' ? Users : CircleUser;
+
+    const openPicker = () => {
+        pickerOpener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        setIsPickerOpen(true);
+    };
 
     const closePicker = () => {
         restoreTriggerFocus.current = true;
@@ -124,8 +135,8 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     };
 
     const handleCta = () => {
-        if (hasPackages && !packageSelected) {
-            setIsPickerOpen(true);
+        if (needsPackage && !packageSelected) {
+            openPicker();
             return;
         }
         if (purchasable && effectivePricingOption) {
@@ -135,8 +146,8 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
         if (contactLink) openExternal(contactLink);
     };
 
-    const ctaDisabled = isCheckoutPending || hasSubscription || (needsPackage && !packageSelected);
-    const hintId = `signup-plan-hint-${plan.id}`;
+    const ctaDisabled = isCheckoutPending || hasSubscription;
+    const ctaLabel = !purchasable ? 'Contact sales' : showFrom ? 'Select plan' : `Choose ${planName}`;
 
     return (
         <article className={clsx('signupPlanCard', showTrialBadge && 'signupPlanCard--hasBadge')}>
@@ -159,18 +170,20 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                         <>
                             <div className="signupPlanPriceRow">
                                 {showFrom && <span className="signupPlanPriceFrom">from</span>}
-                                <span className="signupPlanPriceAmount">${formatPrice(finalDisplayPrice)}</span>
+                                <span className="signupPlanPriceAmount">${formatDisplay(finalDisplayPrice)}</span>
                                 <span className="signupPlanPricePeriod">/{period}</span>
                                 {discountDollars > 0 && (
-                                    <span className="signupPlanPriceStrike" aria-label={`was $${formatPrice(baseDisplayPrice)}`}>
-                                        ${formatPrice(baseDisplayPrice)}
+                                    <span className="signupPlanPriceStrike" aria-label={`was $${formatDisplay(baseDisplayPrice)}`}>
+                                        ${formatDisplay(baseDisplayPrice)}
                                     </span>
                                 )}
                             </div>
                             <p className="signupPlanPriceSub">
                                 {showFrom
                                     ? `Plans start at $${formatPrice(finalDisplayPrice)} / ${period}`
-                                    : isYearly ? 'Billed annually' : 'Billed monthly'}
+                                    : showPerMonth
+                                        ? `Billed annually at $${formatPrice(finalDisplayPrice)}`
+                                        : isYearly ? 'Billed annually' : 'Billed monthly'}
                             </p>
                         </>
                     ) : (
@@ -194,37 +207,23 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                         selected={packageSelected}
                         selectedPrice={finalDisplayPrice}
                         open={isPickerOpen}
-                        onOpen={() => setIsPickerOpen(true)}
+                        onOpen={openPicker}
                     />
                 ) : (
                     <div className="signupPlanChip">
                         <Clock size={24} strokeWidth={1.5} aria-hidden="true" />
-                        <span>{formatMinutesToHours(includedMinutesPerMonth)} coaching hours per month</span>
+                        <span>{formatMinutesToHours(includedMinutesPerMonth)} conversation hours per month</span>
                     </div>
                 )}
 
-                <div className="signupPlanCtaGroup">
-                    <Button
-                        className={clsx('signupPlanCta', !purchasable && 'signupPlanCta--contact')}
-                        loading={isCheckoutPending}
-                        disabled={ctaDisabled}
-                        aria-describedby={needsPackage && !packageSelected ? hintId : undefined}
-                        onClick={handleCta}
-                    >
-                        {purchasable ? `Choose ${planName}` : 'Contact sales'}
-                    </Button>
-                    {needsPackage && (
-                        // Always mounted so the card keeps its height once a package is picked;
-                        // hidden (and aria-hidden) after selection instead of removed.
-                        <p
-                            id={hintId}
-                            className={`signupPlanCtaHint${packageSelected ? ' signupPlanCtaHint--hidden' : ''}`}
-                            aria-hidden={packageSelected ? true : undefined}
-                        >
-                            Select a package to continue
-                        </p>
-                    )}
-                </div>
+                <Button
+                    className={clsx('signupPlanCta', !purchasable && 'signupPlanCta--contact')}
+                    loading={isCheckoutPending}
+                    disabled={ctaDisabled}
+                    onClick={handleCta}
+                >
+                    {ctaLabel}
+                </Button>
             </div>
 
             <div className="signupPlanIncluded">
@@ -252,8 +251,17 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                 />
             )}
 
-            <Modal open={isFeaturesOpen} onOpenChange={setIsFeaturesOpen} aria-describedby={undefined}>
-                <ModalHeader align="start" title={`${planName}: what's included`} />
+            <Modal
+                className="signupPlanFeaturesModal"
+                open={isFeaturesOpen}
+                onOpenChange={setIsFeaturesOpen}
+                aria-describedby={undefined}
+            >
+                <ModalHeader
+                    align="start"
+                    icon={<Icon size={24} strokeWidth={1.75} />}
+                    title={`What's included in ${planName}`}
+                />
                 <ModalBody>
                     <PlanFeatures features={allFeatures} inheritsIndividual={isNewTeamPlan} />
                 </ModalBody>

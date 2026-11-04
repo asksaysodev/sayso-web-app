@@ -6,6 +6,7 @@
 .authLayout {
     --auth-layout-top-gap: 50px;
     --auth-layout-content-width: 680px;
+    --auth-layout-rail-width: 180px;
 
     position: relative;
     isolation: isolate;
@@ -159,10 +160,31 @@ button.authLayoutTextLink {
     color: var(--text-primary);
 }
 
-/* Wide variant: two plan cards side by side. Falls back to the default width on narrower desktops so the left rail keeps its room. */
-@media (min-width: 1280px) {
-    .authLayout--wide {
-        --auth-layout-content-width: 912px;
+/* Wide variant: two plan cards side by side. */
+.authLayout--wide {
+    --auth-layout-content-width: 912px;
+}
+
+.authLayout--hasAside .authLayoutMain {
+    grid-template-columns:
+        minmax(var(--auth-layout-rail-width), 1fr)
+        minmax(0, var(--auth-layout-content-width))
+        minmax(var(--auth-layout-rail-width), 1fr);
+}
+
+@media (max-width: 1279px) {
+    .authLayout--hasAside .authLayoutMain {
+        grid-template-columns: minmax(0, var(--auth-layout-content-width));
+        grid-template-areas:
+            "title"
+            "aside"
+            "content";
+        justify-content: center;
+    }
+
+    .authLayoutAside {
+        justify-self: center;
+        margin-bottom: var(--space-32);
     }
 }
 
