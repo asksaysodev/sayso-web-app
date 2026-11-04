@@ -50,6 +50,9 @@ export interface GetStripeCancellationPageUrlResponse {
     url: string;
 }
 
+/** Allowlisted checkout origins the server understands; picks the Stripe return URLs. */
+export type CheckoutFlow = 'signup';
+
 export interface GetStripeCheckoutPageUrlResponse {
     url: string;
 }

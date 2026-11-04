@@ -11,26 +11,47 @@ import ButtonSpinner from '@/components/ButtonSpinner';
 import { useDownloadGithubRelease } from './hooks/useDownloadGithubRelease';
 import { detectOS } from './utils/detectOS';
 import { isMobileViewport } from './utils/isMobileViewport';
+import { SignupProgress } from '@/components/auth/SignupProgress';
+import { SkipButton } from '@/components/auth/SkipButton';
 import { useAuth } from '@/context/AuthContext';
+import useIsInvitedTeamMember from '@/hooks/useIsInvitedTeamMember';
 import { openExternal } from '@/utils/helpers/openExternal';
 
-export default function Download() {
+interface Props {
+    /**
+     * Sign-up step 3 (SAYSO-564, /signup/download): adds the progress indicator and
+     * "Go to dashboard", and drops the header link and the auto-redirect. The cards stay
+     * the same, so /download and /signup/download never drift apart.
+     */
+    signup?: boolean;
+}
+
+export default function Download({ signup = false }: Props) {
     const { globalUser } = useAuth();
+    const isInvitedTeamMember = useIsInvitedTeamMember();
     const { siliconUrl, intelUrl, windowsUrl, version, isLoading } = useDownloadGithubRelease();
     const navigate = useNavigate();
 
     const detectedOS = useMemo(() => detectOS(), []);
     const [mobileModalOpen, setMobileModalOpen] = useState(false);
     const [redirectRun, setRedirectRun] = useState(0);
+    // Sign-up only: "Go to dashboard" turns primary once any download card was used.
+    const [hasClickedDownload, setHasClickedDownload] = useState(false);
+
+    const openMobileModal = () => {
+        setHasClickedDownload(true);
+        setMobileModalOpen(true);
+    };
 
     const handleDownload = (url: string) => {
         openExternal(url);
-        if (globalUser) setRedirectRun(run => run + 1);
+        setHasClickedDownload(true);
+        if (globalUser && !signup) setRedirectRun(run => run + 1);
     };
 
     const handleWindowsClick = () => {
         if (isMobileViewport()) {
-            setMobileModalOpen(true);
+            openMobileModal();
             return;
         }
         if (windowsUrl) handleDownload(windowsUrl);
@@ -42,9 +63,15 @@ export default function Download() {
     const bodyValue = encodeURIComponent(`Describe the error and include any attachments or video links. All context or additional information will help us reproducing the error scenario`);
 
     return (
-        <div className='download-view-wrapper'>
+        <div className={signup ? 'download-view-wrapper download-view-wrapper--signup' : 'download-view-wrapper'}>
+            {signup && (
+                <div className='download-signup-progress'>
+                    <SignupProgress current='download' hideSubscriptionStep={isInvitedTeamMember} />
+                </div>
+            )}
+
             <div className='download-header'>
-                {globalUser
+                {signup ? null : globalUser
                     ?   redirectRun > 0
                             ?   <AutoRedirectingButton
                                     key={redirectRun}
@@ -103,13 +130,23 @@ export default function Download() {
                                 intelUrl={intelUrl}
                                 isLoading={isLoading}
                                 onDownload={handleDownload}
-                                onMobileClick={() => setMobileModalOpen(true)}
+                                onMobileClick={openMobileModal}
                             />
                             <ChipHelpPopover />
                         </>
                     }
                 />
             </div>
+
+            {signup && (
+                <SkipButton
+                    variant={hasClickedDownload ? 'primary' : 'secondary'}
+                    className='download-dashboard-btn'
+                    onClick={() => navigate('/')}
+                >
+                    Go to dashboard
+                </SkipButton>
+            )}
 
             <MobileSendLinkModal
                 open={mobileModalOpen}

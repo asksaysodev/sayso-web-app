@@ -16,7 +16,8 @@ export default function Checkout() {
         if (success === null) {
             navigate("/", { replace: true });
         } else if (success === true) {
-            // Every account goes to the app download after paying.
+            // Only non-signup checkouts (e.g. Settings plan changes) return here; sign-up checkouts
+            // go straight to /signup/download (SAYSO-565).
             navigate("/download", { replace: true });
         }
     }, [success, navigate]);
@@ -37,7 +38,7 @@ export default function Checkout() {
                 </div>
                 <h2 className="checkout-title">Payment Canceled</h2>
                 <p className="checkout-description">Your payment was canceled. No charges were made.</p>
-                <SaysoButton label="View Plans" onClick={() => navigate("/subscription")} variant="outlined" fullWidth />
+                <SaysoButton label="View Plans" onClick={() => navigate("/signup/plan")} variant="outlined" fullWidth />
             </div>
         </div>
     );

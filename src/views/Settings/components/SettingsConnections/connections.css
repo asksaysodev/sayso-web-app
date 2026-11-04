@@ -1,22 +1,3 @@
-/* ── Logo tile (square, tinted); also used by the manage/connect modals ── */
-.connection-tile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius-8);
-}
-
-.connection-tile--fub {
-    background: #e9f3ed;
-}
-
-.connection-tile--suresend {
-    background: #e7eff7;
-}
-
 /* ── SureSend Modals — shared tokens ── */
 .suresend-modal,
 .suresend-manage {

@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LuSearch, LuUserMinus, LuUserPlus } from 'react-icons/lu';
+import { ExternalLink, Pencil, Search, Unlink, UserPlus } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import useDebounce from '@/hooks/useDebounce';
 import useCrmConnection from '@/hooks/integrations/crm/useCrmConnection';
 import useCrmLeads from '@/hooks/integrations/crm/useCrmLeads';
-import type { CrmLead } from '@/hooks/integrations/crm/types';
-import CreateLeadModal from './CreateLeadModal';
-import CreateSureSendLeadModal from './CreateSureSendLeadModal';
+import useCrmLeadUrl from '@/hooks/integrations/crm/useCrmLeadUrl';
+import type { CrmLead, CrmProviderId } from '@/hooks/integrations/crm/types';
+import useRefreshLinkedLeadName from '../hooks/useRefreshLinkedLeadName';
+import CrmLeadFormModal from './CrmLeadFormModal';
 import LeadSkeleton from './LeadSkeleton';
 import '../styles/AddLeadDropdown.css';
 
@@ -14,16 +15,24 @@ interface Props {
     trigger: React.ReactNode;
     currentLeadName?: string | null;
     onSelect: (lead: CrmLead | null) => void;
+    /** Linked lead's CRM id/provider; with `canAssignLead` they enable "Open in CRM" / "Edit". */
+    currentLeadId?: string | null;
+    currentLeadProvider?: CrmProviderId | null;
+    canAssignLead?: boolean;
 }
 
-export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: Props) {
+export default function AddLeadDropdown({ trigger, currentLeadName, onSelect, currentLeadId, currentLeadProvider, canAssignLead = false }: Props) {
     const [open, setOpen] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
+    const [editOpen, setEditOpen] = useState(false);
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 350);
     const sentinelRef = useRef<HTMLDivElement>(null);
 
-    const { isConnected, providerId, providerLabel } = useCrmConnection();
+    const { isConnected, providerId } = useCrmConnection();
+    const refreshLinkedLeadName = useRefreshLinkedLeadName();
+    const hasLinkedLead = canAssignLead && !!currentLeadId && !!currentLeadProvider;
+    const leadUrl = useCrmLeadUrl(currentLeadProvider ?? null, currentLeadId ?? null, open && hasLinkedLead);
     const {
         leads,
         isLoading,
@@ -68,21 +77,34 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
         setModalOpen(true);
     };
 
+    const handleEditClick = () => {
+        setOpen(false);
+        setEditOpen(true);
+    };
+
+    const editModal = () => {
+        if (!editOpen || !currentLeadId || !currentLeadProvider) return null;
+        return <CrmLeadFormModal
+            mode="edit"
+            open={editOpen}
+            providerId={currentLeadProvider}
+            leadId={currentLeadId}
+            onClose={() => setEditOpen(false)}
+            onUpdated={({ leadId, crmLeadName }) =>
+                refreshLinkedLeadName({ leadId, providerId: currentLeadProvider, crmLeadName })}
+        />;
+    };
+
     const handleLeadCreated = (lead: CrmLead) => {
         onSelect(lead);
         setModalOpen(false);
     };
 
     const leadModal = useCallback(() => {
-        if (providerId === 'suresend') {
-            return <CreateSureSendLeadModal
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onCreated={handleLeadCreated}
-            />
-        }
-        return <CreateLeadModal
+        return <CrmLeadFormModal
+            mode="create"
             open={modalOpen}
+            providerId={providerId ?? 'fub'}
             onClose={() => setModalOpen(false)}
             onCreated={handleLeadCreated}
         />
@@ -118,31 +140,17 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                         </div>
                     ) : (
                         <>
-                            {currentLeadName && (
-                                <button
-                                    className="add-lead-remove"
-                                    onClick={() => { onSelect(null); setOpen(false); }}
-                                >
-                                    <LuUserMinus size={13} />
-                                    Remove "{currentLeadName}"
-                                </button>
-                            )}
                             <div className="add-lead-search">
-                                <LuSearch size={14} />
+                                <Search size={16} />
                                 <input
                                     autoFocus
-                                    placeholder={providerId === 'suresend' ? 'Search by email or phone' : `Search ${providerLabel} leads…`}
+                                    placeholder="Search by email or phone"
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
                                 />
                             </div>
 
                             <div className="add-lead-list">
-                                <button className="add-lead-create" onClick={handleCreateClick}>
-                                    <LuUserPlus size={13} />
-                                    Create lead
-                                </button>
-
                                 {isLoading ? (
                                     <LeadSkeleton />
                                 ) : error ? (
@@ -179,11 +187,49 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect }: 
                                     </>
                                 )}
                             </div>
+
+                            <div className="add-lead-actions">
+                                <button className="add-lead-create" onClick={handleCreateClick}>
+                                    <UserPlus size={16} />
+                                    Create lead
+                                </button>
+                                {hasLinkedLead && leadUrl && (
+                                    <a
+                                        className="add-lead-item"
+                                        href={leadUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={() => setOpen(false)}
+                                    >
+                                        <ExternalLink size={16} />
+                                        Open linked lead in CRM
+                                    </a>
+                                )}
+                                {hasLinkedLead && (
+                                    <button className="add-lead-item" onClick={handleEditClick}>
+                                        <Pencil size={16} />
+                                        Edit linked lead
+                                    </button>
+                                )}
+                                {currentLeadName && (
+                                    <>
+                                        <div className="add-lead-divider" />
+                                        <button
+                                            className="add-lead-remove"
+                                            onClick={() => { onSelect(null); setOpen(false); }}
+                                        >
+                                            <Unlink size={16} />
+                                            Unlink from conversation
+                                        </button>
+                                    </>
+                                )}
+                            </div>
                         </>
                     )}
                 </PopoverContent>
             </Popover>
             {leadModal()}
+            {editModal()}
         </>
     );
 }

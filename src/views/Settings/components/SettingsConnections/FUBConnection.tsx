@@ -8,15 +8,12 @@ import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { useFUB } from "@/hooks/useFUB";
 import { openExternal } from "@/utils/helpers/openExternal";
-import fubIcon from '/assets/fub-icon.svg';
+import CrmProviderTile from "@/components/crm/CrmProviderTile";
+import { getProvider } from "@/hooks/integrations/crm/providers/registry";
 
-const FUBTile = () => (
-    <div className="connection-tile connection-tile--fub">
-        <img src={fubIcon} alt="Follow Up Boss" width={26} height={26} style={{ objectFit: 'contain' }} />
-    </div>
-);
+const FUBTile = () => <CrmProviderTile providerId="fub" />;
 
-const TITLE = "Follow Up Boss";
+const TITLE = getProvider("fub").label;
 const DESCRIPTION = "Push call summaries and contacts into the matching lead in Follow Up Boss.";
 
 export default function FUBConnection() {

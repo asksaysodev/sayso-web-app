@@ -1,9 +1,5 @@
-import suresendIcon from '/assets/suresend-icon-color.svg';
+import CrmProviderTile from '@/components/crm/CrmProviderTile';
 
 export default function SureSendTile() {
-    return (
-        <div className="connection-tile connection-tile--suresend">
-            <img src={suresendIcon} alt="SureSend" width={26} height={26} style={{ objectFit: 'contain' }} />
-        </div>
-    );
+    return <CrmProviderTile providerId="suresend" />;
 }

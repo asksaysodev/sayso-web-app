@@ -68,7 +68,7 @@ export const SubscriptionAlertProvider = ({ children }: { children: React.ReactN
         if (fn) {
             fn();
         } else {
-            navigate('/subscription');
+            navigate('/signup/plan');
         }
         hideSubscriptionAlert();
     };

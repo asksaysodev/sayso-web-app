@@ -4,9 +4,14 @@ import { Navigate } from 'react-router-dom';
 
 interface Props {
   children: React.ReactNode;
+  /**
+   * Where a signed-in user goes. /signup passes '/signup/plan' so the session that
+   * sign-up itself creates continues the flow instead of racing to the dashboard.
+   */
+  redirectTo?: string;
 }
 
-const GuestGuard = ({ children }: Props) => {
+const GuestGuard = ({ children, redirectTo = '/' }: Props) => {
   const { user, loading, userLoading } = useAuth();
 
   if (loading || userLoading) {
@@ -18,8 +23,7 @@ const GuestGuard = ({ children }: Props) => {
   // users who were already signed in but whose account failed to load, offering
   // them a sign-in that could only fail the same way (SAYSO-342).
   if (user) {
-    // If already authenticated, redirect to dashboard
-    return <Navigate to="/" replace />;
+    return <Navigate to={redirectTo} replace />;
   }
 
   return children;
