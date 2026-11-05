@@ -63,6 +63,7 @@ export default function WorkshopFormModal({ workshop, existing, onClose }: Props
                             </p>
                         )}
                         <TextField
+                            className='workshop-form__date'
                             label='Date'
                             type='date'
                             value={values.date}

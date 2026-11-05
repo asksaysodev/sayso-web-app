@@ -3,10 +3,37 @@
     overflow-y: auto;
 }
 
+/* Header, body and footer sit inside a <form>, so the modal's own gap never reaches them. */
+.workshop-form-modal > form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+}
+
 .workshop-form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-16);
+    gap: var(--space-20);
+}
+
+/* The native picker icon sits on the input line, below the label; center it in the whole field. */
+.workshop-form__date .ds-field {
+    position: relative;
+}
+
+.workshop-form__date .ds-field__input::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 50%;
+    right: var(--space-16);
+    transform: translateY(-50%);
+    margin: 0;
+    cursor: pointer;
+}
+
+.workshop-form__status,
+.workshop-form__test {
+    padding-top: var(--space-20);
+    border-top: 1px solid var(--surface-border);
 }
 
 .workshop-form__notice {

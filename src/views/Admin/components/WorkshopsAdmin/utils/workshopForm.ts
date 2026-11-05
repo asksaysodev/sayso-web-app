@@ -21,10 +21,26 @@ function secondThursday(year: number, monthIndex: number): string {
     return `${year}-${pad(monthIndex + 1)}-${pad(firstThursday + 7)}`;
 }
 
+const dateKey = (day: Date) => `${day.getFullYear()}-${pad(day.getMonth() + 1)}-${pad(day.getDate())}`;
+
+/** A workshop is past once its date is behind us; on the day itself it's still upcoming. */
+export function isPastWorkshop(workshop: AdminWorkshop, today = new Date()): boolean {
+    return workshop.date < dateKey(today);
+}
+
+/** Upcoming workshops first, soonest at the top, then past ones, most recent first. */
+export function orderWorkshops(workshops: AdminWorkshop[], today = new Date()): AdminWorkshop[] {
+    const upcoming = workshops.filter(workshop => !isPastWorkshop(workshop, today));
+    const past = workshops.filter(workshop => isPastWorkshop(workshop, today));
+    upcoming.sort((a, b) => a.date.localeCompare(b.date));
+    past.sort((a, b) => b.date.localeCompare(a.date));
+    return [...upcoming, ...past];
+}
+
 /** The next second Thursday that doesn't have a workshop yet. */
 function nextOpenDate(existing: AdminWorkshop[], today = new Date()): string {
     const taken = new Set(existing.map(workshop => workshop.date));
-    const todayKey = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+    const todayKey = dateKey(today);
     for (let offset = 0; offset < 24; offset += 1) {
         const month = new Date(today.getFullYear(), today.getMonth() + offset, 1);
         const date = secondThursday(month.getFullYear(), month.getMonth());

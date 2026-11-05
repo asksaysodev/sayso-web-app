@@ -13,6 +13,18 @@
     gap: var(--space-16);
 }
 
+.workshops-admin__titles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.workshops-admin__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
 .workshops-admin__title {
     margin: 0;
     font-size: var(--text-h5-size);
@@ -20,9 +32,24 @@
     font-weight: var(--font-weight-semibold);
 }
 
-.workshops-admin__subtitle {
-    margin: var(--space-4) 0 0;
+.workshops-admin__count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 24px;
+    height: 22px;
+    padding: 0 var(--space-8);
+    border-radius: var(--radius-full);
+    background-color: var(--surface-subtle);
+    color: var(--text-secondary);
     font-size: var(--text-body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    font-variant-numeric: tabular-nums;
+}
+
+.workshops-admin__subtitle {
+    margin: 0;
+    font-size: var(--text-body-md-size);
+    line-height: 20px;
     color: var(--text-secondary);
 }
 
@@ -41,4 +68,35 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-8);
+}
+
+.workshops-table {
+    table-layout: fixed;
+}
+
+.workshops-table th:nth-child(1) {
+    width: 22%;
+}
+
+.workshops-table th:nth-child(2) {
+    width: 46%;
+}
+
+.workshops-table th:nth-child(3) {
+    width: 20%;
+}
+
+.workshops-table td {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-12);
+    text-align: left;
+}
+
+.workshops-table__date {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.workshops-table td.workshops-table__actions {
+    text-align: right;
 }

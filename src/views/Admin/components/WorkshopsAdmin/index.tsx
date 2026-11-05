@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHeadCell, TableHeader, TableRow } fro
 import { useWorkshops } from './hooks/useWorkshops';
 import { AdminWorkshop } from './types';
 import WorkshopFormModal from './components/WorkshopFormModal';
+import { isPastWorkshop, orderWorkshops } from './utils/workshopForm';
 import './styles/WorkshopsAdmin.css';
 
 type OpenForm = { workshop?: AdminWorkshop } | null;
@@ -30,7 +31,7 @@ export default function WorkshopsAdmin() {
             return <p className='workshops-admin__state'>No workshops yet. Add the next one so its emails can go out.</p>;
         }
         return (
-            <Table>
+            <Table className='workshops-table'>
                 <TableHeader>
                     <TableHeadCell>Date</TableHeadCell>
                     <TableHeadCell>Title</TableHeadCell>
@@ -38,9 +39,9 @@ export default function WorkshopsAdmin() {
                     <TableHeadCell aria-label='Actions' />
                 </TableHeader>
                 <TableBody>
-                    {workshops.map(workshop => (
+                    {orderWorkshops(workshops).map(workshop => (
                         <TableRow key={workshop.id}>
-                            <TableCell>{dayjs(workshop.date).format('MMM D, YYYY')}</TableCell>
+                            <TableCell className='workshops-table__date'>{dayjs(workshop.date).format('MMM D, YYYY')}</TableCell>
                             <TableCell>{workshop.title || 'Untitled'}</TableCell>
                             <TableCell>
                                 <div className='workshops-admin__badges'>
@@ -48,9 +49,10 @@ export default function WorkshopsAdmin() {
                                         {workshop.status === 'ready' ? 'Ready' : 'Draft'}
                                     </Badge>
                                     {workshop.locked && <Badge tone='info'>Emails sent</Badge>}
+                                    {isPastWorkshop(workshop) && <Badge tone='neutral'>Past</Badge>}
                                 </div>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className='workshops-table__actions'>
                                 <Button variant='secondary' size='sm' onClick={() => setOpenForm({ workshop })}>
                                     {workshop.locked ? 'View' : 'Edit'}
                                 </Button>
@@ -65,8 +67,11 @@ export default function WorkshopsAdmin() {
     return (
         <Card className='workshops-admin'>
             <div className='workshops-admin__header'>
-                <div>
-                    <h2 className='workshops-admin__title'>Workshops</h2>
+                <div className='workshops-admin__titles'>
+                    <div className='workshops-admin__title-row'>
+                        <h2 className='workshops-admin__title'>Workshops</h2>
+                        {!isLoading && !isError && <span className='workshops-admin__count'>{workshops.length}</span>}
+                    </div>
                     <p className='workshops-admin__subtitle'>The monthly workshop content used in the weekly emails.</p>
                 </div>
                 <Button leftIcon={<Plus size={20} />} onClick={() => setOpenForm({})}>New workshop</Button>
