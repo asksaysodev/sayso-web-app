@@ -1,7 +1,9 @@
-import { useNavigate } from 'react-router-dom';
-import LoginLayout from '@/components/layouts/LoginLayout';
-import SaysoButton from '@/components/SaysoButton';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, Check, Link2Off } from 'lucide-react';
+import AuthLayout from '@/components/layouts/AuthLayout';
+import { Button } from '@/components/ds/Button';
 import { InviteErrorKind } from '../services/inviteErrors';
+import '../styles.css';
 
 interface Props {
     kind: InviteErrorKind;
@@ -46,32 +48,53 @@ const COPY: Record<InviteErrorKind, Copy> = {
 };
 
 export default function InviteUnavailable({ kind, onRetry, isRetrying = false }: Props) {
-    const navigate = useNavigate();
     const { title, body, action } = COPY[kind];
+    const showRetry = action === 'RETRY' && !!onRetry;
+    const isAccepted = kind === 'ACCEPTED';
 
     return (
-        <LoginLayout title={title}>
-            <div className="accept-invite-invalid">
-                <p>{body}</p>
+        <AuthLayout title="You've been invited">
+            <div className="acceptInviteCard">
+                <div>
+                    <span
+                        className={`acceptInviteCardIcon ${
+                            isAccepted ? 'acceptInviteCardIcon--success' : 'acceptInviteCardIcon--warning'
+                        }`}
+                    >
+                        {isAccepted ? (
+                            <Check size={20} color="var(--primary-500)" aria-hidden="true" />
+                        ) : (
+                            <Link2Off size={20} color="var(--warning-icon)" aria-hidden="true" />
+                        )}
+                    </span>
+                    <h2 className="acceptInviteCardHeading">{title}</h2>
+                    <p className="acceptInviteCardSubtitle">{body}</p>
+                </div>
+
+                {action === 'SIGN_IN' && (
+                    <div className="acceptInviteCardFooter">
+                        <Link to="/login" className="acceptInviteCardBackLink">
+                            <ArrowLeft size={16} aria-hidden="true" />
+                            Back to sign in
+                        </Link>
+                    </div>
+                )}
+
+                {showRetry && (
+                    <div className="acceptInviteCardFooter acceptInviteCardFooter--end">
+                        <Button
+                            type="button"
+                            variant="primary"
+                            className="acceptInviteCardSubmit"
+                            onClick={onRetry}
+                            loading={isRetrying}
+                            disabled={isRetrying}
+                        >
+                            Try again
+                        </Button>
+                    </div>
+                )}
             </div>
-
-            {action === 'SIGN_IN' && (
-                <div className="accept-invite-error-actions">
-                    <SaysoButton label="Go to sign in" onClick={() => navigate('/login')} fullWidth />
-                </div>
-            )}
-
-            {action === 'RETRY' && onRetry && (
-                <div className="accept-invite-error-actions">
-                    <SaysoButton
-                        label="Try again"
-                        onClick={onRetry}
-                        loading={isRetrying}
-                        disabled={isRetrying}
-                        fullWidth
-                    />
-                </div>
-            )}
-        </LoginLayout>
+        </AuthLayout>
     );
 }

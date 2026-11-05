@@ -16,17 +16,19 @@ const Settings = lazyView(() => import('./views/Settings'));
 const Marketplace = lazyView(() => import('./views/Marketplace'));
 const Checkout = lazyView(() => import('./views/Checkout'));
 const Admin = lazyView(() => import('./views/Admin'));
-const Subscription = lazyView(() => import('./views/Subscription'));
+const SignupPlan = lazyView(() => import('./views/SignupPlan'));
 const MFAVerify = lazyView(() => import('./views/MFAVerify'));
 const AcceptInvite = lazyView(() => import('./views/AcceptInvite'));
 const Organization = lazyView(() => import('./views/Organization'));
 const Conversations = lazyView(() => import('./views/Conversations'));
 const TeamDetail = lazyView(() => import('./views/Organization/Teams/Detail'));
+const Signup = lazyView(() => import('./views/Signup'));
 
 import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
 import useUserNotAdminOnTeams from './hooks/useUserNotAdminOnTeams';
 import useIsTeamAdmin from './hooks/useIsTeamAdmin';
+import { isSignupCheckoutWaiting } from './views/SignupPlan/hooks/signupCheckoutSignal';
 import Download from './views/Download';
 
 
@@ -40,10 +42,38 @@ export default function AppRoutes() {
             <Routes>
                 <Route
                     path="/login"
+                    element={<LoginRoute />}
+                />
+                <Route
+                    path="/signup"
                     element={
-                        <GuestGuard>
-                        <Login />
+                        <GuestGuard redirectTo="/signup/plan">
+                            <Signup />
                         </GuestGuard>
+                    }
+                />
+                <Route
+                    path="/signup/plan"
+                    element={
+                        <AuthGuard>
+                            {userNotAdminOnTeams
+                                ? <Navigate to="/" replace />
+                                : hasSubscription
+                                    // Subscribers manage their plan in Account settings; this route is the pricing page.
+                                    // Exception: the tab waiting on a sign-up checkout advances to step 3 (SAYSO-565).
+                                    ? <Navigate to={isSignupCheckoutWaiting() ? '/signup/download' : '/settings?tab=subscription'} replace />
+                                    : <SignupPlan />
+                            }
+                        </AuthGuard>
+                    }
+                />
+                {/* Sign-up step 3 (SAYSO-564): the /download view plus the sign-up-only elements. */}
+                <Route
+                    path="/signup/download"
+                    element={
+                        <AuthGuard>
+                            <Download signup />
+                        </AuthGuard>
                     }
                 />
                 <Route
@@ -153,7 +183,8 @@ export default function AppRoutes() {
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
                                     ? <Navigate to="/settings?tab=subscription" replace />
-                                    : <Subscription />
+                                    // One pricing view: the old URL keeps working for emails and bookmarks.
+                                    : <RedirectKeepingQuery to="/signup/plan" />
                             }
                         </AuthGuard>
                     }
@@ -183,6 +214,33 @@ export default function AppRoutes() {
             </Routes>
         </Suspense>
     )
+}
+
+/**
+ * /login is login-only. Sign-up links in emails, the marketing site and the desktop app
+ * (?signup=true, ?referralCode=, ?invite=) move to /signup with every query param kept.
+ */
+function LoginRoute() {
+    const { search, hash } = useLocation();
+    const params = new URLSearchParams(search);
+    const isSignupLink = params.get('signup') === 'true'
+        || !!params.get('referralCode')
+        || !!params.get('invite');
+
+    if (isSignupLink) {
+        return <Navigate to={`/signup${search}${hash}`} replace />;
+    }
+
+    return (
+        <GuestGuard>
+            <Login />
+        </GuestGuard>
+    );
+}
+
+function RedirectKeepingQuery({ to }: { to: string }) {
+    const { search, hash } = useLocation();
+    return <Navigate to={`${to}${search}${hash}`} replace />;
 }
 
 /** /organization[/…][?…][#…] → /company[/…][?…][#…] */

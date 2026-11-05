@@ -41,7 +41,12 @@ export default function useAttachConversationLead() {
                             ...page,
                             conversations: page.conversations.map(conv =>
                                 conv.id === conversationId
-                                    ? { ...conv, crm_lead_name: lead?.name ?? null }
+                                    ? {
+                                        ...conv,
+                                        crm_lead_name: lead?.name ?? null,
+                                        crm_lead_id: lead?.id ?? null,
+                                        crm_provider: lead?.providerId ?? null,
+                                    }
                                     : conv
                             ),
                         })),

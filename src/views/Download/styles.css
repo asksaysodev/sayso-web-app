@@ -365,3 +365,26 @@
         padding-top: 40px;
     }
 }
+
+/* Sign-up step 3 (SAYSO-564, Figma 567:1266): progress rail + "Go to dashboard". */
+.download-view-wrapper--signup {
+    position: relative;
+}
+
+.download-signup-progress {
+    position: absolute;
+    top: 208px;
+    left: 32px;
+}
+
+.download-dashboard-btn {
+    margin-top: 40px;
+}
+
+@media (max-width: 767px) {
+    .download-signup-progress {
+        position: static;
+        align-self: stretch;
+        margin-bottom: 16px;
+    }
+}
