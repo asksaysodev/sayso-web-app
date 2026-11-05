@@ -57,6 +57,7 @@ export interface Account {
   account_type: AccountType;
   status: AccountStatus;
   has_referral_discount?: boolean;
+  is_partner_funded?: boolean;
 }
 export interface AccountUsage {
   planMinutes: number;

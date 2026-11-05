@@ -13,6 +13,8 @@ import { SignupErrorCode } from '@/types/user';
 export const ACCOUNT_CREATED_SIGN_IN_FAILED =
   'Your account was created, but we could not sign you in. Please try signing in.';
 
+export const INVITATION_CLAIMED_MESSAGE = 'This invitation has already been claimed.';
+
 const MESSAGES: Record<SignupErrorCode, string> = {
   EMAIL_TAKEN: 'An account with this email already exists. Try signing in instead.',
   INVALID_INPUT: 'Please check the details you entered and try again.',
@@ -20,7 +22,7 @@ const MESSAGES: Record<SignupErrorCode, string> = {
   INVITE_CLAIMED: 'This invite has already been used.',
   INVITE_EMAIL_MISMATCH: 'This invitation was issued to a different email address.',
   INVITATION_INVALID: 'This invitation link is not valid. Please contact your administrator.',
-  INVITATION_CLAIMED: 'This invitation has already been claimed.',
+  INVITATION_CLAIMED: INVITATION_CLAIMED_MESSAGE,
 };
 
 /**
