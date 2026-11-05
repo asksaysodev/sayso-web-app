@@ -3,6 +3,7 @@ import { LoaderCircle, Mail } from 'lucide-react';
 
 import AuthLayout from '@/components/layouts/AuthLayout';
 import { SignupProgress } from '@/components/auth/SignupProgress';
+import { INVITATION_CLAIMED_MESSAGE } from '@/utils/signupErrors';
 import useSignupForm from './hooks/useSignupForm';
 import PersonalDetailsForm from './components/PersonalDetailsForm';
 import LoginDetailsForm from './components/LoginDetailsForm';
@@ -19,6 +20,7 @@ const Signup = () => {
         invitation,
         isInvitationLoading,
         isInvitationError,
+        isInvitationClaimed,
     } = useSignupForm();
 
     const renderCard = () => {
@@ -30,14 +32,18 @@ const Signup = () => {
             );
         }
 
-        if (isInvite && isInvitationError) {
+        if (isInvitationError) {
             return (
                 <div className="signupCard">
                     <div className="signupCardHeader">
                         <div>
-                            <h2 className="signupCardHeading">Invitation unavailable</h2>
+                            <h2 className="signupCardHeading">
+                                {isInvitationClaimed ? 'Invitation already claimed' : 'Invitation unavailable'}
+                            </h2>
                             <p className="signupCardSubtitle">
-                                This invitation is no longer valid. Please contact your administrator.
+                                {isInvitationClaimed
+                                    ? `${INVITATION_CLAIMED_MESSAGE} Sign in to continue.`
+                                    : 'This invitation is no longer valid. Please contact your administrator.'}
                             </p>
                         </div>
                     </div>
@@ -82,9 +88,11 @@ const Signup = () => {
 
     return (
         <AuthLayout
-            title="Create account"
+            title={isInvitationError ? "You've been invited" : 'Create account'}
             headerLink={{ prompt: 'Already have an account?', label: 'Sign in', to: '/login' }}
-            aside={<SignupProgress current="account" />}
+            aside={isInvitationError
+                ? undefined
+                : <SignupProgress current="account" hideSubscriptionStep={isInvite} />}
         >
             {renderCard()}
         </AuthLayout>

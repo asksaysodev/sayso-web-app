@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import AuthGuard from './components/guards/AuthGuard';
 import GuestGuard from './components/guards/GuestGuard';
+import SignupGuestGuard from './components/guards/SignupGuestGuard';
 import MFAGuard from './components/guards/MFAGuard';
 import Layout from './components/Layout';
 
@@ -47,9 +48,9 @@ export default function AppRoutes() {
                 <Route
                     path="/signup"
                     element={
-                        <GuestGuard redirectTo="/signup/plan">
+                        <SignupGuestGuard>
                             <Signup />
-                        </GuestGuard>
+                        </SignupGuestGuard>
                     }
                 />
                 <Route
@@ -60,14 +61,14 @@ export default function AppRoutes() {
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
-                                    // Exception: the tab waiting on a sign-up checkout advances to step 3 (SAYSO-565).
+                                    // Exception: the tab waiting on a sign-up checkout advances to the download step (SAYSO-565).
                                     ? <Navigate to={isSignupCheckoutWaiting() ? '/signup/download' : '/settings?tab=subscription'} replace />
                                     : <SignupPlan />
                             }
                         </AuthGuard>
                     }
                 />
-                {/* Sign-up step 3 (SAYSO-564): the /download view plus the sign-up-only elements. */}
+                {/* Last sign-up step (SAYSO-564): the /download view plus the sign-up-only elements. */}
                 <Route
                     path="/signup/download"
                     element={
