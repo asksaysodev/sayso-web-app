@@ -16,6 +16,7 @@ import NotificationsAdmin from './components/NotificactionsAdmin';
 import PartnersInvoicing from './components/PartnersInvoicing';
 import AddPartnerButton from './components/PartnersInvoicing/AddPartnerButton';
 import PlaybooksAdmin from './components/PlaybooksAdmin';
+import WorkshopsAdmin from './components/WorkshopsAdmin';
 
 export default function Admin() {
     const selectedTool = useAdminStore(state => state.selectedTool);
@@ -29,6 +30,7 @@ export default function Admin() {
             case 'notifications': return <NotificationsAdmin />
             case 'partners': return <PartnersInvoicing />
             case 'playbooks': return <PlaybooksAdmin />
+            case 'workshops': return <WorkshopsAdmin />
         }
     }, [selectedTool]);
 
