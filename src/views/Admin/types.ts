@@ -1,4 +1,4 @@
-export type Tool = 'cue-signals' | 'cue-main-instructions' | 'subscription' | 'notifications' | 'partners' | 'playbooks';
+export type Tool = 'cue-signals' | 'cue-main-instructions' | 'subscription' | 'notifications' | 'partners' | 'playbooks' | 'workshops';
 export type SignalLeadType = 'buyer' | 'seller' | 'all';
 export type Signal = {
     id: string;

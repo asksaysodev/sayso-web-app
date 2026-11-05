@@ -1,10 +1,40 @@
+/* Same page shell as Company and Settings. */
+.admin-page {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-24);
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: var(--space-20) var(--space-32) var(--space-32);
+    overflow-y: auto;
+    background-color: var(--surface-canvas);
+    font-family: var(--font-ds);
+    color: var(--text-primary);
+    text-align: left;
+}
+
+@media (max-width: 767px) {
+    .admin-page {
+        height: auto;
+        padding: var(--space-16);
+        gap: var(--space-16);
+    }
+}
+
+.tool-selector {
+    width: 280px;
+    max-width: 100%;
+}
+
 .admin-panel-container {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: start;
     justify-content: start;
-    gap: 16px;
+    gap: var(--space-24);
 }
 
 .admin-panel-container.centered {
@@ -13,6 +43,7 @@
 
 .admin-panel-header {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
     align-items: end;
     justify-content: space-between;
@@ -31,18 +62,6 @@
     flex-direction: row;
     align-items: center;
     gap: 16px;
-}
-
-.tool-selector-container {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-}
-
-.tool-selector-container label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--sayso-indigo);
 }
 
 .sheet-version-selector-container {
@@ -495,7 +514,6 @@
         gap: 12px;
     }
 
-    .tool-selector-container select,
     .sheet-version-selector-container select {
         width: 100%;
     }
