@@ -1,4 +1,4 @@
-import ViewLayout from '@/components/layouts/ViewLayout';
+import { PageHeader } from '@/components/ds/PageHeader';
 
 import './Admin.css';
 import { useCallback } from 'react';
@@ -16,6 +16,7 @@ import NotificationsAdmin from './components/NotificactionsAdmin';
 import PartnersInvoicing from './components/PartnersInvoicing';
 import AddPartnerButton from './components/PartnersInvoicing/AddPartnerButton';
 import PlaybooksAdmin from './components/PlaybooksAdmin';
+import WorkshopsAdmin from './components/WorkshopsAdmin';
 
 export default function Admin() {
     const selectedTool = useAdminStore(state => state.selectedTool);
@@ -29,11 +30,13 @@ export default function Admin() {
             case 'notifications': return <NotificationsAdmin />
             case 'partners': return <PartnersInvoicing />
             case 'playbooks': return <PlaybooksAdmin />
+            case 'workshops': return <WorkshopsAdmin />
         }
     }, [selectedTool]);
 
     return (
-       <ViewLayout title='Admin Panel' scrollable>
+        <main className='admin-page'>
+            <PageHeader title='Admin' description='Internal tools for the Sayso team.' />
             <div className={`admin-panel-container${selectedTool === 'cue-signals' ? ' centered' : ''}`}>
                 <NotificationsAdminProvider>
                     <div className='admin-panel-header'>
@@ -57,6 +60,6 @@ export default function Admin() {
                     {renderTool()}
                 </NotificationsAdminProvider>
             </div>
-       </ViewLayout>
+        </main>
     )
 }
