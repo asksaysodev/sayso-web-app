@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm, type FieldErrors } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import * as Sentry from '@sentry/react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import { toE164 } from '@/components/ui/PhoneInput';
+import getPostSignupPath from '@/utils/getPostSignupPath';
 import reportApiError from '@/utils/reportApiError';
+import type { SignupErrorCode } from '@/types/user';
 import getInvitation from '../services/getInvitation';
 import { isPhoneFilled, validateLoginDetails, validatePersonalDetails } from '../helpers/validation';
 import type { SignupFormData, SignupSubStep } from '../types';
@@ -35,7 +38,7 @@ export default function useSignupForm() {
     const {
         data: invitation,
         isLoading: isInvitationLoading,
-        isError: isInvitationError,
+        isLoadingError: isInvitationError,
         error: invitationError,
     } = useQuery({
         queryKey: ['invitation', inviteToken],
@@ -49,6 +52,9 @@ export default function useSignupForm() {
             reportApiError(invitationError, { feature: 'partner-invitations', operation: 'getInvitation' });
         }
     }, [invitationError]);
+
+    const isInvitationClaimed = axios.isAxiosError<{ code?: SignupErrorCode }>(invitationError)
+        && invitationError.response?.data?.code === 'INVITATION_CLAIMED';
 
     const resolver = (values: SignupFormData) => {
         const errors = signupStep === 1 ? validatePersonalDetails(values) : validateLoginDetails(values);
@@ -100,7 +106,7 @@ export default function useSignupForm() {
                 },
             });
             if (error) throw error;
-            navigate('/signup/plan', { replace: true });
+            navigate(getPostSignupPath(inviteToken), { replace: true });
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Sign up failed. Please try again.';
             showToast('error', message);
@@ -121,5 +127,6 @@ export default function useSignupForm() {
         invitation,
         isInvitationLoading,
         isInvitationError,
+        isInvitationClaimed,
     };
 }

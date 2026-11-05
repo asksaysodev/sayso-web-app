@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import AuthGuard from './components/guards/AuthGuard';
 import GuestGuard from './components/guards/GuestGuard';
+import SignupGuestGuard from './components/guards/SignupGuestGuard';
 import MFAGuard from './components/guards/MFAGuard';
 import Layout from './components/Layout';
 
@@ -26,7 +27,7 @@ const Signup = lazyView(() => import('./views/Signup'));
 
 import SaysoLoader from './components/SaysoLoader';
 import useHasSubscription from './hooks/useHasSubscription';
-import useUserNotAdminOnTeams from './hooks/useUserNotAdminOnTeams';
+import useCanManageBilling from './hooks/useCanManageBilling';
 import useIsTeamAdmin from './hooks/useIsTeamAdmin';
 import { isSignupCheckoutWaiting } from './views/SignupPlan/hooks/signupCheckoutSignal';
 import Download from './views/Download';
@@ -34,7 +35,7 @@ import Download from './views/Download';
 
 export default function AppRoutes() {
     const hasSubscription = useHasSubscription();
-    const userNotAdminOnTeams = useUserNotAdminOnTeams();
+    const canManageBilling = useCanManageBilling();
     const isTeamAdmin = useIsTeamAdmin();
 
     return (
@@ -47,27 +48,27 @@ export default function AppRoutes() {
                 <Route
                     path="/signup"
                     element={
-                        <GuestGuard redirectTo="/signup/plan">
+                        <SignupGuestGuard>
                             <Signup />
-                        </GuestGuard>
+                        </SignupGuestGuard>
                     }
                 />
                 <Route
                     path="/signup/plan"
                     element={
                         <AuthGuard>
-                            {userNotAdminOnTeams
+                            {!canManageBilling
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
-                                    // Exception: the tab waiting on a sign-up checkout advances to step 3 (SAYSO-565).
+                                    // Exception: the tab waiting on a sign-up checkout advances to the download step (SAYSO-565).
                                     ? <Navigate to={isSignupCheckoutWaiting() ? '/signup/download' : '/settings?tab=subscription'} replace />
                                     : <SignupPlan />
                             }
                         </AuthGuard>
                     }
                 />
-                {/* Sign-up step 3 (SAYSO-564): the /download view plus the sign-up-only elements. */}
+                {/* Last sign-up step (SAYSO-564): the /download view plus the sign-up-only elements. */}
                 <Route
                     path="/signup/download"
                     element={
@@ -178,7 +179,7 @@ export default function AppRoutes() {
                     path="/subscription"
                     element={
                         <AuthGuard>
-                            {userNotAdminOnTeams
+                            {!canManageBilling
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.

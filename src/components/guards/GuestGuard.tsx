@@ -5,8 +5,8 @@ import { Navigate } from 'react-router-dom';
 interface Props {
   children: React.ReactNode;
   /**
-   * Where a signed-in user goes. /signup passes '/signup/plan' so the session that
-   * sign-up itself creates continues the flow instead of racing to the dashboard.
+   * Where a signed-in user goes. SignupGuestGuard sets it so the session that sign-up
+   * itself creates continues the flow instead of racing to the dashboard.
    */
   redirectTo?: string;
 }

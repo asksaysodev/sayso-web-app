@@ -1,6 +1,8 @@
 import { Account, SignupData, UpdateAccountData } from '@/types/user';
 import apiClient from '../config/axios';
 
+const SIGNUP_TIMEOUT_MS = 30000;
+
 export const useAccounts = () => {
 
   /**
@@ -11,9 +13,12 @@ export const useAccounts = () => {
    * from signInWithPassword already carries the claim. No refresh, no second round trip.
    *
    * Does NOT sign the user in. The caller does that afterwards.
+   *
+   * Not idempotent: a replay collides on the email the first attempt created, so it must
+   * never retry. The partner path calls Stripe, hence the longer timeout.
    */
   const signup = async (data: SignupData): Promise<{ id: string; email: string; role: string; company_id: string }> => {
-    const response = await apiClient.post('/accounts/signup', data);
+    const response = await apiClient.post('/accounts/signup', data, { skipRetry: true, timeout: SIGNUP_TIMEOUT_MS });
     return response.data.data;
   };
 

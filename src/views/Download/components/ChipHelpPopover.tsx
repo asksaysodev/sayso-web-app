@@ -12,7 +12,7 @@ export default function ChipHelpPopover() {
                     Open the Apple menu and choose <strong>About This Mac</strong>.
                 </p>
                 <ul>
-                    <li><strong>Chip: Apple M…</strong> → download <strong>Apple Silicon</strong></li>
+                    <li><strong>Chip: Apple…</strong> → download <strong>Apple Silicon</strong></li>
                     <li><strong>Processor: …Intel…</strong> → download <strong>Intel</strong></li>
                 </ul>
             </PopoverContent>
