@@ -14,12 +14,12 @@ import { isMobileViewport } from './utils/isMobileViewport';
 import { SignupProgress } from '@/components/auth/SignupProgress';
 import { SkipButton } from '@/components/auth/SkipButton';
 import { useAuth } from '@/context/AuthContext';
-import useIsInvitedTeamMember from '@/hooks/useIsInvitedTeamMember';
+import useSkipsSubscriptionStep from '@/hooks/useSkipsSubscriptionStep';
 import { openExternal } from '@/utils/helpers/openExternal';
 
 interface Props {
     /**
-     * Sign-up step 3 (SAYSO-564, /signup/download): adds the progress indicator and
+     * Last sign-up step (SAYSO-564, /signup/download): adds the progress indicator and
      * "Go to dashboard", and drops the header link and the auto-redirect. The cards stay
      * the same, so /download and /signup/download never drift apart.
      */
@@ -28,7 +28,7 @@ interface Props {
 
 export default function Download({ signup = false }: Props) {
     const { globalUser } = useAuth();
-    const isInvitedTeamMember = useIsInvitedTeamMember();
+    const skipsSubscriptionStep = useSkipsSubscriptionStep();
     const { siliconUrl, intelUrl, windowsUrl, version, isLoading } = useDownloadGithubRelease();
     const navigate = useNavigate();
 
@@ -66,7 +66,7 @@ export default function Download({ signup = false }: Props) {
         <div className={signup ? 'download-view-wrapper download-view-wrapper--signup' : 'download-view-wrapper'}>
             {signup && (
                 <div className='download-signup-progress'>
-                    <SignupProgress current='download' hideSubscriptionStep={isInvitedTeamMember} />
+                    <SignupProgress current='download' hideSubscriptionStep={skipsSubscriptionStep} />
                 </div>
             )}
 
