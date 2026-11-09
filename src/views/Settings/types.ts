@@ -1,4 +1,4 @@
-export type SettingsPanel = 'profile' | 'company' | 'files' | 'connections' | 'security' | 'subscription' | 'referral';
+export type SettingsPanel = 'profile' | 'company' | 'files' | 'connections' | 'security' | 'subscription' | 'referral' | 'reports';
 
 export enum SettingsPanelEnum {
     PROFILE = 'profile',
@@ -7,7 +7,8 @@ export enum SettingsPanelEnum {
     CONNECTIONS = 'connections',
     SECURITY = 'security',
     SUBSCRIPTION = 'subscription',
-    REFERRAL = 'referral'
+    REFERRAL = 'referral',
+    REPORTS = 'reports'
 }
 
 export const DEFAULT_SETTINGS_PANEL: SettingsPanel = SettingsPanelEnum.PROFILE;
@@ -21,4 +22,5 @@ export const SETTINGS_PANEL_LABELS: Record<SettingsPanel, string> = {
     security: 'Security',
     subscription: 'Subscription',
     referral: 'Referrals',
+    reports: 'Reports',
 };
