@@ -1,22 +1,6 @@
 import clsx from 'clsx';
-import type { IconType } from 'react-icons';
-import { PiBuildings, PiCreditCard, PiGift, PiLock, PiPlugsConnected, PiUserCircle } from 'react-icons/pi';
-import { SETTINGS_PANEL_LABELS, SettingsPanel, SettingsPanelEnum } from '../types';
-
-interface NavItem {
-    value: SettingsPanel;
-    label: string;
-    icon: IconType;
-}
-
-const NAV_ITEMS: NavItem[] = [
-    { value: SettingsPanelEnum.PROFILE, label: SETTINGS_PANEL_LABELS.profile, icon: PiUserCircle },
-    { value: SettingsPanelEnum.COMPANY, label: SETTINGS_PANEL_LABELS.company, icon: PiBuildings },
-    { value: SettingsPanelEnum.CONNECTIONS, label: SETTINGS_PANEL_LABELS.connections, icon: PiPlugsConnected },
-    { value: SettingsPanelEnum.SECURITY, label: SETTINGS_PANEL_LABELS.security, icon: PiLock },
-    { value: SettingsPanelEnum.SUBSCRIPTION, label: SETTINGS_PANEL_LABELS.subscription, icon: PiCreditCard },
-    { value: SettingsPanelEnum.REFERRAL, label: SETTINGS_PANEL_LABELS.referral, icon: PiGift },
-];
+import { SettingsPanel } from '../types';
+import { SETTINGS_PANEL_META } from '../settingsPanelMeta';
 
 interface Props {
     availablePanels: SettingsPanel[];
@@ -27,7 +11,7 @@ interface Props {
 export default function SettingsNav({ availablePanels, selectedPanel, onSelectPanel }: Props) {
     return (
         <nav className='settings-nav' aria-label='Account settings'>
-            {NAV_ITEMS.filter((item) => availablePanels.includes(item.value)).map(({ value, label, icon: Icon }) => {
+            {SETTINGS_PANEL_META.filter((item) => availablePanels.includes(item.value)).map(({ value, label, icon: Icon }) => {
                 const isActive = value === selectedPanel;
                 return (
                     <button
