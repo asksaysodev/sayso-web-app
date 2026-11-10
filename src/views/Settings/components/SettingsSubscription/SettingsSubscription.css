@@ -119,6 +119,18 @@
     flex-shrink: 0;
 }
 
+.plan-card__usage-placeholder {
+    position: relative;
+    width: min(420px, 100%);
+}
+
+.plan-card__usage-skeleton {
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 16px;
+    transform: translateY(-50%);
+}
+
 .plan-card__footer {
     display: flex;
     align-items: center;
