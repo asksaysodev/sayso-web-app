@@ -9,6 +9,7 @@ import SettingsMobileList from "./components/SettingsMobileList";
 import SettingsNav from "./components/SettingsNav";
 import SettingsActivePanelContainer from "./components/SettingsActivePanelContainer";
 import useCanAccessReferrals from "@/hooks/useCanAccessReferrals";
+import useCanManageReports from "@/hooks/useCanManageReports";
 import useCanManageBilling from "@/hooks/useCanManageBilling";
 import useCanRenameCompany from "@/hooks/useCanRenameCompany";
 
@@ -20,6 +21,7 @@ export default function Settings() {
     const isMobile = useMediaQuery('(max-width: 767px)');
     const canAccessReferrals = useCanAccessReferrals();
     const canManageBilling = useCanManageBilling();
+    const canManageReports = useCanManageReports();
     const canRenameCompany = useCanRenameCompany();
 
     // Panels this user may open. Files stays reachable by URL only (hidden from the nav, as before).
@@ -33,8 +35,9 @@ export default function Settings() {
         );
         if (canManageBilling) panels.push(SettingsPanelEnum.SUBSCRIPTION);
         if (canAccessReferrals) panels.push(SettingsPanelEnum.REFERRAL);
+        if (canManageReports) panels.push(SettingsPanelEnum.REPORTS);
         return panels;
-    }, [canRenameCompany, canManageBilling, canAccessReferrals]);
+    }, [canRenameCompany, canManageBilling, canAccessReferrals, canManageReports]);
 
     // The FUB OAuth callback returns to /settings?fub=… with no tab; its handler lives on Connections.
     const isFubReturn = searchParams.has("fub");

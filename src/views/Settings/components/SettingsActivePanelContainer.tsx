@@ -7,6 +7,7 @@ import SettingsSecurity from "./SettingsSecurity";
 import SettingsReferralForm from "./SettingsReferralForm";
 import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsForm";
 import SettingsSubscription from "./SettingsSubscription";
+import SettingsReports from "./SettingsReports";
 import CompanyNameField from "@/views/Organization/Company/components/CompanyNameField";
 
 // These render without the white panel and header.
@@ -49,6 +50,7 @@ export default function SettingsActivePanelContainer({ selectedPanel }: Props) {
     
     // Subscription is a stack of cards on the page canvas, no panel chrome.
     if (selectedPanel === 'subscription') return <SettingsSubscription />;
+    if (selectedPanel === 'reports') return <SettingsReports />;
 
     return (
         <div className={`settings-panel${isPlainPanel(selectedPanel) ? ' settings-panel--plain' : ''}`}>

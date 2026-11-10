@@ -1,5 +1,5 @@
 import type { IconType } from 'react-icons';
-import { PiBuildings, PiCreditCard, PiGift, PiLock, PiPlugsConnected, PiUserCircle } from 'react-icons/pi';
+import { PiBuildings, PiChartBar, PiCreditCard, PiGift, PiLock, PiPlugsConnected, PiUserCircle } from 'react-icons/pi';
 import { SETTINGS_PANEL_LABELS, SettingsPanel, SettingsPanelEnum } from './types';
 
 export interface SettingsPanelMeta {
@@ -16,4 +16,5 @@ export const SETTINGS_PANEL_META: SettingsPanelMeta[] = [
     { value: SettingsPanelEnum.SECURITY, label: SETTINGS_PANEL_LABELS.security, icon: PiLock },
     { value: SettingsPanelEnum.SUBSCRIPTION, label: SETTINGS_PANEL_LABELS.subscription, icon: PiCreditCard },
     { value: SettingsPanelEnum.REFERRAL, label: SETTINGS_PANEL_LABELS.referral, icon: PiGift },
+    { value: SettingsPanelEnum.REPORTS, label: SETTINGS_PANEL_LABELS.reports, icon: PiChartBar },
 ];
