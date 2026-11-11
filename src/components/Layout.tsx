@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import Sidebar from './Sidebar/Sidebar';
 import MobileSidebar from './Sidebar/MobileSidebar';
@@ -14,13 +15,16 @@ interface Props {
 export default function Layout({ children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 767px)');
+  const { pathname } = useLocation();
+  // Mobile settings screens bring their own "← Title" header.
+  const hideTopbar = isMobile && pathname === '/settings';
 
   return (
     <div className="app-shell">
       <Sidebar />
       <MobileSidebar open={sidebarOpen && isMobile} onOpenChange={setSidebarOpen} />
       <div className="app-shell__main">
-        <Topbar onOpenMenu={() => setSidebarOpen(true)} />
+        {!hideTopbar && <Topbar onOpenMenu={() => setSidebarOpen(true)} />}
         <div className="app-shell__content">
           {children}
         </div>
