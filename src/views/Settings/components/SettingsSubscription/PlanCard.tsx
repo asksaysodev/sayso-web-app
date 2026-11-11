@@ -14,7 +14,7 @@ interface Props {
 
 export default function PlanCard({ subscription }: Props) {
     const { mutateUpgradeTrialSubscription, isPendingUpgradeTrialSubscription } = useStripeUpgrade();
-    const { data: usage } = useQuery({
+    const { data: usage, isPending: isUsagePending } = useQuery({
         queryKey: ['settings-account-usage'],
         queryFn: getAccountUsage,
     });
@@ -79,6 +79,16 @@ export default function PlanCard({ subscription }: Props) {
                     </div>
                 )}
             </div>
+            {isUsagePending && (
+                <p className='plan-card__usage' aria-busy='true' aria-label='Loading usage'>
+                    <PiSpeedometer size={20} aria-hidden />
+                    {/* nbsp gives the row the real text's line height, so nothing shifts on load */}
+                    <span className='plan-card__usage-placeholder' aria-hidden>
+                        {'\u00a0'}
+                        <span className='skeleton plan-card__usage-skeleton' />
+                    </span>
+                </p>
+            )}
             {usage && (
                 <p className='plan-card__usage'>
                     <PiSpeedometer size={20} aria-hidden />
