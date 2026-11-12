@@ -1,7 +1,7 @@
 import getFubLeads from '@/services/integrations/fub/getFubLeads';
 import createFubLead from '@/services/integrations/fub/createFubLead';
 import type { FubLead } from '@/types/fub';
-import type { CrmCreateLeadInput, CrmLead, CrmProvider } from '../types';
+import type { CrmCreateLeadInput, CrmCreateLeadResult, CrmLead, CrmProvider } from '../types';
 import { crmReauthErrorFrom } from '../errors';
 import { getCrmLeadDetail, getFubAccountDomain, updateCrmLeadDetail } from '../services/crmLeadEditApi';
 
@@ -52,10 +52,10 @@ export const fubProvider: CrmProvider = {
             throw crmReauthErrorFrom(error, 'fub');
         }
     },
-    createLead: async (input: CrmCreateLeadInput): Promise<CrmLead> => {
+    createLead: async (input: CrmCreateLeadInput): Promise<CrmCreateLeadResult> => {
         try {
-            const lead = await createFubLead(input);
-            return normalizeFubLead(lead);
+            const { person, created } = await createFubLead(input);
+            return { lead: normalizeFubLead(person), created };
         } catch (error) {
             throw crmReauthErrorFrom(error, 'fub');
         }
