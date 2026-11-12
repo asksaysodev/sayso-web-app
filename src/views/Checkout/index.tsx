@@ -3,11 +3,13 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { LuX } from "react-icons/lu";
 import SaysoLoader from "../../components/SaysoLoader";
 import SaysoButton from "../../components/SaysoButton";
+import { useDownloadModalStore } from "@/store/downloadModalStore";
 import "./styles.css";
 
 export default function Checkout() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const openDownloadModal = useDownloadModalStore(state => state.setOpen);
 
     const successParam = searchParams.get("success");
     const success = successParam === null ? null : successParam === "true";
@@ -17,10 +19,11 @@ export default function Checkout() {
             navigate("/", { replace: true });
         } else if (success === true) {
             // Only non-signup checkouts (e.g. Settings plan changes) return here; sign-up checkouts
-            // go straight to /signup/download (SAYSO-565).
-            navigate("/download", { replace: true });
+            // return to /signup/download, which redirects to the dashboard (SAYSO-565).
+            navigate("/", { replace: true });
+            openDownloadModal(true);
         }
-    }, [success, navigate]);
+    }, [success, navigate, openDownloadModal]);
 
     if (success !== false) {
         return (

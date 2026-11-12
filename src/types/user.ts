@@ -58,6 +58,10 @@ export interface Account {
   status: AccountStatus;
   has_referral_discount?: boolean;
   is_partner_funded?: boolean;
+  /** Set by the desktop app on sign-in (when the running version changes); null until its first sign-in. */
+  desktop_app_latest_version?: string | null;
+  desktop_app_os?: string | null;
+  desktop_app_updated_at?: string | null;
 }
 export interface AccountUsage {
   planMinutes: number;

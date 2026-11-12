@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { Check } from 'lucide-react';
 import './SignupProgress.css';
 
-export type SignupStep = 'account' | 'plan' | 'download';
+export type SignupStep = 'account' | 'plan';
 
 interface Props {
     current: SignupStep;
@@ -12,12 +12,13 @@ interface Props {
 const STEPS: { id: SignupStep; label: string }[] = [
     { id: 'account', label: 'Account' },
     { id: 'plan', label: 'Subscription' },
-    { id: 'download', label: 'Download' },
 ];
 
 export default function SignupProgress({ current, hideSubscriptionStep = false }: Props) {
     const steps = hideSubscriptionStep ? STEPS.filter(step => step.id !== 'plan') : STEPS;
     const currentIndex = steps.findIndex(step => step.id === current);
+    // Invited sign-ups have no Subscription step, and a one-step rail says nothing.
+    if (steps.length < 2) return null;
 
     return (
         <ol className="signupProgress" aria-label="Sign-up progress">
