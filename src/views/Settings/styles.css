@@ -150,6 +150,7 @@
 /* MFA Enrollment Modal */
 .mfa-enroll-modal.ds-modal {
     width: 520px;
+    max-width: 100%;
 }
 
 .mfa-enroll-modal__steps {
