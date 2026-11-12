@@ -10,7 +10,10 @@ const AVAILABABLE_ROUTES_WITHOUT_SUBSCRIPTION = [
     '/checkout',
     '/checkout/success',
     '/signup/plan',
+    // Stripe's sign-up success_url; it redirects to '/', but the webhook may not have landed yet.
     '/signup/download',
+    // Old download links: redirect to '/' with the Download modal open, subscribed or not.
+    '/download',
 ];
 
 interface Props {

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import AuthGuard from './components/guards/AuthGuard';
@@ -6,6 +6,7 @@ import GuestGuard from './components/guards/GuestGuard';
 import SignupGuestGuard from './components/guards/SignupGuestGuard';
 import MFAGuard from './components/guards/MFAGuard';
 import Layout from './components/Layout';
+import { useDownloadModalStore } from './store/downloadModalStore';
 
 import Login from './views/Login';
 import PasswordRecovery from './views/PasswordRecovery';
@@ -30,7 +31,6 @@ import useHasSubscription from './hooks/useHasSubscription';
 import useCanManageBilling from './hooks/useCanManageBilling';
 import useIsTeamAdmin from './hooks/useIsTeamAdmin';
 import { isSignupCheckoutWaiting } from './views/SignupPlan/hooks/signupCheckoutSignal';
-import Download from './views/Download';
 
 
 export default function AppRoutes() {
@@ -61,19 +61,20 @@ export default function AppRoutes() {
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
-                                    // Exception: the tab waiting on a sign-up checkout advances to the download step (SAYSO-565).
-                                    ? <Navigate to={isSignupCheckoutWaiting() ? '/signup/download' : '/settings?tab=subscription'} replace />
+                                    // Exception: the tab waiting on a sign-up checkout advances to the dashboard (SAYSO-565).
+                                    ? <Navigate to={isSignupCheckoutWaiting() ? '/' : '/settings?tab=subscription'} replace />
                                     : <SignupPlan />
                             }
                         </AuthGuard>
                     }
                 />
-                {/* Last sign-up step (SAYSO-564): the /download view plus the sign-up-only elements. */}
+                {/* Sign-up ends on the dashboard, where the sidebar Download button is highlighted
+                    (useDownloadSpotlight). Kept as a redirect: Stripe's sign-up success_url still lands here. */}
                 <Route
                     path="/signup/download"
                     element={
                         <AuthGuard>
-                            <Download signup />
+                            <Navigate to="/" replace />
                         </AuthGuard>
                     }
                 />
@@ -190,10 +191,13 @@ export default function AppRoutes() {
                         </AuthGuard>
                     }
                 />
+                {/* The download page is now a modal; old links land on the dashboard with it open. */}
                 <Route
                     path="/download"
                     element={
-                        <Download />
+                        <AuthGuard>
+                            <OpenDownloadModal />
+                        </AuthGuard>
                     }
                 />
                 <Route
@@ -248,4 +252,10 @@ function RedirectKeepingQuery({ to }: { to: string }) {
 function OrganizationRedirect() {
     const { pathname, search, hash } = useLocation();
     return <Navigate to={pathname.replace(/^\/organization/, '/company') + search + hash} replace />;
+}
+
+function OpenDownloadModal() {
+    const openDownloadModal = useDownloadModalStore(state => state.setOpen);
+    useEffect(() => openDownloadModal(true), [openDownloadModal]);
+    return <Navigate to="/" replace />;
 }

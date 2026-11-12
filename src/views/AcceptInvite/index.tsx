@@ -98,7 +98,7 @@ export default function AcceptInvite() {
             await updateGlobalUser(invite!.email);
         },
         onSuccess: () => {
-            navigate("/signup/download", { replace: true });
+            navigate("/", { replace: true });
         },
         onError: (err) => {
             showToast("error", (err as Error).message || "Something went wrong. Please try again.");
