@@ -1,7 +1,7 @@
 import getSureSendPeople from '@/services/integrations/suresend/getSureSendPeople';
 import createSureSendLead from '@/services/integrations/suresend/createSureSendLead';
 import type { SureSendPerson } from '@/services/integrations/suresend/getSureSendPeople';
-import type { CrmCreateLeadInput, CrmLead, CrmProvider } from '../types';
+import type { CrmCreateLeadInput, CrmCreateLeadResult, CrmLead, CrmProvider } from '../types';
 import { crmReauthErrorFrom } from '../errors';
 import { getCrmLeadDetail, updateCrmLeadDetail } from '../services/crmLeadEditApi';
 
@@ -55,7 +55,7 @@ export const suresendProvider: CrmProvider = {
         }
     },
 
-    createLead: async (input: CrmCreateLeadInput): Promise<CrmLead> => {
+    createLead: async (input: CrmCreateLeadInput): Promise<CrmCreateLeadResult> => {
         try {
             const person = await createSureSendLead({
                 firstName: input.firstName,
@@ -64,7 +64,7 @@ export const suresendProvider: CrmProvider = {
                 phone: input.phone ?? '',
                 stage: input.stage ?? '',
             });
-            return normalizeSureSendPerson(person);
+            return { lead: normalizeSureSendPerson(person), created: true };
         } catch (error) {
             throw crmReauthErrorFrom(error, 'suresend');
         }

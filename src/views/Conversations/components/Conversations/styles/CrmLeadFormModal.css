@@ -166,9 +166,26 @@
     color: var(--text-secondary);
 }
 
+.crm-lead__copy-strong {
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-900);
+}
+
 .crm-lead__actions {
     display: flex;
     gap: var(--space-12);
+    max-width: 100%;
+}
+
+.ds-button.crm-lead__link-button {
+    min-width: 0;
+    max-width: 260px;
+}
+
+.crm-lead__link-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .ds-button.crm-lead__outline {

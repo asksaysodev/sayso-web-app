@@ -31,6 +31,12 @@ export interface CrmCreateLeadInput {
     stage?: string;
 }
 
+/** Outcome of a create: `created` is false when the CRM matched an existing person instead. */
+export interface CrmCreateLeadResult {
+    lead: CrmLead;
+    created: boolean;
+}
+
 export interface CrmProvider {
     id: CrmProviderId;
     /** Display name shown everywhere the CRM is named in the UI. */
@@ -42,7 +48,7 @@ export interface CrmProvider {
     /** Whether the lead's email is mandatory in the create/edit forms. */
     emailRequired: boolean;
     fetchLeads: (params: { search?: string; limit: number; offset: number }) => Promise<CrmLeadsPage>;
-    createLead: (input: CrmCreateLeadInput) => Promise<CrmLead>;
+    createLead: (input: CrmCreateLeadInput) => Promise<CrmCreateLeadResult>;
     getLead: (id: string) => Promise<CrmLeadDetail>;
     updateLead: (id: string, input: CrmUpdateLeadInput) => Promise<CrmUpdateLeadResult>;
     /**
