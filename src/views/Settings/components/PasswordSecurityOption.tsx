@@ -16,8 +16,14 @@ export default function PasswordSecurityOption() {
                     </SettingsCardTile>
                 }
                 title="Password"
-                description="Change the password you use to sign in."
-                action={<Button onClick={() => setShowModal(true)}>Update Password</Button>}
+                detail="Change the password you use to sign in."
+                // Empty on purpose: the copy sits in the subtitle, and the description's flex keeps the footer at the bottom.
+                description={null}
+                action={
+                    <Button variant="secondary" size="sm" aria-label="Change password" onClick={() => setShowModal(true)}>
+                        Change
+                    </Button>
+                }
             />
 
             {showModal && <UpdatePasswordModal onClose={() => setShowModal(false)} />}
