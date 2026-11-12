@@ -17,6 +17,8 @@ import { CrmReauthRequiredError } from '@/hooks/integrations/crm/errors';
 import { getProvider } from '@/hooks/integrations/crm/providers/registry';
 import type { CrmLead, CrmProviderId } from '@/hooks/integrations/crm/types';
 import useSureSendStages from '../hooks/useSureSendStages';
+import CrmLeadStateArtwork from './CrmLeadStateArtwork';
+import CrmLeadMatchState from './CrmLeadMatchState';
 import '../styles/CrmLeadFormModal.css';
 
 interface Props {
@@ -57,6 +59,7 @@ export default function CrmLeadFormModal({ mode, open, providerId, leadId = null
     const loadFailed = isEdit && fetchFailed;
     const { stages, isLoading: stagesLoading, isError: stagesError } = useSureSendStages(open && needsStage);
     const [submitError, setSubmitError] = useState<string | null>(null);
+    const [matchedLead, setMatchedLead] = useState<CrmLead | null>(null);
 
     const { register, handleSubmit, reset, control, formState: { errors } } = useForm<FormValues>({
         defaultValues: DEFAULT_VALUES,
@@ -76,20 +79,31 @@ export default function CrmLeadFormModal({ mode, open, providerId, leadId = null
         if (isPending) return;
         reset(DEFAULT_VALUES);
         setSubmitError(null);
+        setMatchedLead(null);
         onClose();
+    };
+
+    const handleLinkMatched = () => {
+        if (!matchedLead) return;
+        onCreated?.(matchedLead);
+        handleClose();
     };
 
     const onSubmit = async (values: FormValues) => {
         setSubmitError(null);
         try {
             if (!isEdit) {
-                const lead = await createLead({
+                const { lead, created } = await createLead({
                     firstName: values.firstName.trim(),
                     lastName: values.lastName.trim(),
                     phone: toE164(values.phone),
                     email: values.email.trim() || undefined,
                     ...(needsStage ? { stage: values.stage } : {}),
                 });
+                if (!created) {
+                    setMatchedLead(lead);
+                    return;
+                }
                 showToast('success', `${lead.name} added to your CRM.`);
                 onCreated?.(lead);
                 handleClose();
@@ -116,6 +130,8 @@ export default function CrmLeadFormModal({ mode, open, providerId, leadId = null
 
     const showLoading = loading;
     const showError = !loading && loadFailed;
+    const showMatch = !isEdit && matchedLead !== null;
+    const isStatePanel = showLoading || showError || showMatch;
 
     return (
         <Modal
@@ -123,12 +139,12 @@ export default function CrmLeadFormModal({ mode, open, providerId, leadId = null
             onOpenChange={isOpen => !isOpen && handleClose()}
             hideClose={showLoading || showError}
             aria-describedby={undefined}
-            className={showLoading || showError ? 'crm-lead-modal crm-lead-modal--state' : 'crm-lead-modal'}
+            className={isStatePanel ? 'crm-lead-modal crm-lead-modal--state' : 'crm-lead-modal'}
         >
             {showLoading && (
                 <>
                     <DialogPrimitive.Title className="crm-lead__sr-only">Edit lead</DialogPrimitive.Title>
-                    <StateArtwork providerId={providerId} tone="info" />
+                    <CrmLeadStateArtwork providerId={providerId} tone="info" />
                     <div className="crm-lead__status">
                         <span className="crm-lead__spinner" aria-hidden="true" />
                         <p className="crm-lead__status-text" role="status">Loading lead from {label}…</p>
@@ -138,7 +154,7 @@ export default function CrmLeadFormModal({ mode, open, providerId, leadId = null
 
             {showError && (
                 <>
-                    <StateArtwork providerId={providerId} tone="error" />
+                    <CrmLeadStateArtwork providerId={providerId} tone="error" />
                     <div className="crm-lead__copy" role="alert">
                         <DialogPrimitive.Title className="crm-lead__copy-title">Couldn't load this lead</DialogPrimitive.Title>
                         <p className="crm-lead__copy-text">{label} didn't respond. Try again.</p>
@@ -150,7 +166,11 @@ export default function CrmLeadFormModal({ mode, open, providerId, leadId = null
                 </>
             )}
 
-            {!showLoading && !showError && (
+            {showMatch && (
+                <CrmLeadMatchState lead={matchedLead} onBack={() => setMatchedLead(null)} onLink={handleLinkMatched} />
+            )}
+
+            {!isStatePanel && (
                 <form className="crm-lead__form" onSubmit={handleSubmit(onSubmit)} noValidate>
                     <div className="crm-lead__header">
                         <CrmProviderTile providerId={providerId} />
@@ -246,15 +266,5 @@ export default function CrmLeadFormModal({ mode, open, providerId, leadId = null
                 </form>
             )}
         </Modal>
-    );
-}
-
-function StateArtwork({ providerId, tone }: { providerId: CrmProviderId; tone: 'info' | 'error' }) {
-    return (
-        <div className={`crm-lead__halo crm-lead__halo--${tone}`}>
-            <div className={`crm-lead__ring crm-lead__ring--${tone}`}>
-                <CrmProviderTile providerId={providerId} size="lg" />
-            </div>
-        </div>
     );
 }
