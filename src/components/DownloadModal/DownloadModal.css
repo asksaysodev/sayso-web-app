@@ -1,4 +1,4 @@
-.download-view-wrapper {
+.download-modal.ds-modal {
     --dl-bg: #f6f6f6;
     --dl-card-bg: #fbfbfb;
     --dl-border: #eaeaeb;
@@ -8,29 +8,19 @@
     --dl-title: #001f81;
     --dl-brand: #2367ee;
     --dl-brand-hover: #1a56d1;
-    --dl-link: #054dd2;
     --dl-badge-bg: #e2e8f5;
 
-    min-height: 100vh;
-    width: 100%;
-    background-color: var(--dl-bg);
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    padding: 30px 32px 40px;
+    gap: 0;
+    width: 960px;
+    padding: 40px 64px 40px;
+    overflow-x: hidden;
+    background-color: var(--dl-bg);
     font-family: 'DM Sans', sans-serif;
     font-variation-settings: 'opsz' 14;
     color: var(--dl-text-primary);
-    overflow-x: hidden;
 }
 
-.download-header {
-    align-self: stretch;
-    display: flex;
-    min-height: 26px;
-}
-
-.download-back-link,
 .download-link {
     display: inline-flex;
     align-items: center;
@@ -46,103 +36,63 @@
     white-space: nowrap;
 }
 
-.download-back-link {
+.download-link {
     color: var(--dl-text-secondary);
 }
 
-.download-link {
-    color: var(--dl-link);
-}
-
-.download-back-link:hover,
 .download-link:hover {
     text-decoration: underline;
-}
-
-.auto-redirect-pill {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    height: 36px;
-    padding: 4px 4px 4px 10px;
-    border: 1px solid var(--dl-border);
-    border-radius: 999px;
-    background: var(--dl-card-bg);
-}
-
-.auto-redirect-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--dl-brand);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-}
-
-.auto-redirect-label {
-    color: var(--dl-text-secondary);
-    font-size: 14px;
-}
-
-.auto-redirect-cancel-btn {
-    border: none;
-    border-radius: 999px;
-    padding: 5px 12px;
-    background: var(--dl-badge-bg);
-    color: var(--dl-brand);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
 }
 
 .download-hero {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 32px;
-    margin-top: 36px;
+    gap: 16px;
 }
 
+/* Email hero (server utils/emailHero.js) at 80%: 240x200 glow, 120/98 rings, 68 disc. */
 .download-hero-logo {
-    position: relative;
-    width: 240px;
-    height: 240px;
-}
-
-.download-hero-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 192px;
+    height: 160px;
+    margin-bottom: -16px;
+    background-image: radial-gradient(
+        circle 80px at 50% 51%,
+        rgba(134, 173, 242, 0.52) 0%,
+        rgba(134, 173, 242, 0.46) 35%,
+        rgba(134, 173, 242, 0.375) 50%,
+        rgba(134, 173, 242, 0.25) 65%,
+        rgba(134, 173, 242, 0.16) 75%,
+        rgba(134, 173, 242, 0.089) 85%,
+        rgba(134, 173, 242, 0.03) 95%,
+        rgba(134, 173, 242, 0) 100%
+    );
 }
 
 .download-hero-ring {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 50%;
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    background-color: rgba(255, 255, 255, 0.03);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.45), inset -1px -1px 0 rgba(255, 255, 255, 0.45);
 }
 
 .download-hero-ring--inner {
-    width: 81.25%;
-    height: 81.25%;
+    width: 78px;
+    height: 78px;
 }
 
 .download-hero-icon {
-    position: relative;
     display: block;
+    width: 54px;
+    height: 54px;
 }
 
 .download-title {
@@ -156,15 +106,17 @@
 
 .download-cards {
     display: flex;
-    align-items: flex-start;
+    /* Windows and Mac cards share one height; the footer sits at the bottom of both. */
+    align-items: stretch;
     gap: 24px;
     width: 100%;
-    max-width: 912px;
-    margin-top: 64px;
+    max-width: 880px;
+    margin-top: 40px;
 }
 
 .download-card {
     flex: 1 1 0;
+    justify-content: space-between;
     text-align: left;
     min-width: 0;
     display: flex;
@@ -245,8 +197,8 @@
 .download-card-actions {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    /* Mac: "Not sure which chip you have?" sits right beside the Download button, same row. */
+    flex-wrap: nowrap;
     gap: 12px;
 }
 
@@ -313,34 +265,17 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-top: auto;
-    padding-top: 64px;
+    padding-top: 48px;
     font-size: 14px;
 }
 
 @media (max-width: 768px) {
-    .download-view-wrapper {
-        padding: 20px 16px 32px;
+    .download-modal.ds-modal {
+        padding: 32px 24px 24px;
     }
 
     .download-hero {
-        gap: 24px;
-        margin-top: 16px;
-    }
-
-    .download-hero-logo {
-        width: 160px;
-        height: 160px;
-    }
-
-    .download-hero-icon {
-        width: 160px;
-        height: 160px;
-    }
-
-    .download-hero-glow {
-        width: 296px;
-        height: 296px;
+        gap: 16px;
     }
 
     .download-title {
@@ -353,7 +288,7 @@
         flex-direction: column;
         align-items: stretch;
         max-width: 480px;
-        margin-top: 40px;
+        margin-top: 24px;
         gap: 16px;
     }
 
@@ -362,29 +297,6 @@
     }
 
     .download-support {
-        padding-top: 40px;
-    }
-}
-
-/* Sign-up step 3 (SAYSO-564, Figma 567:1266): progress rail + "Go to dashboard". */
-.download-view-wrapper--signup {
-    position: relative;
-}
-
-.download-signup-progress {
-    position: absolute;
-    top: 208px;
-    left: 32px;
-}
-
-.download-dashboard-btn {
-    margin-top: 40px;
-}
-
-@media (max-width: 767px) {
-    .download-signup-progress {
-        position: static;
-        align-self: stretch;
-        margin-bottom: 16px;
+        padding-top: 32px;
     }
 }

@@ -13,6 +13,7 @@ export default function Sidebar() {
             <aside className={clsx('sidebar', collapsed && 'sidebar--collapsed')}>
                 <SidebarContent
                     collapsed={collapsed}
+                    spotlightDownload
                     footer={<SidebarCollapseToggle collapsed={collapsed} onToggle={toggleCollapsed} />}
                 />
             </aside>

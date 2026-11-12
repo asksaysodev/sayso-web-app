@@ -8,11 +8,12 @@ import useNavItems from './useNavItems';
 interface Props {
     collapsed?: boolean;
     hideLaunchCoach?: boolean;
+    spotlightDownload?: boolean;
     onNavigate?: () => void;
     footer?: ReactNode;
 }
 
-export default function SidebarContent({ collapsed = false, hideLaunchCoach, onNavigate, footer }: Props) {
+export default function SidebarContent({ collapsed = false, hideLaunchCoach, spotlightDownload, onNavigate, footer }: Props) {
     const navItems = useNavItems();
 
     return (
@@ -31,7 +32,7 @@ export default function SidebarContent({ collapsed = false, hideLaunchCoach, onN
                     <SidebarHelpItem collapsed={collapsed} />
                 </div>
                 <div className='sidebar__divider' />
-                <SidebarActions collapsed={collapsed} hideLaunchCoach={hideLaunchCoach} onNavigate={onNavigate} />
+                <SidebarActions collapsed={collapsed} hideLaunchCoach={hideLaunchCoach} spotlightDownload={spotlightDownload} onNavigate={onNavigate} />
                 {footer &&
                     <>
                         <div className='sidebar__divider' />

@@ -10,7 +10,6 @@ const AVAILABABLE_ROUTES_WITHOUT_SUBSCRIPTION = [
     '/checkout',
     '/checkout/success',
     '/signup/plan',
-    '/signup/download',
 ];
 
 interface Props {
