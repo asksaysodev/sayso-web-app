@@ -5,6 +5,7 @@ import Sidebar from './Sidebar/Sidebar';
 import MobileSidebar from './Sidebar/MobileSidebar';
 import Topbar from './Topbar/Topbar';
 import NotificationWidget from './NotificationWidget';
+import DownloadModal from './DownloadModal/DownloadModal';
 
 import './Layout.css';
 
@@ -30,6 +31,7 @@ export default function Layout({ children }: Props) {
         </div>
       </div>
       <NotificationWidget />
+      <DownloadModal />
     </div>
   );
 }

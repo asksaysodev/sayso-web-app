@@ -11,7 +11,7 @@ const POLL_INTERVAL_MS = 5000;
 /**
  * "Checkout open in another tab" state for /signup/plan (SAYSO-565).
  * While waiting: polls the account (interval + focus), leaves on cancel from the Stripe tab,
- * and advances to /signup/download once the subscription is active.
+ * and advances to the dashboard once the subscription is active.
  */
 export default function useSignupCheckoutWaiting() {
     const [waitingPriceId, setWaitingPriceId] = useState<string | null>(null);
@@ -55,7 +55,7 @@ export default function useSignupCheckoutWaiting() {
     useEffect(() => {
         if (isWaiting && hasSubscription) {
             // The flag is still set, so the route guard also sends us here; navigate explicitly too.
-            navigate('/signup/download', { replace: true });
+            navigate('/', { replace: true });
         }
     }, [isWaiting, hasSubscription, navigate]);
 
