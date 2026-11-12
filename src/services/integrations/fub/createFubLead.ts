@@ -16,9 +16,10 @@ export interface CreateFubLeadResult {
 /**
  * Creates a FUB lead with deduplicate=true. FUB answers 201 for a new person and
  * 200 with the existing person (unchanged) when the email or phone matches.
+ * Not auto-retried: a retry after a lost response would come back as a false match.
  */
 export default async function createFubLead(params: CreateFubLeadParams): Promise<CreateFubLeadResult> {
-    const response = await apiClient.post<FubLead>('/fub/leads', params);
+    const response = await apiClient.post<FubLead>('/fub/leads', params, { skipRetry: true });
     if (!response?.data) throw new Error('Failed to create FUB lead');
     return { person: response.data, created: response.status === 201 };
 }
