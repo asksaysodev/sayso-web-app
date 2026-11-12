@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { CircleHelp } from 'lucide-react';
 import { Modal } from '@/components/ds/Modal';
@@ -19,6 +19,12 @@ import './DownloadModal.css';
 export default function DownloadModal() {
     const open = useDownloadModalStore(state => state.open);
     const setOpen = useDownloadModalStore(state => state.setOpen);
+    const { globalUser } = useAuth();
+
+    // The open flag is global: never carry it over to the next account signing in.
+    useEffect(() => {
+        if (!globalUser) setOpen(false);
+    }, [globalUser, setOpen]);
 
     return (
         <Modal open={open} onOpenChange={setOpen} className='download-modal' aria-describedby={undefined}>

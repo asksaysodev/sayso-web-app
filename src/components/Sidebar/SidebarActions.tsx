@@ -52,7 +52,7 @@ export default function SidebarActions({ collapsed, hideLaunchCoach = false, spo
             }
             {showSpotlight && <SpotlightBackdrop target={downloadRef} onDismiss={spotlight.dismiss} />}
             <PopoverPrimitive.Root open={showSpotlight}>
-                <SidebarTooltip label={DOWNLOAD_LABEL} enabled={collapsed && !showSpotlight}>
+                <SidebarTooltip label={DOWNLOAD_LABEL} enabled={collapsed} suppressed={showSpotlight}>
                     <PopoverPrimitive.Anchor asChild>
                         <Button
                             ref={downloadRef}

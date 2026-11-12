@@ -23,23 +23,40 @@ export default function SpotlightBackdrop({ target, onDismiss }: Props) {
     const [rect, setRect] = useState<Rect | null>(null);
     const [viewport, setViewport] = useState({ w: window.innerWidth, h: window.innerHeight });
 
-    // Follow the target through resizes and the sidebar's collapse transition.
+    // Follow the target through resizes, scrolling and the sidebar's collapse transition.
+    // Event-driven: an always-on rAF loop would force layout every frame for the whole visit.
     useEffect(() => {
+        const el = target.current;
+        if (!el) return;
         let frame = 0;
-        const tick = () => {
-            const el = target.current;
-            if (el) {
-                const r = el.getBoundingClientRect();
-                const next = { x: r.left, y: r.top, w: r.width, h: r.height };
-                setRect(prev => (sameRect(prev, next) ? prev : next));
-            }
+        const measure = () => {
+            const r = el.getBoundingClientRect();
+            const next = { x: r.left, y: r.top, w: r.width, h: r.height };
+            setRect(prev => (sameRect(prev, next) ? prev : next));
             setViewport(prev => (prev.w === window.innerWidth && prev.h === window.innerHeight
                 ? prev
                 : { w: window.innerWidth, h: window.innerHeight }));
-            frame = requestAnimationFrame(tick);
         };
-        frame = requestAnimationFrame(tick);
-        return () => cancelAnimationFrame(frame);
+        const schedule = () => {
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(measure);
+        };
+        measure();
+        const observer = new ResizeObserver(schedule);
+        observer.observe(el);
+        window.addEventListener('resize', schedule);
+        window.addEventListener('scroll', schedule, true);
+        // The collapse animates the sidebar's width; the button moves with it.
+        document.addEventListener('transitionrun', schedule);
+        document.addEventListener('transitionend', schedule);
+        return () => {
+            cancelAnimationFrame(frame);
+            observer.disconnect();
+            window.removeEventListener('resize', schedule);
+            window.removeEventListener('scroll', schedule, true);
+            document.removeEventListener('transitionrun', schedule);
+            document.removeEventListener('transitionend', schedule);
+        };
     }, [target]);
 
     if (!rect) return null;

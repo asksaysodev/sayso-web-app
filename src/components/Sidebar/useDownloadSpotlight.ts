@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import useHasSubscription from '@/hooks/useHasSubscription';
+import { useDownloadModalStore } from '@/store/downloadModalStore';
 
 const DISMISSED_KEY = 'sayso-download-spotlight-dismissed';
+const REFRESH_MIN_INTERVAL_MS = 30_000;
 
 function readDismissed(): boolean {
     try {
@@ -37,11 +39,13 @@ export function isDownloadSpotlightAudience(account: { account_type?: string; ro
 export default function useDownloadSpotlight(active: boolean) {
     const { globalUser, updateGlobalUser } = useAuth();
     const hasSubscription = useHasSubscription();
-    const { pathname } = useLocation();
+    const { pathname, search } = useLocation();
+    const modalOpen = useDownloadModalStore(state => state.open);
+    const lastRefreshRef = useRef(0);
     const [dismissed, setDismissed] = useState(readDismissed);
 
     // Non-subscribers see the plans empty state on the dashboard, not the desktop nudge.
-    const enabled = active && !!globalUser?.id && isDownloadSpotlightAudience(globalUser) && hasSubscription && pathname === '/' && !dismissed;
+    const enabled = active && !!globalUser?.id && isDownloadSpotlightAudience(globalUser) && hasSubscription && pathname === '/' && !dismissed && !modalOpen;
 
     const hasUsedDesktop = !!globalUser?.desktop_app_latest_version;
     const email = globalUser?.email;
@@ -51,7 +55,12 @@ export default function useDownloadSpotlight(active: boolean) {
     useEffect(() => {
         if (!enabled || hasUsedDesktop || !email) return;
         const refresh = () => {
-            if (document.visibilityState === 'visible') void updateGlobalUser(email).catch(() => undefined);
+            if (document.visibilityState !== 'visible') return;
+            // Throttled: a full account fetch per tab switch is too much for frequent switchers.
+            const now = Date.now();
+            if (now - lastRefreshRef.current < REFRESH_MIN_INTERVAL_MS) return;
+            lastRefreshRef.current = now;
+            void updateGlobalUser(email).catch(() => undefined);
         };
         document.addEventListener('visibilitychange', refresh);
         return () => document.removeEventListener('visibilitychange', refresh);
@@ -67,7 +76,7 @@ export default function useDownloadSpotlight(active: boolean) {
     }, []);
 
     // Dev-only preview for accounts that already signed in on desktop: add ?spotlight=1 to the URL.
-    const devForce = import.meta.env.DEV && new URLSearchParams(window.location.search).has('spotlight');
+    const devForce = import.meta.env.DEV && new URLSearchParams(search).has('spotlight');
 
     return { visible: enabled && (!hasUsedDesktop || devForce), dismiss };
 }
