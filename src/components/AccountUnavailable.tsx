@@ -1,7 +1,6 @@
-import SaysoButton from './SaysoButton';
+import { LuX } from 'react-icons/lu';
+import { Button } from '@/components/ds/Button';
 import '../styles/AccountUnavailable.css';
-
-import saysoLogo from '/assets/sayso.svg';
 
 interface Props {
     onRetry: () => void;
@@ -18,14 +17,18 @@ interface Props {
 export default function AccountUnavailable({ onRetry }: Props) {
     return (
         <div className="account-unavailable-container">
-            <div className="account-unavailable-card">
-                <img className="account-unavailable-logo" src={saysoLogo} alt="Sayso" />
+            <div className="account-unavailable-content" role="alert">
+                <span className="account-unavailable-icon" aria-hidden="true">
+                    <LuX size={24} />
+                </span>
                 <h1 className="account-unavailable-title">We couldn't load your account</h1>
                 <p className="account-unavailable-body">
                     You're still signed in — we just couldn't reach your account details.
                     This is usually temporary.
                 </p>
-                <SaysoButton label="Try again" onClick={onRetry} fullWidth />
+                <Button className="account-unavailable-retry" onClick={onRetry}>
+                    Try again
+                </Button>
             </div>
         </div>
     );

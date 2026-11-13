@@ -6,39 +6,49 @@
 	align-items: center;
 	justify-content: center;
 	background-color: var(--sayso-white);
-	padding: 24px;
+	padding: var(--space-24);
+	font-family: var(--font-ds);
 }
 
-.account-unavailable-card {
+.account-unavailable-content {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	text-align: center;
-	gap: 12px;
-	max-width: 380px;
+	gap: var(--space-8);
+	max-width: 400px;
 	width: 100%;
-	padding: 32px;
-	background-color: #fff;
-	border: 1px solid var(--sayso-border);
-	border-radius: 12px;
 }
 
-.account-unavailable-logo {
+.account-unavailable-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
 	height: 48px;
-	object-fit: contain;
-	margin-bottom: 4px;
+	margin-bottom: var(--space-8);
+	border-radius: var(--radius-full);
+	background-color: var(--error-bg);
+	color: var(--error-icon);
 }
 
 .account-unavailable-title {
-	font-size: 18px;
-	font-weight: 600;
-	color: var(--sayso-darkgray);
 	margin: 0;
+	font-size: var(--text-h3-size);
+	line-height: var(--text-h3-line);
+	letter-spacing: var(--text-h3-tracking);
+	font-weight: var(--font-weight-semibold);
+	color: var(--text-primary);
 }
 
 .account-unavailable-body {
-	font-size: 14px;
-	line-height: 1.5;
-	color: var(--sayso-lightgray);
-	margin: 0 0 8px;
+	margin: 0;
+	font-size: var(--text-body-lg-size);
+	line-height: 24px;
+	color: var(--text-secondary);
+}
+
+.account-unavailable-retry {
+	margin-top: var(--space-16);
+	min-width: 160px;
 }
