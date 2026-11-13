@@ -29,8 +29,8 @@
 }
 
 .ds-checkbox__input:checked {
-    border-color: var(--primary-500);
-    background-color: var(--primary-500);
+    border-color: var(--interactive);
+    background-color: var(--interactive);
 }
 
 .ds-checkbox__check {

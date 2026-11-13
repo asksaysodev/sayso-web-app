@@ -30,8 +30,8 @@
 .ds-field:focus-visible,
 .ds-field[data-state='open'] {
     outline: none;
-    border-color: var(--primary-500);
-    box-shadow: inset 0 0 0 1px var(--primary-500);
+    border-color: var(--interactive);
+    box-shadow: inset 0 0 0 1px var(--interactive);
 }
 
 .ds-field--invalid,
