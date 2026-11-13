@@ -31,8 +31,8 @@
 .ds-rows-per-page__trigger:focus-visible,
 .ds-rows-per-page__trigger[data-state='open'] {
     outline: none;
-    border-color: var(--primary-500);
-    box-shadow: inset 0 0 0 1px var(--primary-500);
+    border-color: var(--interactive);
+    box-shadow: inset 0 0 0 1px var(--interactive);
 }
 
 .ds-rows-per-page__icon {
@@ -69,5 +69,5 @@
 
 .ds-rows-per-page__check {
     display: inline-flex;
-    color: var(--primary-500);
+    color: var(--interactive);
 }

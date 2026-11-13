@@ -76,7 +76,7 @@ export default function SettingsReports() {
                         disabled={isSaving}
                         onCheckedChange={(checked) => save({ enabled: checked })}
                         aria-label='Email reports'
-                        className='data-[state=checked]:bg-[var(--primary-800)] data-[state=unchecked]:bg-input'
+                        className='data-[state=checked]:bg-[var(--interactive)] data-[state=unchecked]:bg-input'
                     />
                 </div>
             </Card>

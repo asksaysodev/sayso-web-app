@@ -112,7 +112,7 @@
     border-radius: var(--ss-r-ctrl);
     transition: border-color .15s, box-shadow .15s;
 }
-.suresend-modal .ss-field:focus-within { border-color: var(--ss-accent); box-shadow: 0 0 0 3.5px var(--ss-accent-soft); }
+.suresend-modal .ss-field:focus-within { border-color: var(--interactive); box-shadow: 0 0 0 3.5px var(--ss-accent-soft); }
 .suresend-modal .ss-field input {
     flex: 1;
     min-width: 0;
