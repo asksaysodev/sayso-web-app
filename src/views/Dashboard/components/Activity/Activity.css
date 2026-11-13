@@ -70,8 +70,9 @@
     right: 0;
     min-height: 2px;
     border-radius: 4px 4px 0 0;
-    background-color: var(--primary-500);
-    transition: height 0.3s ease;
+    /* Soft blue so the chart doesn't pull focus; hover lifts it to the accent (primary-800). */
+    background-color: var(--primary-300);
+    transition: height 0.3s ease, background-color 0.15s ease;
     /* Grow from the baseline on mount, as in production. Bars are keyed by date, so it replays on week change. */
     transform-origin: bottom;
     animation: dashboard-activity-bar-grow 0.6s ease-out;
@@ -93,6 +94,10 @@
     opacity: 0;
     transform: translateX(-50%);
     transition: opacity 0.15s ease;
+}
+
+.dashboard-activity-chart__bar:hover {
+    background-color: var(--primary-800);
 }
 
 .dashboard-activity-chart__bar:hover .dashboard-activity-chart__tooltip {

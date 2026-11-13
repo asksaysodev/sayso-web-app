@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { CircleHelp } from 'lucide-react';
 import { Modal } from '@/components/ds/Modal';
-import ButtonSpinner from '@/components/ButtonSpinner';
 import { useAuth } from '@/context/AuthContext';
 import { useDownloadModalStore } from '@/store/downloadModalStore';
 import { openExternal } from '@/utils/helpers/openExternal';
@@ -77,11 +76,15 @@ function DownloadModalContent() {
                     description='Bring Sayso to your Windows desktop.'
                     recommended={detectedOS === 'windows'}
                     unavailable={!isLoading && !windowsUrl}
+                    loading={isLoading}
                     actions={
-                        <button className='download-btn' disabled={isLoading || !windowsUrl} onClick={handleWindowsClick}>
-                            Download
-                            {isLoading && <ButtonSpinner />}
-                        </button>
+                        isLoading ? (
+                            <span className='skeleton download-btn-skeleton' aria-hidden='true' />
+                        ) : (
+                            <button className='download-btn' disabled={!windowsUrl} onClick={handleWindowsClick}>
+                                Download
+                            </button>
+                        )
                     }
                 />
                 <DownloadOptionCard
@@ -92,15 +95,19 @@ function DownloadModalContent() {
                     description='Choose the right version for your Mac.'
                     recommended={detectedOS === 'mac'}
                     unavailable={!isLoading && !siliconUrl && !intelUrl}
+                    loading={isLoading}
                     actions={
                         <>
-                            <MacDownloadMenu
-                                siliconUrl={siliconUrl}
-                                intelUrl={intelUrl}
-                                isLoading={isLoading}
-                                onDownload={openExternal}
-                                onMobileClick={openMobileModal}
-                            />
+                            {isLoading ? (
+                                <span className='skeleton download-btn-skeleton download-btn-skeleton--menu' aria-hidden='true' />
+                            ) : (
+                                <MacDownloadMenu
+                                    siliconUrl={siliconUrl}
+                                    intelUrl={intelUrl}
+                                    onDownload={openExternal}
+                                    onMobileClick={openMobileModal}
+                                />
+                            )}
                             <ChipHelpPopover />
                         </>
                     }

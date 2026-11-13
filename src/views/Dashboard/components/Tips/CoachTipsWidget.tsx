@@ -1,32 +1,17 @@
-import type { CSSProperties } from 'react';
 import saysoLogo from '/assets/sayso.svg';
 import WidgetCard from '../widget/WidgetCard';
 import WidgetErrorState from '../widget/WidgetErrorState';
 import TipsPager from './TipsPager';
-import TipCardSkeleton from './TipCardSkeleton';
+import TipsSkeleton from './TipsSkeleton';
 import useDashboardTips from '../../hooks/useDashboardTips';
-import useTipsPerPage from '../../hooks/useTipsPerPage';
 import './Tips.css';
-
-const SKELETON_CARDS = ['tip-1', 'tip-2', 'tip-3'];
 
 export default function CoachTipsWidget() {
     const { tips, scopeKey, isError, isRetrying, retry } = useDashboardTips();
-    const [skeletonRef, skeletonCount] = useTipsPerPage();
 
     const renderBody = () => {
         if (isError) return <WidgetErrorState subject='coach tips' onRetry={retry} isRetrying={isRetrying} />;
-        if (!tips) {
-            return (
-                <div
-                    ref={skeletonRef}
-                    className='dashboard-tips__grid'
-                    style={{ '--dashboard-tips-columns': skeletonCount } as CSSProperties}
-                >
-                    {SKELETON_CARDS.slice(0, skeletonCount).map((id) => <TipCardSkeleton key={id} />)}
-                </div>
-            );
-        }
+        if (!tips) return <TipsSkeleton />;
         return <TipsPager key={scopeKey} tips={tips} />;
     };
 

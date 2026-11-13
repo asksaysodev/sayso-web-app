@@ -64,7 +64,7 @@ export default function MFAEnrollmentModal({ enrollmentData, onSuccess, onCancel
     };
 
     return (
-        <Modal open onOpenChange={handleOpenChange} hideClose={isVerifying} className='mfa-enroll-modal'>
+        <Modal open onOpenChange={handleOpenChange} hideClose={isVerifying} className='mfa-enroll-modal settings-theme'>
             <ModalHeader
                 title='Set up two-factor authentication'
                 description={

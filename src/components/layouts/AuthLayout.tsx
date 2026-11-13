@@ -64,7 +64,7 @@ export default function AuthLayout({ children, title, headerLink, aside, headerA
 
             <footer className="authLayoutFooter">
                 <span>Need help?</span>
-                <a href={`mailto:${SUPPORT_EMAIL}`} className="authLayoutTextLink">
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="authLayoutTextLink authLayoutTextLink--muted">
                     Contact Support
                     <CircleHelp size={20} strokeWidth={1.75} aria-hidden="true" />
                 </a>

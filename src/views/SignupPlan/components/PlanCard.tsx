@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { Armchair, ChevronRight, CircleUser, Clock, Gift, Users } from 'lucide-react';
+import { Armchair, ChevronRight, Clock, Gift, User, Users } from 'lucide-react';
 
 import { Button } from '@/components/ds/Button';
 import { useAuth } from '@/context/AuthContext';
@@ -15,6 +15,7 @@ import PackageOverlay from './PackageOverlay';
 import PackageTrigger from './PackageTrigger';
 import getPlanDetails from '../utils/getPlanDetails';
 import PlanDetailsModal from './PlanDetailsModal';
+import RollingPrice from './RollingPrice';
 
 interface Props {
     plan: PricingPlan;
@@ -102,11 +103,12 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const showFrom = needsPackage && !packageSelected;
     const isYearly = selectedBillingTab === BillingIntervalEnum.YEAR;
     const formatDisplay = (amount: number) =>
-        isYearly ? formatPrice(amount / 12, { keepCents: true }) : formatPrice(amount);
+        // Yearly shows the monthly equivalent, rounded up to whole dollars (e.g. 124.92 → 125).
+        isYearly ? formatPrice(Math.ceil(Math.round((amount / 12) * 100) / 100)) : formatPrice(amount);
 
     const includedMinutesPerMonth = effectivePricingOption?.includedMinutesPerMonth ?? includedMinutes ?? 0;
     const showTrialBadge = hasTrial && !!trialDays && trialIncludedMinutes != null;
-    const Icon = accountType === 'team' ? Users : CircleUser;
+    const Icon = accountType === 'team' ? Users : User;
 
     const openPicker = () => {
         pickerOpener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -142,9 +144,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const ctaDisabled = isCheckoutPending || hasSubscription;
     const ctaLabel = !purchasable ? 'Contact sales' : showFrom ? 'Select plan' : `Choose ${planName}`;
 
-    const priceSub = isYearly
-        ? `Billed annually ${showFrom ? 'from' : 'at'} $${formatPrice(finalDisplayPrice)}`
-        : showFrom ? `Plans start at $${formatPrice(finalDisplayPrice)} / month` : 'Billed monthly';
+    const priceSub = isYearly ? 'Billed annually' : 'Billed monthly';
     const priceLabel = purchasable
         ? `${showFrom ? 'from ' : ''}$${formatDisplay(finalDisplayPrice)}/month · ${priceSub}`
         : "Let's talk · Pricing tailored to your team";
@@ -175,7 +175,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                         <>
                             <div className="signupPlanPriceRow">
                                 {showFrom && <span className="signupPlanPriceFrom">from</span>}
-                                <span className="signupPlanPriceAmount">${formatDisplay(finalDisplayPrice)}</span>
+                                <RollingPrice className="signupPlanPriceAmount" value={formatDisplay(finalDisplayPrice)} />
                                 <span className="signupPlanPricePeriod">/month</span>
                                 {discountDollars > 0 && (
                                     <span className="signupPlanPriceStrike" aria-label={`was $${formatDisplay(baseDisplayPrice)}`}>

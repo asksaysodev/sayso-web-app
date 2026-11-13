@@ -9,10 +9,51 @@
     width: 100%;
 }
 
-.signupPlanLoading {
-    display: flex;
-    justify-content: center;
-    padding: var(--space-60) 0;
+/* Loading skeleton (SignupPlanSkeleton): blocks sized to the loaded content they stand in for. */
+.signupPlanSkeletonToggle {
+    width: 212px;
+    height: 44px;
+    border-radius: var(--radius-12);
+}
+
+.signupPlanSkeletonIcon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-8);
+}
+
+.signupPlanSkeletonName {
+    width: 120px;
+    height: var(--text-h3-line);
+    border-radius: var(--radius-8);
+}
+
+.signupPlanSkeletonPrice {
+    width: 200px;
+    height: 44px;
+    border-radius: var(--radius-8);
+}
+
+.signupPlanSkeletonPriceSub {
+    width: 110px;
+    height: 20px;
+}
+
+.signupPlanSkeletonChip {
+    height: 56px;
+    border-radius: var(--radius-12);
+}
+
+.signupPlanSkeletonCta {
+    height: 44px;
+    border-radius: var(--radius-full);
+}
+
+.signupPlanSkeletonIncluded {
+    width: 150px;
+    height: 22px;
+    margin: var(--space-4) 0;
 }
 
 .signupPlanSpinner {
@@ -44,8 +85,8 @@
 
 .signupPlanSave {
     position: absolute;
-    top: -12px;
-    right: -14px;
+    top: -16px;
+    right: -36px;
     padding: 2px var(--space-8);
     border-radius: var(--radius-full);
     background-color: var(--info-text);
@@ -55,6 +96,31 @@
     line-height: 16px;
     white-space: nowrap;
     pointer-events: none;
+    /* Arrives just after the plans: a short pause, then a gentle fade, rise and settle. */
+    animation: signupPlanSaveIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+}
+
+@keyframes signupPlanSaveIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .signupPlanSave {
+        animation: signupPlanSaveFade 0.3s ease-out 0.4s both;
+    }
+
+    @keyframes signupPlanSaveFade {
+        from {
+            opacity: 0;
+        }
+    }
 }
 
 .signupPlanSpecial {
@@ -184,6 +250,72 @@
     line-height: 44px;
     letter-spacing: -0.8px;
     color: var(--text-primary);
+}
+
+/* Rolling price: each digit is a 0–9 strip that slides to the new value (odometer style).
+   The window reaches past the line box by --rolling-fade and is masked, so digits fade as they enter and leave. */
+.rollingPrice {
+    --rolling-fade: 0.3em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.rollingDigit {
+    position: relative;
+    display: inline-block;
+}
+
+.rollingDigitGhost {
+    visibility: hidden;
+}
+
+.rollingDigitWindow {
+    position: absolute;
+    inset: calc(-1 * var(--rolling-fade)) 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--rolling-fade), #000 calc(100% - var(--rolling-fade)), transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 var(--rolling-fade), #000 calc(100% - var(--rolling-fade)), transparent);
+}
+
+.rollingDigitStrip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Each cell is as tall as the window (line box + fade above and below), so neighbouring digits stay out of view at rest. */
+.rollingDigitStrip > span {
+    padding-block: var(--rolling-fade);
+}
+
+.rollingSymbol {
+    display: inline-block;
+}
+
+.rollingEnter {
+    animation: rollingEnter 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rollingEnter {
+    from {
+        opacity: 0;
+        transform: translateY(0.4em);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rollingDigitStrip {
+        transition: none;
+    }
+
+    .rollingEnter {
+        animation: none;
+    }
 }
 
 .signupPlanPriceFrom,

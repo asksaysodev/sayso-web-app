@@ -1,0 +1,34 @@
+/* Same 44px height as a .sidebar__item (12px padding + 16px line + 12px) rounded up. */
+.app-shell-skeleton__row {
+    display: block;
+    width: 100%;
+    height: 44px;
+    border-radius: var(--radius-8);
+}
+
+.sidebar--collapsed .app-shell-skeleton__row {
+    width: 40px;
+    margin: 0 auto;
+}
+
+.app-shell-skeleton__breadcrumb {
+    display: block;
+    width: 180px;
+    height: 20px;
+    border-radius: var(--radius-8);
+}
+
+.app-shell-skeleton__menu {
+    display: block;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-8);
+}
+
+.app-shell-skeleton__avatar {
+    display: block;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+}

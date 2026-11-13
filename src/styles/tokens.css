@@ -23,6 +23,7 @@
   --primary-800: #001f81;
   --primary-900: #000f56;
   --text-brand: #054dd2;
+  --interactive: var(--primary-500);
 
   /* Surface */
   --surface-bg: #ffffff;

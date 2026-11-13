@@ -28,7 +28,7 @@
 
 .allocated-hours-card__tile--primary {
     background-color: var(--primary-50);
-    color: var(--primary-500);
+    color: var(--primary-800);
 }
 
 .allocated-hours-card__tile--warning {
