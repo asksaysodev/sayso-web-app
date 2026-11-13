@@ -44,8 +44,8 @@
 
 .signupPlanSave {
     position: absolute;
-    top: -12px;
-    right: -14px;
+    top: -16px;
+    right: -36px;
     padding: 2px var(--space-8);
     border-radius: var(--radius-full);
     background-color: var(--info-text);
