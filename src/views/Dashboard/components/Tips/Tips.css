@@ -135,6 +135,33 @@
     width: 55%;
 }
 
+/* Lines sit on the body's 20px line grid inside its fixed height (see .dashboard-tip-card__body). */
+.dashboard-tip-card__body-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dashboard-tip-card__body-skeleton .dashboard-tip-card__line-skeleton {
+    flex-shrink: 0;
+}
+
+.dashboard-tip-card__body-skeleton .dashboard-tip-card__line-skeleton:last-child {
+    width: 55%;
+}
+
+/* Pagination row: range text + Back/Next (ds sm buttons, 36px). */
+.dashboard-tips__range-skeleton {
+    width: 64px;
+    height: 16px;
+}
+
+.dashboard-tips__nav-skeleton {
+    width: 88px;
+    height: 36px;
+    border-radius: var(--radius-8);
+}
+
 .dashboard-tips__empty.dashboard-widget-state {
     min-height: 285px;
     padding: var(--space-32) 60px;

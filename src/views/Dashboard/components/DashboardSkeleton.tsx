@@ -1,20 +1,16 @@
-import type { CSSProperties } from 'react';
 import { ChartColumn, Phone, CalendarCheck, Target } from 'lucide-react';
 import saysoLogo from '/assets/sayso.svg';
 import AppShellSkeleton from '@/components/AppShellSkeleton/AppShellSkeleton';
 import WidgetCard from './widget/WidgetCard';
-import TipCardSkeleton from './Tips/TipCardSkeleton';
+import TipsSkeleton from './Tips/TipsSkeleton';
 import ActivityChartSkeleton from './Activity/ActivityChartSkeleton';
 import OverviewTile from './Overview/OverviewTile';
 import OverviewTileSkeleton from './Overview/OverviewTileSkeleton';
-import useTipsPerPage from '../hooks/useTipsPerPage';
 import '../Dashboard.css';
 import './Tips/Tips.css';
 import './Activity/Activity.css';
 import './Overview/Overview.css';
 import './DashboardSkeleton.css';
-
-const SKELETON_CARDS = ['tip-1', 'tip-2', 'tip-3'];
 
 /**
  * Full-page dashboard placeholder for the sign-in → dashboard handoff. AuthGuard shows
@@ -24,8 +20,6 @@ const SKELETON_CARDS = ['tip-1', 'tip-2', 'tip-3'];
  * swap when it's replaced.
  */
 export default function DashboardSkeleton() {
-    const [skeletonRef, skeletonCount] = useTipsPerPage();
-
     return (
         <AppShellSkeleton>
             <main className='dashboard-page' aria-busy='true' aria-label='Loading dashboard'>
@@ -43,13 +37,7 @@ export default function DashboardSkeleton() {
                         icon={<img src={saysoLogo} width={16} height={16} alt='' />}
                         title='Coach Tips'
                     >
-                        <div
-                            ref={skeletonRef}
-                            className='dashboard-tips__grid'
-                            style={{ '--dashboard-tips-columns': skeletonCount } as CSSProperties}
-                        >
-                            {SKELETON_CARDS.slice(0, skeletonCount).map((id) => <TipCardSkeleton key={id} />)}
-                        </div>
+                        <TipsSkeleton />
                     </WidgetCard>
                     <div className='dashboard-grid__widgets'>
                         <WidgetCard
