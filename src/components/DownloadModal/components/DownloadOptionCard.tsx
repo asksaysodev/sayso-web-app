@@ -13,7 +13,7 @@ interface Props {
 
 export default function DownloadOptionCard({ logo, logoAlt, meta, title, description, recommended, unavailable, actions }: Props) {
     return (
-        <div className='download-card'>
+        <div className={recommended ? 'download-card download-card--recommended' : 'download-card'}>
             <div className='download-card-info'>
                 <div className='download-card-top'>
                     <img src={logo} alt={logoAlt} width={32} height={32} className='download-card-logo' />

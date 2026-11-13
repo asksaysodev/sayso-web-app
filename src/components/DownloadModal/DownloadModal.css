@@ -129,6 +129,11 @@
     box-shadow: 0 4px 24px 0 rgba(99, 120, 200, 0.1), 0 1px 4px 0 rgba(0, 0, 0, 0.05);
 }
 
+/* Matches the RECOMMENDED badge's blue. */
+.download-card--recommended {
+    border-color: var(--dl-brand);
+}
+
 .download-card-info,
 .download-card-footer {
     display: flex;
