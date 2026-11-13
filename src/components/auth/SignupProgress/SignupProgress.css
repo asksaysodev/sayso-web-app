@@ -31,13 +31,13 @@
 }
 
 .signupProgressItem--active .signupProgressCircle {
-    background: var(--text-brand);
+    background: var(--primary-800);
     color: var(--primary-50);
 }
 
 .signupProgressItem--active .signupProgressLabel {
     font-weight: var(--font-weight-semibold);
-    color: var(--text-brand);
+    color: var(--primary-800);
 }
 
 .signupProgressItem--upcoming .signupProgressCircle {
