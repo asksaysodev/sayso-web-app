@@ -48,7 +48,24 @@
 	color: var(--text-secondary);
 }
 
-.account-unavailable-retry {
+.account-unavailable-actions {
+	display: flex;
+	justify-content: center;
+	gap: var(--space-12);
 	margin-top: var(--space-16);
-	min-width: 160px;
+}
+
+.account-unavailable-actions .ds-button {
+	min-width: 140px;
+}
+
+@media (max-width: 480px) {
+	.account-unavailable-actions {
+		flex-direction: column-reverse;
+		width: 100%;
+	}
+
+	.account-unavailable-actions .ds-button {
+		width: 100%;
+	}
 }
