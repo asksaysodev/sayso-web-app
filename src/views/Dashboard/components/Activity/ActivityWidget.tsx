@@ -32,7 +32,7 @@ export default function ActivityWidget() {
         <WidgetCard
             className='dashboard-activity'
             icon={<ChartColumn size={20} />}
-            tone='info'
+            tone='primary'
             title='Activity'
             actions={
                 <WeekSelector
