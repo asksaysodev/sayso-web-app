@@ -6,18 +6,17 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import ButtonSpinner from '@/components/ButtonSpinner';
 import { isMobileViewport } from '../utils/isMobileViewport';
 
 interface Props {
     siliconUrl: string | null;
     intelUrl: string | null;
-    isLoading: boolean;
     onDownload: (url: string) => void;
     onMobileClick: () => void;
 }
 
-export default function MacDownloadMenu({ siliconUrl, intelUrl, isLoading, onDownload, onMobileClick }: Props) {
+/** Rendered once the release has loaded (the modal shows a skeleton button until then). */
+export default function MacDownloadMenu({ siliconUrl, intelUrl, onDownload, onMobileClick }: Props) {
     const [open, setOpen] = useState(false);
 
     const handleOpenChange = (next: boolean) => {
@@ -30,10 +29,10 @@ export default function MacDownloadMenu({ siliconUrl, intelUrl, isLoading, onDow
 
     return (
         <DropdownMenu open={open} onOpenChange={handleOpenChange}>
-            <DropdownMenuTrigger asChild disabled={isLoading || (!siliconUrl && !intelUrl)}>
+            <DropdownMenuTrigger asChild disabled={!siliconUrl && !intelUrl}>
                 <button className='download-btn'>
                     Download
-                    {isLoading ? <ButtonSpinner /> : <ChevronDown size={20} />}
+                    <ChevronDown size={20} />
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='start' className='download-mac-menu'>

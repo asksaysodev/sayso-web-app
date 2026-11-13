@@ -1,5 +1,6 @@
 import { useRef, type KeyboardEvent, type ReactNode } from 'react';
 import clsx from 'clsx';
+import useSaysoToggleBounce, { SAYSO_TOGGLE_BOUNCE_ANIMATION } from './useSaysoToggleBounce';
 import './SegmentedControl.css';
 
 export interface SegmentedControlItem<T extends string> {
@@ -14,6 +15,8 @@ export interface SegmentedControlProps<T extends string> {
     onChange: (value: T) => void;
     'aria-label'?: string;
     className?: string;
+    /** Opt-in selection animation (a sliding thumb). Without it, the active option just paints its own background. */
+    animation?: typeof SAYSO_TOGGLE_BOUNCE_ANIMATION;
 }
 
 export function SegmentedControl<T extends string>({
@@ -22,8 +25,16 @@ export function SegmentedControl<T extends string>({
     onChange,
     'aria-label': ariaLabel,
     className,
+    animation,
 }: SegmentedControlProps<T>) {
+    const containerRef = useRef<HTMLDivElement>(null);
     const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+    const { thumbRef, onPress, onRelease, onCancel } = useSaysoToggleBounce({
+        enabled: animation === SAYSO_TOGGLE_BOUNCE_ANIMATION,
+        activeIndex: items.findIndex((item) => item.value === value),
+        containerRef,
+        itemRefs: tabRefs,
+    });
 
     const select = (index: number) => {
         const item = items[index];
@@ -46,7 +57,8 @@ export function SegmentedControl<T extends string>({
     };
 
     return (
-        <div role='tablist' aria-label={ariaLabel} className={clsx('ds-segmented', className)}>
+        <div ref={containerRef} role='tablist' aria-label={ariaLabel} className={clsx('ds-segmented', animation, className)}>
+            {animation && <span ref={thumbRef} className='ds-segmented__thumb' aria-hidden='true' />}
             {items.map((item, index) => {
                 const selected = item.value === value;
                 return (
@@ -62,6 +74,10 @@ export function SegmentedControl<T extends string>({
                         className={clsx('ds-segmented__item', selected && 'ds-segmented__item--active')}
                         onClick={() => onChange(item.value)}
                         onKeyDown={(event) => handleKeyDown(event, index)}
+                        onPointerDown={(event) => onPress(index, event)}
+                        onPointerUp={onRelease}
+                        onPointerLeave={onCancel}
+                        onPointerCancel={onCancel}
                     >
                         {item.icon}
                         {item.label}

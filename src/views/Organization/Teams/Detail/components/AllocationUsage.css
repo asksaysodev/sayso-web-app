@@ -70,7 +70,7 @@
 
 .allocation-usage__meter--primary .allocation-usage__percent,
 .allocation-usage__meter--primary .allocation-usage__status {
-    color: var(--text-brand);
+    color: var(--primary-800);
 }
 
 .allocation-usage__meter--warning .allocation-usage__percent,

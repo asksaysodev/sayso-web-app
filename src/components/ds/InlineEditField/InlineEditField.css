@@ -8,7 +8,7 @@
 }
 
 .ds-inline-edit .ds-field:focus-within {
-    border-color: var(--primary-500);
+    border-color: var(--interactive);
     background-color: var(--surface-canvas);
 }
 

@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { LogOut, X } from 'lucide-react';
@@ -18,6 +18,7 @@ import { BillingInterval, BillingIntervalEnum } from '@/views/Subscription/types
 import { broadcastSignupCheckoutCanceled } from './hooks/signupCheckoutSignal';
 import useSignupCheckoutWaiting from './hooks/useSignupCheckoutWaiting';
 import PlanCard from './components/PlanCard';
+import SignupPlanSkeleton from './components/SignupPlanSkeleton';
 import SpecialPricingBanner from './components/SpecialPricingBanner';
 import './SignupPlan.css';
 
@@ -36,7 +37,7 @@ const BILLING_ITEMS: { value: BillingInterval; label: ReactNode }[] = [
 
 /** Sign-up step 2 (SAYSO-563): the single pricing view, rendered at /signup/plan. */
 export default function SignupPlan() {
-    const [selectedBillingTab, setSelectedBillingTab] = useState<BillingInterval>(BillingIntervalEnum.MONTH);
+    const [pickedBillingTab, setPickedBillingTab] = useState<BillingInterval | null>(null);
     const { attributionPending, handleSignOut, globalUser } = useAuth();
     const hasSubscription = useHasSubscription();
     const navigate = useNavigate();
@@ -59,16 +60,16 @@ export default function SignupPlan() {
         queryFn: () => getSubscriptionPlans(offerToken),
     });
 
-    // Default to yearly billing for the new-generation catalog only (legacy/offer
-    // users keep the monthly default). Runs once when plans first load.
-    const didSetInitialBilling = useRef(false);
-    useEffect(() => {
-        if (didSetInitialBilling.current || !subscriptionPlans?.length) return;
+    // Until the user picks an interval, default to yearly billing for the new-generation catalog
+    // (legacy/offer users keep monthly). Set during render, not in an effect, so the toggle mounts
+    // already on the default instead of animating over to it; and set once, so a later refetch
+    // with a different catalog (e.g. an offer link) doesn't flip the interval under the user.
+    const [defaultBillingTab, setDefaultBillingTab] = useState<BillingInterval | null>(null);
+    if (defaultBillingTab === null && subscriptionPlans?.length) {
         const isNewGeneration = subscriptionPlans.some((plan) => plan.generation === 'new');
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot default, guarded by didSetInitialBilling
-        if (isNewGeneration) setSelectedBillingTab(BillingIntervalEnum.YEAR);
-        didSetInitialBilling.current = true;
-    }, [subscriptionPlans]);
+        setDefaultBillingTab(isNewGeneration ? BillingIntervalEnum.YEAR : BillingIntervalEnum.MONTH);
+    }
+    const selectedBillingTab = pickedBillingTab ?? defaultBillingTab ?? BillingIntervalEnum.MONTH;
 
     const { waitingPriceId, startWaiting, stopWaiting } = useSignupCheckoutWaiting();
     const { mutateGetStripeCheckoutPageUrl, isPendingGetStripeCheckoutPageUrl } = useStripeCheckout({
@@ -145,9 +146,7 @@ export default function SignupPlan() {
                     </div>
                 </div>
             ) : showLoader ? (
-                <div className="signupPlanLoading" role="status" aria-label="Loading plans">
-                    <span className="signupPlanSpinner" aria-hidden="true" />
-                </div>
+                <SignupPlanSkeleton />
             ) : (
                 <div className="signupPlan">
                     <div className="signupPlanToolbar">
@@ -155,7 +154,8 @@ export default function SignupPlan() {
                             aria-label="Billing interval"
                             items={BILLING_ITEMS}
                             value={selectedBillingTab}
-                            onChange={setSelectedBillingTab}
+                            onChange={setPickedBillingTab}
+                            animation="sayso-toggle-bounce-animation"
                         />
                         {showSpecialPricing && <SpecialPricingBanner />}
                     </div>

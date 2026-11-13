@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Check, CircleAlert, Eye, EyeOff, Link2Off, LoaderCircle } from 'lucide-react';
+import { ArrowLeft, Check, CircleAlert, Link2Off, LoaderCircle } from 'lucide-react';
 import * as Sentry from '@sentry/react';
 
 import { supabase } from '@/config/supabase';
@@ -9,53 +9,10 @@ import AuthLayout from '@/components/layouts/AuthLayout';
 import { Button } from '@/components/ds/Button';
 import { TextField } from '@/components/ds/TextField';
 import clearRecoveryPending from './services/clearRecoveryPending';
-import { PasswordStrength, getPasswordStrength } from '@/components/auth/PasswordStrength';
+import { PasswordStrength } from '@/components/auth/PasswordStrength';
+import { PasswordVisibilityToggle } from '@/components/auth/PasswordVisibilityToggle';
+import { validateFields, type PasswordFieldErrors } from '@/components/auth/passwordValidation';
 import './styles.css';
-
-interface FieldErrors {
-    newPassword?: string;
-    confirmPassword?: string;
-}
-
-const validateFields = (newPassword: string, confirmPassword: string): FieldErrors => {
-    const errors: FieldErrors = {};
-    if (!newPassword) {
-        errors.newPassword = 'Enter a new password.';
-    } else if (!getPasswordStrength(newPassword).allRulesMet) {
-        errors.newPassword =
-            'This password doesn’t meet the password requirements. Choose a stronger password.';
-    }
-    if (!confirmPassword) {
-        errors.confirmPassword = 'Confirm your password.';
-    } else if (newPassword !== confirmPassword) {
-        errors.confirmPassword = 'Passwords don’t match. Please try again.';
-    }
-    return errors;
-};
-
-interface EyeToggleProps {
-    shown: boolean;
-    disabled: boolean;
-    label: string;
-    onToggle: () => void;
-}
-
-const EyeToggle = ({ shown, disabled, label, onToggle }: EyeToggleProps) => (
-    <button
-        type="button"
-        className="resetCardEyeToggle"
-        onClick={onToggle}
-        disabled={disabled}
-        aria-label={shown ? `Hide ${label}` : `Show ${label}`}
-        aria-pressed={shown}
-    >
-        {shown ? (
-            <EyeOff size={24} color="var(--text-secondary)" aria-hidden="true" />
-        ) : (
-            <Eye size={24} color="var(--text-secondary)" aria-hidden="true" />
-        )}
-    </button>
-);
 
 const ResetPassword = () => {
     const navigate = useNavigate();
@@ -73,7 +30,7 @@ const ResetPassword = () => {
     const [submitted, setSubmitted] = useState(false);
 
     // Validate on submit, then re-validate as the user edits.
-    const errors: FieldErrors = submitted ? validateFields(newPassword, confirmPassword) : {};
+    const errors: PasswordFieldErrors = submitted ? validateFields(newPassword, confirmPassword) : {};
 
     useEffect(() => {
         initializeSession();
@@ -243,7 +200,7 @@ const ResetPassword = () => {
                                 errors.newPassword ? (
                                     <CircleAlert size={24} color="var(--error-icon)" aria-hidden="true" />
                                 ) : (
-                                    <EyeToggle
+                                    <PasswordVisibilityToggle
                                         shown={showNewPassword}
                                         disabled={isSubmitting}
                                         label="password"
@@ -267,7 +224,7 @@ const ResetPassword = () => {
                             errors.confirmPassword ? (
                                 <CircleAlert size={24} color="var(--error-icon)" aria-hidden="true" />
                             ) : (
-                                <EyeToggle
+                                <PasswordVisibilityToggle
                                     shown={showConfirmPassword}
                                     disabled={isSubmitting}
                                     label="repeat password"

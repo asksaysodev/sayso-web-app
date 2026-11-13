@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { LuBellRing, LuX, LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { Drawer, DrawerContent, DrawerPortal } from '@/components/ui/drawer';
-import SaysoButton from "../SaysoButton";
+import { Button } from '@/components/ds/Button';
 import { DialogTitle } from "@/components/ui/dialog";
 import NotificationContent from "./components/NotificationContent";
 import { CreatedNotification } from "@/views/Admin/types";
@@ -56,13 +56,15 @@ export function NotificationBottomSheet({ notification, currentIndex, total, onD
 
                     {!readOnly && <div className='nw-footer'>
                         {notification.remindable && (
-                            <SaysoButton
-                                label='Remind Me Later'
-                                icon={<LuBellRing />}
-                                variant='outlined'
-                                fullWidth
+                            <Button
+                                variant='secondary'
+                                size='md'
+                                className='nw-remind-btn'
+                                leftIcon={<LuBellRing size={16} />}
                                 onClick={onRemindLater}
-                            />
+                            >
+                                Remind me later
+                            </Button>
                         )}
                         {total > 1 && (
                             <div className='nw-pagination'>

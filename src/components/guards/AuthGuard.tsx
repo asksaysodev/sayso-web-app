@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import SaysoLoader from '../SaysoLoader';
 import AccountUnavailable from '../AccountUnavailable';
 import SubscriptionGuard from './SubscriptionGuard';
+import DashboardLoadingFallback from '@/views/Dashboard/DashboardLoadingFallback';
 
 interface Props {
   children: React.ReactNode;
@@ -47,8 +48,15 @@ const AuthGuard = ({ children }: Props) => {
     }
   }, [globalUser, loading, userLoading, checkIfNeedsMFA, navigate]);
 
-  if (loading || userLoading || isCheckingMFA) {
+  // The logo loader covers only session restore (`loading`), which is near-instant.
+  // Once a session exists, the slow part is the account fetch + MFA check. If the user
+  // is headed to the dashboard, show its skeleton so the page appears to load in place.
+  if (loading) {
     return <SaysoLoader />;
+  }
+
+  if (userLoading || isCheckingMFA) {
+    return user && location.pathname === '/' ? <DashboardLoadingFallback /> : <SaysoLoader />;
   }
 
   // Only the absence of a Supabase session means signed out. A failed account

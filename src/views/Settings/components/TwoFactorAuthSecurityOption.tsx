@@ -142,7 +142,7 @@ export default function TwoFactorAuthSecurityOption() {
                             checked={isMFAEnabled}
                             onCheckedChange={handleToggleMFA}
                             aria-label="Two-factor authentication"
-                            className="data-[state=checked]:bg-[var(--sayso-blue)] data-[state=unchecked]:bg-input"
+                            className="data-[state=checked]:bg-[var(--interactive)] data-[state=unchecked]:bg-input"
                         />
                     )
                 }

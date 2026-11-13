@@ -192,7 +192,7 @@
 }
 
 .subscription-invoices__view:focus-visible {
-    outline: 2px solid var(--primary-500);
+    outline: 2px solid var(--interactive);
     outline-offset: 2px;
     border-radius: var(--radius-8);
 }

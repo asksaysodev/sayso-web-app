@@ -74,10 +74,13 @@
 }
 
 .user-menu__card--profile {
+    padding: var(--space-16);
+}
+
+.user-identity {
     display: flex;
     align-items: center;
     gap: var(--space-20);
-    padding: var(--space-16);
 }
 
 .user-menu__card--actions {

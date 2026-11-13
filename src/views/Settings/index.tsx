@@ -91,7 +91,7 @@ export default function Settings() {
 	if (isMobile) {
 		const showList = !searchParams.has("tab") && !isFubReturn;
 		return (
-			<main className='account-settings-page account-settings-page--mobile'>
+			<main className='account-settings-page account-settings-page--mobile settings-theme'>
 				{showList ? (
 					<SettingsMobileList
 						availablePanels={availablePanels}
@@ -111,7 +111,7 @@ export default function Settings() {
 	}
 
 	return (
-		<main className='account-settings-page'>
+		<main className='account-settings-page settings-theme'>
 			<PageHeader
 				title='Settings'
 				description='Manage your plan, billing and team access.'

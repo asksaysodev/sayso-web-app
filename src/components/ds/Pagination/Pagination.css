@@ -32,8 +32,8 @@
 }
 
 .ds-pagination__button--current {
-    border-color: var(--primary-500);
-    background-color: var(--primary-500);
+    border-color: var(--interactive);
+    background-color: var(--interactive);
     color: var(--white);
 }
 

@@ -79,7 +79,7 @@ export default function SureSendConnectModal({ open, onClose }: Props) {
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent className="p-0 gap-0 border-0 bg-transparent shadow-none max-w-[560px] w-full">
-                <div className="suresend-modal" data-state={state}>
+                <div className="suresend-modal settings-theme" data-state={state}>
                     <div className="ss-default-view">
                         <div className="ss-pad">
                             <div className="ss-head">
