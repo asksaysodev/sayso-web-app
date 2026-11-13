@@ -37,7 +37,7 @@
 
 .dashboard-widget__icon--primary {
     background-color: var(--primary-50);
-    color: var(--primary-800);
+    color: var(--primary-500);
 }
 
 .dashboard-widget__icon--info {

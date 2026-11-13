@@ -43,7 +43,7 @@ export default function DashboardSkeleton() {
                         <WidgetCard
                             className='dashboard-activity'
                             icon={<ChartColumn size={20} />}
-                            tone='primary'
+                            tone='info'
                             title='Activity'
                             actions={<span className='skeleton dashboard-skeleton__action' />}
                         >
@@ -52,7 +52,7 @@ export default function DashboardSkeleton() {
                         <WidgetCard
                             className='dashboard-overview'
                             icon={<Target size={20} />}
-                            tone='primary'
+                            tone='info'
                             title='Overview'
                             actions={<span className='skeleton dashboard-skeleton__action' />}
                         >
