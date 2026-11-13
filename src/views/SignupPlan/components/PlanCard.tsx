@@ -142,9 +142,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const ctaDisabled = isCheckoutPending || hasSubscription;
     const ctaLabel = !purchasable ? 'Contact sales' : showFrom ? 'Select plan' : `Choose ${planName}`;
 
-    const priceSub = isYearly
-        ? `Billed annually ${showFrom ? 'from' : 'at'} $${formatPrice(finalDisplayPrice)}`
-        : showFrom ? `Plans start at $${formatPrice(finalDisplayPrice)} / month` : 'Billed monthly';
+    const priceSub = isYearly ? 'Billed annually' : 'Billed monthly';
     const priceLabel = purchasable
         ? `${showFrom ? 'from ' : ''}$${formatDisplay(finalDisplayPrice)}/month · ${priceSub}`
         : "Let's talk · Pricing tailored to your team";
