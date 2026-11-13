@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { Armchair, ChevronRight, CircleUser, Clock, Gift, Users } from 'lucide-react';
+import { Armchair, ChevronRight, Clock, Gift, User, Users } from 'lucide-react';
 
 import { Button } from '@/components/ds/Button';
 import { useAuth } from '@/context/AuthContext';
@@ -106,7 +106,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
 
     const includedMinutesPerMonth = effectivePricingOption?.includedMinutesPerMonth ?? includedMinutes ?? 0;
     const showTrialBadge = hasTrial && !!trialDays && trialIncludedMinutes != null;
-    const Icon = accountType === 'team' ? Users : CircleUser;
+    const Icon = accountType === 'team' ? Users : User;
 
     const openPicker = () => {
         pickerOpener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
