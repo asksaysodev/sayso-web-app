@@ -8,16 +8,22 @@ interface Props {
     description: string;
     recommended: boolean;
     unavailable: boolean;
+    /** The release (version + download links) is still loading: the meta line shows a skeleton. */
+    loading?: boolean;
     actions: ReactNode;
 }
 
-export default function DownloadOptionCard({ logo, logoAlt, meta, title, description, recommended, unavailable, actions }: Props) {
+export default function DownloadOptionCard({ logo, logoAlt, meta, title, description, recommended, unavailable, loading = false, actions }: Props) {
     return (
-        <div className='download-card'>
+        <div className={recommended ? 'download-card download-card--recommended' : 'download-card'}>
             <div className='download-card-info'>
                 <div className='download-card-top'>
                     <img src={logo} alt={logoAlt} width={32} height={32} className='download-card-logo' />
-                    <span className='download-card-meta'>{meta}</span>
+                    {loading ? (
+                        <span className='skeleton download-card-meta-skeleton' aria-hidden='true' />
+                    ) : (
+                        <span className='download-card-meta'>{meta}</span>
+                    )}
                 </div>
 
                 <div className='download-card-text'>

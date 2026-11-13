@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import useIsTeamAdmin from '@/hooks/useIsTeamAdmin';
+import { writeSubscriptionHint } from './utils/subscriptionHint';
 import useHasSubscription from '@/hooks/useHasSubscription';
 import DashboardHeader from './components/DashboardHeader';
 import DashboardFilters from './components/Filters/DashboardFilters';
@@ -11,6 +13,10 @@ import './Dashboard.css';
 
 export default function Dashboard() {
     const hasSubscription = useHasSubscription();
+    const { user } = useAuth();
+
+    // Lets the next sign-in's skeleton match this layout (widgets vs. empty state).
+    useEffect(() => writeSubscriptionHint(user?.id, hasSubscription), [user?.id, hasSubscription]);
 
     // Early exit before any dashboard hook/widget: those call scoped endpoints a non-subscriber can't use.
     if (!hasSubscription) return <EmptyState />;

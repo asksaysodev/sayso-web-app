@@ -19,7 +19,7 @@ export default function OverviewWidget() {
         <WidgetCard
             className='dashboard-overview'
             icon={<Target size={20} />}
-            tone='primary'
+            tone='info'
             title='Overview'
             actions={<PeriodSelect value={periodOption} onChange={setPeriod} />}
         >

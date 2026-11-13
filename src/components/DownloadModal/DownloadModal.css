@@ -129,6 +129,11 @@
     box-shadow: 0 4px 24px 0 rgba(99, 120, 200, 0.1), 0 1px 4px 0 rgba(0, 0, 0, 0.05);
 }
 
+/* Matches the RECOMMENDED badge's blue. */
+.download-card--recommended {
+    border-color: var(--dl-brand);
+}
+
 .download-card-info,
 .download-card-footer {
     display: flex;
@@ -231,6 +236,27 @@
 .download-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* Release loading (first open; the GitHub release is cached afterwards): sized to what loads in. */
+.download-btn-skeleton {
+    display: block;
+    flex-shrink: 0;
+    width: 124px;
+    height: 36px;
+    border-radius: 999px;
+}
+
+.download-btn-skeleton--menu {
+    width: 152px;
+}
+
+.download-card-meta-skeleton {
+    display: block;
+    width: 128px;
+    height: 20px;
+    margin: 2px 0;
+    border-radius: 6px;
 }
 
 .download-mac-menu {
