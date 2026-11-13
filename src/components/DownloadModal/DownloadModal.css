@@ -238,6 +238,27 @@
     cursor: not-allowed;
 }
 
+/* Release loading (first open; the GitHub release is cached afterwards): sized to what loads in. */
+.download-btn-skeleton {
+    display: block;
+    flex-shrink: 0;
+    width: 124px;
+    height: 36px;
+    border-radius: 999px;
+}
+
+.download-btn-skeleton--menu {
+    width: 152px;
+}
+
+.download-card-meta-skeleton {
+    display: block;
+    width: 128px;
+    height: 20px;
+    margin: 2px 0;
+    border-radius: 6px;
+}
+
 .download-mac-menu {
     min-width: 160px;
     font-family: 'DM Sans', sans-serif;
