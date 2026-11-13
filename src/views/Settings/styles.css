@@ -27,10 +27,6 @@
     justify-content: space-between;
 }
 
-.settings-panel-title-switch {
-    background-color: var(--sayso-blue) !important;
-}
-
 .settings-panel-title h1 {
     font-size: 20px;
     font-weight: 400;
@@ -101,20 +97,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.team-members-loader {
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--sayso-border);
-    border-top-color: var(--sayso-lightgray);
-    border-radius: 50%;
-    animation: team-members-spin 0.7s linear infinite;
-    flex-shrink: 0;
-}
-
-@keyframes team-members-spin {
-    to { transform: rotate(360deg); }
 }
 
 /* Referral Settings */
@@ -362,15 +344,22 @@
     color: var(--text-primary);
 }
 
-.settings-mobile-card {
+.settings-mobile-profile.ds-card {
+    width: 100%;
+    padding: var(--space-16);
+    box-sizing: border-box;
+}
+
+.settings-mobile-card.ds-card,
+.settings-mobile-nav {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: var(--space-8) var(--space-16);
-    border-radius: var(--radius-8);
     box-sizing: border-box;
-    background-color: var(--white);
-    box-shadow: var(--shadow-menu);
+}
+
+.settings-mobile-card.ds-card {
+    padding: var(--space-8) var(--space-16);
 }
 
 .settings-mobile-row {

@@ -1,7 +1,8 @@
 import { PiCaretRight, PiFileDoc, PiFileLock, PiSignOut } from 'react-icons/pi';
 import { useAuth } from '@/context/AuthContext';
 import { PRIVACY_POLICY_URL, TERMS_URL } from '@/constants';
-import UserMenuCard from '@/components/UserMenu/UserMenuCard';
+import { Card } from '@/components/ds/Card';
+import UserIdentity from '@/components/UserMenu/UserIdentity';
 import '@/components/UserMenu/UserMenu.css';
 import { SETTINGS_PANEL_META } from '../settingsPanelMeta';
 import type { SettingsPanel } from '../types';
@@ -19,17 +20,23 @@ export default function SettingsMobileList({ availablePanels, onSelectPanel, onB
     return (
         <>
             <SettingsMobileHeader title='Account settings' onBack={onBack} />
-            {globalUser && <UserMenuCard user={globalUser} />}
-            <nav className='settings-mobile-card' aria-label='Account settings'>
-                {SETTINGS_PANEL_META.filter((item) => availablePanels.includes(item.value)).map(({ value, label, icon: Icon }) => (
-                    <button key={value} type='button' className='settings-mobile-row' onClick={() => onSelectPanel(value)}>
-                        <Icon size={24} aria-hidden />
-                        <span className='settings-mobile-row__label'>{label}</span>
-                        <PiCaretRight size={20} aria-hidden />
-                    </button>
-                ))}
-            </nav>
-            <div className='settings-mobile-card'>
+            {globalUser && (
+                <Card className='settings-mobile-profile'>
+                    <UserIdentity user={globalUser} />
+                </Card>
+            )}
+            <Card className='settings-mobile-card'>
+                <nav className='settings-mobile-nav' aria-label='Account settings'>
+                    {SETTINGS_PANEL_META.filter((item) => availablePanels.includes(item.value)).map(({ value, label, icon: Icon }) => (
+                        <button key={value} type='button' className='settings-mobile-row' onClick={() => onSelectPanel(value)}>
+                            <Icon size={24} aria-hidden />
+                            <span className='settings-mobile-row__label'>{label}</span>
+                            <PiCaretRight size={20} aria-hidden />
+                        </button>
+                    ))}
+                </nav>
+            </Card>
+            <Card className='settings-mobile-card'>
                 <a className='settings-mobile-row' href={PRIVACY_POLICY_URL} target='_blank' rel='noopener noreferrer'>
                     <PiFileLock size={24} aria-hidden />
                     <span className='settings-mobile-row__label'>Privacy Policy</span>
@@ -42,7 +49,7 @@ export default function SettingsMobileList({ availablePanels, onSelectPanel, onB
                     <PiSignOut size={24} aria-hidden />
                     <span className='settings-mobile-row__label'>Log out</span>
                 </button>
-            </div>
+            </Card>
         </>
     );
 }
