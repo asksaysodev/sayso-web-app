@@ -15,6 +15,7 @@ import PackageOverlay from './PackageOverlay';
 import PackageTrigger from './PackageTrigger';
 import getPlanDetails from '../utils/getPlanDetails';
 import PlanDetailsModal from './PlanDetailsModal';
+import RollingPrice from './RollingPrice';
 
 interface Props {
     plan: PricingPlan;
@@ -102,7 +103,8 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
     const showFrom = needsPackage && !packageSelected;
     const isYearly = selectedBillingTab === BillingIntervalEnum.YEAR;
     const formatDisplay = (amount: number) =>
-        isYearly ? formatPrice(amount / 12, { keepCents: true }) : formatPrice(amount);
+        // Yearly shows the monthly equivalent, rounded up to whole dollars (e.g. 124.92 → 125).
+        isYearly ? formatPrice(Math.ceil(Math.round((amount / 12) * 100) / 100)) : formatPrice(amount);
 
     const includedMinutesPerMonth = effectivePricingOption?.includedMinutesPerMonth ?? includedMinutes ?? 0;
     const showTrialBadge = hasTrial && !!trialDays && trialIncludedMinutes != null;
@@ -173,7 +175,7 @@ export default function PlanCard({ plan, selectedBillingTab = BillingIntervalEnu
                         <>
                             <div className="signupPlanPriceRow">
                                 {showFrom && <span className="signupPlanPriceFrom">from</span>}
-                                <span className="signupPlanPriceAmount">${formatDisplay(finalDisplayPrice)}</span>
+                                <RollingPrice className="signupPlanPriceAmount" value={formatDisplay(finalDisplayPrice)} />
                                 <span className="signupPlanPricePeriod">/month</span>
                                 {discountDollars > 0 && (
                                     <span className="signupPlanPriceStrike" aria-label={`was $${formatDisplay(baseDisplayPrice)}`}>
