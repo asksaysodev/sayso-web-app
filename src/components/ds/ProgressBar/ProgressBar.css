@@ -16,7 +16,7 @@
 }
 
 .ds-progress--primary .ds-progress__fill {
-    background-color: var(--primary-500);
+    background-color: var(--primary-800);
 }
 
 .ds-progress--warning {
