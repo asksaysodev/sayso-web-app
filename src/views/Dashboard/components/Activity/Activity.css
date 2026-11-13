@@ -70,7 +70,8 @@
     right: 0;
     min-height: 2px;
     border-radius: 4px 4px 0 0;
-    background-color: var(--primary-500);
+    /* Deep blue, not primary-500: matches the Settings toggles (--interactive there). */
+    background-color: var(--primary-800);
     transition: height 0.3s ease;
     /* Grow from the baseline on mount, as in production. Bars are keyed by date, so it replays on week change. */
     transform-origin: bottom;
