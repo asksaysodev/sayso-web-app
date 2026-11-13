@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 import { CreatedNotification } from '@/views/Admin/types';
 import { LuBellRing, LuX, LuExpand, LuShrink, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import './styles.css';
-import SaysoButton from '../SaysoButton';
+import { Button } from '@/components/ds/Button';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { NotificationBottomSheet } from './NotificationBottomSheet';
 import useNotificationWidget from './hooks/useNotificationWidget';
@@ -161,12 +161,15 @@ export default function NotificationWidget() {
                 {!hideFooter && 
                     <div className='nw-footer'>
                         {notification.remindable && (
-                            <SaysoButton
-                                label='Remind Me Later'
-                                icon={<LuBellRing />}
-                                variant='outlined'
+                            <Button
+                                variant='secondary'
+                                size='sm'
+                                className='nw-remind-btn'
+                                leftIcon={<LuBellRing size={16} />}
                                 onClick={handleRemindLater}
-                            />
+                            >
+                                Remind me later
+                            </Button>
                         )}
                         {total > 1 && (
                             <div className='nw-pagination'>
