@@ -27,7 +27,7 @@ const TeamDetail = lazyView(() => import('./views/Organization/Teams/Detail'));
 const Signup = lazyView(() => import('./views/Signup'));
 
 import SaysoLoader from './components/SaysoLoader';
-import DashboardSkeleton from './views/Dashboard/components/DashboardSkeleton';
+import DashboardLoadingFallback from './views/Dashboard/DashboardLoadingFallback';
 import useHasSubscription from './hooks/useHasSubscription';
 import useCanManageBilling from './hooks/useCanManageBilling';
 import useIsTeamAdmin from './hooks/useIsTeamAdmin';
@@ -108,7 +108,7 @@ export default function AppRoutes() {
                     element={
                         <AuthGuard>
                             {/* Own boundary so the chunk load continues the AuthGuard skeleton instead of flashing the logo loader. */}
-                            <Suspense fallback={<DashboardSkeleton />}>
+                            <Suspense fallback={<DashboardLoadingFallback />}>
                                 <Layout>
                                     <Dashboard />
                                 </Layout>

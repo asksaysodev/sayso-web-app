@@ -59,6 +59,12 @@
 	min-width: 140px;
 }
 
+.account-unavailable-error {
+	margin: 0;
+	font-size: var(--text-body-md-size);
+	color: var(--error-text);
+}
+
 @media (max-width: 480px) {
 	.account-unavailable-actions {
 		flex-direction: column-reverse;

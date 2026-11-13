@@ -8,7 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import SaysoLoader from '../SaysoLoader';
 import AccountUnavailable from '../AccountUnavailable';
 import SubscriptionGuard from './SubscriptionGuard';
-import DashboardSkeleton from '@/views/Dashboard/components/DashboardSkeleton';
+import DashboardLoadingFallback from '@/views/Dashboard/DashboardLoadingFallback';
 
 interface Props {
   children: React.ReactNode;
@@ -56,7 +56,7 @@ const AuthGuard = ({ children }: Props) => {
   }
 
   if (userLoading || isCheckingMFA) {
-    return user && location.pathname === '/' ? <DashboardSkeleton /> : <SaysoLoader />;
+    return user && location.pathname === '/' ? <DashboardLoadingFallback /> : <SaysoLoader />;
   }
 
   // Only the absence of a Supabase session means signed out. A failed account

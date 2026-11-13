@@ -61,11 +61,15 @@ export default function SignupPlan() {
     });
 
     // Until the user picks an interval, default to yearly billing for the new-generation catalog
-    // (legacy/offer users keep monthly). Derived rather than set in an effect so the toggle mounts
-    // already on the default instead of animating over to it.
-    const isNewGeneration = !!subscriptionPlans?.some((plan) => plan.generation === 'new');
-    const selectedBillingTab =
-        pickedBillingTab ?? (isNewGeneration ? BillingIntervalEnum.YEAR : BillingIntervalEnum.MONTH);
+    // (legacy/offer users keep monthly). Set during render, not in an effect, so the toggle mounts
+    // already on the default instead of animating over to it; and set once, so a later refetch
+    // with a different catalog (e.g. an offer link) doesn't flip the interval under the user.
+    const [defaultBillingTab, setDefaultBillingTab] = useState<BillingInterval | null>(null);
+    if (defaultBillingTab === null && subscriptionPlans?.length) {
+        const isNewGeneration = subscriptionPlans.some((plan) => plan.generation === 'new');
+        setDefaultBillingTab(isNewGeneration ? BillingIntervalEnum.YEAR : BillingIntervalEnum.MONTH);
+    }
+    const selectedBillingTab = pickedBillingTab ?? defaultBillingTab ?? BillingIntervalEnum.MONTH;
 
     const { waitingPriceId, startWaiting, stopWaiting } = useSignupCheckoutWaiting();
     const { mutateGetStripeCheckoutPageUrl, isPendingGetStripeCheckoutPageUrl } = useStripeCheckout({

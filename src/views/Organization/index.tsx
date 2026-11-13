@@ -44,6 +44,7 @@ export default function Organization() {
                 items={TABS}
                 value={activeTab}
                 onChange={handleTabChange}
+                animation='sayso-toggle-bounce-animation'
             />
             {activeTab === 'company' ? <CompanyMembersCard /> : <TeamsCard />}
         </main>

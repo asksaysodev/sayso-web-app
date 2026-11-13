@@ -4,6 +4,7 @@ import { LogOut } from 'lucide-react';
 import { LuX } from 'react-icons/lu';
 import { Button } from '@/components/ds/Button';
 import { useAuth } from '@/context/AuthContext';
+import { clearOfferToken } from '@/utils/offerToken';
 import '../styles/AccountUnavailable.css';
 
 interface Props {
@@ -25,12 +26,18 @@ export default function AccountUnavailable({ onRetry }: Props) {
     const { handleSignOut } = useAuth();
     const navigate = useNavigate();
     const [isSigningOut, setIsSigningOut] = useState(false);
+    const [signOutFailed, setSignOutFailed] = useState(false);
 
     const onSignOut = async () => {
         setIsSigningOut(true);
+        setSignOutFailed(false);
+        // Don't leave a pending offer for whoever signs in next on this browser (same as SignupPlan).
+        clearOfferToken();
         try {
             await handleSignOut();
             navigate('/login', { replace: true });
+        } catch {
+            setSignOutFailed(true);
         } finally {
             setIsSigningOut(false);
         }
@@ -60,6 +67,11 @@ export default function AccountUnavailable({ onRetry }: Props) {
                         Try again
                     </Button>
                 </div>
+                {signOutFailed && (
+                    <p className="account-unavailable-error" role="status">
+                        We couldn't sign you out. Check your connection and try again.
+                    </p>
+                )}
             </div>
         </div>
     );

@@ -47,20 +47,21 @@ export default function useSaysoToggleBounce({ enabled, activeIndex, containerRe
     const animationRef = useRef<Animation | null>(null);
     const placedIndexRef = useRef<number | null>(null);
     const pressedIndexRef = useRef<number | null>(null);
+    const releaseTimerRef = useRef<number | undefined>(undefined);
 
     function itemBox(index: number): Box | null {
         const item = itemRefs.current?.[index];
         return item ? { left: item.offsetLeft, width: item.offsetWidth } : null;
     }
 
-    /** Where the thumb is drawn right now, mid-animation included. */
+    /**
+     * Where the thumb is laid out right now, mid-animation included. Layout offsets, not
+     * getBoundingClientRect, so the hover lift's scale() doesn't skew the measurement.
+     */
     function liveBox(): Box | null {
         const thumb = thumbRef.current;
-        const container = containerRef.current;
-        if (!thumb || !container) return null;
-        const thumbRect = thumb.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        return { left: thumbRect.left - containerRect.left - container.clientLeft, width: thumbRect.width };
+        if (!thumb) return null;
+        return { left: thumb.offsetLeft, width: thumb.offsetWidth };
     }
 
     function place(box: Box) {
@@ -125,7 +126,8 @@ export default function useSaysoToggleBounce({ enabled, activeIndex, containerRe
 
     // Option widths change with fonts loading and responsive layout: keep the resting thumb aligned.
     const realign = useEffectEvent(() => {
-        if (animationRef.current?.playState === 'running') return;
+        // Leave a running animation or a held press alone; the next trip measures fresh boxes.
+        if (animationRef.current?.playState === 'running' || pressedIndexRef.current !== null) return;
         const box = itemBox(placedIndexRef.current ?? activeIndex);
         if (box) place(box);
     });
@@ -142,7 +144,13 @@ export default function useSaysoToggleBounce({ enabled, activeIndex, containerRe
         return () => observer.disconnect();
     }, [enabled]);
 
-    useLayoutEffect(() => () => animationRef.current?.cancel(), []);
+    useLayoutEffect(
+        () => () => {
+            animationRef.current?.cancel();
+            window.clearTimeout(releaseTimerRef.current);
+        },
+        [],
+    );
 
     /** Pointer down on an option: stretch toward it (only for an unselected option). */
     function onPress(index: number, event: ReactPointerEvent) {
@@ -164,8 +172,19 @@ export default function useSaysoToggleBounce({ enabled, activeIndex, containerRe
      */
     function onRelease() {
         if (pressedIndexRef.current === null) return;
-        window.setTimeout(retract, 50);
+        window.clearTimeout(releaseTimerRef.current);
+        releaseTimerRef.current = window.setTimeout(retract, 50);
     }
 
-    return { thumbRef, onPress, onRelease, onCancel: retract };
+    /**
+     * Pointer left the option or the gesture was cancelled. Touch fires pointerleave right after
+     * pointerup (before the click), so a leave with no button held is not a drag-off: ignore it
+     * and let the click complete the trip.
+     */
+    function onCancel(event: ReactPointerEvent) {
+        if (event.type === 'pointerleave' && event.buttons === 0) return;
+        retract();
+    }
+
+    return { thumbRef, onPress, onRelease, onCancel };
 }

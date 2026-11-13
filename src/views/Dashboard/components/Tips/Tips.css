@@ -131,15 +131,16 @@
     height: 14px;
 }
 
-.dashboard-tip-card__line-skeleton--short {
-    width: 55%;
-}
-
-/* Lines sit on the body's 20px line grid inside its fixed height (see .dashboard-tip-card__body). */
-.dashboard-tip-card__body-skeleton {
+/*
+ * Lines sit on the body's 20px line grid inside its fixed height (see .dashboard-tip-card__body).
+ * Two classes so the phone rule that unclamps the real body (display: block; height: auto)
+ * doesn't collapse the skeleton too.
+ */
+.dashboard-tip-card__body.dashboard-tip-card__body-skeleton {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    height: calc(var(--dashboard-tip-lines) * 20px);
 }
 
 .dashboard-tip-card__body-skeleton .dashboard-tip-card__line-skeleton {
