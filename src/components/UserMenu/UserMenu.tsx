@@ -1,7 +1,7 @@
-import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { Menu, MenuContent, MenuTrigger } from '@/components/ds/Menu';
 import { useAuth } from '@/context/AuthContext';
+import useOpenSettings from '@/hooks/useOpenSettings';
 import UserMenuActions from './UserMenuActions';
 import UserMenuCard from './UserMenuCard';
 import UserMenuLegalLinks from './UserMenuLegalLinks';
@@ -10,13 +10,13 @@ import './UserMenu.css';
 
 export default function UserMenu() {
     const { globalUser } = useAuth();
-    const navigate = useNavigate();
+    const openSettings = useOpenSettings();
     const isMobile = useMediaQuery('(max-width: 767px)');
 
     if (!globalUser) return null;
 
     if (isMobile) {
-        return <UserMenuTrigger user={globalUser} aria-label='Open account settings' onClick={() => navigate('/settings')} />;
+        return <UserMenuTrigger user={globalUser} aria-label='Open account settings' onClick={() => openSettings()} />;
     }
 
     return (

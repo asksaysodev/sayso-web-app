@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { ExternalLink, Pencil, Search, Unlink, UserPlus } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import useDebounce from '@/hooks/useDebounce';
@@ -9,6 +10,7 @@ import type { CrmLead, CrmProviderId } from '@/hooks/integrations/crm/types';
 import useRefreshLinkedLeadName from '../hooks/useRefreshLinkedLeadName';
 import CrmLeadFormModal from './CrmLeadFormModal';
 import LeadSkeleton from './LeadSkeleton';
+import type { SettingsLocationState } from '@/views/Settings/types';
 import '../styles/AddLeadDropdown.css';
 
 interface Props {
@@ -25,6 +27,8 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect, cu
     const [open, setOpen] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
+    const location = useLocation();
+    const settingsLinkState: SettingsLocationState = { backgroundLocation: location };
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 350);
     const sentinelRef = useRef<HTMLDivElement>(null);
@@ -125,17 +129,17 @@ export default function AddLeadDropdown({ trigger, currentLeadName, onSelect, cu
                     {needsReauth ? (
                         <div className="add-lead-state">
                             Your {reauthProviderLabel ?? 'CRM'} connection expired.{' '}
-                            <a href="/settings" onClick={() => setOpen(false)}>
+                            <Link to="/settings?tab=connections" state={settingsLinkState} onClick={() => setOpen(false)}>
                                 Reconnect {reauthProviderLabel ?? 'it'} in Settings
-                            </a>
+                            </Link>
                             .
                         </div>
                     ) : !isConnected ? (
                         <div className="add-lead-state">
                             No CRM connected.{' '}
-                            <a href="/settings" onClick={() => setOpen(false)}>
+                            <Link to="/settings?tab=connections" state={settingsLinkState} onClick={() => setOpen(false)}>
                                 Connect one in Settings
-                            </a>
+                            </Link>
                             .
                         </div>
                     ) : (

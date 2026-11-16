@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import useNavItems from '@/components/Sidebar/useNavItems';
 import { teamDetailQueryKey } from '@/views/Organization/shared/hooks/queryKeys';
 import type { TeamDetail } from '@/views/Organization/Teams/types';
-import { DEFAULT_SETTINGS_PANEL, SETTINGS_PANEL_LABELS, type SettingsPanel } from '@/views/Settings/types';
 
 interface Crumb {
     label: string;
@@ -12,11 +11,7 @@ interface Crumb {
 }
 
 const COMPANY_PATH = '/company';
-const SETTINGS_PATH = '/settings';
 const TEAM_DETAIL_PATH = '/company/teams/:teamId';
-
-const isSettingsPanel = (value: string | null): value is SettingsPanel =>
-    value !== null && value in SETTINGS_PANEL_LABELS;
 
 const COMPANY_TABS: Record<string, string> = {
     company: 'Members',
@@ -34,12 +29,6 @@ export default function TopbarBreadcrumb() {
         queryKey: teamDetailQueryKey(teamId),
         enabled: false,
     });
-
-    if (pathname === SETTINGS_PATH) {
-        const tab = new URLSearchParams(search).get('tab');
-        const panel = isSettingsPanel(tab) ? tab : DEFAULT_SETTINGS_PANEL;
-        return <Breadcrumb crumbs={[{ label: 'Settings', to: SETTINGS_PATH }, { label: SETTINGS_PANEL_LABELS[panel] }]} />;
-    }
 
     if (!current) return null;
 
