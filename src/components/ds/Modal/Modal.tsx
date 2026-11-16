@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { Dialog, DialogPortal } from '@/components/ui/dialog';
 import './Modal.css';
 
-export interface ModalProps extends Pick<ComponentPropsWithoutRef<typeof DialogPrimitive.Content>, 'aria-describedby'> {
+export interface ModalProps extends Pick<ComponentPropsWithoutRef<typeof DialogPrimitive.Content>, 'aria-describedby' | 'onOpenAutoFocus'> {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     hideClose?: boolean;

@@ -8,21 +8,29 @@ export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
     trailingIcon?: ReactNode;
     helperText?: ReactNode;
     error?: ReactNode;
+    /** `outside` puts the label above the field box instead of over the value. */
+    labelPlacement?: 'inside' | 'outside';
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
-    { label, leadingIcon, trailingIcon, helperText, error, disabled, id, className, ...props },
+    { label, leadingIcon, trailingIcon, helperText, error, labelPlacement = 'inside', disabled, id, className, ...props },
     ref,
 ) {
     const generatedId = useId();
     const inputId = id ?? generatedId;
     const messageId = `${inputId}-message`;
     const hasMessage = !!(error || helperText);
+    const labelOutside = labelPlacement === 'outside';
 
     return (
         <div className={clsx('ds-field-group', className)}>
+            {labelOutside && (
+                <label className='ds-field-group__label' htmlFor={inputId}>
+                    {label}
+                </label>
+            )}
             <FieldShell
-                label={label}
+                label={labelOutside ? undefined : label}
                 htmlFor={inputId}
                 leadingIcon={leadingIcon}
                 trailingIcon={trailingIcon}

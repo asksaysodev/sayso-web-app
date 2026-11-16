@@ -6,7 +6,10 @@ import GuestGuard from './components/guards/GuestGuard';
 import SignupGuestGuard from './components/guards/SignupGuestGuard';
 import MFAGuard from './components/guards/MFAGuard';
 import Layout from './components/Layout';
+import SettingsModalRoute from './components/SettingsModalRoute';
 import { useDownloadModalStore } from './store/downloadModalStore';
+import { useMediaQuery } from './hooks/useMediaQuery';
+import type { SettingsLocationState } from './views/Settings/types';
 
 import Login from './views/Login';
 import PasswordRecovery from './views/PasswordRecovery';
@@ -31,17 +34,27 @@ import DashboardLoadingFallback from './views/Dashboard/DashboardLoadingFallback
 import useHasSubscription from './hooks/useHasSubscription';
 import useCanManageBilling from './hooks/useCanManageBilling';
 import useIsTeamAdmin from './hooks/useIsTeamAdmin';
-import { isSignupCheckoutWaiting } from './views/SignupPlan/hooks/signupCheckoutSignal';
+import { isOptimisticSignupActive, useOptimisticSignupStore } from './store/optimisticSignupStore';
 
 
 export default function AppRoutes() {
     const hasSubscription = useHasSubscription();
     const canManageBilling = useCanManageBilling();
     const isTeamAdmin = useIsTeamAdmin();
+    const optimisticSignupStatus = useOptimisticSignupStore((state) => state.status);
+    const optimisticSignupReturnTo = useOptimisticSignupStore((state) => state.returnTo);
+    const location = useLocation();
+    const isMobile = useMediaQuery('(max-width: 767px)');
+
+    // Desktop settings is a modal: the routes keep rendering the page it was opened from (dashboard on a direct load).
+    const isSettingsOverlay = !isMobile && location.pathname === '/settings';
+    const routesLocation = isSettingsOverlay
+        ? (location.state as SettingsLocationState | null)?.backgroundLocation ?? '/'
+        : location;
 
     return (
         <Suspense fallback={<SaysoLoader />}>
-            <Routes>
+            <Routes location={routesLocation}>
                 <Route
                     path="/login"
                     element={<LoginRoute />}
@@ -57,13 +70,16 @@ export default function AppRoutes() {
                 <Route
                     path="/signup/plan"
                     element={
-                        <AuthGuard>
-                            {!canManageBilling
+                        // Optimistic sign-up failed (the toast is already up): back to the form, restored.
+                        optimisticSignupStatus === 'failed'
+                            ? <Navigate to={optimisticSignupReturnTo} replace />
+                            : <AuthGuard>
+                            {/* No account yet during an optimistic sign-up; self sign-ups can always bill. */}
+                            {!canManageBilling && !isOptimisticSignupActive(optimisticSignupStatus)
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
-                                    // Exception: the tab waiting on a sign-up checkout advances to the dashboard (SAYSO-565).
-                                    ? <Navigate to={isSignupCheckoutWaiting() ? '/' : '/settings?tab=subscription'} replace />
+                                    ? <Navigate to="/settings?tab=subscription" replace />
                                     : <SignupPlan />
                             }
                         </AuthGuard>
@@ -160,6 +176,7 @@ export default function AppRoutes() {
                         </AuthGuard>
                     }
                 />
+                {/* Mobile only; desktop renders SettingsModalRoute over the current page. */}
                 <Route
                     path="/settings"
                     element={
@@ -221,6 +238,7 @@ export default function AppRoutes() {
                     }
                 />
             </Routes>
+            {isSettingsOverlay && <SettingsModalRoute />}
         </Suspense>
     )
 }

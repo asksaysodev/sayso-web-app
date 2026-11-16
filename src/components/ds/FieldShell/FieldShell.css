@@ -5,6 +5,13 @@
     font-family: var(--font-ds);
 }
 
+.ds-field-group__label {
+    margin-bottom: var(--space-4);
+    font-size: var(--text-body-md-size);
+    line-height: normal;
+    color: var(--neutral-500);
+}
+
 .ds-field {
     display: flex;
     align-items: center;

@@ -29,15 +29,29 @@ interface Props {
     headerAction?: ReactNode;
     /** Widens the content column (912px on large screens) for views with side-by-side cards. */
     wide?: boolean;
+    /** Mobile only (≤767px): rendered on the top bar's bottom edge and replaces `aside`,
+        e.g. <SignupProgress variant="bar" />. Ignored on larger screens. */
+    topBarProgress?: ReactNode;
+    /** Animates the title + content (not the top bar or progress): `exit` fades and shrinks
+        them away before a step change, `enter` brings the next step in the opposite way. */
+    transition?: 'enter' | 'exit';
 }
 
 /**
  * Shared shell for every login and sign-up view: top bar, the single sign-up
  * background glow, the top spacing above the title and the support footer.
  */
-export default function AuthLayout({ children, title, headerLink, aside, headerAction, wide }: Props) {
+export default function AuthLayout({ children, title, headerLink, aside, headerAction, wide, topBarProgress, transition }: Props) {
     return (
-        <div className={clsx('authLayout', wide && 'authLayout--wide', aside && 'authLayout--hasAside')}>
+        <div
+            className={clsx(
+                'authLayout',
+                wide && 'authLayout--wide',
+                aside && 'authLayout--hasAside',
+                topBarProgress && 'authLayout--hasTopBarProgress',
+                transition && `authLayout--${transition}`,
+            )}
+        >
             <div className="authLayoutGlow" aria-hidden="true" />
 
             <header className="authLayoutTopBar">
@@ -54,6 +68,7 @@ export default function AuthLayout({ children, title, headerLink, aside, headerA
                         </Link>
                     </div>
                 )}
+                {topBarProgress && <div className="authLayoutTopBarProgress">{topBarProgress}</div>}
             </header>
 
             <main className="authLayoutMain">
