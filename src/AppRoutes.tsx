@@ -34,13 +34,15 @@ import DashboardLoadingFallback from './views/Dashboard/DashboardLoadingFallback
 import useHasSubscription from './hooks/useHasSubscription';
 import useCanManageBilling from './hooks/useCanManageBilling';
 import useIsTeamAdmin from './hooks/useIsTeamAdmin';
-import { isSignupCheckoutWaiting } from './views/SignupPlan/hooks/signupCheckoutSignal';
+import { isOptimisticSignupActive, useOptimisticSignupStore } from './store/optimisticSignupStore';
 
 
 export default function AppRoutes() {
     const hasSubscription = useHasSubscription();
     const canManageBilling = useCanManageBilling();
     const isTeamAdmin = useIsTeamAdmin();
+    const optimisticSignupStatus = useOptimisticSignupStore((state) => state.status);
+    const optimisticSignupReturnTo = useOptimisticSignupStore((state) => state.returnTo);
     const location = useLocation();
     const isMobile = useMediaQuery('(max-width: 767px)');
 
@@ -68,13 +70,16 @@ export default function AppRoutes() {
                 <Route
                     path="/signup/plan"
                     element={
-                        <AuthGuard>
-                            {!canManageBilling
+                        // Optimistic sign-up failed (the toast is already up): back to the form, restored.
+                        optimisticSignupStatus === 'failed'
+                            ? <Navigate to={optimisticSignupReturnTo} replace />
+                            : <AuthGuard>
+                            {/* No account yet during an optimistic sign-up; self sign-ups can always bill. */}
+                            {!canManageBilling && !isOptimisticSignupActive(optimisticSignupStatus)
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
-                                    // Exception: the tab waiting on a sign-up checkout advances to the dashboard (SAYSO-565).
-                                    ? <Navigate to={isSignupCheckoutWaiting() ? '/' : '/settings?tab=subscription'} replace />
+                                    ? <Navigate to="/settings?tab=subscription" replace />
                                     : <SignupPlan />
                             }
                         </AuthGuard>

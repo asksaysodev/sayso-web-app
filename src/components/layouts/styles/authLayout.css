@@ -52,6 +52,11 @@
     background-color: var(--neutral-50);
 }
 
+/* Mobile-only progress bar on the top bar's bottom edge (see the ≤767px block). */
+.authLayoutTopBarProgress {
+    display: none;
+}
+
 .authLayoutLogo {
     display: inline-flex;
     flex-shrink: 0;
@@ -158,6 +163,58 @@ button.authLayoutTextLink {
     min-width: 0;
 }
 
+/*
+ * Step transition (sign-up → plan). The outgoing step fades and shrinks a touch; the incoming
+ * one does the opposite, title first and content just behind. Enter uses `backwards` fill, so no
+ * transform is left on the content afterwards (keeps it from becoming a containing block).
+ */
+.authLayout--exit .authLayoutTitle,
+.authLayout--exit .authLayoutContent {
+    transform-origin: top center;
+    animation: authLayoutStepOut 200ms cubic-bezier(0.4, 0, 1, 1) forwards;
+    pointer-events: none;
+}
+
+.authLayout--enter .authLayoutTitle,
+.authLayout--enter .authLayoutContent {
+    transform-origin: top center;
+    animation: authLayoutStepIn 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.authLayout--enter .authLayoutContent {
+    animation-delay: 60ms;
+}
+
+@keyframes authLayoutStepOut {
+    to {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+}
+
+@keyframes authLayoutStepIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .authLayout--exit .authLayoutTitle,
+    .authLayout--exit .authLayoutContent {
+        animation: none;
+    }
+
+    .authLayout--enter .authLayoutTitle,
+    .authLayout--enter .authLayoutContent {
+        animation: authLayoutStepFade 200ms ease-out backwards;
+    }
+
+    @keyframes authLayoutStepFade {
+        from { opacity: 0; }
+    }
+}
+
 /* Footer */
 .authLayoutFooter {
     display: flex;
@@ -200,21 +257,42 @@ button.authLayoutTextLink {
 
 @media (max-width: 767px) {
     .authLayoutTopBar {
+        position: relative;
         padding: var(--space-16);
+    }
+
+    /* The progress moves into the chrome: a thin bar on the top bar's bottom edge instead of the
+       stepper rail, so the title leads the content rather than reading as a caption for the steps. */
+    .authLayoutTopBarProgress {
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .authLayout--hasTopBarProgress .authLayoutAside {
+        display: none;
+    }
+
+    /* Plan step: the title belongs to the toggle and cards (4px + the toolbar's 12px padding = 16px). */
+    .authLayout:has(.signupPlan) .authLayoutTitle {
+        margin-bottom: var(--space-4);
     }
 
     .authLayoutLogo img {
         height: 28px;
     }
 
-    .authLayoutMain {
+    /* Progress above the title on mobile (the desktop rail order flips). */
+    .authLayoutMain,
+    .authLayout--hasAside .authLayoutMain {
         grid-template-columns: minmax(0, 1fr);
         grid-template-areas:
-            "title"
             "aside"
+            "title"
             "content";
-        padding-left: var(--space-16);
-        padding-right: var(--space-16);
+        padding: 30px var(--space-16) 0;
     }
 
     .authLayoutTitle {
@@ -226,7 +304,7 @@ button.authLayoutTextLink {
 
     .authLayoutAside {
         justify-self: stretch;
-        margin-bottom: var(--space-24);
+        margin-bottom: var(--space-16);
     }
 
     .authLayoutFooter {
