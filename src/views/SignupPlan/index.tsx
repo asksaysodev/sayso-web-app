@@ -7,7 +7,6 @@ import { LogOut, X } from 'lucide-react';
 import AuthLayout from '@/components/layouts/AuthLayout';
 import { SignupProgress } from '@/components/auth/SignupProgress';
 import { SkipButton } from '@/components/auth/SkipButton';
-import { Button } from '@/components/ds/Button';
 import { SegmentedControl } from '@/components/ds/SegmentedControl';
 import { useAuth } from '@/context/AuthContext';
 import { isOptimisticSignupActive, useOptimisticSignupStore } from '@/store/optimisticSignupStore';
@@ -18,8 +17,6 @@ import { subscriptionPlansQuery } from '@/views/Subscription/services/getSubscri
 import useStripeCheckout from '@/views/Subscription/hooks/useStripeCheckout';
 import { BillingInterval, BillingIntervalEnum } from '@/views/Subscription/types';
 
-import { broadcastSignupCheckoutCanceled } from './hooks/signupCheckoutSignal';
-import useSignupCheckoutWaiting from './hooks/useSignupCheckoutWaiting';
 import PlanCard from './components/PlanCard';
 import SignupPlanSkeleton from './components/SignupPlanSkeleton';
 import SpecialPricingBanner from './components/SpecialPricingBanner';
@@ -87,18 +84,15 @@ export default function SignupPlan() {
     }
     const selectedBillingTab = pickedBillingTab ?? defaultBillingTab ?? BillingIntervalEnum.MONTH;
 
-    const { waitingPriceId, startWaiting, stopWaiting } = useSignupCheckoutWaiting();
     const { mutateGetStripeCheckoutPageUrl, isPendingGetStripeCheckoutPageUrl } = useStripeCheckout({
         flow: 'signup',
-        onOpened: startWaiting,
     });
 
-    // Stripe's cancel_url lands here in the checkout tab (?canceled=true): tell the waiting
-    // tab to back out, show a dismissible notice, and drop the param.
+    // Stripe's cancel_url lands back here (?canceled=true): show a dismissible notice and
+    // drop the param.
     const [showCanceledNotice, setShowCanceledNotice] = useState(() => searchParams.get('canceled') === 'true');
     useEffect(() => {
         if (searchParams.get('canceled') !== 'true') return;
-        broadcastSignupCheckoutCanceled();
         const next = new URLSearchParams(searchParams);
         next.delete('canceled');
         setSearchParams(next, { replace: true });
@@ -118,7 +112,7 @@ export default function SignupPlan() {
     // against the 1px edge, not 0.
     const toolbarRef = useRef<HTMLDivElement>(null);
     const [isToolbarStuck, setIsToolbarStuck] = useState(false);
-    const showPlans = !waitingPriceId && !showLoader;
+    const showPlans = !showLoader;
     useEffect(() => {
         const toolbar = toolbarRef.current;
         if (!showPlans || !toolbar || typeof IntersectionObserver === 'undefined') return;
@@ -180,29 +174,7 @@ export default function SignupPlan() {
                     </button>
                 </div>
             )}
-            {waitingPriceId ? (
-                <div className="signupPlanWaiting">
-                    <span className="signupPlanSpinner" aria-hidden="true" />
-                    <div role="status" aria-live="polite" className="signupPlanWaitingText">
-                        <h2 className="signupPlanWaitingTitle">Complete your payment in the new tab</h2>
-                        <p className="signupPlanWaitingSub">
-                            We'll take you to the next step automatically once your payment goes through.
-                        </p>
-                    </div>
-                    <div className="signupPlanWaitingActions">
-                        <Button
-                            loading={isPendingGetStripeCheckoutPageUrl}
-                            disabled={isPendingGetStripeCheckoutPageUrl}
-                            onClick={() => mutateGetStripeCheckoutPageUrl(waitingPriceId)}
-                        >
-                            Reopen checkout
-                        </Button>
-                        <Button variant="ghost" onClick={stopWaiting}>
-                            Choose a different plan
-                        </Button>
-                    </div>
-                </div>
-            ) : showLoader ? (
+            {showLoader ? (
                 <SignupPlanSkeleton />
             ) : (
                 <div className="signupPlan">

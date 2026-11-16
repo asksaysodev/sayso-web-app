@@ -34,7 +34,6 @@ import DashboardLoadingFallback from './views/Dashboard/DashboardLoadingFallback
 import useHasSubscription from './hooks/useHasSubscription';
 import useCanManageBilling from './hooks/useCanManageBilling';
 import useIsTeamAdmin from './hooks/useIsTeamAdmin';
-import { isSignupCheckoutWaiting } from './views/SignupPlan/hooks/signupCheckoutSignal';
 import { isOptimisticSignupActive, useOptimisticSignupStore } from './store/optimisticSignupStore';
 
 
@@ -80,8 +79,7 @@ export default function AppRoutes() {
                                 ? <Navigate to="/" replace />
                                 : hasSubscription
                                     // Subscribers manage their plan in Account settings; this route is the pricing page.
-                                    // Exception: the tab waiting on a sign-up checkout advances to the dashboard (SAYSO-565).
-                                    ? <Navigate to={isSignupCheckoutWaiting() ? '/' : '/settings?tab=subscription'} replace />
+                                    ? <Navigate to="/settings?tab=subscription" replace />
                                     : <SignupPlan />
                             }
                         </AuthGuard>
