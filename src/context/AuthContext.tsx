@@ -9,7 +9,7 @@ import * as Sentry from "@sentry/react"
 import { Account, AuthResult, SignInData, SignUpData, User } from '@/types/user'
 import { AALLevel, MFAServiceError } from '@/types/supabaseMFA'
 import { getAAL, listFactors, verifyTOTPCode } from '@/services/mfaServices'
-import { enrollReferralParticipant, getParticipantReferrer } from '@/services/referralRocket'
+import { enrollReferralParticipant, getParticipantReferrer, hasReferralCookie } from '@/services/referralRocket'
 import { setReferralAttribution } from '@/services/setReferralAttribution'
 import type { Factor } from '@supabase/supabase-js'
 import type { AxiosError } from 'axios'
@@ -415,7 +415,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Must not block signup or throw — failures are captured in Sentry.
       // attributionPending gates the subscription page so it shows skeletons until we know
       // whether a discount applies, preventing a jarring card-to-discount-card flash.
-      setAttributionPending(true);
+      // Only referred sign-ups can get one (RR attributes from its rr_referral_code cookie),
+      // so everyone else goes straight to the prefetched plans with no skeleton.
+      if (hasReferralCookie()) setAttributionPending(true);
       (async () => {
         try {
           const enrolled = await enrollReferralParticipant({ email, fName: name, lName: lastname });

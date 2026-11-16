@@ -68,6 +68,128 @@
     white-space: nowrap;
 }
 
+/*
+ * Bar variant (mobile): full-bleed segments on the top bar's bottom edge. Done steps settle to a
+ * soft primary, the current one fills in dark navy from the left, upcoming ones stay neutral.
+ */
+.signupProgressBar {
+    display: flex;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.signupProgressBarSegment {
+    position: relative;
+    flex: 1;
+    height: 3px;
+    overflow: hidden;
+    background-color: var(--neutral-200);
+}
+
+.signupProgressBarSegment::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--primary-800);
+    transform: scaleX(0);
+    transform-origin: left center;
+}
+
+.signupProgressBarSegment--completed::after {
+    background-color: var(--primary-300);
+    transform: scaleX(1);
+}
+
+.signupProgressBarSegment--active::after {
+    animation: signupProgressBarFill 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+
+@keyframes signupProgressBarFill {
+    to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .signupProgressBarSegment--active::after {
+        animation: none;
+        transform: scaleX(1);
+    }
+}
+
+/*
+ * Advance (animateFromPrevious): the step that just finished starts in its old active look
+ * and fades to completed, then its check pops; the current step fades in from upcoming.
+ * `backwards` fill holds each "from" look during its delay.
+ */
+.signupProgress--advance .signupProgressItem--completed .signupProgressCircle {
+    animation: signupProgressDoneBg 450ms ease 100ms backwards;
+}
+
+.signupProgress--advance .signupProgressItem--completed .signupProgressCircle svg {
+    animation: signupProgressCheckPop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms backwards;
+}
+
+.signupProgress--advance .signupProgressItem--completed .signupProgressLabel {
+    animation: signupProgressDoneLabel 450ms ease 100ms backwards;
+}
+
+.signupProgress--advance .signupProgressItem--active .signupProgressCircle {
+    animation: signupProgressActiveBg 450ms ease 350ms backwards;
+}
+
+.signupProgress--advance .signupProgressItem--active .signupProgressLabel {
+    animation: signupProgressActiveLabel 450ms ease 350ms backwards;
+}
+
+@keyframes signupProgressDoneBg {
+    from { background-color: var(--primary-800); }
+}
+
+@keyframes signupProgressCheckPop {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+@keyframes signupProgressDoneLabel {
+    from { color: var(--primary-800); }
+}
+
+@keyframes signupProgressActiveBg {
+    from {
+        background-color: var(--neutral-200);
+        color: var(--text-secondary);
+    }
+}
+
+@keyframes signupProgressActiveLabel {
+    from { color: var(--text-disabled); }
+}
+
+/* Bar variant: the finished segment fades navy → soft blue, then the current one fills. */
+.signupProgress--advance .signupProgressBarSegment--completed::after {
+    animation: signupProgressDoneSegment 450ms ease 100ms backwards;
+}
+
+.signupProgress--advance .signupProgressBarSegment--active::after {
+    animation-delay: 350ms;
+}
+
+@keyframes signupProgressDoneSegment {
+    from { background-color: var(--primary-800); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .signupProgress--advance .signupProgressItem .signupProgressCircle,
+    .signupProgress--advance .signupProgressItem .signupProgressCircle svg,
+    .signupProgress--advance .signupProgressItem .signupProgressLabel,
+    .signupProgress--advance .signupProgressBarSegment--completed::after {
+        animation: none;
+    }
+}
+
 @media (max-width: 1279px) {
     .authLayoutAside .signupProgress {
         flex-direction: row;
@@ -90,16 +212,22 @@
     }
 
     .signupProgressItem {
-        gap: 12px;
+        gap: 8px;
     }
 
     .signupProgressCircle {
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+
+    /* The completed check is a fixed 20px icon; keep it in proportion with the smaller circle. */
+    .signupProgressCircle svg {
+        width: 14px;
+        height: 14px;
     }
 
     .signupProgressLabel {
-        font-size: 14px;
+        font-size: 13px;
     }
 }

@@ -5,6 +5,7 @@ import { getAAL } from '@/services/mfaServices';
 
 import '../../styles/AuthGuard.css'
 import { useAuth } from '@/context/AuthContext';
+import { isOptimisticSignupActive, useOptimisticSignupStore } from '@/store/optimisticSignupStore';
 import SaysoLoader from '../SaysoLoader';
 import AccountUnavailable from '../AccountUnavailable';
 import SubscriptionGuard from './SubscriptionGuard';
@@ -47,6 +48,24 @@ const AuthGuard = ({ children }: Props) => {
       checkMFAStatus();
     }
   }, [globalUser, loading, userLoading, checkIfNeedsMFA, navigate]);
+
+  // Optimistic sign-up (useOptimisticSignupStore): /signup/plan is shown while the account is
+  // created and loaded, instead of the logo loader. Same tree shape as the normal return below,
+  // so the plan view doesn't remount when the account lands. A failed account fetch still falls
+  // through to AccountUnavailable rather than leaving the user on a plan page that can't check out.
+  const optimisticStatus = useOptimisticSignupStore((state) => state.status);
+  const resetOptimisticSignup = useOptimisticSignupStore((state) => state.reset);
+  const isOptimisticSignup =
+    isOptimisticSignupActive(optimisticStatus) && location.pathname === '/signup/plan' && !accountUnavailable;
+  const isAccountSettled = !loading && !userLoading && !isCheckingMFA && !!user && !!globalUser;
+
+  useEffect(() => {
+    if (optimisticStatus === 'created' && isAccountSettled) resetOptimisticSignup();
+  }, [optimisticStatus, isAccountSettled, resetOptimisticSignup]);
+
+  if (isOptimisticSignup && !isAccountSettled) {
+    return <SubscriptionGuard>{children}</SubscriptionGuard>;
+  }
 
   // The logo loader covers only session restore (`loading`), which is near-instant.
   // Once a session exists, the slow part is the account fetch + MFA check. If the user
