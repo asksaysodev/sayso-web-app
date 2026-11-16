@@ -11,6 +11,7 @@ import { Button } from '@/components/ds/Button';
 import { SegmentedControl } from '@/components/ds/SegmentedControl';
 import { useAuth } from '@/context/AuthContext';
 import { isOptimisticSignupActive, useOptimisticSignupStore } from '@/store/optimisticSignupStore';
+import { hasReferralCookie } from '@/services/referralRocket';
 import useHasSubscription from '@/hooks/useHasSubscription';
 import { clearOfferToken, getOfferToken } from '@/utils/offerToken';
 import { subscriptionPlansQuery } from '@/views/Subscription/services/getSubscriptionPlans';
@@ -46,7 +47,10 @@ export default function SignupPlan() {
     // Optimistic sign-up (useOptimisticSignupStore): this view can render before the account
     // exists. Checkout, skip and sign-out all need it, so they wait for the account.
     const optimisticSignupStatus = useOptimisticSignupStore((state) => state.status);
-    const isAccountReady = !!globalUser && optimisticSignupStatus !== 'pending';
+    // Also waits for referral attribution: the server applies the referee coupon from
+    // account.referral_code_used when the checkout session is created, so a checkout sent
+    // before attribution lands would go out at full price.
+    const isAccountReady = !!globalUser && optimisticSignupStatus !== 'pending' && !attributionPending;
     // Arrived straight from the sign-up form: play the step hand-off (view enters, progress
     // advances). Read once at mount, so a reload or a visit from the dashboard doesn't replay it.
     const [arrivedFromSignup] = useState(() =>
@@ -100,7 +104,12 @@ export default function SignupPlan() {
         setSearchParams(next, { replace: true });
     }, [searchParams, setSearchParams]);
 
-    const showLoader = isLoadingSubscriptionPlans || attributionPending;
+    // A referred sign-up skeletons from the start of the optimistic hand-off: signUp only turns
+    // attributionPending on after sign-in, and until then the cards would show list prices
+    // (then flash to the discount) with clickable CTAs. signUp sets attributionPending before
+    // it resolves, so there's no gap between the two conditions.
+    const isReferredSignupPending = optimisticSignupStatus === 'pending' && hasReferralCookie();
+    const showLoader = isLoadingSubscriptionPlans || attributionPending || isReferredSignupPending;
 
     // The toolbar is sticky on mobile; flag when it's pinned so it only gets a background then.
     // Pinned at top: 0 means it crosses the 1px-inset top edge and stops being fully visible.
