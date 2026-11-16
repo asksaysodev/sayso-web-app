@@ -12,3 +12,12 @@ export default async function getSubscriptionPlans(offer?: string | null): Promi
 
     return response?.data
 }
+
+/**
+ * One definition of the plans query, so the sign-up prefetch (/signup, before the account
+ * exists — the endpoint is public) and the plan step (/signup/plan) share a cache entry.
+ */
+export const subscriptionPlansQuery = (offer: string | null) => ({
+    queryKey: ['subscription-plans', offer] as const,
+    queryFn: () => getSubscriptionPlans(offer),
+});

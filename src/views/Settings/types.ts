@@ -1,3 +1,5 @@
+import type { Location } from "react-router-dom";
+
 export type SettingsPanel = 'profile' | 'company' | 'files' | 'connections' | 'security' | 'subscription' | 'referral' | 'reports';
 
 export enum SettingsPanelEnum {
@@ -24,3 +26,8 @@ export const SETTINGS_PANEL_LABELS: Record<SettingsPanel, string> = {
     referral: 'Referrals',
     reports: 'Reports',
 };
+
+/** Router state carried by `/settings`: the page the desktop settings modal opens over. */
+export interface SettingsLocationState {
+    backgroundLocation?: Location;
+}

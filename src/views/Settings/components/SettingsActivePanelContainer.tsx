@@ -8,7 +8,7 @@ import SettingsReferralForm from "./SettingsReferralForm";
 import SettingsConnectionsForm from "./SettingsConnections/SettingsConnectionsForm";
 import SettingsSubscription from "./SettingsSubscription";
 import SettingsReports from "./SettingsReports";
-import CompanyNameField from "@/views/Organization/Company/components/CompanyNameField";
+import SettingsCompanyForm from "./SettingsCompanyForm";
 
 // These render without the white panel and header.
 const PLAIN_PANELS = ['profile', 'company', 'connections', 'security', 'referral'] as const;
@@ -29,9 +29,7 @@ export default function SettingsActivePanelContainer({ selectedPanel }: Props) {
                 <SettingsPersonalForm globalUser={globalUser} />
             )
             case "company": return (
-                <div className='settings-company-form'>
-                    <CompanyNameField />
-                </div>
+                <SettingsCompanyForm />
             )
             case "files": return (
                 <SettingsFilesForm />

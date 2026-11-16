@@ -18,6 +18,20 @@ function waitForRocketSDK(): Promise<void> {
   });
 }
 
+/**
+ * Whether this browser arrived through a referral link. The Referral Rocket widget stores
+ * `?referralCode=` in the `rr_referral_code` cookie (host-only, on this app's domain), and
+ * `addParticipant` reads that same cookie to attribute the referrer, so without it no
+ * referral can be attributed at sign-up.
+ */
+export function hasReferralCookie(): boolean {
+  try {
+    return document.cookie.split('; ').some((entry) => entry.startsWith('rr_referral_code='));
+  } catch {
+    return false;
+  }
+}
+
 export async function getCampaign(): Promise<ReferralRocketCampaign> {
   await waitForRocketSDK();
   return window.Rocket!.getCampaign();
