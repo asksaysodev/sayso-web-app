@@ -3,6 +3,7 @@ import getStripeCheckoutPageUrl from "../services/getStripeCheckoutPageUrl";
 import { useToast } from "@/context/ToastContext";
 import * as Sentry from "@sentry/react";
 import type { CheckoutFlow } from "../types";
+import { isMobileBrowser } from "@/utils/helpers/isMobileBrowser";
 
 interface Options {
     flow?: CheckoutFlow;
@@ -25,7 +26,7 @@ export default function useStripeCheckout({ flow, onOpened }: Options = {}) {
                 newTab.location.href = data.url;
                 onOpened?.(stripePriceId);
             } else {
-                // Popup blocked (or the blank tab was closed meanwhile): continue in this tab.
+                // Mobile, popup blocked, or the blank tab was closed meanwhile: continue in this tab.
                 window.location.assign(data.url);
             }
         },
@@ -40,6 +41,12 @@ export default function useStripeCheckout({ flow, onOpened }: Options = {}) {
     // or Safari/Chrome popup blockers reject it.
     const startCheckout = (stripePriceId: string) => {
         if (isPending) return;
+        // Mobile browsers bring the new tab to the front and pause this page, so the URL
+        // can never be loaded into it (SAYSO-604). Go to Stripe in this tab instead.
+        if (isMobileBrowser()) {
+            mutate({ stripePriceId, newTab: null });
+            return;
+        }
         const newTab = window.open('', '_blank');
         if (newTab) {
             try {
