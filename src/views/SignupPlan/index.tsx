@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LogOut, X } from 'lucide-react';
 
 import AuthLayout from '@/components/layouts/AuthLayout';
@@ -67,11 +67,21 @@ export default function SignupPlan() {
     const [searchParams, setSearchParams] = useSearchParams();
     const offerToken = searchParams.get('offer') ?? getOfferToken();
 
-    // Usually already cached by the /signup prefetch, so this renders straight away and
-    // refetches in the background with the new session (referral discount, admin catalog).
-    const { data: subscriptionPlans, isLoading: isLoadingSubscriptionPlans } = useQuery(
-        subscriptionPlansQuery(offerToken),
-    );
+    // Usually already cached by the /signup prefetch, so this renders straight away. That
+    // prefetch was anonymous, so refetch in the background with the session (referral
+    // discount, admin catalog): on mount, which the global staleTime would otherwise skip,
+    // and again once an optimistic sign-up's account is ready, since it mounted with no session.
+    const queryClient = useQueryClient();
+    const { data: subscriptionPlans, isLoading: isLoadingSubscriptionPlans } = useQuery({
+        ...subscriptionPlansQuery(offerToken),
+        refetchOnMount: 'always',
+    });
+    const refetchedForAccountRef = useRef(false);
+    useEffect(() => {
+        if (!arrivedFromSignup || !isAccountReady || refetchedForAccountRef.current) return;
+        refetchedForAccountRef.current = true;
+        void queryClient.invalidateQueries({ queryKey: ['subscription-plans'] });
+    }, [arrivedFromSignup, isAccountReady, queryClient]);
 
     // Until the user picks an interval, default to yearly billing for the new-generation catalog
     // (legacy/offer users keep monthly). Set during render, not in an effect, so the toggle mounts

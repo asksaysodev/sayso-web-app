@@ -36,6 +36,16 @@ export const useOptimisticSignupStore = create<OptimisticSignupStore>((set) => (
     reset: () => set({ status: 'idle', draft: null, returnTo: '/signup' }),
 }));
 
+/**
+ * Drops a sign-up that has already been created (or failed) when the session ends, so its
+ * plan-step bypasses (AuthGuard, AppRoutes' billing check) can't outlive it. A sign-up still
+ * in flight has no session to end and is left alone.
+ */
+export const clearSettledOptimisticSignup = () => {
+    const { status, reset } = useOptimisticSignupStore.getState();
+    if (status !== 'idle' && status !== 'pending') reset();
+};
+
 /** True while the plan step is shown ahead of a usable account (pending or still settling). */
 export const isOptimisticSignupActive = (status: OptimisticSignupStatus) =>
     status === 'pending' || status === 'created';

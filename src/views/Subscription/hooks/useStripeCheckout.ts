@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import getStripeCheckoutPageUrl from "../services/getStripeCheckoutPageUrl";
 import { useToast } from "@/context/ToastContext";
 import * as Sentry from "@sentry/react";
 import type { CheckoutFlow } from "../types";
+
+const REDIRECT_TIMEOUT_MS = 10_000;
 
 interface Options {
     flow?: CheckoutFlow;
@@ -18,6 +20,7 @@ export default function useStripeCheckout({ flow }: Options = {}) {
     // The page keeps running while the browser loads Stripe; stay "pending" until it's gone
     // so the CTA can't be clicked twice.
     const [isRedirecting, setIsRedirecting] = useState(false);
+    const redirectTimerRef = useRef<number | undefined>(undefined);
 
     // Back from Stripe can restore this page from the back/forward cache, redirect flag included.
     useEffect(() => {
@@ -25,13 +28,20 @@ export default function useStripeCheckout({ flow }: Options = {}) {
             if (event.persisted) setIsRedirecting(false);
         };
         window.addEventListener('pageshow', onPageShow);
-        return () => window.removeEventListener('pageshow', onPageShow);
+        return () => {
+            window.removeEventListener('pageshow', onPageShow);
+            window.clearTimeout(redirectTimerRef.current);
+        };
     }, []);
 
     const { mutate, isPending, isError } = useMutation({
         mutationFn: (stripePriceId: string) => getStripeCheckoutPageUrl(stripePriceId, flow),
         onSuccess: (data) => {
             setIsRedirecting(true);
+            // Safety net: a navigation stopped by the user (Esc, stop button) or one that fails
+            // leaves this page running with no event, so give the CTAs back after a while.
+            window.clearTimeout(redirectTimerRef.current);
+            redirectTimerRef.current = window.setTimeout(() => setIsRedirecting(false), REDIRECT_TIMEOUT_MS);
             window.location.assign(data.url);
         },
         onError: (error) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm, type FieldErrors } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
@@ -11,6 +11,7 @@ import { toE164 } from '@/components/ui/PhoneInput';
 import getPostSignupPath from '@/utils/getPostSignupPath';
 import { useOptimisticSignupStore } from '@/store/optimisticSignupStore';
 import reportApiError from '@/utils/reportApiError';
+import { ACCOUNT_CREATED_SIGN_IN_FAILED } from '@/utils/signupErrors';
 import type { SignupErrorCode } from '@/types/user';
 import getInvitation from '../services/getInvitation';
 import { isPhoneFilled, validateLoginDetails, validatePersonalDetails } from '../helpers/validation';
@@ -40,6 +41,7 @@ export default function useSignupForm() {
     const [signupStep, setSignupStep] = useState<SignupSubStep>(restoredDraft ? 2 : 1);
     const [isBtnLoading, setIsBtnLoading] = useState(false);
     const [isLeaving, setIsLeaving] = useState(false);
+    const isSubmittingRef = useRef(false);
     const navigate = useNavigate();
     const location = useLocation();
     const { showToast } = useToast();
@@ -115,6 +117,12 @@ export default function useSignupForm() {
         // blocking flow: they land on the dashboard, which needs the account to exist.
         // The form plays its exit animation first (AuthLayout `exit`); the account request
         // starts right away regardless.
+        // One sign-up at a time. The optimistic path leaves the button enabled during the exit
+        // animation, and Enter in a focused field still submits; a second request would fail
+        // as "already registered" and mark the (successful) sign-up failed.
+        if (isSubmittingRef.current) return;
+        isSubmittingRef.current = true;
+
         const isOptimistic = !inviteToken;
         let leaveTimer: number | undefined;
         if (isOptimistic) {
@@ -150,7 +158,14 @@ export default function useSignupForm() {
             showToast('error', message);
             console.error('Sign up error:', err);
             Sentry.captureException(err);
-            if (isOptimistic && leaveTimer !== undefined) {
+            const isCreatedButSignedOut = err instanceof Error && err.message === ACCOUNT_CREATED_SIGN_IN_FAILED;
+            if (isOptimistic && isCreatedButSignedOut) {
+                // The account exists, so the form can only fail again ("already registered").
+                // Send the user to sign in instead; the toast says why.
+                window.clearTimeout(leaveTimer);
+                resetOptimisticSignup();
+                navigate('/login', { replace: true });
+            } else if (isOptimistic && leaveTimer !== undefined) {
                 // Failed before the exit animation finished: still on the form, so just stay.
                 window.clearTimeout(leaveTimer);
                 setIsLeaving(false);
@@ -158,6 +173,7 @@ export default function useSignupForm() {
             } else if (isOptimistic) {
                 failOptimisticSignup();
             }
+            isSubmittingRef.current = false;
         } finally {
             // Unmounted by now on the optimistic path; React ignores the update.
             if (!isOptimistic) setIsBtnLoading(false);

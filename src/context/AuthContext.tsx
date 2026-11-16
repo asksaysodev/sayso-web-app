@@ -11,6 +11,7 @@ import { AALLevel, MFAServiceError } from '@/types/supabaseMFA'
 import { getAAL, listFactors, verifyTOTPCode } from '@/services/mfaServices'
 import { enrollReferralParticipant, getParticipantReferrer, hasReferralCookie } from '@/services/referralRocket'
 import { setReferralAttribution } from '@/services/setReferralAttribution'
+import { clearSettledOptimisticSignup } from '@/store/optimisticSignupStore'
 import type { Factor } from '@supabase/supabase-js'
 import type { AxiosError } from 'axios'
 
@@ -176,6 +177,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Cached queries belong to the session that fetched them — the next sign-in in this
     // tab must not be served another account's (or company's) data while it is still fresh.
     queryClient.clear();
+    clearSettledOptimisticSignup();
   }
 
   /**
@@ -283,7 +285,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false)
 
         // Covers a sign-out from another tab, which never reaches resetUser.
-        if (event === 'SIGNED_OUT') queryClient.clear()
+        if (event === 'SIGNED_OUT') {
+          queryClient.clear()
+          clearSettledOptimisticSignup()
+        }
 
         if (JSON.stringify(newUser) !== JSON.stringify(prevUserRef.current)) {
           setUser(newUser)

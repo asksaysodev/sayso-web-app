@@ -59,9 +59,11 @@ const AuthGuard = ({ children }: Props) => {
     isOptimisticSignupActive(optimisticStatus) && location.pathname === '/signup/plan' && !accountUnavailable;
   const isAccountSettled = !loading && !userLoading && !isCheckingMFA && !!user && !!globalUser;
 
+  // Done once the account has loaded, or once loading it failed (AccountUnavailable takes over);
+  // a 'created' status left behind would keep AppRoutes skipping the billing check.
   useEffect(() => {
-    if (optimisticStatus === 'created' && isAccountSettled) resetOptimisticSignup();
-  }, [optimisticStatus, isAccountSettled, resetOptimisticSignup]);
+    if (optimisticStatus === 'created' && (isAccountSettled || accountUnavailable)) resetOptimisticSignup();
+  }, [optimisticStatus, isAccountSettled, accountUnavailable, resetOptimisticSignup]);
 
   if (isOptimisticSignup && !isAccountSettled) {
     return <SubscriptionGuard>{children}</SubscriptionGuard>;
