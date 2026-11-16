@@ -6,7 +6,10 @@ import GuestGuard from './components/guards/GuestGuard';
 import SignupGuestGuard from './components/guards/SignupGuestGuard';
 import MFAGuard from './components/guards/MFAGuard';
 import Layout from './components/Layout';
+import SettingsModalRoute from './components/SettingsModalRoute';
 import { useDownloadModalStore } from './store/downloadModalStore';
+import { useMediaQuery } from './hooks/useMediaQuery';
+import type { SettingsLocationState } from './views/Settings/types';
 
 import Login from './views/Login';
 import PasswordRecovery from './views/PasswordRecovery';
@@ -38,10 +41,18 @@ export default function AppRoutes() {
     const hasSubscription = useHasSubscription();
     const canManageBilling = useCanManageBilling();
     const isTeamAdmin = useIsTeamAdmin();
+    const location = useLocation();
+    const isMobile = useMediaQuery('(max-width: 767px)');
+
+    // Desktop settings is a modal: the routes keep rendering the page it was opened from (dashboard on a direct load).
+    const isSettingsOverlay = !isMobile && location.pathname === '/settings';
+    const routesLocation = isSettingsOverlay
+        ? (location.state as SettingsLocationState | null)?.backgroundLocation ?? '/'
+        : location;
 
     return (
         <Suspense fallback={<SaysoLoader />}>
-            <Routes>
+            <Routes location={routesLocation}>
                 <Route
                     path="/login"
                     element={<LoginRoute />}
@@ -160,6 +171,7 @@ export default function AppRoutes() {
                         </AuthGuard>
                     }
                 />
+                {/* Mobile only; desktop renders SettingsModalRoute over the current page. */}
                 <Route
                     path="/settings"
                     element={
@@ -221,6 +233,7 @@ export default function AppRoutes() {
                     }
                 />
             </Routes>
+            {isSettingsOverlay && <SettingsModalRoute />}
         </Suspense>
     )
 }
