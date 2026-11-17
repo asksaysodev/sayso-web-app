@@ -17,10 +17,21 @@ export default defineConfig([
     ],
     rules: {
       'react-refresh/only-export-components': 'off',
+      'no-restricted-imports': ['error', {
+        paths: [{
+          name: 'react',
+          importNames: ['lazy'],
+          message: "Use lazyView from '@/utils/lazyView' — plain lazy() crashes on stale-chunk reloads (SAYSO-APP-CZ).",
+        }],
+      }],
     },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+  },
+  {
+    files: ['src/utils/lazyView.ts'],
+    rules: { 'no-restricted-imports': 'off' },
   },
 ])
