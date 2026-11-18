@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import AuthGuard from './components/guards/AuthGuard';
@@ -14,8 +14,8 @@ import type { SettingsLocationState } from './views/Settings/types';
 import Login from './views/Login';
 import PasswordRecovery from './views/PasswordRecovery';
 import ResetPassword from './views/ResetPassword';
+import lazyView from './utils/lazyView';
 
-const lazyView: typeof lazy = (factory) => lazy(() => factory().then((module) => module ?? new Promise<never>(() => {})));
 const Dashboard = lazyView(() => import('./views/Dashboard'));
 const Settings = lazyView(() => import('./views/Settings'));
 const Marketplace = lazyView(() => import('./views/Marketplace'));

@@ -1,9 +1,10 @@
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import useHasSubscription from '@/hooks/useHasSubscription';
+import lazyView from '@/utils/lazyView';
 
-const SettingsModal = lazy(() => import('@/views/Settings/SettingsModal'));
+const SettingsModal = lazyView(() => import('@/views/Settings/SettingsModal'));
 
 /**
  * Desktop `/settings` overlay. The page underneath runs its own AuthGuard (login/MFA redirects);
