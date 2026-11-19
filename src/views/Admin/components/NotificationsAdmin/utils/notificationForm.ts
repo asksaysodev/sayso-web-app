@@ -2,6 +2,7 @@ import { BadgeTone } from '@/components/ds/Badge';
 import { AdminNotification, NotificationFormValues, NotificationStatus } from '../types';
 import { fullAudience, isAudienceEmpty } from './audience';
 import { centralToIso, isoToCentral, nextHourCentral } from './centralTime';
+import { contentProblems, newBlock, toEmailContent, toFormBlocks } from './emailContent';
 
 export const STATUS_BADGE: Record<NotificationStatus, { label: string; tone: BadgeTone }> = {
     draft: { label: 'Draft', tone: 'neutral' },
@@ -25,7 +26,11 @@ export const emptyForm = (now: Date = new Date()): NotificationFormValues => {
     const { date, time } = nextHourCentral(now);
     return {
         emailSubject: '',
-        emailHtml: '',
+        emailTitle: '',
+        emailBlocks: [newBlock('paragraph')],
+        ctaLabel: '',
+        ctaUrl: '',
+        legacyHtml: '',
         audience: fullAudience(),
         includeStaff: false,
         publishDate: date,
@@ -47,7 +52,12 @@ export const toFormValues = (n: AdminNotification): NotificationFormValues => {
     const publish = n.publish_at ? isoToCentral(n.publish_at) : { date: base.publishDate, time: base.publishTime };
     return {
         emailSubject: n.email_subject ?? '',
-        emailHtml: n.email_html ?? '',
+        emailTitle: n.email_content?.title ?? '',
+        emailBlocks: toFormBlocks(n.email_content),
+        ctaLabel: n.email_content?.cta?.label ?? '',
+        ctaUrl: n.email_content?.cta?.url ?? '',
+        // Only kept while the builder is empty, so starting to build replaces the pasted HTML.
+        legacyHtml: n.email_content ? '' : n.email_html ?? '',
         audience: n.audience ?? fullAudience(),
         includeStaff: n.include_staff,
         publishDate: publish.date,
@@ -75,10 +85,23 @@ const inAppPayload = (v: NotificationFormValues) => ({
     expires_at: v.expiresDate ? centralToIso(v.expiresDate, '00:00') : null,
 });
 
+export const formEmailContent = (v: NotificationFormValues) =>
+    toEmailContent(v.emailTitle, v.emailBlocks, v.ctaLabel, v.ctaUrl);
+
+/** Whether the builder has anything in it (a pasted-HTML row stays as it is until it does). */
+export const isBuilderEmpty = (v: NotificationFormValues) => {
+    const content = formEmailContent(v);
+    return !content.title && !content.blocks.length && !content.cta;
+};
+
+/** What preview and Send test render: the built email, or a row's pasted HTML. */
+export const previewSource = (v: NotificationFormValues) =>
+    v.legacyHtml && isBuilderEmpty(v) ? { email_html: v.legacyHtml } : { email_content: formEmailContent(v) };
+
 /** Everything, for a draft or scheduled notification. */
 export const toPayload = (v: NotificationFormValues) => ({
     email_subject: v.emailSubject.trim(),
-    email_html: v.emailHtml,
+    ...(v.legacyHtml && isBuilderEmpty(v) ? {} : { email_content: formEmailContent(v) }),
     audience: v.audience,
     include_staff: v.includeStaff,
     publish_at: v.publishDate ? centralToIso(v.publishDate, v.publishTime) : null,
@@ -104,7 +127,7 @@ const inAppProblems = (v: NotificationFormValues): string[] => {
 export const publishProblems = (v: NotificationFormValues, { sendNow = false, now = new Date() } = {}): string[] => {
     const problems: string[] = [];
     if (!v.emailSubject.trim()) problems.push('Subject is required');
-    if (!v.emailHtml.trim()) problems.push('Email HTML is required');
+    if (!(v.legacyHtml && isBuilderEmpty(v))) problems.push(...contentProblems(formEmailContent(v)));
     if (isAudienceEmpty(v.audience, v.includeStaff)) problems.push('Pick at least one audience');
     if (!sendNow) {
         if (!v.publishDate || !v.publishTime) problems.push('Publish date and time are required');

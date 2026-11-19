@@ -8,18 +8,23 @@ import { useSaveNotification, useSendNotificationTest } from '../hooks/useAdminN
 import { AdminNotification, NotificationAction, NotificationFormValues } from '../types';
 import {
     emptyForm,
+    formEmailContent,
     hasEmail,
     isFullyEditable,
     isLive,
+    isBuilderEmpty,
     liveEditProblems,
+    previewSource,
     publishProblems,
     toFormValues,
     toInAppPayload,
     toPayload,
 } from '../utils/notificationForm';
 import { centralToIso } from '../utils/centralTime';
+import { contentProblems } from '../utils/emailContent';
 import AudienceFields from './AudienceFields';
 import InAppFields from './InAppFields';
+import EmailBuilderFields from './EmailBuilderFields';
 import EmailPreviewModal from './EmailPreviewModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import '../styles/NotificationFormModal.css';
@@ -32,7 +37,8 @@ interface Props {
 }
 
 /**
- * Create or edit a notification: an email (subject + pasted HTML) to an audience, with an
+ * Create or edit a notification: an email (subject + built content: title, body blocks,
+ * optional button; SAYSO-623) to an audience, with an
  * optional in-app part, going out at the publish date (CT).
  *
  * - new / draft: Save draft, Schedule, Send now
@@ -54,6 +60,10 @@ export default function NotificationFormModal({ notification, dryRun, onClose }:
     const readOnly = !editable && !canEditInApp;
     const isDirty = JSON.stringify(values) !== JSON.stringify(initial);
     const legacy = !!notification && !hasEmail(notification);
+    // A row made with pasted HTML, before the builder: it previews as it was until rebuilt.
+    const pastedHtml = !!values.legacyHtml && isBuilderEmpty(values);
+    // Preview and Send test need a complete email, like the server does.
+    const canPreview = pastedHtml || contentProblems(formEmailContent(values)).length === 0;
 
     const set = <K extends keyof NotificationFormValues>(key: K, value: NotificationFormValues[K]) =>
         setValues(current => ({ ...current, [key]: value }));
@@ -132,24 +142,26 @@ export default function NotificationFormModal({ notification, dryRun, onClose }:
                                         disabled={!editable || isSaving}
                                         maxLength={300}
                                     />
-                                    <label className='notification-form__html'>
-                                        <span>Email HTML</span>
-                                        <textarea
-                                            rows={12}
-                                            value={values.emailHtml}
-                                            onChange={event => set('emailHtml', event.target.value)}
-                                            placeholder='Paste the full email HTML here. The unsubscribe footer is added for you.'
-                                            spellCheck={false}
-                                            disabled={!editable || isSaving}
-                                        />
-                                    </label>
+                                    {pastedHtml && (
+                                        <p className='notification-form__notice'>
+                                            <Lock size={18} aria-hidden='true' />
+                                            <span>
+                                                {editable
+                                                    ? 'This email was made with pasted HTML. Build it below to replace it, or leave the builder empty to keep it.'
+                                                    : 'This email was made with pasted HTML. Use Preview to see it.'}
+                                            </span>
+                                        </p>
+                                    )}
+                                    {(editable || !pastedHtml) && (
+                                        <EmailBuilderFields values={values} set={set} disabled={!editable || isSaving} />
+                                    )}
                                     <div className='notification-form__actions-row'>
                                         <Button
                                             variant='secondary'
                                             size='sm'
                                             leftIcon={<Eye size={16} />}
                                             onClick={() => setShowPreview(true)}
-                                            disabled={!values.emailHtml.trim()}
+                                            disabled={!canPreview}
                                         >
                                             Preview
                                         </Button>
@@ -157,9 +169,9 @@ export default function NotificationFormModal({ notification, dryRun, onClose }:
                                             variant='secondary'
                                             size='sm'
                                             leftIcon={<Send size={16} />}
-                                            onClick={() => sendTest({ subject: values.emailSubject.trim(), html: values.emailHtml })}
+                                            onClick={() => sendTest({ subject: values.emailSubject.trim(), source: previewSource(values) })}
                                             loading={isSendingTest}
-                                            disabled={!values.emailSubject.trim() || !values.emailHtml.trim()}
+                                            disabled={!values.emailSubject.trim() || !canPreview}
                                         >
                                             Send test to me
                                         </Button>
@@ -291,7 +303,7 @@ export default function NotificationFormModal({ notification, dryRun, onClose }:
             {showPreview && (
                 <EmailPreviewModal
                     subject={values.emailSubject}
-                    emailHtml={values.emailHtml}
+                    source={previewSource(values)}
                     onClose={() => setShowPreview(false)}
                 />
             )}
