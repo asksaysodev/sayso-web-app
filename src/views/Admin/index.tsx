@@ -9,10 +9,7 @@ import CueSignals from './components/CueSignals';
 import ImportSheetButton from './components/ImportSheetButton';
 import SheetVersionSelector from './components/SheetVersionSelector';
 import SubscriptionAdmin from './components/SubscriptionAdmin';
-import CreateNotificationButton from './components/NotificactionsAdmin/CreateNotificationButton';
-import { NotificationsAdminProvider } from './components/NotificactionsAdmin/NotificationsAdminContext';
-import NotificationsSearchBar from './components/NotificactionsAdmin/NotificationsSearchBar';
-import NotificationsAdmin from './components/NotificactionsAdmin';
+import NotificationsAdmin from './components/NotificationsAdmin';
 import PartnersInvoicing from './components/PartnersInvoicing';
 import AddPartnerButton from './components/PartnersInvoicing/AddPartnerButton';
 import PlaybooksAdmin from './components/PlaybooksAdmin';
@@ -38,27 +35,21 @@ export default function Admin() {
         <main className='admin-page'>
             <PageHeader title='Admin' description='Internal tools for the Sayso team.' />
             <div className={`admin-panel-container${selectedTool === 'cue-signals' ? ' centered' : ''}`}>
-                <NotificationsAdminProvider>
-                    <div className='admin-panel-header'>
-                        <div className='admin-panel-header-left-actions'>
-                            <ToolSelector selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
-                            {selectedTool === 'cue-signals' && <SheetVersionSelector />}
-                        </div>
-
-                        {selectedTool === 'cue-signals' && <div className='admin-panel-header-right-actions'>
-                            <ImportSheetButton />
-                        </div>}
-                        {selectedTool === 'notifications' && <div className='admin-panel-header-right-actions'>
-                            <NotificationsSearchBar />
-                            <CreateNotificationButton />
-                        </div>}
-                        {selectedTool === 'partners' && <div className='admin-panel-header-right-actions'>
-                            <AddPartnerButton />
-                        </div>}
+                <div className='admin-panel-header'>
+                    <div className='admin-panel-header-left-actions'>
+                        <ToolSelector selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
+                        {selectedTool === 'cue-signals' && <SheetVersionSelector />}
                     </div>
 
-                    {renderTool()}
-                </NotificationsAdminProvider>
+                    {selectedTool === 'cue-signals' && <div className='admin-panel-header-right-actions'>
+                        <ImportSheetButton />
+                    </div>}
+                    {selectedTool === 'partners' && <div className='admin-panel-header-right-actions'>
+                        <AddPartnerButton />
+                    </div>}
+                </div>
+
+                {renderTool()}
             </div>
         </main>
     )
