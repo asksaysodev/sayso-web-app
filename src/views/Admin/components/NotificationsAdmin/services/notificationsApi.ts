@@ -1,5 +1,5 @@
 import apiClient from '@/config/axios';
-import { AdminNotification, NotificationAction } from '../types';
+import { AdminNotification, EmailContent, NotificationAction } from '../types';
 
 export interface NotificationsList {
     notifications: AdminNotification[];
@@ -32,16 +32,16 @@ export async function deleteNotification(id: string): Promise<void> {
     await apiClient.delete(`/admin/notifications/${id}`);
 }
 
-/** The email exactly as recipients get it, with the footer the server adds. */
-export async function previewNotificationEmail(emailHtml: string): Promise<string> {
-    const response = await apiClient.post('/admin/notifications/preview', { email_html: emailHtml });
+/** The built email (or an older row's pasted HTML). */
+export type EmailSource = { email_content: EmailContent } | { email_html: string };
+
+/** The email exactly as recipients get it, header and footer included, rendered by the server. */
+export async function previewNotificationEmail(source: EmailSource): Promise<string> {
+    const response = await apiClient.post('/admin/notifications/preview', source);
     return response.data.html;
 }
 
-export async function sendNotificationTest(emailSubject: string, emailHtml: string): Promise<{ to: string }> {
-    const response = await apiClient.post('/admin/notifications/test', {
-        email_subject: emailSubject,
-        email_html: emailHtml,
-    });
+export async function sendNotificationTest(emailSubject: string, source: EmailSource): Promise<{ to: string }> {
+    const response = await apiClient.post('/admin/notifications/test', { email_subject: emailSubject, ...source });
     return response.data;
 }

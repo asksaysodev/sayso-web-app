@@ -19,6 +19,13 @@
     gap: var(--space-16);
 }
 
+.email-preview__controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-12);
+}
+
 .email-preview__state {
     margin: 0;
     padding: var(--space-24);
@@ -44,4 +51,10 @@
     height: 65vh;
     border: 0;
     background-color: #f6f6f6;
+}
+
+/* Match the email's own page color so the frame doesn't flash light around a dark email. */
+.email-preview__frame--dark,
+.email-preview__frame--dark iframe {
+    background-color: #2a2b2d;
 }
