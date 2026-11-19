@@ -96,34 +96,104 @@
     color: var(--text-secondary);
 }
 
-.notification-form__html {
+/* Email builder (SAYSO-623) */
+.email-builder {
     display: flex;
     flex-direction: column;
+    gap: var(--space-20);
+}
+
+.email-builder__body,
+.email-builder__cta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.email-builder__blocks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.email-builder__block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    padding: var(--space-8) var(--space-12) var(--space-12);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    background-color: var(--surface-subtle);
+}
+
+.email-builder__block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+}
+
+.email-builder__block-type {
+    display: inline-flex;
+    align-items: center;
     gap: var(--space-4);
     font-size: var(--text-body-sm-size);
+    font-weight: var(--font-weight-semibold);
     color: var(--text-secondary);
 }
 
-.notification-form__html textarea {
-    width: 100%;
-    min-height: 240px;
-    padding: var(--space-12);
-    border: 1px solid var(--sayso-border);
-    border-radius: 8px;
-    background: var(--surface-subtle);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 12px;
-    line-height: 18px;
-    color: var(--text-primary);
-    resize: vertical;
-    white-space: pre;
-    overflow-wrap: normal;
-    overflow-x: auto;
+.email-builder__block-actions {
+    display: flex;
+    gap: var(--space-4);
 }
 
-.notification-form__html textarea:disabled {
+.email-builder__input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--space-8) var(--space-12);
+    border: 1px solid var(--sayso-border);
+    border-radius: 8px;
+    background-color: var(--surface-bg);
+    font: inherit;
+    font-size: var(--text-body-md-size);
+    line-height: 22px;
+    color: var(--text-primary);
+    resize: vertical;
+}
+
+.email-builder__input--heading {
+    font-weight: var(--font-weight-semibold);
+}
+
+.email-builder__input:focus {
+    outline: 2px solid var(--primary-500);
+    outline-offset: -1px;
+}
+
+.email-builder__input:disabled {
     cursor: not-allowed;
     color: var(--text-disabled);
+}
+
+.email-builder__add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.email-builder__cta-fields {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: var(--space-12);
+}
+
+@media (max-width: 600px) {
+    .email-builder__cta-fields {
+        grid-template-columns: 1fr;
+    }
 }
 
 .notification-form__actions-row {
