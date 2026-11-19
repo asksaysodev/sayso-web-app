@@ -51,11 +51,8 @@ export interface ResetAccountSubscriptionResponse {
     companyId: string;
 }
 export type NotificationType = 'media' | 'article';
-export type NotificationStatus = 'active' | 'paused' | 'expired';
 
-export type NotificationStatusFilter = { key: 'status'; value: NotificationStatus | 'all' };
-export type NotificationTypeFilter   = { key: 'type';   value: NotificationType };
-export type NotificationActiveFilter = NotificationStatusFilter | NotificationTypeFilter;
+/** The in-app notification as the widget gets it. The admin tool's shape is AdminNotification. */
 export interface CreatedNotification {
     id: string;
     created_at: string;

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import { CreatedNotification } from '@/views/Admin/types';
-import { getYouTubeEmbedUrl } from '@/views/Admin/components/NotificactionsAdmin/helpers/getYoutubeEmbedUrl';
-import { isFileVideo } from '@/views/Admin/components/NotificactionsAdmin/helpers/isFileVideo';
+import { getYouTubeEmbedUrl } from '../helpers/getYoutubeEmbedUrl';
+import { isFileVideo } from '../helpers/isFileVideo';
 
 export default function NotificationContent({ notification }: { notification: CreatedNotification }) {
     const { type, media_url, title, body } = notification;
