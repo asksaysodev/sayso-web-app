@@ -1,0 +1,307 @@
+/* The modal itself never scrolls: its scrollbar would run over the rounded corners. The
+   header and footer stay put and only the body scrolls, with its scrollbar in the modal's
+   right padding. */
+.notification-form-modal {
+    width: 760px;
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+/* Header, body and footer sit inside a <form>, so the modal's own gap never reaches them. */
+.notification-form-modal > form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+    min-height: 0;
+    max-height: calc(90vh - 2 * var(--space-32));
+}
+
+.notification-form-modal .ds-modal__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin-right: calc(-1 * var(--space-20));
+    padding-right: var(--space-20);
+}
+
+.notification-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+}
+
+.notification-form__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+}
+
+.notification-form__section + .notification-form__section {
+    padding-top: var(--space-24);
+    border-top: 1px solid var(--surface-border);
+}
+
+.notification-form__section-title {
+    margin: 0;
+    font-size: var(--text-body-lg-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.notification-form__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+}
+
+.notification-form__group--tight {
+    gap: var(--space-8);
+    align-items: flex-start;
+}
+
+.notification-form__group--tight > .notification-form__url-row {
+    width: 100%;
+}
+
+.notification-form__url-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.notification-form__url-row > :first-child {
+    flex: 1;
+}
+
+.notification-form__field,
+.notification-form__inline {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-8);
+}
+
+.notification-form__field {
+    align-items: stretch;
+}
+
+.notification-form__label {
+    font-size: var(--text-body-sm-size);
+    color: var(--text-secondary);
+}
+
+.notification-form__hint {
+    margin: 0;
+    font-size: var(--text-body-sm-size);
+    color: var(--text-secondary);
+}
+
+.notification-form__html {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    font-size: var(--text-body-sm-size);
+    color: var(--text-secondary);
+}
+
+.notification-form__html textarea {
+    width: 100%;
+    min-height: 240px;
+    padding: var(--space-12);
+    border: 1px solid var(--sayso-border);
+    border-radius: 8px;
+    background: var(--surface-subtle);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--text-primary);
+    resize: vertical;
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow-x: auto;
+}
+
+.notification-form__html textarea:disabled {
+    cursor: not-allowed;
+    color: var(--text-disabled);
+}
+
+.notification-form__actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+}
+
+.notification-form__publish {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+}
+
+@media (max-width: 600px) {
+    .notification-form__publish {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* The native picker icon sits on the input line, below the label; center it in the whole field. */
+.notification-form__date .ds-field {
+    position: relative;
+}
+
+.notification-form__date .ds-field__input::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 50%;
+    right: var(--space-16);
+    transform: translateY(-50%);
+    margin: 0;
+    cursor: pointer;
+}
+
+.notification-form__checks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.notification-form__in-app-toggle .ds-checkbox__label {
+    font-weight: var(--font-weight-semibold);
+}
+
+.notification-form__notice {
+    display: flex;
+    gap: var(--space-8);
+    margin: 0;
+    font-size: var(--text-body-sm-size);
+    color: var(--text-secondary);
+}
+
+.notification-form__notice svg {
+    flex-shrink: 0;
+}
+
+.notification-form__error {
+    margin: 0;
+    font-size: var(--text-body-sm-size);
+    color: var(--error-text);
+}
+
+.notification-form__problems {
+    margin: 0;
+    padding-left: var(--space-16);
+    font-size: var(--text-body-sm-size);
+    color: var(--error-text);
+}
+
+/* Audience */
+.notification-audience {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+}
+
+/* One grouped list: rows split by hairlines, not separate cards. */
+.notification-audience__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+}
+
+.notification-audience__row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+    padding: var(--space-16);
+}
+
+.notification-audience__row + .notification-audience__row {
+    border-top: 1px solid var(--surface-border);
+}
+
+/* Box on the title's line, not centered on title + hint. */
+.notification-audience__check {
+    align-items: flex-start;
+}
+
+.notification-audience__check > .ds-checkbox__box {
+    margin-top: 1px;
+}
+
+.notification-audience__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.notification-audience__title {
+    font-size: var(--text-body-md-size);
+    line-height: 22px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.notification-audience__hint {
+    font-size: var(--text-body-sm-size);
+    line-height: 18px;
+    color: var(--text-secondary);
+}
+
+/* Roles start under the title text (box 20px + gap 8px), smaller than the type above them. */
+.notification-audience__roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-8) var(--space-24);
+    margin-left: 28px;
+    padding: var(--space-8) var(--space-12);
+    border-radius: 8px;
+    background-color: var(--surface-subtle);
+}
+
+.notification-audience__role {
+    font-size: var(--text-body-sm-size);
+    color: var(--text-secondary);
+}
+
+.notification-audience__role .ds-checkbox__box {
+    width: 16px;
+    height: 16px;
+}
+
+.notification-audience__role .ds-checkbox__check {
+    width: 12px;
+    height: 12px;
+}
+
+/* Staff is not an account type: it sits apart, outside the group. */
+.notification-audience__staff {
+    padding: 0 var(--space-16);
+}
+
+/* Confirm */
+.notification-confirm {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--space-8) var(--space-16);
+    margin: 0;
+    text-align: left;
+    font-size: var(--text-body-md-size);
+}
+
+.notification-confirm dt {
+    color: var(--text-secondary);
+}
+
+.notification-confirm dd {
+    margin: 0;
+    color: var(--text-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+.notification-confirm__dry-run {
+    margin: var(--space-16) 0 0;
+    font-size: var(--text-body-sm-size);
+    color: var(--text-secondary);
+    text-align: left;
+}
