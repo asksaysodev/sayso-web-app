@@ -5,6 +5,7 @@ import reportApiError from '@/utils/reportApiError';
 import getApiErrorMessage from '@/utils/getApiErrorMessage';
 import {
     createNotification,
+    EmailSource,
     deleteNotification,
     getNotifications,
     previewNotificationEmail,
@@ -103,7 +104,7 @@ export function useSendNotificationTest() {
     const { showToast } = useToast();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: ({ subject, html }: { subject: string; html: string }) => sendNotificationTest(subject, html),
+        mutationFn: ({ subject, source }: { subject: string; source: EmailSource }) => sendNotificationTest(subject, source),
         onSuccess: ({ to }) => showToast('success', `Test sent to ${to}.`),
         onError: error => {
             reportApiError(error, { feature: FEATURE, operation: 'sendNotificationTest' });
@@ -114,11 +115,11 @@ export function useSendNotificationTest() {
     return { sendTest: mutate, isSendingTest: isPending };
 }
 
-export function usePreviewNotificationEmail(emailHtml: string, enabled: boolean) {
+export function usePreviewNotificationEmail(source: EmailSource, enabled: boolean) {
     const { data, isLoading, isError, error } = useQuery({
-        queryKey: ['admin-notification-preview', emailHtml],
-        queryFn: () => previewNotificationEmail(emailHtml),
-        enabled: enabled && !!emailHtml.trim(),
+        queryKey: ['admin-notification-preview', JSON.stringify(source)],
+        queryFn: () => previewNotificationEmail(source),
+        enabled,
         staleTime: Infinity,
     });
 
