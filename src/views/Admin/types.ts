@@ -52,6 +52,9 @@ export interface ResetAccountSubscriptionResponse {
 }
 export type NotificationType = 'media' | 'article';
 
+/** A media URL, or a web link with the image shown as its preview. */
+export type MediaItem = string | { url: string; preview_url: string };
+
 /** The in-app notification as the widget gets it. The admin tool's shape is AdminNotification. */
 export interface CreatedNotification {
     id: string;
@@ -59,7 +62,7 @@ export interface CreatedNotification {
     title: string;
     description: string | null;
     type: NotificationType;
-    media_url: string[] | null;
+    media_url: MediaItem[] | null;
     body: string | null;
     remindable: boolean;
     is_welcome: boolean;
