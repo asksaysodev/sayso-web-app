@@ -15,6 +15,7 @@
 }
 
 .nw-overlay--collapsed {
+    z-index: 30;
     bottom: 24px;
     right: 24px;
     background-color: transparent;
@@ -332,7 +333,7 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    z-index: 50;
+    z-index: 30;
 }
 
 /* ===== History menubar content ===== */
