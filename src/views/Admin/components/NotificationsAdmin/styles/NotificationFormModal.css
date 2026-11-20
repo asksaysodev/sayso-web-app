@@ -59,8 +59,14 @@
     align-items: flex-start;
 }
 
-.notification-form__group--tight > .notification-form__url-row {
+.notification-form__group--tight > .notification-form__media-item {
     width: 100%;
+}
+
+.notification-form__media-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
 }
 
 .notification-form__url-row {
