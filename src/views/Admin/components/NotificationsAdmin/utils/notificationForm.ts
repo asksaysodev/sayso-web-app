@@ -1,5 +1,8 @@
 import { BadgeTone } from '@/components/ds/Badge';
-import { AdminNotification, NotificationFormValues, NotificationStatus } from '../types';
+import { isWebLink } from '@/components/NotificationWidget/helpers/isWebLink';
+import { toMediaItem } from '@/components/NotificationWidget/helpers/toMediaItem';
+import { MediaItem } from '../../../types';
+import { AdminNotification, MediaFormItem, NotificationFormValues, NotificationStatus } from '../types';
 import { fullAudience, isAudienceEmpty } from './audience';
 import { centralToIso, isoToCentral, nextHourCentral } from './centralTime';
 import { contentProblems, newBlock, toEmailContent, toFormBlocks } from './emailContent';
@@ -22,6 +25,24 @@ export const isFullyEditable = (n: AdminNotification) => n.status === 'draft' ||
 /** Legacy rows have no email: they were in-app only. */
 export const hasEmail = (n: AdminNotification) => !!n.email_subject;
 
+let nextMediaId = 0;
+export const emptyMediaItem = (url = '', previewUrl = ''): MediaFormItem => ({ id: `media-${++nextMediaId}`, url, previewUrl });
+
+/** A preview only applies to web links; without one the item is stored as its URL. */
+const toMediaPayload = (media: MediaFormItem[]): MediaItem[] =>
+    media
+        .map(({ url, previewUrl }) => ({ url: url.trim(), preview: previewUrl.trim() }))
+        .filter(({ url }) => url)
+        .map(({ url, preview }) => (preview && isWebLink(url) ? { url, preview_url: preview } : url));
+
+const isHttpUrl = (value: string) => {
+    try {
+        return ['http:', 'https:'].includes(new URL(value).protocol);
+    } catch {
+        return false;
+    }
+};
+
 export const emptyForm = (now: Date = new Date()): NotificationFormValues => {
     const { date, time } = nextHourCentral(now);
     return {
@@ -39,7 +60,7 @@ export const emptyForm = (now: Date = new Date()): NotificationFormValues => {
         title: '',
         description: '',
         type: 'media',
-        mediaUrls: [''],
+        media: [emptyMediaItem()],
         body: '',
         remindable: false,
         isWelcome: false,
@@ -66,7 +87,12 @@ export const toFormValues = (n: AdminNotification): NotificationFormValues => {
         title: n.title ?? '',
         description: n.description ?? '',
         type: n.type ?? 'media',
-        mediaUrls: n.media_url?.length ? n.media_url : [''],
+        media: n.media_url?.length
+            ? n.media_url.map(item => {
+                const { url, previewUrl } = toMediaItem(item);
+                return emptyMediaItem(url, previewUrl ?? '');
+            })
+            : [emptyMediaItem()],
         body: n.body ?? '',
         remindable: n.remindable,
         isWelcome: n.is_welcome,
@@ -78,7 +104,7 @@ const inAppPayload = (v: NotificationFormValues) => ({
     title: v.title.trim() || null,
     description: v.description.trim() || null,
     type: v.type,
-    media_url: v.type === 'media' ? v.mediaUrls.map(u => u.trim()).filter(Boolean) : null,
+    media_url: v.type === 'media' ? toMediaPayload(v.media) : null,
     body: v.type === 'article' ? v.body || null : null,
     remindable: v.remindable,
     is_welcome: v.isWelcome,
@@ -115,7 +141,16 @@ export const toInAppPayload = (v: NotificationFormValues) => inAppPayload(v);
 const inAppProblems = (v: NotificationFormValues): string[] => {
     const problems: string[] = [];
     if (!v.title.trim()) problems.push('In-app title is required');
-    if (v.type === 'media' && !v.mediaUrls.some(u => u.trim())) problems.push('Add at least one media URL');
+    if (v.type === 'media') {
+        if (!v.media.some(m => m.url.trim())) problems.push('Add at least one media URL');
+        v.media.forEach(({ url, previewUrl }, index) => {
+            const n = index + 1;
+            if (url.trim() && !isHttpUrl(url.trim())) problems.push(`Media URL ${n} isn't a valid link`);
+            if (previewUrl.trim() && isWebLink(url.trim()) && !isHttpUrl(previewUrl.trim())) {
+                problems.push(`Preview image ${n} isn't a valid link`);
+            }
+        });
+    }
     if (v.type === 'article' && (!v.body || v.body === '<p></p>')) problems.push('In-app body is required');
     return problems;
 };

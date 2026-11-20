@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { CreatedNotification } from '@/views/Admin/types';
-import { getYouTubeEmbedUrl } from '../helpers/getYoutubeEmbedUrl';
-import { isFileVideo } from '../helpers/isFileVideo';
+import { toMediaItem } from '../helpers/toMediaItem';
+import NotificationMediaItem from './NotificationMediaItem';
 
 export default function NotificationContent({ notification }: { notification: CreatedNotification }) {
     const { type, media_url, title, body } = notification;
@@ -12,27 +12,12 @@ export default function NotificationContent({ notification }: { notification: Cr
     useEffect(() => { setMediaIndex(0); }, [notification.id]);
 
     if (type === 'media' && media_url && media_url.length > 0) {
-        const currentUrl = media_url[mediaIndex];
         const total = media_url.length;
-        const youtubeEmbed = getYouTubeEmbedUrl(currentUrl);
-
-        const renderItem = () => {
-            if (youtubeEmbed) return (
-                <iframe
-                    src={youtubeEmbed}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                />
-            );
-            if (isFileVideo(currentUrl)) return (
-                <video src={currentUrl} muted playsInline controls />
-            );
-            return <img src={currentUrl} alt={title} referrerPolicy="no-referrer" />;
-        };
+        const { url, previewUrl } = toMediaItem(media_url[Math.min(mediaIndex, total - 1)]);
 
         return (
             <div className="nw-media">
-                {renderItem()}
+                <NotificationMediaItem key={url} url={url} previewUrl={previewUrl} title={title} />
                 {total > 1 && (
                     <div className="nw-pagination nw-media-pagination">
                         <button
@@ -40,7 +25,7 @@ export default function NotificationContent({ notification }: { notification: Cr
                             onClick={() => setMediaIndex(i => Math.max(0, i - 1))}
                             disabled={mediaIndex === 0}
                         >
-                            <LuChevronLeft />
+                            <ChevronLeft size={16} />
                         </button>
                         <span className="nw-pagination-counter">{mediaIndex + 1} / {total}</span>
                         <button
@@ -48,7 +33,7 @@ export default function NotificationContent({ notification }: { notification: Cr
                             onClick={() => setMediaIndex(i => Math.min(total - 1, i + 1))}
                             disabled={mediaIndex === total - 1}
                         >
-                            <LuChevronRight />
+                            <ChevronRight size={16} />
                         </button>
                     </div>
                 )}
