@@ -27,6 +27,21 @@ export interface GetAccountSubscriptionResponse {
         lastInvoicePaidAt: string | null;
       };
       cancelledAt: string | null;
+      cancellation: { pending: boolean; accessEndsAt: string | null };
+      pause: {
+        state: 'none' | 'scheduled' | 'paused';
+        startsAt: string | null;
+        resumesAt: string | null;
+        priceOnReturn: number | null;
+      };
+      discount: {
+        active: boolean;
+        percentOff: number | null;
+        discountedPrice: number | null;
+        standardPrice: number | null;
+        endsAt: string | null;
+        fullPriceFrom: string | null;
+      };
       isPartnerFunded: boolean;
       partnerName: string | null;
     };
