@@ -17,7 +17,7 @@ export interface SelectFieldOption<T extends string | null> {
 
 export interface SelectFieldProps<T extends string | null> {
     label: ReactNode;
-    /** `null` is a valid option value (e.g. "No team"); `''` is not (Radix reserves it for "no selection"). */
+    /** `null` is a valid option value (e.g. an unassigned team); `''` is not (Radix reserves it for "no selection"). */
     options: SelectFieldOption<T>[];
     /** `undefined` shows the placeholder. */
     value: T | undefined;

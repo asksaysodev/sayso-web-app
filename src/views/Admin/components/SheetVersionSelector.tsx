@@ -1,37 +1,26 @@
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { useAdminStore } from "@/store/adminStore";
+import { SelectField, type SelectFieldOption } from '@/components/ds/SelectField';
+import { useAdminStore } from '@/store/adminStore';
 
 export default function SheetVersionSelector() {
     const signalSheets = useAdminStore(state => state.signalSheets);
     const activeSheetVersion = useAdminStore(state => state.activeSheetVersion);
     const setActiveSheetVersion = useAdminStore(state => state.setActiveSheetVersion);
 
-    if ((!signalSheets || signalSheets.length == 0) || !activeSheetVersion) return null;
+    if (!signalSheets || signalSheets.length === 0 || !activeSheetVersion) return null;
+
+    const options: SelectFieldOption<string>[] = signalSheets.map((sheet) => ({
+        value: String(sheet.version),
+        label: String(sheet.version),
+    }));
 
     return (
-        <div className="sheet-version-selector-container">
-            <label htmlFor="sheet-version-select">Sheet Version</label>
-            <Select value={String(activeSheetVersion)} onValueChange={(v) => setActiveSheetVersion(Number(v))}>
-                <SelectTrigger className="w-full sayso-outlined-button !h-10">
-                    <SelectValue placeholder="Select a version" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        {signalSheets.map((sheet) => (
-                            <SelectItem key={sheet.version} value={String(sheet.version)}>
-                                {sheet.version}
-                            </SelectItem>
-                        ))}
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
-        </div>
-    )
+        <SelectField
+            className='sheet-version-selector'
+            label='Sheet Version'
+            options={options}
+            value={String(activeSheetVersion)}
+            onChange={(value) => setActiveSheetVersion(Number(value))}
+            placeholder='Select a version'
+        />
+    );
 }

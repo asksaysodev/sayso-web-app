@@ -23,7 +23,7 @@ export default function ChangeInviteTeamModal({ row, onClose }: Props) {
     const [teamId, setTeamId] = useState<string | null>(currentTeamId);
 
     const teamOptions = useMemo<SelectFieldOption<string | null>[]>(
-        () => [{ value: null, label: 'No team' }, ...teams.map((team) => ({ value: team.id, label: team.name }))],
+        () => [{ value: null, label: '—' }, ...teams.map((team) => ({ value: team.id, label: team.name }))],
         [teams],
     );
 
