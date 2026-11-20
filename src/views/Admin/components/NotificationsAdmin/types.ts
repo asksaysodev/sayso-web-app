@@ -1,4 +1,4 @@
-import { NotificationType } from '../../types';
+import { MediaItem, NotificationType } from '../../types';
 
 export type NotificationStatus = 'draft' | 'scheduled' | 'sending' | 'published' | 'failed' | 'canceled';
 export type AccountType = 'individual' | 'team' | 'no_plan';
@@ -45,12 +45,19 @@ export interface AdminNotification {
     title: string | null;
     description: string | null;
     type: NotificationType | null;
-    media_url: string[] | null;
+    media_url: MediaItem[] | null;
     body: string | null;
     remindable: boolean;
     is_welcome: boolean;
     active: boolean;
     expires_at: string | null;
+}
+
+/** One media row in the form; an empty previewUrl means none. */
+export interface MediaFormItem {
+    id: string;
+    url: string;
+    previewUrl: string;
 }
 
 /** The form's state. Dates and times are Central Time strings, as the inputs hold them. */
@@ -70,7 +77,7 @@ export interface NotificationFormValues {
     title: string;
     description: string;
     type: NotificationType;
-    mediaUrls: string[];
+    media: MediaFormItem[];
     body: string;
     remindable: boolean;
     isWelcome: boolean;

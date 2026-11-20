@@ -1,11 +1,13 @@
-import { Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ds/Button';
 import { Checkbox } from '@/components/ds/Checkbox';
 import { SegmentedControl } from '@/components/ds/SegmentedControl';
 import { TextField } from '@/components/ds/TextField';
 import RichTextEditor from '@/components/RichTextEditor';
 import { NotificationType } from '../../../types';
-import { NotificationFormValues } from '../types';
+import { MediaFormItem, NotificationFormValues } from '../types';
+import { emptyMediaItem } from '../utils/notificationForm';
+import MediaUrlRow from './MediaUrlRow';
 
 const TYPE_ITEMS: { value: NotificationType; label: string }[] = [
     { value: 'media', label: 'Media' },
@@ -20,8 +22,8 @@ interface Props {
 
 /** The in-app notification's fields, with the same rules the tool always had. */
 export default function InAppFields({ values, set, disabled }: Props) {
-    const setUrl = (index: number, url: string) =>
-        set('mediaUrls', values.mediaUrls.map((u, i) => (i === index ? url : u)));
+    const setMediaItem = (index: number, item: MediaFormItem) =>
+        set('media', values.media.map((m, i) => (i === index ? item : m)));
 
     return (
         <div className='notification-form__group'>
@@ -53,33 +55,21 @@ export default function InAppFields({ values, set, disabled }: Props) {
 
             {values.type === 'media' && (
                 <div className='notification-form__group notification-form__group--tight'>
-                    {values.mediaUrls.map((url, index) => (
-                        <div key={index} className='notification-form__url-row'>
-                            <TextField
-                                label={index === 0 ? 'Media URL' : `Media URL ${index + 1}`}
-                                value={url}
-                                onChange={event => setUrl(index, event.target.value)}
-                                placeholder='YouTube link, video or image URL'
-                                disabled={disabled}
-                            />
-                            {index > 0 && (
-                                <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    aria-label={`Remove media URL ${index + 1}`}
-                                    onClick={() => set('mediaUrls', values.mediaUrls.filter((_, i) => i !== index))}
-                                    disabled={disabled}
-                                >
-                                    <X size={18} />
-                                </Button>
-                            )}
-                        </div>
+                    {values.media.map((item, index) => (
+                        <MediaUrlRow
+                            key={item.id}
+                            item={item}
+                            index={index}
+                            onChange={next => setMediaItem(index, next)}
+                            onRemove={index > 0 ? () => set('media', values.media.filter((_, i) => i !== index)) : undefined}
+                            disabled={disabled}
+                        />
                     ))}
                     <Button
                         variant='ghost'
                         size='sm'
                         leftIcon={<Plus size={16} />}
-                        onClick={() => set('mediaUrls', [...values.mediaUrls, ''])}
+                        onClick={() => set('media', [...values.media, emptyMediaItem()])}
                         disabled={disabled}
                     >
                         Add another URL
