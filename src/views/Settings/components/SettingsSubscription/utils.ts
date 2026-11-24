@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import type { BadgeTone } from '@/components/ds/Badge';
 import type { GetAccountSubscriptionResponse } from '@/views/Subscription/types';
+
+dayjs.extend(utc);
 
 export type ActiveSubscription = GetAccountSubscriptionResponse['subscription'];
 export type Invoice = GetAccountSubscriptionResponse['invoices'][number];
@@ -15,7 +18,7 @@ export const formatInvoiceTotal = (invoice: Invoice) => {
 };
 
 export const formatInvoiceDate = (invoice: Invoice) =>
-    invoice.created_at ? formatDate(invoice.created_at) : '—';
+    invoice.created_at ? dayjs(invoice.created_at).format('MMM D, YYYY') : '—';
 
 /** Stripe invoice status → badge. `rank` orders the Status column. */
 export const invoiceStatusBadge = (status: string | null): { label: string; tone: BadgeTone; rank: number } => {
@@ -33,7 +36,8 @@ export const invoiceStatusBadge = (status: string | null): { label: string; tone
     }
 };
 
-export const formatDate = (date: string) => dayjs(date).format('MMM D, YYYY');
+/** Billing dates are UTC calendar days, as in the billing emails; local time could shift them by one. */
+export const formatBillingDate = (date: string, format = 'MMM D, YYYY') => dayjs.utc(date).format(format);
 
 export const isCancelling = (subscription: ActiveSubscription) =>
     subscription.status === 'canceled' || subscription.cancellation.pending || !!subscription.cancelledAt;

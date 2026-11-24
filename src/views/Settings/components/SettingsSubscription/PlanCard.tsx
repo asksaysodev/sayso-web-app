@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import dayjs from 'dayjs';
 import { useQuery } from '@tanstack/react-query';
 import { PiSpeedometer } from 'react-icons/pi';
 import { Card } from '@/components/ds/Card';
@@ -7,7 +6,7 @@ import { Button } from '@/components/ds/Button';
 import getAccountUsage from '@/services/getAccountUsage';
 import useStripeUpgrade from '@/views/Subscription/hooks/useStripeUpgrade';
 import PlanDiscount from './PlanDiscount';
-import { type ActiveSubscription, formatDate, isCancelling, planStatus } from './utils';
+import { type ActiveSubscription, formatBillingDate, isCancelling, planStatus } from './utils';
 
 interface Props {
     subscription: ActiveSubscription;
@@ -25,7 +24,7 @@ export default function PlanCard({ subscription }: Props) {
     const status = planStatus(subscription);
 
     const renewalDate = subscription.billing?.period?.end
-        ? formatDate(subscription.billing.period.end)
+        ? formatBillingDate(subscription.billing.period.end)
         : '';
 
     const planMinutes = (isTrialing ? subscription.includedMinutes?.trial : subscription.includedMinutes?.plan) ?? 0;
@@ -100,7 +99,7 @@ export default function PlanCard({ subscription }: Props) {
                     <PiSpeedometer size={20} aria-hidden />
                     <span>
                         {`You've used ${usage.usedMinutes} ${usage.usedMinutes === 1 ? 'minute' : 'minutes'} this period`}
-                        {usage.periodEnd && `, which ends on ${dayjs(usage.periodEnd).format('MMMM D, YYYY')}`}
+                        {usage.periodEnd && `, which ends on ${formatBillingDate(usage.periodEnd, 'MMMM D, YYYY')}`}
                     </span>
                 </p>
             )}

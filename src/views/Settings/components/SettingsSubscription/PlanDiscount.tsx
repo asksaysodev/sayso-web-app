@@ -1,5 +1,5 @@
 import formatPrice from '@/utils/formatters/formatPrice';
-import { type ActiveSubscription, formatDate } from './utils';
+import { type ActiveSubscription, formatBillingDate } from './utils';
 import './PlanDiscount.css';
 
 const formatDollars = (amount: number) => `$${formatPrice(amount, { keepCents: true })}`;
@@ -15,7 +15,7 @@ export default function PlanDiscount({ discount, interval }: Props) {
 
     const perInterval = interval ? ` / ${interval}` : '';
     const standard = `${formatDollars(standardPrice)}${perInterval}`;
-    const fullPriceDate = fullPriceFrom && formatDate(fullPriceFrom);
+    const fullPriceDate = fullPriceFrom && formatBillingDate(fullPriceFrom);
 
     return (
         <div className='plan-discount'>
