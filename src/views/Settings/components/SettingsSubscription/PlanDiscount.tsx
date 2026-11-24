@@ -1,8 +1,5 @@
-import formatPrice from '@/utils/formatters/formatPrice';
-import { type ActiveSubscription, formatBillingDate } from './utils';
+import { type ActiveSubscription, formatBillingDate, formatDollars } from './utils';
 import './PlanDiscount.css';
-
-const formatDollars = (amount: number) => `$${formatPrice(amount, { keepCents: true })}`;
 
 interface Props {
     discount: ActiveSubscription['discount'];

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import type { BadgeTone } from '@/components/ds/Badge';
+import formatPrice from '@/utils/formatters/formatPrice';
 import type { GetAccountSubscriptionResponse } from '@/views/Subscription/types';
 
 dayjs.extend(utc);
@@ -38,6 +39,8 @@ export const invoiceStatusBadge = (status: string | null): { label: string; tone
 
 /** Billing dates are UTC calendar days, as in the billing emails; local time could shift them by one. */
 export const formatBillingDate = (date: string, format = 'MMM D, YYYY') => dayjs.utc(date).format(format);
+
+export const formatDollars = (amount: number) => `$${formatPrice(amount, { keepCents: true })}`;
 
 export const isCancelling = (subscription: ActiveSubscription) =>
     subscription.status === 'canceled' || subscription.cancellation.pending || !!subscription.cancelledAt;

@@ -1,0 +1,24 @@
+.step-link {
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--radius-8);
+    background: none;
+    font-family: var(--font-ds);
+    font-size: var(--text-body-md-size);
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.step-link:hover:not(:disabled) {
+    color: var(--text-primary);
+}
+
+.step-link:focus-visible {
+    outline: 2px solid var(--interactive);
+    outline-offset: 2px;
+}
+
+.step-link:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
