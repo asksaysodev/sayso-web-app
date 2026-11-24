@@ -22,7 +22,10 @@ export default function useRefreshActivePlan() {
                 if (attempt > 0) await wait(POLL_INTERVAL_MS);
                 await queryClient.refetchQueries({ queryKey: ['active-plan'] });
                 const plan = queryClient.getQueryData<GetAccountSubscriptionResponse>(['active-plan']);
-                if (plan?.subscription && isUpdated(plan.subscription)) return true;
+                if (plan?.subscription && isUpdated(plan.subscription)) {
+                    void queryClient.invalidateQueries({ queryKey: ['settings-account-usage'] });
+                    return true;
+                }
             }
             return false;
         },
