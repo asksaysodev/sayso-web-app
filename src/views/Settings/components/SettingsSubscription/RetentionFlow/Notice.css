@@ -12,6 +12,12 @@
     background-color: var(--primary-50);
 }
 
+.notice--success {
+    border-color: var(--success-border-2);
+    background-color: var(--success-bg);
+    color: var(--success-text);
+}
+
 .notice--warning {
     border-color: var(--warning-border);
     background-color: var(--warning-bg);

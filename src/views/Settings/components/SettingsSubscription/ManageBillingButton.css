@@ -1,0 +1,9 @@
+.ds-button.manage-billing-button--tinted {
+    background-color: var(--primary-50);
+    border-color: transparent;
+    color: var(--text-brand);
+}
+
+.ds-button.manage-billing-button--tinted:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--primary-50) 85%, var(--primary-300));
+}

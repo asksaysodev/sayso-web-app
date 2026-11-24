@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import './Notice.css';
 
 interface Props extends HTMLAttributes<HTMLParagraphElement> {
-    tone: 'primary' | 'warning' | 'error';
+    tone: 'primary' | 'success' | 'warning' | 'error';
 }
 
 export default function Notice({ tone, className, ...props }: Props) {

@@ -6,24 +6,28 @@ import useHasSubscription from '@/hooks/useHasSubscription';
 import getActivePlan from '@/views/Subscription/services/getActivePlan';
 import PlanCard from './PlanCard';
 import InvoicesCard from './InvoicesCard';
-import CancelSubscriptionSheet from './CancelSubscriptionSheet';
+import PlanStateCard from './PlanStateCard';
+import SubscriptionSheet, { type SubscriptionFlow } from './SubscriptionSheet';
+import { planStateOf } from './planState';
 import SubscriptionManagementCard from './SubscriptionManagementCard';
 import './SettingsSubscription.css';
 
 export default function SettingsSubscription() {
     const hasSubscription = useHasSubscription();
-    const [isCancelSheetOpen, setIsCancelSheetOpen] = useState(false);
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const [flow, setFlow] = useState<SubscriptionFlow>('cancel');
     // Remounts the sheet on every open: its exit animation keeps the previous flow alive for a moment.
-    const [cancelSheetSession, setCancelSheetSession] = useState(0);
+    const [sheetSession, setSheetSession] = useState(0);
     const { data: activePlan, isLoading, isError, isFetching, refetch } = useQuery({
         queryKey: ['active-plan'],
         queryFn: getActivePlan,
         enabled: hasSubscription,
     });
 
-    const openCancelSheet = () => {
-        setCancelSheetSession((session) => session + 1);
-        setIsCancelSheetOpen(true);
+    const openSheet = (nextFlow: SubscriptionFlow) => {
+        setFlow(nextFlow);
+        setSheetSession((session) => session + 1);
+        setIsSheetOpen(true);
     };
 
     const renderCards = () => {
@@ -54,14 +58,26 @@ export default function SettingsSubscription() {
         }
 
         const { subscription, invoices } = activePlan;
+        const state = planStateOf(subscription);
+        const invoicesCard = <InvoicesCard invoices={invoices ?? []} />;
 
         return (
             <div className='settings-subscription'>
-                <PlanCard subscription={subscription} />
-                <InvoicesCard invoices={invoices ?? []} />
-                {!subscription.isPartnerFunded && (
-                    <SubscriptionManagementCard subscription={subscription} onCancel={openCancelSheet} />
+                {state === 'normal' ? (
+                    <PlanCard subscription={subscription} />
+                ) : (
+                    <PlanStateCard subscription={subscription} state={state} onResume={() => openSheet('resume')} />
                 )}
+                {state === 'normal' && invoicesCard}
+                {!subscription.isPartnerFunded && (
+                    <SubscriptionManagementCard
+                        subscription={subscription}
+                        state={state}
+                        onCancel={() => openSheet('cancel')}
+                        onReactivate={() => openSheet('reactivate')}
+                    />
+                )}
+                {state !== 'normal' && invoicesCard}
             </div>
         );
     };
@@ -70,10 +86,11 @@ export default function SettingsSubscription() {
         <>
             {renderCards()}
             {activePlan?.subscription && (
-                <CancelSubscriptionSheet
-                    key={cancelSheetSession}
-                    open={isCancelSheetOpen}
-                    onOpenChange={setIsCancelSheetOpen}
+                <SubscriptionSheet
+                    key={sheetSession}
+                    flow={flow}
+                    open={isSheetOpen}
+                    onOpenChange={setIsSheetOpen}
                     subscription={activePlan.subscription}
                 />
             )}
