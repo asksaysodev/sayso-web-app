@@ -6,9 +6,10 @@ import { type ActiveSubscription, canStartCancellation } from './utils';
 
 interface Props {
     subscription: ActiveSubscription;
+    onCancel: () => void;
 }
 
-export default function SubscriptionManagementCard({ subscription }: Props) {
+export default function SubscriptionManagementCard({ subscription, onCancel }: Props) {
     const { openBillingPortal, isPendingBillingPortal } = useBillingPortal();
 
     return (
@@ -18,7 +19,7 @@ export default function SubscriptionManagementCard({ subscription }: Props) {
                     <h2 className='subscription-card__title'>Subscription management</h2>
                     <p className='management-card__description'>Update your payment method and billing information.</p>
                 </div>
-                {canStartCancellation(subscription) && <CancelSubscription planName={subscription.name} />}
+                {canStartCancellation(subscription) && <CancelSubscription onClick={onCancel} />}
             </div>
             <Button onClick={openBillingPortal} loading={isPendingBillingPortal}>
                 Manage billing

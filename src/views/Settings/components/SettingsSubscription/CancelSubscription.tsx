@@ -1,20 +1,13 @@
-import { useState } from 'react';
-import CancelSubscriptionSheet from './CancelSubscriptionSheet';
 import './CancelSubscription.css';
 
 interface Props {
-    planName: string;
+    onClick: () => void;
 }
 
-export default function CancelSubscription({ planName }: Props) {
-    const [isSheetOpen, setIsSheetOpen] = useState(false);
-
+export default function CancelSubscription({ onClick }: Props) {
     return (
-        <>
-            <button type='button' className='cancel-subscription' onClick={() => setIsSheetOpen(true)}>
-                I want to cancel
-            </button>
-            <CancelSubscriptionSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} planName={planName} />
-        </>
+        <button type='button' className='cancel-subscription' onClick={onClick}>
+            I want to cancel
+        </button>
     );
 }
