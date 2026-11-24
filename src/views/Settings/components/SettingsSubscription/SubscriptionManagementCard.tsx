@@ -1,8 +1,14 @@
 import { Card } from '@/components/ds/Card';
 import { Button } from '@/components/ds/Button';
 import useBillingPortal from '@/views/Subscription/hooks/useBillingPortal';
+import CancelSubscription from './CancelSubscription';
+import { type ActiveSubscription, canStartCancellation } from './utils';
 
-export default function SubscriptionManagementCard() {
+interface Props {
+    subscription: ActiveSubscription;
+}
+
+export default function SubscriptionManagementCard({ subscription }: Props) {
     const { openBillingPortal, isPendingBillingPortal } = useBillingPortal();
 
     return (
@@ -12,6 +18,7 @@ export default function SubscriptionManagementCard() {
                     <h2 className='subscription-card__title'>Subscription management</h2>
                     <p className='management-card__description'>Update your payment method and billing information.</p>
                 </div>
+                {canStartCancellation(subscription) && <CancelSubscription planName={subscription.name} />}
             </div>
             <Button onClick={openBillingPortal} loading={isPendingBillingPortal}>
                 Manage billing

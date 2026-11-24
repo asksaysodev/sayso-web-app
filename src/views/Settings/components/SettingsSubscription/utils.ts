@@ -15,7 +15,7 @@ export const formatInvoiceTotal = (invoice: Invoice) => {
 };
 
 export const formatInvoiceDate = (invoice: Invoice) =>
-    invoice.created_at ? dayjs(invoice.created_at).format('MMM D, YYYY') : '—';
+    invoice.created_at ? formatDate(invoice.created_at) : '—';
 
 /** Stripe invoice status → badge. `rank` orders the Status column. */
 export const invoiceStatusBadge = (status: string | null): { label: string; tone: BadgeTone; rank: number } => {
@@ -33,11 +33,19 @@ export const invoiceStatusBadge = (status: string | null): { label: string; tone
     }
 };
 
+export const formatDate = (date: string) => dayjs(date).format('MMM D, YYYY');
+
+export const isCancelling = (subscription: ActiveSubscription) =>
+    subscription.status === 'canceled' || subscription.cancellation.pending || !!subscription.cancelledAt;
+
+export const canStartCancellation = (subscription: ActiveSubscription) =>
+    !subscription.isPartnerFunded && !isCancelling(subscription);
+
 export type PlanStatusTone = 'success' | 'primary' | 'warning' | 'error';
 
 export const planStatus = (subscription: ActiveSubscription): { label: string; tone: PlanStatusTone } => {
     if (subscription.status === 'canceled') return { label: 'Cancelled', tone: 'error' };
-    if (subscription.cancelledAt) return { label: 'Cancelling', tone: 'warning' };
+    if (isCancelling(subscription)) return { label: 'Cancelling', tone: 'warning' };
     switch (subscription.status) {
         case 'trialing':
             return { label: 'Free trial', tone: 'primary' };
