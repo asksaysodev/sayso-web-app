@@ -65,6 +65,57 @@ export interface GetBillingPortalUrlResponse {
     url: string;
 }
 
+export interface PauseOption {
+    months: number;
+    startsAt: string;
+    resumesAt: string;
+    priceOnReturn: number;
+}
+
+export interface RetentionDiscount {
+    offerKey: string;
+    percentOff: number;
+    durationMonths: number;
+    standardPrice: number;
+    discountedPrice: number;
+    discountedBillDates: string[];
+    fullPriceFrom: string;
+}
+
+export interface CancellationReason {
+    key: string;
+    label: string;
+}
+
+/** What the company can be offered right now; `null` offers are not available to it. */
+export interface RetentionOptions {
+    canCancel: boolean;
+    accessEndsAt: string | null;
+    pause: { options: PauseOption[] } | null;
+    discount: RetentionDiscount | null;
+    reasons: CancellationReason[];
+}
+
+/** Both empty when the user skipped the reason step. The server refuses details without a key. */
+export interface CancellationFeedback {
+    reasonKey?: string;
+    reasonDetails?: string;
+}
+
+export interface PauseSubscriptionResponse {
+    pauseStartsAt: string;
+    resumesAt: string;
+    priceOnReturn: number;
+}
+
+export interface ApplyRetentionDiscountRequest extends CancellationFeedback {
+    offerKey: string;
+}
+
+export interface CancelSubscriptionResponse {
+    accessEndsAt: string;
+}
+
 /** Allowlisted checkout origins the server understands; picks the Stripe return URLs. */
 export type CheckoutFlow = 'signup';
 
