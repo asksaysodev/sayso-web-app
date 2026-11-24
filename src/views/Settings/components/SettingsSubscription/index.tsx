@@ -13,11 +13,18 @@ import './SettingsSubscription.css';
 export default function SettingsSubscription() {
     const hasSubscription = useHasSubscription();
     const [isCancelSheetOpen, setIsCancelSheetOpen] = useState(false);
+    // Remounts the sheet on every open: its exit animation keeps the previous flow alive for a moment.
+    const [cancelSheetSession, setCancelSheetSession] = useState(0);
     const { data: activePlan, isLoading, isError, isFetching, refetch } = useQuery({
         queryKey: ['active-plan'],
         queryFn: getActivePlan,
         enabled: hasSubscription,
     });
+
+    const openCancelSheet = () => {
+        setCancelSheetSession((session) => session + 1);
+        setIsCancelSheetOpen(true);
+    };
 
     const renderCards = () => {
         if (isLoading) {
@@ -53,7 +60,7 @@ export default function SettingsSubscription() {
                 <PlanCard subscription={subscription} />
                 <InvoicesCard invoices={invoices ?? []} />
                 {!subscription.isPartnerFunded && (
-                    <SubscriptionManagementCard subscription={subscription} onCancel={() => setIsCancelSheetOpen(true)} />
+                    <SubscriptionManagementCard subscription={subscription} onCancel={openCancelSheet} />
                 )}
             </div>
         );
@@ -64,9 +71,10 @@ export default function SettingsSubscription() {
             {renderCards()}
             {activePlan?.subscription && (
                 <CancelSubscriptionSheet
+                    key={cancelSheetSession}
                     open={isCancelSheetOpen}
                     onOpenChange={setIsCancelSheetOpen}
-                    planName={activePlan.subscription.name}
+                    subscription={activePlan.subscription}
                 />
             )}
         </>
