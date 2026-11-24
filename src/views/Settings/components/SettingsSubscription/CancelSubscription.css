@@ -1,0 +1,20 @@
+.cancel-subscription {
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--radius-8);
+    background: none;
+    font-family: var(--font-ds);
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.cancel-subscription:hover {
+    color: var(--text-primary);
+}
+
+.cancel-subscription:focus-visible {
+    outline: 2px solid var(--interactive);
+    outline-offset: 2px;
+}

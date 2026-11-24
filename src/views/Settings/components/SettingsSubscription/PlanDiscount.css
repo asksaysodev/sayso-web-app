@@ -1,0 +1,18 @@
+.plan-discount {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.plan-discount__price {
+    margin: 0;
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}
+
+.plan-discount__price strong {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--neutral-800);
+}

@@ -1,14 +1,16 @@
 import { Card } from '@/components/ds/Card';
 import { Button } from '@/components/ds/Button';
-import useStripeCancellation from '@/views/Subscription/hooks/useStripeCancellation';
+import useBillingPortal from '@/views/Subscription/hooks/useBillingPortal';
+import CancelSubscription from './CancelSubscription';
+import { type ActiveSubscription, canStartCancellation } from './utils';
 
 interface Props {
-    plan: string;
+    subscription: ActiveSubscription;
+    onCancel: () => void;
 }
 
-export default function SubscriptionManagementCard({ plan }: Props) {
-    const { mutateGetStripeCancellationPageUrl, isPendingGetStripeCancellationPageUrl } = useStripeCancellation();
-    const openBillingPortal = () => mutateGetStripeCancellationPageUrl(plan);
+export default function SubscriptionManagementCard({ subscription, onCancel }: Props) {
+    const { openBillingPortal, isPendingBillingPortal } = useBillingPortal();
 
     return (
         <Card className='subscription-card management-card'>
@@ -17,19 +19,9 @@ export default function SubscriptionManagementCard({ plan }: Props) {
                     <h2 className='subscription-card__title'>Subscription management</h2>
                     <p className='management-card__description'>Update your payment method and billing information.</p>
                 </div>
-                {/*
-                    TODO: re-enable when we work on the user retention flow (pause/cancel).
-                    <button
-                        type='button'
-                        className='management-card__cancel'
-                        onClick={openBillingPortal}
-                        disabled={isPendingGetStripeCancellationPageUrl}
-                    >
-                        I want to cancel
-                    </button>
-                */}
+                {canStartCancellation(subscription) && <CancelSubscription onClick={onCancel} />}
             </div>
-            <Button variant='secondary' onClick={openBillingPortal} loading={isPendingGetStripeCancellationPageUrl}>
+            <Button onClick={openBillingPortal} loading={isPendingBillingPortal}>
                 Manage billing
             </Button>
         </Card>

@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import type { BadgeTone } from '@/components/ds/Badge';
 import type { GetAccountSubscriptionResponse } from '@/views/Subscription/types';
+
+dayjs.extend(utc);
 
 export type ActiveSubscription = GetAccountSubscriptionResponse['subscription'];
 export type Invoice = GetAccountSubscriptionResponse['invoices'][number];
@@ -33,11 +36,20 @@ export const invoiceStatusBadge = (status: string | null): { label: string; tone
     }
 };
 
+/** Billing dates are UTC calendar days, as in the billing emails; local time could shift them by one. */
+export const formatBillingDate = (date: string, format = 'MMM D, YYYY') => dayjs.utc(date).format(format);
+
+export const isCancelling = (subscription: ActiveSubscription) =>
+    subscription.status === 'canceled' || subscription.cancellation.pending || !!subscription.cancelledAt;
+
+export const canStartCancellation = (subscription: ActiveSubscription) =>
+    !subscription.isPartnerFunded && !isCancelling(subscription);
+
 export type PlanStatusTone = 'success' | 'primary' | 'warning' | 'error';
 
 export const planStatus = (subscription: ActiveSubscription): { label: string; tone: PlanStatusTone } => {
     if (subscription.status === 'canceled') return { label: 'Cancelled', tone: 'error' };
-    if (subscription.cancelledAt) return { label: 'Cancelling', tone: 'warning' };
+    if (isCancelling(subscription)) return { label: 'Cancelling', tone: 'warning' };
     switch (subscription.status) {
         case 'trialing':
             return { label: 'Free trial', tone: 'primary' };

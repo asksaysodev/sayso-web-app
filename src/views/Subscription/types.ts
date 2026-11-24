@@ -61,7 +61,7 @@ export interface GetAccountSubscriptionResponse {
     }>;
 }
 
-export interface GetStripeCancellationPageUrlResponse {
+export interface GetBillingPortalUrlResponse {
     url: string;
 }
 

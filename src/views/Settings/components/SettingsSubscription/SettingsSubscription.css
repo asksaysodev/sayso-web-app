@@ -219,27 +219,6 @@
     color: var(--text-secondary);
 }
 
-.management-card__cancel {
-    padding: var(--space-2) var(--space-4);
-    border: none;
-    border-radius: var(--radius-8);
-    background: none;
-    font-family: var(--font-ds);
-    font-size: var(--text-body-md-size);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-secondary);
-    cursor: pointer;
-}
-
-.management-card__cancel:hover {
-    color: var(--text-primary);
-}
-
-.management-card__cancel:disabled {
-    cursor: default;
-    opacity: 0.6;
-}
-
 @media (max-width: 767px) {
     .plan-card__top,
     .management-card {
