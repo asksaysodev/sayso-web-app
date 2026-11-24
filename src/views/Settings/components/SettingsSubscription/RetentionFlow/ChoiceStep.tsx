@@ -21,8 +21,7 @@ interface Props {
 
 const formatDurations = (options: PauseOption[]) => {
     const months = options.map((option) => option.months);
-    const last = months[months.length - 1];
-    return months.length === 1 ? formatMonths(last) : `${joinList(months, 'or')} months`;
+    return months.length === 1 ? formatMonths(months[0]) : `${joinList(months, 'or')} months`;
 };
 
 export default function ChoiceStep({

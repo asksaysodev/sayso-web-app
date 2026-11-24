@@ -5,6 +5,7 @@ import useIsTeamAccount from '@/hooks/useIsTeamAccount';
 import useCancelSubscription from '@/views/Subscription/hooks/useCancelSubscription';
 import type { CancellationFeedback } from '@/views/Subscription/types';
 import { formatBillingDate } from '../utils';
+import Notice from './Notice';
 import StepHeading, { type StepProgress } from './StepHeading';
 import StepLayout from './StepLayout';
 import './CancelConfirmStep.css';
@@ -13,10 +14,11 @@ interface Props {
     progress: StepProgress | null;
     feedback: CancellationFeedback;
     accessEndsAt: string;
+    isOfferGone: boolean;
     onClose: () => void;
 }
 
-export default function CancelConfirmStep({ progress, feedback, accessEndsAt, onClose }: Props) {
+export default function CancelConfirmStep({ progress, feedback, accessEndsAt, isOfferGone, onClose }: Props) {
     const isTeam = useIsTeamAccount();
     const { showToast } = useToast();
     const { run, isPending, errorMessage } = useCancelSubscription();
@@ -40,6 +42,11 @@ export default function CancelConfirmStep({ progress, feedback, accessEndsAt, on
             }
         >
             <StepHeading progress={progress} title='Cancel your renewal' />
+            {isOfferGone && (
+                <Notice tone='primary' role='status'>
+                    That offer is no longer available. Nothing has changed on your subscription.
+                </Notice>
+            )}
             <div className='cancel-confirm__card'>
                 <CalendarX size={24} className='cancel-confirm__icon' aria-hidden />
                 <div>

@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function DiscountOfferCard({ planName, interval, discount }: Props) {
-    const { percentOff, durationMonths, discountedPrice, standardPrice, discountedBillDates, fullPriceFrom } = discount;
+    const { percentOff, discountedPrice, standardPrice, discountedBillDates, fullPriceFrom } = discount;
     const billing = intervalLabel(interval);
     const standard = formatPriceWithInterval(standardPrice, interval);
 
@@ -18,7 +18,7 @@ export default function DiscountOfferCard({ planName, interval, discount }: Prop
             <div className='discount-offer__header'>
                 <p className='discount-offer__plan'>{billing ? `${planName} · ${billing}` : planName}</p>
                 <span className='discount-offer__badge'>
-                    {percentOff}% OFF · {durationMonths} {durationMonths === 1 ? 'CYCLE' : 'CYCLES'}
+                    {percentOff}% OFF · {discountedBillDates.length} {discountedBillDates.length === 1 ? 'CYCLE' : 'CYCLES'}
                 </span>
             </div>
             <p className='discount-offer__price'>

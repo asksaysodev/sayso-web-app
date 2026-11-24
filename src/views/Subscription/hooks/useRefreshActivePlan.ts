@@ -11,7 +11,7 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Refetches the plan until `isUpdated`: Stripe webhooks write some changes a few seconds after the
- * request succeeds, so the first refetch can still return the old state.
+ * request succeeds, so the first refetch can still return the old state. Resolves to whether it was.
  */
 export default function useRefreshActivePlan() {
     const queryClient = useQueryClient();
@@ -22,8 +22,9 @@ export default function useRefreshActivePlan() {
                 if (attempt > 0) await wait(POLL_INTERVAL_MS);
                 await queryClient.refetchQueries({ queryKey: ['active-plan'] });
                 const plan = queryClient.getQueryData<GetAccountSubscriptionResponse>(['active-plan']);
-                if (plan?.subscription && isUpdated(plan.subscription)) return;
+                if (plan?.subscription && isUpdated(plan.subscription)) return true;
             }
+            return false;
         },
         [queryClient],
     );

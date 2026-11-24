@@ -1,4 +1,5 @@
-import { useRef } from 'react';
+import { useState } from 'react';
+import * as Sentry from '@sentry/react';
 import { useMutation } from '@tanstack/react-query';
 import reportApiError from '@/utils/reportApiError';
 import type { GetAccountSubscriptionResponse } from '../types';
@@ -23,25 +24,28 @@ export default function useRetentionAction<Variables, Result>({
     alreadyDone,
 }: Options<Variables, Result>) {
     const refreshActivePlan = useRefreshActivePlan();
-    const unconfirmedRef = useRef<{ variables: Variables } | null>(null);
+    const [unconfirmed, setUnconfirmed] = useState<{ variables: Variables } | null>(null);
 
     const { mutate, isPending, error } = useMutation({
         mutationKey: RETENTION_ACTION_KEY,
+        // The default parks the request while offline and sends it on reconnect, without a new click.
+        networkMode: 'always',
         mutationFn: async (variables: Variables) => {
             try {
                 return await request(variables);
             } catch (requestError) {
                 reportApiError(requestError, { feature: 'retention', operation });
-                const unconfirmed = unconfirmedRef.current;
                 if (unconfirmed && alreadyDone && getRetentionErrorCode(requestError) === alreadyDone.code) {
                     return alreadyDone.toResult(unconfirmed.variables);
                 }
-                if (isUnconfirmed(requestError)) unconfirmedRef.current ??= { variables };
+                if (isUnconfirmed(requestError)) setUnconfirmed({ variables });
                 throw requestError;
             }
         },
         onSuccess: () => {
-            void refreshActivePlan(isUpdated);
+            void refreshActivePlan(isUpdated).then((updated) => {
+                if (!updated) Sentry.captureMessage(`[retention] Plan not updated after ${operation}`, 'warning');
+            });
         },
         onError: (mutationError) => {
             if (isUnconfirmed(mutationError)) void refreshActivePlan(isUpdated);
@@ -51,6 +55,8 @@ export default function useRetentionAction<Variables, Result>({
     return {
         run: mutate,
         isPending,
+        /** An attempt may have been applied: retry it as it was, don't let its inputs change. */
+        hasUnconfirmedAttempt: !!unconfirmed,
         errorMessage: error ? getRetentionErrorMessage(error) : null,
     };
 }

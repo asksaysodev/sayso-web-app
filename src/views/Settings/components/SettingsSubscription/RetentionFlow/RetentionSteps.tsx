@@ -32,6 +32,7 @@ export default function RetentionSteps({ subscription, options, accessEndsAt, on
     const [choice, setChoice] = useState<RetentionChoice | null>(hasPause ? null : 'cancel');
     const [feedback, setFeedback] = useState<CancellationFeedback>({});
     const [paused, setPaused] = useState<{ option: PauseOption; result: PauseSubscriptionResponse } | null>(null);
+    const [isOfferGone, setIsOfferGone] = useState(false);
     const [applied, setApplied] = useState<RetentionDiscount | null>(null);
 
     const progress = choice ? stepProgress(step, { choice, hasPause, hasDiscount: !!discount }) : null;
@@ -43,7 +44,9 @@ export default function RetentionSteps({ subscription, options, accessEndsAt, on
     };
 
     const handleOfferChanged = async () => {
-        if ((await onOfferChanged()) === null) setStep('confirm');
+        if ((await onOfferChanged()) !== null) return;
+        setIsOfferGone(true);
+        setStep('confirm');
     };
 
     if (step === 'choice' && pause) {
@@ -112,5 +115,13 @@ export default function RetentionSteps({ subscription, options, accessEndsAt, on
         );
     }
 
-    return <CancelConfirmStep progress={progress} feedback={feedback} accessEndsAt={accessEndsAt} onClose={onClose} />;
+    return (
+        <CancelConfirmStep
+            progress={progress}
+            feedback={feedback}
+            accessEndsAt={accessEndsAt}
+            isOfferGone={isOfferGone}
+            onClose={onClose}
+        />
+    );
 }

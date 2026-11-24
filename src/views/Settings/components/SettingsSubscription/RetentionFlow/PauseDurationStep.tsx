@@ -20,15 +20,10 @@ interface Props {
 
 export default function PauseDurationStep({ progress, options, interval, onPaused, onClose }: Props) {
     const [months, setMonths] = useState(options[0].months);
-    const { run, isPending, errorMessage } = usePauseSubscription();
+    const { run, isPending, hasUnconfirmedAttempt, errorMessage } = usePauseSubscription();
     const option = options.find((candidate) => candidate.months === months) ?? options[0];
 
-    const handleConfirm = () =>
-        run(option, {
-            // After an unconfirmed attempt the result can belong to that attempt's duration.
-            onSuccess: (result) =>
-                onPaused(options.find(({ resumesAt }) => resumesAt === result.resumesAt) ?? option, result),
-        });
+    const handleConfirm = () => run(option, { onSuccess: (result) => onPaused(option, result) });
 
     return (
         <StepLayout
@@ -57,7 +52,7 @@ export default function PauseDurationStep({ progress, options, interval, onPause
                 }))}
                 value={String(option.months)}
                 onChange={(value) => setMonths(Number(value))}
-                disabled={isPending}
+                disabled={isPending || hasUnconfirmedAttempt}
             />
             <SummaryRows
                 rows={[
