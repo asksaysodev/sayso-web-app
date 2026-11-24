@@ -6,6 +6,7 @@ import { Card } from '@/components/ds/Card';
 import { Button } from '@/components/ds/Button';
 import getAccountUsage from '@/services/getAccountUsage';
 import useStripeUpgrade from '@/views/Subscription/hooks/useStripeUpgrade';
+import PlanDiscount from './PlanDiscount';
 import { type ActiveSubscription, formatDate, isCancelling, planStatus } from './utils';
 
 interface Props {
@@ -56,6 +57,12 @@ export default function PlanCard({ subscription }: Props) {
                         </span>
                     </div>
                 </div>
+                {subscription.discount.active && (
+                    <PlanDiscount
+                        discount={subscription.discount}
+                        interval={subscription.interval ?? subscription.billing?.cycle}
+                    />
+                )}
                 <p className='plan-card__meta'>
                     {billingPeriod} · {Math.floor(planMinutes / 60)} hours / month
                 </p>
