@@ -43,6 +43,9 @@ export default function useRetentionAction<Variables, Result>({
         onSuccess: () => {
             void refreshActivePlan(isUpdated);
         },
+        onError: (mutationError) => {
+            if (isUnconfirmed(mutationError)) void refreshActivePlan(isUpdated);
+        },
     });
 
     return {

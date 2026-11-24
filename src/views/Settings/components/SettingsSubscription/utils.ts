@@ -21,6 +21,20 @@ export const formatInvoiceTotal = (invoice: Invoice) => {
 export const formatInvoiceDate = (invoice: Invoice) =>
     invoice.created_at ? dayjs(invoice.created_at).format('MMM D, YYYY') : '—';
 
+/** ["A", "B", "C"] → "A, B and C". */
+export const joinList = (items: (string | number)[], conjunction: 'and' | 'or') =>
+    items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} ${conjunction} ${items[items.length - 1]}`;
+
+/** Bill dates with the year once when they share it: "Nov 3 and Dec 3, 2026". */
+export const formatBillDates = (dates: string[]) => {
+    const isSameYear = new Set(dates.map((date) => date.slice(0, 4))).size === 1;
+    if (!isSameYear) return joinList(dates.map((date) => formatBillingDate(date)), 'and');
+    const days = joinList(dates.map((date) => formatBillingDate(date, 'MMM D')), 'and');
+    return `${days}, ${formatBillingDate(dates[0], 'YYYY')}`;
+};
+
+export const formatMonths = (months: number) => `${months} ${months === 1 ? 'month' : 'months'}`;
+
 /** Stripe invoice status → badge. `rank` orders the Status column. */
 export const invoiceStatusBadge = (status: string | null): { label: string; tone: BadgeTone; rank: number } => {
     switch (status) {
@@ -41,6 +55,14 @@ export const invoiceStatusBadge = (status: string | null): { label: string; tone
 export const formatBillingDate = (date: string, format = 'MMM D, YYYY') => dayjs.utc(date).format(format);
 
 export const formatDollars = (amount: number) => `$${formatPrice(amount, { keepCents: true })}`;
+
+export const formatPriceWithInterval = (amount: number, interval: string | null) =>
+    `${formatDollars(amount)}${interval ? ` / ${interval}` : ''}`;
+
+export const intervalLabel = (interval: string | null) => {
+    if (!interval) return null;
+    return interval === 'month' ? 'Monthly' : 'Yearly';
+};
 
 export const isCancelling = (subscription: ActiveSubscription) =>
     subscription.status === 'canceled' || subscription.cancellation.pending || !!subscription.cancelledAt;
