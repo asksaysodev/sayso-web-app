@@ -48,7 +48,7 @@ export default function SettingsSubscription() {
         <div className='settings-subscription'>
             <PlanCard subscription={subscription} />
             <InvoicesCard invoices={invoices ?? []} />
-            {!subscription.isPartnerFunded && <SubscriptionManagementCard plan={subscription.plan} />}
+            {!subscription.isPartnerFunded && <SubscriptionManagementCard />}
         </div>
     );
 }
