@@ -57,6 +57,7 @@ export default function useRetentionAction<Variables, Result>({
         isPending,
         /** An attempt may have been applied: retry it as it was, don't let its inputs change. */
         hasUnconfirmedAttempt: !!unconfirmed,
+        errorCode: error ? getRetentionErrorCode(error) : undefined,
         errorMessage: error ? getRetentionErrorMessage(error) : null,
     };
 }

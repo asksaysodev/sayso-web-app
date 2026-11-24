@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import './SummaryRows.css';
 
 export interface SummaryRow {
@@ -7,11 +8,12 @@ export interface SummaryRow {
 
 interface Props {
     rows: SummaryRow[];
+    isBoxed?: boolean;
 }
 
-export default function SummaryRows({ rows }: Props) {
+export default function SummaryRows({ rows, isBoxed = false }: Props) {
     return (
-        <dl className='summary-rows'>
+        <dl className={clsx('summary-rows', isBoxed && 'summary-rows--boxed')}>
             {rows.map(({ label, value }) => (
                 <div key={label} className='summary-rows__row'>
                     <dt>{label}</dt>

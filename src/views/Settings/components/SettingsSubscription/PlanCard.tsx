@@ -6,7 +6,7 @@ import { Button } from '@/components/ds/Button';
 import getAccountUsage from '@/services/getAccountUsage';
 import useStripeUpgrade from '@/views/Subscription/hooks/useStripeUpgrade';
 import PlanDiscount from './PlanDiscount';
-import { type ActiveSubscription, formatBillingDate, isCancelling, planStatus } from './utils';
+import { type ActiveSubscription, formatBillingDate, planStatus } from './utils';
 
 interface Props {
     subscription: ActiveSubscription;
@@ -37,10 +37,7 @@ export default function PlanCard({ subscription }: Props) {
                 : 'Your subscription is paid by your partner organization.';
         }
         if (!renewalDate) return null;
-        if (subscription.status === 'paused') {
-            return `Your subscription is paused. Your minutes will expire on ${renewalDate}, but you'll continue to have access to your account.`;
-        }
-        if (isCancelling(subscription)) return `You can continue using Sayso until ${renewalDate}.`;
+        if (subscription.status === 'canceled') return `You can continue using Sayso until ${renewalDate}.`;
         return `Your subscription renews on ${renewalDate}.`;
     }, [subscription, renewalDate, isPartnerFunded]);
 

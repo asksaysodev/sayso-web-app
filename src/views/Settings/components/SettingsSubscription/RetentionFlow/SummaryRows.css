@@ -26,3 +26,21 @@
     color: var(--text-primary);
     text-align: right;
 }
+
+.summary-rows--boxed {
+    gap: var(--space-16);
+    padding: var(--space-16);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-8);
+    background-color: var(--surface-bg);
+}
+
+.summary-rows--boxed .summary-rows__row {
+    gap: var(--space-12);
+    padding: 0;
+    border-bottom: none;
+}
+
+.summary-rows--boxed dd {
+    font-weight: var(--font-weight-semibold);
+}

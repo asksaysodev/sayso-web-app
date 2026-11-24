@@ -116,6 +116,21 @@ export interface CancelSubscriptionResponse {
     accessEndsAt: string;
 }
 
+export interface ReactivateSubscriptionResponse {
+    reactivated: boolean;
+}
+
+/** Whether the user was told resuming charges today; the server refuses (`resume_changed`) on a mismatch. */
+export interface ResumeSubscriptionRequest {
+    expectNewCycle: boolean;
+}
+
+export interface ResumeSubscriptionResponse {
+    resumed: boolean;
+    newCycle: boolean;
+    renewsAt: string | null;
+}
+
 /** Allowlisted checkout origins the server understands; picks the Stripe return URLs. */
 export type CheckoutFlow = 'signup';
 
