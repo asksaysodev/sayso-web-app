@@ -17,6 +17,10 @@ export const planStateOf = (subscription: ActiveSubscription): PlanState => {
     return isPauseStarted(subscription) ? 'paused' : 'pause-scheduled';
 };
 
+/** Discounted plans that renew; partner-funded and canceled ones keep the plain plan card. */
+export const hasDiscountCard = ({ discount, isPartnerFunded, status }: ActiveSubscription) =>
+    discount.active && discount.discountedPrice !== null && discount.standardPrice !== null && !isPartnerFunded && status !== 'canceled';
+
 /** A pause without a resume date was not set by our flow; only support can change it. */
 export const canResume = (subscription: ActiveSubscription) => !!subscription.pause.resumesAt;
 

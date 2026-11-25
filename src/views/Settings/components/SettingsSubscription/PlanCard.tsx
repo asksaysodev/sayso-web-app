@@ -1,11 +1,8 @@
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { PiSpeedometer } from 'react-icons/pi';
 import { Card } from '@/components/ds/Card';
 import { Button } from '@/components/ds/Button';
-import getAccountUsage from '@/services/getAccountUsage';
 import useStripeUpgrade from '@/views/Subscription/hooks/useStripeUpgrade';
-import PlanDiscount from './PlanDiscount';
+import PlanUsage from './PlanUsage';
 import { type ActiveSubscription, formatBillingDate, planStatus } from './utils';
 
 interface Props {
@@ -14,10 +11,6 @@ interface Props {
 
 export default function PlanCard({ subscription }: Props) {
     const { mutateUpgradeTrialSubscription, isPendingUpgradeTrialSubscription } = useStripeUpgrade();
-    const { data: usage, isPending: isUsagePending } = useQuery({
-        queryKey: ['settings-account-usage'],
-        queryFn: getAccountUsage,
-    });
 
     const isTrialing = subscription.status === 'trialing';
     const isPartnerFunded = !!subscription.isPartnerFunded;
@@ -53,12 +46,6 @@ export default function PlanCard({ subscription }: Props) {
                         </span>
                     </div>
                 </div>
-                {subscription.discount.active && (
-                    <PlanDiscount
-                        discount={subscription.discount}
-                        interval={subscription.interval ?? subscription.billing?.cycle}
-                    />
-                )}
                 <p className='plan-card__meta'>
                     {billingPeriod} · {Math.floor(planMinutes / 60)} hours / month
                 </p>
@@ -81,25 +68,7 @@ export default function PlanCard({ subscription }: Props) {
                     </div>
                 )}
             </div>
-            {isUsagePending && (
-                <p className='plan-card__usage' aria-busy='true' aria-label='Loading usage'>
-                    <PiSpeedometer size={20} aria-hidden />
-                    {/* nbsp gives the row the real text's line height, so nothing shifts on load */}
-                    <span className='plan-card__usage-placeholder' aria-hidden>
-                        {'\u00a0'}
-                        <span className='skeleton plan-card__usage-skeleton' />
-                    </span>
-                </p>
-            )}
-            {usage && (
-                <p className='plan-card__usage'>
-                    <PiSpeedometer size={20} aria-hidden />
-                    <span>
-                        {`You've used ${usage.usedMinutes} ${usage.usedMinutes === 1 ? 'minute' : 'minutes'} this period`}
-                        {usage.periodEnd && `, which ends on ${formatBillingDate(usage.periodEnd, 'MMMM D, YYYY')}`}
-                    </span>
-                </p>
-            )}
+            <PlanUsage />
         </Card>
     );
 }

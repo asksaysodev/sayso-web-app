@@ -1,5 +1,5 @@
-import { Card } from '@/components/ds/Card';
 import { Button } from '@/components/ds/Button';
+import PlanStateLayout from './PlanStateLayout';
 import type { SummaryRow } from './RetentionFlow/SummaryRows';
 import {
     canResume,
@@ -11,7 +11,6 @@ import {
     todayBill,
 } from './planState';
 import { type ActiveSubscription, formatBillingDate, formatPriceWithInterval } from './utils';
-import './PlanStateCard.css';
 
 interface Props {
     subscription: ActiveSubscription;
@@ -94,26 +93,7 @@ export default function PlanStateCard({ subscription, state, onResume }: Props) 
     const showResume = state !== 'cancelling' && canResume(subscription);
 
     return (
-        <Card className='subscription-card plan-state-card'>
-            <h2 className='plan-state-card__title'>{title}</h2>
-            <div className='plan-state-card__plan'>
-                <span>{planLabel(subscription)}</span>
-                <span className='plan-card__status'>
-                    <span className={`plan-card__status-dot plan-card__status-dot--${tone}`} aria-hidden />
-                    {status}
-                </span>
-            </div>
-            <p className='plan-state-card__description'>{description}</p>
-            {facts.length > 0 && (
-                <dl className='plan-state-card__facts'>
-                    {facts.map(({ label, value }) => (
-                        <div key={label} className='plan-state-card__fact'>
-                            <dt>{label}</dt>
-                            <dd>{value}</dd>
-                        </div>
-                    ))}
-                </dl>
-            )}
+        <PlanStateLayout title={title} plan={planLabel(subscription)} status={{ label: status, tone }} description={description} facts={facts}>
             {showResume && (
                 <>
                     <Button className='plan-state-card__action' onClick={onResume}>
@@ -122,6 +102,6 @@ export default function PlanStateCard({ subscription, state, onResume }: Props) 
                     {note && <p className='plan-state-card__note'>{note}</p>}
                 </>
             )}
-        </Card>
+        </PlanStateLayout>
     );
 }

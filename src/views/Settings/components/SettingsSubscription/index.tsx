@@ -6,9 +6,11 @@ import useHasSubscription from '@/hooks/useHasSubscription';
 import getActivePlan from '@/views/Subscription/services/getActivePlan';
 import PlanCard from './PlanCard';
 import InvoicesCard from './InvoicesCard';
+import PlanDiscountCard from './PlanDiscountCard';
 import PlanStateCard from './PlanStateCard';
 import SubscriptionSheet, { type SubscriptionFlow } from './SubscriptionSheet';
-import { planStateOf } from './planState';
+import { hasDiscountCard, type PlanState, planStateOf } from './planState';
+import type { ActiveSubscription } from './utils';
 import SubscriptionManagementCard from './SubscriptionManagementCard';
 import './SettingsSubscription.css';
 
@@ -28,6 +30,14 @@ export default function SettingsSubscription() {
         setFlow(nextFlow);
         setSheetSession((session) => session + 1);
         setIsSheetOpen(true);
+    };
+
+    const renderPlan = (subscription: ActiveSubscription, state: PlanState) => {
+        if (state !== 'normal') {
+            return <PlanStateCard subscription={subscription} state={state} onResume={() => openSheet('resume')} />;
+        }
+        if (hasDiscountCard(subscription)) return <PlanDiscountCard subscription={subscription} />;
+        return <PlanCard subscription={subscription} />;
     };
 
     const renderCards = () => {
@@ -63,11 +73,7 @@ export default function SettingsSubscription() {
 
         return (
             <div className='settings-subscription'>
-                {state === 'normal' ? (
-                    <PlanCard subscription={subscription} />
-                ) : (
-                    <PlanStateCard subscription={subscription} state={state} onResume={() => openSheet('resume')} />
-                )}
+                {renderPlan(subscription, state)}
                 {state === 'normal' && invoicesCard}
                 {!subscription.isPartnerFunded && (
                     <SubscriptionManagementCard
