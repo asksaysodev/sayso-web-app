@@ -31,7 +31,7 @@ export default function SubscriptionManagementCard({ subscription, state, onCanc
             </div>
             <div className='management-card__actions'>
                 {isCancelling && <Button onClick={onReactivate}>Reactivate subscription</Button>}
-                <ManageBillingButton isTinted={state !== 'normal'} />
+                <ManageBillingButton />
             </div>
         </Card>
     );
