@@ -6,7 +6,11 @@ import { redactUrlTokens } from '@/utils/redactUrlTokens';
 
 export const sentryConfig = {
   dsn: "https://2c444147dfb523db2091f3240ca27396@o4510697565585408.ingest.us.sentry.io/4510697705046016",
-  environment: import.meta.env.VITE_APP_ENV || 'production',
+  // VITE_APP_ENV is set on deployed builds (staging). Otherwise fall back to
+  // Vite's mode: `vite` (npm run dev) is 'development', `vite build` is
+  // 'production'. A hard-coded 'production' tagged localhost errors as
+  // production, which the triage bot reads as real customers (SAYSO-639).
+  environment: import.meta.env.VITE_APP_ENV || import.meta.env.MODE,
   beforeSend(event: ErrorEvent, hint: EventHint): ErrorEvent | null {
     const exception = hint.originalException;
     if (isSessionExpiredError(exception) || isSuspendedTabTimeoutError(exception) || isLockAcquireTimeoutError(exception)) return null;
