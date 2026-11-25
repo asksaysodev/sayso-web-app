@@ -1,13 +1,12 @@
 import { useAuth } from '@/context/AuthContext';
-import { useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm, FieldErrors } from 'react-hook-form';
 import { validateLoginFields } from '../helpers/formValidation';
 import * as Sentry from "@sentry/react";
 import { LoginFormData } from '../types';
-import { getAAL } from '@/services/mfaServices';
 import { useToast } from '@/context/ToastContext';
-import { getIntendedPath, toIntendedState } from '@/utils/intendedPath';
+import { getIntendedPath } from '@/utils/intendedPath';
 
 const INITIAL_VALUES: LoginFormData = {
   email: '',
@@ -19,7 +18,35 @@ export default function useLoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const { showToast } = useToast();
-  const { signIn, checkIfNeedsMFA } = useAuth();
+  const { signIn, user, accountNotFound, signOutLocally } = useAuth();
+  const hadSessionRef = useRef(false);
+  const isRejectingAccountRef = useRef(false);
+
+  const rejectMissingAccount = useEffectEvent(async () => {
+    if (isRejectingAccountRef.current) return;
+    isRejectingAccountRef.current = true;
+
+    if (await signOutLocally()) {
+      showToast('error', "We couldn't find an account for this email.");
+    } else {
+      // Still signed in: the page behind AuthGuard offers retry and sign out.
+      navigate(getIntendedPath(location.state), { replace: true });
+    }
+  });
+
+  useEffect(() => {
+    if (user && accountNotFound) rejectMissingAccount();
+  }, [user, accountNotFound]);
+
+  const onSessionLost = useEffectEvent(() => {
+    if (!isRejectingAccountRef.current) showToast('error', "We couldn't sign you in. Please try again.");
+    isRejectingAccountRef.current = false;
+  });
+
+  useEffect(() => {
+    if (!user && hadSessionRef.current) onSessionLost();
+    hadSessionRef.current = !!user;
+  }, [user]);
 
   const customResolver = (values: LoginFormData) => {
     const errors = validateLoginFields(values);
@@ -50,28 +77,6 @@ export default function useLoginForm() {
     });
 
     if (signInResult?.error) throw signInResult.error;
-
-    const intendedPath = getIntendedPath(location.state);
-    const mfaNavigation = { replace: true, state: toIntendedState(intendedPath) };
-
-    let aalResult = await getAAL();
-
-    if (aalResult.error) {
-      aalResult = await getAAL();
-    }
-
-    if (aalResult.error || !aalResult.data) {
-      navigate('/mfa-verify', mfaNavigation);
-      return;
-    }
-
-    const needsMFA = checkIfNeedsMFA(aalResult.data.currentLevel, aalResult.data.nextLevel);
-
-    if (needsMFA) {
-      navigate('/mfa-verify', mfaNavigation);
-    } else {
-      navigate(intendedPath, { replace: true });
-    }
   };
 
   const onSubmit = async (data: LoginFormData) => {
@@ -98,7 +103,8 @@ export default function useLoginForm() {
 
   return {
     control,
-    isBtnLoading,
+    // GuestGuard keeps this form up until it knows where the new session goes.
+    isBtnLoading: isBtnLoading || !!user,
     handleSubmit
   }
 }

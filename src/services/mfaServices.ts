@@ -123,26 +123,6 @@ export async function getAAL(): Promise<{
 }
 
 /**
- * Helper: Checks if user needs to complete MFA verification.
- * Returns true if user has MFA enrolled but hasn't verified this session.
- */
-export async function requiresMFAVerification(): Promise<boolean> {
-    const { data, error } = await getAAL()
-
-    if (error || !data) return false
-
-    return data.currentLevel === 'aal1' && data.nextLevel === 'aal2'
-}
-
-/**
- * Helper: Checks if user has MFA enrolled.
- */
-export async function hasMFAEnabled(): Promise<boolean> {
-    const { data } = await listFactors()
-    return data.length > 0
-}
-
-/**
  * Helper: Performs challenge + verify in one call.
  * Useful for login flow and re-verification.
  */
