@@ -19,6 +19,11 @@ interface AuthContextValue {
   signUp: (data: SignUpData) => Promise<AuthResult>;
   signIn: (data: SignInData) => Promise<AuthResult>;
   handleSignOut: () => Promise<void>;
+  /**
+   * Signed out on purpose (not an expired session): AuthGuard doesn't remember the page.
+   * MFA's "Back to sign in" still does, since the user is on the way to it.
+   */
+  signedOutByUser: boolean;
   user: User | null;
   globalUser: Account | null;
   authToken: string | null;
@@ -103,6 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [mfaRequired, setMfaRequired] = useState(false)
   const [currentAAL, setCurrentAAL] = useState<AALLevel | null>(null)
   const [mfaFactors, setMfaFactors] = useState<Factor[]>([])
+  const [signedOutByUser, setSignedOutByUser] = useState(false)
   const [attributionPending, setAttributionPending] = useState(false)
 
   const { signup, getAccount } = useAccounts()
@@ -229,7 +235,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    // Set before the await: SIGNED_OUT clears the user, and AuthGuard redirects, before it resolves.
+    setSignedOutByUser(true);
+
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      setSignedOutByUser(false);
+      Sentry.captureException(error);
+      throw error;
+    }
 
     resetUser();
   }
@@ -283,6 +298,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         setAuthToken(session?.access_token ?? null)
         setLoading(false)
+
+        // Only a sign-in: TOKEN_REFRESHED can land while a sign-out is in flight.
+        if (event === 'SIGNED_IN') setSignedOutByUser(false)
 
         // Covers a sign-out from another tab, which never reaches resetUser.
         if (event === 'SIGNED_OUT') {
@@ -455,6 +473,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signUp,
     signIn,
     handleSignOut,
+    signedOutByUser,
     user,
     globalUser,
     authToken,

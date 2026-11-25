@@ -15,6 +15,7 @@ import Login from './views/Login';
 import PasswordRecovery from './views/PasswordRecovery';
 import ResetPassword from './views/ResetPassword';
 import lazyView from './utils/lazyView';
+import { getIntendedPath } from './utils/intendedPath';
 
 const Dashboard = lazyView(() => import('./views/Dashboard'));
 const Settings = lazyView(() => import('./views/Settings'));
@@ -248,7 +249,7 @@ export default function AppRoutes() {
  * (?signup=true, ?referralCode=, ?invite=) move to /signup with every query param kept.
  */
 function LoginRoute() {
-    const { search, hash } = useLocation();
+    const { search, hash, state } = useLocation();
     const params = new URLSearchParams(search);
     const isSignupLink = params.get('signup') === 'true'
         || !!params.get('referralCode')
@@ -259,7 +260,7 @@ function LoginRoute() {
     }
 
     return (
-        <GuestGuard>
+        <GuestGuard redirectTo={getIntendedPath(state)}>
             <Login />
         </GuestGuard>
     );

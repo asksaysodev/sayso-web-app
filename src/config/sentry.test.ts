@@ -28,3 +28,15 @@ describe('sentryConfig.beforeSend', () => {
     expect(send(Object.assign(new Error('lock'), { isAcquireTimeout: true }))).toBeNull()
   })
 })
+
+describe('auth tokens in URLs', () => {
+  test('are masked in the event URL', () => {
+    const withUrl = { request: { url: 'https://x.com/subscription#token_hash=secret' } } as ErrorEvent
+    expect(sentryConfig.beforeSend(withUrl, {} as EventHint)?.request?.url).toBe('https://x.com/subscription#token_hash=[redacted]')
+  })
+
+  test('are masked in navigation breadcrumbs', () => {
+    const breadcrumb = { category: 'navigation', data: { from: '/subscription#token_hash=secret', to: '/login' } }
+    expect(sentryConfig.beforeBreadcrumb(breadcrumb).data).toEqual({ from: '/subscription#token_hash=[redacted]', to: '/login' })
+  })
+})

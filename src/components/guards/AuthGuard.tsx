@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import { getAAL } from '@/services/mfaServices';
 
 import '../../styles/AuthGuard.css'
 import { useAuth } from '@/context/AuthContext';
+import { useRequestedPath } from '@/context/RequestedPathContext';
+import { toIntendedState } from '@/utils/intendedPath';
 import { isOptimisticSignupActive, useOptimisticSignupStore } from '@/store/optimisticSignupStore';
 import SaysoLoader from '../SaysoLoader';
 import AccountUnavailable from '../AccountUnavailable';
@@ -16,10 +18,16 @@ interface Props {
 }
 
 const AuthGuard = ({ children }: Props) => {
-  const { user, globalUser, loading = true, userLoading, accountUnavailable, retryAccountFetch, checkIfNeedsMFA } = useAuth();
+  const { user, globalUser, loading = true, userLoading, accountUnavailable, retryAccountFetch, checkIfNeedsMFA, signedOutByUser } = useAuth();
   const location = useLocation();
+  const requestedPath = useRequestedPath();
   const navigate = useNavigate();
   const [isCheckingMFA, setIsCheckingMFA] = useState(true);
+
+  // Reads the latest path without making it a dependency: a query change must not re-run the MFA check.
+  const goToMFA = useEffectEvent(() => {
+    navigate('/mfa-verify', { replace: true, state: toIntendedState(requestedPath) });
+  });
 
   useEffect(() => {
     const checkMFAStatus = async () => {
@@ -31,14 +39,14 @@ const AuthGuard = ({ children }: Props) => {
       const aalResult = await getAAL();
 
       if (aalResult.error || !aalResult.data) {
-        navigate('/mfa-verify', { replace: true });
+        goToMFA();
         return;
       }
 
       const needsMFA = checkIfNeedsMFA(aalResult.data.currentLevel, aalResult.data.nextLevel);
 
       if (needsMFA) {
-        navigate('/mfa-verify', { replace: true });
+        goToMFA();
       } else {
         setIsCheckingMFA(false);
       }
@@ -47,7 +55,7 @@ const AuthGuard = ({ children }: Props) => {
     if (!loading && !userLoading) {
       checkMFAStatus();
     }
-  }, [globalUser, loading, userLoading, checkIfNeedsMFA, navigate]);
+  }, [globalUser, loading, userLoading, checkIfNeedsMFA]);
 
   // Optimistic sign-up (useOptimisticSignupStore): /signup/plan is shown while the account is
   // created and loaded, instead of the logo loader. Same tree shape as the normal return below,
@@ -84,7 +92,7 @@ const AuthGuard = ({ children }: Props) => {
   // fetch is not authentication state, and routing it to /login told users they
   // were logged out when they were not (SAYSO-342).
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={signedOutByUser ? null : toIntendedState(requestedPath)} replace />;
   }
 
   if (accountUnavailable || !globalUser) {

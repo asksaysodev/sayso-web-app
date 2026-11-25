@@ -1,12 +1,13 @@
 import { useAuth } from '@/context/AuthContext';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm, FieldErrors } from 'react-hook-form';
 import { validateLoginFields } from '../helpers/formValidation';
 import * as Sentry from "@sentry/react";
 import { LoginFormData } from '../types';
 import { getAAL } from '@/services/mfaServices';
 import { useToast } from '@/context/ToastContext';
+import { getIntendedPath, toIntendedState } from '@/utils/intendedPath';
 
 const INITIAL_VALUES: LoginFormData = {
   email: '',
@@ -16,6 +17,7 @@ const INITIAL_VALUES: LoginFormData = {
 export default function useLoginForm() {
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { showToast } = useToast();
   const { signIn, checkIfNeedsMFA } = useAuth();
 
@@ -49,6 +51,9 @@ export default function useLoginForm() {
 
     if (signInResult?.error) throw signInResult.error;
 
+    const intendedPath = getIntendedPath(location.state);
+    const mfaNavigation = { replace: true, state: toIntendedState(intendedPath) };
+
     let aalResult = await getAAL();
 
     if (aalResult.error) {
@@ -56,16 +61,16 @@ export default function useLoginForm() {
     }
 
     if (aalResult.error || !aalResult.data) {
-      navigate('/mfa-verify', { replace: true });
+      navigate('/mfa-verify', mfaNavigation);
       return;
     }
 
     const needsMFA = checkIfNeedsMFA(aalResult.data.currentLevel, aalResult.data.nextLevel);
 
     if (needsMFA) {
-      navigate('/mfa-verify', { replace: true });
+      navigate('/mfa-verify', mfaNavigation);
     } else {
-      navigate('/', { replace: true });
+      navigate(intendedPath, { replace: true });
     }
   };
 

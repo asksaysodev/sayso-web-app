@@ -1,6 +1,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+import { getIntendedPath, toIntendedState } from '@/utils/intendedPath';
 import SaysoLoader from '../SaysoLoader';
 
 
@@ -11,11 +12,12 @@ interface Props {
 /**
  * Guard for MFA verification route.
  * - If no user session → redirect to /login
- * - If user exists but MFA not required → redirect to /
+ * - If user exists but MFA not required → redirect to the intended page (default /)
  * - If user exists and MFA required → render children
  */
 const MFAGuard = ({ children }: Props) => {
     const { user, loading, checkMFAStatus } = useAuth();
+    const intendedPath = getIntendedPath(useLocation().state);
     const [isChecking, setIsChecking] = useState(true);
     const [needsMFA, setNeedsMFA] = useState(false);
 
@@ -41,11 +43,11 @@ const MFAGuard = ({ children }: Props) => {
     }
 
     if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" state={toIntendedState(intendedPath)} replace />;
     }
 
     if (!needsMFA) {
-        return <Navigate to="/" replace />;
+        return <Navigate to={intendedPath} replace />;
     }
 
     return children;
