@@ -10,6 +10,8 @@ import { supabase } from './config/supabase';
 import * as Sentry from "@sentry/react";
 import SaysoLoader from './components/SaysoLoader';
 import { captureOfferTokenFromSearch } from './utils/offerToken';
+import { RequestedPathContext } from './context/RequestedPathContext';
+import { toIntendedState } from './utils/intendedPath';
 
 const getHandoffToken = (hash: string): string | null => {
   if (hash.includes('type=recovery')) return null;
@@ -32,7 +34,6 @@ function App() {
       data: {
         pathname: location.pathname,
         search: location.search,
-        hash: location.hash,
         state: location.state
       }
     });
@@ -47,7 +48,7 @@ function App() {
   // Intercept password recovery tokens in URL hash to redirect to reset-password instead of login the user in automatically
   useEffect(() => {
     const hash = window.location.hash;
-    const intendedPath = location.pathname;
+    const intendedPath = location.pathname + location.search;
     const hashParams = new URLSearchParams(hash.slice(1));
     const accessToken = hashParams.get('access_token');
     const handoffToken = getHandoffToken(hash);
@@ -62,18 +63,18 @@ function App() {
       }
     } else if (handoffToken) {
       supabase.auth.verifyOtp({ type: 'magiclink', token_hash: handoffToken })
+        // Strip the token from the URL either way — it is single-use, and leaving it
+        // in history hands it to anything that can read the address bar.
         .then(({ error }) => {
-          // Strip the token from the URL either way — it is single-use, and leaving it
-          // in history hands it to anything that can read the address bar.
-          if (error) {
-            console.error('[App] Failed to redeem desktop handoff token:', error);
-            Sentry.captureException(error, { tags: { flow: 'desktop_handoff' } });
-            window.history.replaceState(null, '', '/login');
-            navigate('/login', { replace: true });
-          } else {
-            window.history.replaceState(null, '', intendedPath);
-            navigate(intendedPath, { replace: true });
-          }
+          if (error) throw error;
+          window.history.replaceState(null, '', intendedPath);
+          navigate(intendedPath, { replace: true });
+        })
+        .catch((error) => {
+          console.error('[App] Failed to redeem desktop handoff token:', error);
+          Sentry.captureException(error, { tags: { flow: 'desktop_handoff' } });
+          window.history.replaceState(null, '', '/login');
+          navigate('/login', { replace: true, state: toIntendedState(intendedPath) });
         })
         .finally(() => setProcessingToken(false));
     }
@@ -89,7 +90,9 @@ function App() {
       <StagingBanner />
       <div className='App'>
         <StagingGuard>
-          <AppRoutes />
+          <RequestedPathContext value={location.pathname + location.search}>
+            <AppRoutes />
+          </RequestedPathContext>
         </StagingGuard>
       </div>
     </Providers>
