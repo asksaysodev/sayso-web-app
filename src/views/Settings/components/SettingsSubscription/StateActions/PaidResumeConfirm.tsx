@@ -64,7 +64,7 @@ export default function PaidResumeConfirm({ subscription, resume, onClose }: Pro
                 pendingMessage='Confirming your payment and subscription. Please wait before trying again.'
                 message={`Cue turns back on when payment is confirmed. Your new renewal date will be ${formatBillingDate(renewal.date)}.`}
             />
-            {isPaymentError && !isPending && <ManageBillingButton isTinted />}
+            {isPaymentError && !isPending && <ManageBillingButton />}
         </StateActionLayout>
     );
 }
