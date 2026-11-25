@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react'
+import { createContext, useContext, useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../config/supabase'
 import { useAccounts } from '../hooks/useAccounts'
@@ -11,6 +11,7 @@ import { AALLevel, MFAServiceError } from '@/types/supabaseMFA'
 import { getAAL, listFactors, verifyTOTPCode } from '@/services/mfaServices'
 import { enrollReferralParticipant, getParticipantReferrer, hasReferralCookie } from '@/services/referralRocket'
 import { setReferralAttribution } from '@/services/setReferralAttribution'
+import reportAALError from '@/utils/reportAALError'
 import { clearSettledOptimisticSignup } from '@/store/optimisticSignupStore'
 import type { Factor } from '@supabase/supabase-js'
 import type { AxiosError } from 'axios'
@@ -53,6 +54,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue>({} as AuthContextValue)
 
 const GLOBAL_USER_CACHE_KEY = 'sayso-global-user'
+const ACCOUNT_NOT_FOUND_MESSAGE = 'Account not found'
 const ACCOUNT_FETCH_ATTEMPTS = 3
 const ACCOUNT_RETRY_BASE_DELAY_MS = 500
 
@@ -63,7 +65,7 @@ const isRetriableAccountError = (error: unknown): boolean => {
 
 const isAccountNotFoundError = (error: unknown): boolean => {
   const response = (error as AxiosError<{ error?: string }> | undefined)?.response
-  return response?.status === 404 && response.data?.error === 'Account not found'
+  return response?.status === 404 && response.data?.error === ACCOUNT_NOT_FOUND_MESSAGE
 }
 
 /**
@@ -208,17 +210,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   /**
    * Fails closed, like useMFAStatus: if the two disagreed on an error, MFAGuard and AuthGuard
-   * would redirect to each other forever.
+   * would redirect to each other forever. Stable: MFAGuard's effect depends on it, and it sets
+   * state here, so a new identity per render would re-run the check in a loop.
    */
-  const checkMFAStatus = async (): Promise<boolean> => {
+  const checkMFAStatus = useCallback(async (): Promise<boolean> => {
     try {
       const [aalResult, factorsResult] = await Promise.all([
         getAAL(),
         listFactors()
       ])
-      setMfaFactors(factorsResult.data)
+      if (!factorsResult.error) setMfaFactors(factorsResult.data)
 
       if (aalResult.error || !aalResult.data) {
+        reportAALError(aalResult.error)
         setMfaRequired(true)
         return true
       }
@@ -231,18 +235,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return needsMFA
     } catch (error) {
-      Sentry.captureException(error)
+      reportAALError(error)
       setMfaRequired(true)
       return true
     }
-  }
+  }, [])
 
   const verifyMFA = async (code: string): Promise<{ success: boolean; error: MFAServiceError | null }> => {
-    if (mfaFactors.length === 0) {
-      return { success: false, error: { message: 'No MFA factors enrolled' } }
+    let [factor] = mfaFactors
+
+    if (!factor) {
+      const { data, error } = await listFactors()
+      if (error) return { success: false, error }
+      if (data.length === 0) return { success: false, error: { message: 'No MFA factors enrolled' } }
+      setMfaFactors(data)
+      factor = data[0]
     }
 
-    const factor = mfaFactors[0]
     const result = await verifyTOTPCode(factor.id, code)
 
     if (result.success) {
@@ -340,6 +349,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Covers a sign-out from another tab, which never reaches resetUser.
         if (event === 'SIGNED_OUT') {
+          setMfaFactors([])
           queryClient.clear()
           clearSettledOptimisticSignup()
         }

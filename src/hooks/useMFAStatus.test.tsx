@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import { act, cleanup, renderHook, waitFor } from '@testing-library/react'
+import { captureException } from '@sentry/react'
 import { useAuth } from '@/context/AuthContext'
 import { getAAL } from '@/services/mfaServices'
 import useMFAStatus from './useMFAStatus'
@@ -16,6 +17,7 @@ const failure = { data: null, error: { message: 'boom' } }
 
 beforeEach(() => {
   vi.mocked(getAAL).mockReset()
+  vi.mocked(captureException).mockClear()
 })
 afterEach(cleanup)
 
@@ -66,4 +68,31 @@ test('a check for the previous user is ignored', async () => {
   await waitFor(() => expect(result.current).toBe('required'))
   await act(async () => resolveFirst(aal('aal1')))
   expect(result.current).toBe('required')
+})
+
+test('a failed re-check keeps a clear session where it is', async () => {
+  vi.mocked(getAAL).mockResolvedValue(aal('aal1'))
+  mockAuth({ id: '1' })
+  const { result, rerender } = renderHook(() => useMFAStatus())
+  await waitFor(() => expect(result.current).toBe('clear'))
+  vi.mocked(getAAL).mockReset().mockResolvedValue(failure)
+  mockAuth({ id: '1' }, 'refreshed')
+  rerender()
+  await waitFor(() => expect(captureException).toHaveBeenCalled())
+  expect(result.current).toBe('clear')
+  expect(vi.mocked(captureException).mock.lastCall![0]).toBeInstanceOf(Error)
+})
+
+test('the same user signing in again is checked from scratch', async () => {
+  vi.mocked(getAAL).mockResolvedValue(aal('aal1'))
+  mockAuth({ id: '1' })
+  const { result, rerender } = renderHook(() => useMFAStatus())
+  await waitFor(() => expect(result.current).toBe('clear'))
+  mockAuth(null)
+  rerender()
+  vi.mocked(getAAL).mockResolvedValue(failure)
+  mockAuth({ id: '1' })
+  rerender()
+  expect(result.current).toBe('checking')
+  await waitFor(() => expect(result.current).toBe('required'))
 })

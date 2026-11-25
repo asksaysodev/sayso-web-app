@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import * as Sentry from '@sentry/react';
 import { useAuth } from '@/context/AuthContext';
 import { getAAL } from '@/services/mfaServices';
+import reportAALError from '@/utils/reportAALError';
 
-export type MFAStatus = 'checking' | 'required' | 'clear';
+type MFAStatus = 'checking' | 'required' | 'clear';
 
 const CHECK_ATTEMPTS = 2;
 
@@ -25,7 +25,8 @@ const readAAL = async () => {
 
 /**
  * Whether the current session still owes an MFA code. Read from the session, so it doesn't
- * wait for the account. Fails closed: an unreadable AAL counts as 'required'.
+ * wait for the account. Fails closed: an unreadable AAL counts as 'required', unless this
+ * session was already 'clear' (a failed re-check must not take the user off their page).
  *
  * Signed out is 'clear'. Token and user updates re-check in the background: going back to
  * 'checking' would unmount the page the user is on.
@@ -40,19 +41,25 @@ export default function useMFAStatus(): MFAStatus {
         let cancelled = false;
 
         readAAL()
-            .then(({ currentLevel, nextLevel }) => checkIfNeedsMFA(currentLevel, nextLevel))
-            .catch((error) => {
-                Sentry.captureException(error);
-                return true;
+            .then(({ currentLevel, nextLevel }) => {
+                if (cancelled) return;
+                setResult({ userId, status: checkIfNeedsMFA(currentLevel, nextLevel) ? 'required' : 'clear' });
             })
-            .then((needsMFA) => {
-                if (!cancelled) setResult({ userId, status: needsMFA ? 'required' : 'clear' });
+            .catch((error) => {
+                reportAALError(error);
+                if (cancelled) return;
+                setResult((previous) =>
+                    previous?.userId === userId && previous.status === 'clear' ? previous : { userId, status: 'required' }
+                );
             });
 
         return () => {
             cancelled = true;
         };
     }, [userId, user, authToken, checkIfNeedsMFA]);
+
+    // The next session of the same user must be checked from scratch.
+    if (!userId && result) setResult(null);
 
     if (!userId) return 'clear';
     return result?.userId === userId ? result.status : 'checking';
