@@ -4,14 +4,18 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { RequestedPathContext } from '@/context/RequestedPathContext'
 import { useAuth } from '@/context/AuthContext'
 import { getAAL } from '@/services/mfaServices'
+import { useOptimisticSignupStore } from '@/store/optimisticSignupStore'
 import AuthGuard from './AuthGuard'
 
 vi.mock('@/context/AuthContext', () => ({ useAuth: vi.fn() }))
+vi.mock('@sentry/react', () => ({ captureException: vi.fn() }))
 vi.mock('@/services/mfaServices', () => ({ getAAL: vi.fn() }))
 vi.mock('./SubscriptionGuard', () => ({ default: ({ children }: { children: React.ReactNode }) => children }))
 vi.mock('../AccountUnavailable', () => ({ default: () => null }))
 vi.mock('../SaysoLoader', () => ({ default: () => null }))
-vi.mock('@/views/Dashboard/DashboardLoadingFallback', () => ({ default: () => null }))
+vi.mock('@/views/Dashboard/DashboardLoadingFallback', () => ({ default: () => { skeleton(); return null } }))
+
+const skeleton = vi.hoisted(() => vi.fn())
 
 const mockAuth = (overrides = {}) => vi.mocked(useAuth).mockReturnValue({
   user: null,
@@ -86,4 +90,26 @@ test('a query change does not re-run the MFA check', async () => {
   await screen.findByText('page')
   await act(async () => rerender(tree('/settings?tab=security')))
   expect(getAAL).toHaveBeenCalledOnce()
+})
+
+test('MFA pending while the account loads: MFA right away, never the dashboard skeleton', async () => {
+  skeleton.mockClear()
+  vi.mocked(getAAL).mockResolvedValue({ data: { currentLevel: 'aal1', nextLevel: 'aal2' }, error: null })
+  mockAuth({ user: { id: '1' }, userLoading: true })
+  renderGuard('/')
+  expect((await shown()).pathname).toBe('/mfa-verify')
+  expect(skeleton).not.toHaveBeenCalled()
+})
+
+test('signed out while the account state settles: login, not a stuck loader', async () => {
+  mockAuth({ userLoading: true })
+  renderGuard('/conversations')
+  expect((await shown()).pathname).toBe('/login')
+})
+
+test('optimistic sign-up: the plan page shows before there is a session', async () => {
+  useOptimisticSignupStore.setState({ status: 'pending' })
+  renderGuard('/signup/plan')
+  expect(await screen.findByText('page')).toBeTruthy()
+  useOptimisticSignupStore.getState().reset()
 })

@@ -1,7 +1,7 @@
-import { useEffect, useEffectEvent, useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 
-import { getAAL } from '@/services/mfaServices';
+import useMFAStatus from '@/hooks/useMFAStatus';
 
 import '../../styles/AuthGuard.css'
 import { useAuth } from '@/context/AuthContext';
@@ -18,44 +18,10 @@ interface Props {
 }
 
 const AuthGuard = ({ children }: Props) => {
-  const { user, globalUser, loading = true, userLoading, accountUnavailable, retryAccountFetch, checkIfNeedsMFA, signedOutByUser } = useAuth();
+  const { user, globalUser, loading = true, userLoading, accountUnavailable, retryAccountFetch, signedOutByUser } = useAuth();
   const location = useLocation();
   const requestedPath = useRequestedPath();
-  const navigate = useNavigate();
-  const [isCheckingMFA, setIsCheckingMFA] = useState(true);
-
-  // Reads the latest path without making it a dependency: a query change must not re-run the MFA check.
-  const goToMFA = useEffectEvent(() => {
-    navigate('/mfa-verify', { replace: true, state: toIntendedState(requestedPath) });
-  });
-
-  useEffect(() => {
-    const checkMFAStatus = async () => {
-      if (!globalUser) {
-        setIsCheckingMFA(false);
-        return;
-      }
-
-      const aalResult = await getAAL();
-
-      if (aalResult.error || !aalResult.data) {
-        goToMFA();
-        return;
-      }
-
-      const needsMFA = checkIfNeedsMFA(aalResult.data.currentLevel, aalResult.data.nextLevel);
-
-      if (needsMFA) {
-        goToMFA();
-      } else {
-        setIsCheckingMFA(false);
-      }
-    };
-
-    if (!loading && !userLoading) {
-      checkMFAStatus();
-    }
-  }, [globalUser, loading, userLoading, checkIfNeedsMFA]);
+  const mfaStatus = useMFAStatus();
 
   // Optimistic sign-up (useOptimisticSignupStore): /signup/plan is shown while the account is
   // created and loaded, instead of the logo loader. Same tree shape as the normal return below,
@@ -65,7 +31,7 @@ const AuthGuard = ({ children }: Props) => {
   const resetOptimisticSignup = useOptimisticSignupStore((state) => state.reset);
   const isOptimisticSignup =
     isOptimisticSignupActive(optimisticStatus) && location.pathname === '/signup/plan' && !accountUnavailable;
-  const isAccountSettled = !loading && !userLoading && !isCheckingMFA && !!user && !!globalUser;
+  const isAccountSettled = !loading && !userLoading && mfaStatus === 'clear' && !!user && !!globalUser;
 
   // Done once the account has loaded, or once loading it failed (AccountUnavailable takes over);
   // a 'created' status left behind would keep AppRoutes skipping the billing check.
@@ -73,19 +39,16 @@ const AuthGuard = ({ children }: Props) => {
     if (optimisticStatus === 'created' && (isAccountSettled || accountUnavailable)) resetOptimisticSignup();
   }, [optimisticStatus, isAccountSettled, accountUnavailable, resetOptimisticSignup]);
 
+  if (mfaStatus === 'required') {
+    return <Navigate to="/mfa-verify" state={toIntendedState(requestedPath)} replace />;
+  }
+
   if (isOptimisticSignup && !isAccountSettled) {
     return <SubscriptionGuard>{children}</SubscriptionGuard>;
   }
 
-  // The logo loader covers only session restore (`loading`), which is near-instant.
-  // Once a session exists, the slow part is the account fetch + MFA check. If the user
-  // is headed to the dashboard, show its skeleton so the page appears to load in place.
   if (loading) {
     return <SaysoLoader />;
-  }
-
-  if (userLoading || isCheckingMFA) {
-    return user && location.pathname === '/' ? <DashboardLoadingFallback /> : <SaysoLoader />;
   }
 
   // Only the absence of a Supabase session means signed out. A failed account
@@ -93,6 +56,17 @@ const AuthGuard = ({ children }: Props) => {
   // were logged out when they were not (SAYSO-342).
   if (!user) {
     return <Navigate to="/login" state={signedOutByUser ? null : toIntendedState(requestedPath)} replace />;
+  }
+
+  // Nothing of the app, not even a skeleton, before MFA is settled (SAYSO-633).
+  if (mfaStatus === 'checking') {
+    return <SaysoLoader />;
+  }
+
+  // The slow part is the account fetch. If the user is headed to the dashboard, show its
+  // skeleton so the page appears to load in place.
+  if (userLoading) {
+    return location.pathname === '/' ? <DashboardLoadingFallback /> : <SaysoLoader />;
   }
 
   if (accountUnavailable || !globalUser) {

@@ -260,7 +260,7 @@ function LoginRoute() {
     }
 
     return (
-        <GuestGuard redirectTo={getIntendedPath(state)}>
+        <GuestGuard redirectTo={getIntendedPath(state)} holdOnAccountNotFound>
             <Login />
         </GuestGuard>
     );

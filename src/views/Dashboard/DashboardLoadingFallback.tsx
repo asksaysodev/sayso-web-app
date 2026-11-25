@@ -6,7 +6,7 @@ import lazyView from '@/utils/lazyView';
 // only loads for `/`, instead of on login, settings, admin, etc.
 const DashboardRouteSkeleton = lazyView(() => import('./components/DashboardRouteSkeleton'));
 
-/** Loading state for `/`: AuthGuard's account/MFA wait and the Dashboard chunk's Suspense fallback. */
+/** Loading state for `/`: AuthGuard's account wait and the Dashboard chunk's Suspense fallback. */
 export default function DashboardLoadingFallback() {
     return (
         <Suspense fallback={<SaysoLoader />}>
