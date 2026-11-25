@@ -1,0 +1,5 @@
+.discount-offer-step__note {
+    margin: 0;
+    font-size: var(--text-body-md-size);
+    color: var(--neutral-500);
+}
