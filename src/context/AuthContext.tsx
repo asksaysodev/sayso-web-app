@@ -19,6 +19,8 @@ interface AuthContextValue {
   signUp: (data: SignUpData) => Promise<AuthResult>;
   signIn: (data: SignInData) => Promise<AuthResult>;
   handleSignOut: () => Promise<void>;
+  /** Ends this device's session only. Resolves to false, with the session still alive, if it fails. */
+  signOutLocally: () => Promise<boolean>;
   /**
    * Signed out on purpose (not an expired session): AuthGuard doesn't remember the page.
    * MFA's "Back to sign in" still does, since the user is on the way to it.
@@ -33,6 +35,8 @@ interface AuthContextValue {
   globalUserIsStale: boolean;
   /** Session is valid, but the account could not be loaded and no cache covered it. */
   accountUnavailable: boolean;
+  /** Subset of accountUnavailable: the server answered that the account doesn't exist. */
+  accountNotFound: boolean;
   retryAccountFetch: () => void;
   updateGlobalUser: (accountEmail: string) => Promise<void>;
   mfaRequired: boolean;
@@ -55,6 +59,19 @@ const ACCOUNT_RETRY_BASE_DELAY_MS = 500
 const isRetriableAccountError = (error: unknown): boolean => {
   const status = (error as AxiosError | undefined)?.response?.status
   return status !== undefined && status >= 500
+}
+
+const isAccountNotFoundError = (error: unknown): boolean => {
+  const response = (error as AxiosError<{ error?: string }> | undefined)?.response
+  return response?.status === 404 && response.data?.error === 'Account not found'
+}
+
+/**
+ * Checks if MFA verification is required for the current session.
+ */
+const checkIfNeedsMFA = (currentLevel: AALLevel | null | undefined, nextLevel: AALLevel | null | undefined): boolean => {
+  if (!currentLevel || !nextLevel) return false;
+  return currentLevel === 'aal1' && nextLevel === 'aal2';
 }
 
 /**
@@ -101,6 +118,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [globalUserIsStale, setGlobalUserIsStale] = useState(false)
   // Session is valid but the account could not be loaded and no cache covered it.
   const [accountUnavailable, setAccountUnavailable] = useState(false)
+  const [accountNotFound, setAccountNotFound] = useState(false)
   const [accountRetryNonce, setAccountRetryNonce] = useState(0)
   const prevUserRef = useRef<User | null>(null)
   const enrolledEmailRef = useRef<string | null>(null)
@@ -126,6 +144,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setGlobalUser(newGlobalUser)
     setGlobalUserIsStale(false)
     setAccountUnavailable(false)
+    setAccountNotFound(false)
   }
 
   const updateGlobalUser = async (accountEmail: string): Promise<void> => {
@@ -169,6 +188,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
    */
   const retryAccountFetch = () => {
     setAccountUnavailable(false)
+    setAccountNotFound(false)
     setAccountRetryNonce(nonce => nonce + 1)
   }
 
@@ -187,31 +207,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   /**
-   * Checks if MFA verification is required for the current session.
+   * Fails closed, like useMFAStatus: if the two disagreed on an error, MFAGuard and AuthGuard
+   * would redirect to each other forever.
    */
-  const checkIfNeedsMFA = (currentLevel: AALLevel | null | undefined, nextLevel: AALLevel | null | undefined): boolean => {
-    if (!currentLevel || !nextLevel) return false;
-    return currentLevel === 'aal1' && nextLevel === 'aal2';
-  }
-
   const checkMFAStatus = async (): Promise<boolean> => {
-    const [aalResult, factorsResult] = await Promise.all([
-      getAAL(),
-      listFactors()
-    ])
+    try {
+      const [aalResult, factorsResult] = await Promise.all([
+        getAAL(),
+        listFactors()
+      ])
+      setMfaFactors(factorsResult.data)
 
-    if (aalResult.error || !aalResult.data) {
-      return false
+      if (aalResult.error || !aalResult.data) {
+        setMfaRequired(true)
+        return true
+      }
+
+      const { currentLevel, nextLevel } = aalResult.data
+      setCurrentAAL(currentLevel)
+
+      const needsMFA = checkIfNeedsMFA(currentLevel, nextLevel)
+      setMfaRequired(needsMFA)
+
+      return needsMFA
+    } catch (error) {
+      Sentry.captureException(error)
+      setMfaRequired(true)
+      return true
     }
-
-    const { currentLevel, nextLevel } = aalResult.data
-    setCurrentAAL(currentLevel)
-    setMfaFactors(factorsResult.data)
-
-    const needsMFA = checkIfNeedsMFA(currentLevel, nextLevel)
-    setMfaRequired(needsMFA)
-
-    return needsMFA
   }
 
   const verifyMFA = async (code: string): Promise<{ success: boolean; error: MFAServiceError | null }> => {
@@ -247,6 +270,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     resetUser();
+  }
+
+  const signOutLocally = async (): Promise<boolean> => {
+    try {
+      const { error } = await supabase.auth.signOut({ scope: 'local' });
+      if (error) throw error;
+    } catch (error) {
+      Sentry.captureException(error);
+      return false;
+    }
+
+    resetUser();
+    return true;
   }
 
   // Handle session expiration
@@ -311,6 +347,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (JSON.stringify(newUser) !== JSON.stringify(prevUserRef.current)) {
           setUser(newUser)
           prevUserRef.current = newUser
+          // Same batch as the user: no render may see a new user whose account isn't loading yet.
+          if (newUser) setUserLoading(true)
         }
       }
     })
@@ -326,6 +364,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Always set userLoading to true when user changes (even if user is null)
     setUserLoading(true);
+    setAccountNotFound(false);
 
     if (user) {
       // Debounce, not coordination. SIGNED_IN and TOKEN_REFRESHED can land within a few
@@ -364,13 +403,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // unavailable when there is nothing to fall back to. Either way this
           // must not leave globalUser null, which AuthGuard would read as a
           // logged-out user (SAYSO-342).
-          const cached = readCachedAccount(user.email)
+          // A deleted account is the exception: its cache must not bring it back.
+          const isNotFound = isAccountNotFoundError(error)
+          if (isNotFound) updateGlobalUserState(null)
+          const cached = isNotFound ? null : readCachedAccount(user.email)
           if (cached) {
             setGlobalUser(cached)
             setGlobalUserIsStale(true)
             setAccountUnavailable(false)
           } else {
             setAccountUnavailable(true)
+            setAccountNotFound(isNotFound)
           }
           setUserLoading(false)
         }
@@ -473,6 +516,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signUp,
     signIn,
     handleSignOut,
+    signOutLocally,
     signedOutByUser,
     user,
     globalUser,
@@ -481,6 +525,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading,
     globalUserIsStale,
     accountUnavailable,
+    accountNotFound,
     retryAccountFetch,
     updateGlobalUser,
     mfaRequired,
