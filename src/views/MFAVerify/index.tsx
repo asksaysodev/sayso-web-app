@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Check, CircleAlert } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
@@ -7,6 +7,7 @@ import { useToast } from '@/context/ToastContext';
 import AuthLayout from '@/components/layouts/AuthLayout';
 import { Button } from '@/components/ds/Button';
 import { CodeInput, type CodeInputHandle } from '@/components/ds/CodeInput';
+import { getIntendedPath, toIntendedState } from '@/utils/intendedPath';
 import './styles.css';
 
 const CODE_LENGTH = 6;
@@ -19,6 +20,7 @@ const isInvalidCodeError = (error: { message?: string; code?: string } | null | 
 
 const MFAVerify = () => {
     const navigate = useNavigate();
+    const intendedPath = getIntendedPath(useLocation().state);
     const { verifyMFA, handleSignOut } = useAuth();
     const { showToast } = useToast();
 
@@ -36,9 +38,9 @@ const MFAVerify = () => {
     // Keep the success state visible briefly before the existing redirect.
     useEffect(() => {
         if (!isVerified) return;
-        const timer = window.setTimeout(() => navigate('/', { replace: true }), REDIRECT_DELAY_MS);
+        const timer = window.setTimeout(() => navigate(intendedPath, { replace: true }), REDIRECT_DELAY_MS);
         return () => window.clearTimeout(timer);
-    }, [isVerified, navigate]);
+    }, [isVerified, navigate, intendedPath]);
 
     const handleCodeChange = (next: string) => {
         setCode(next);
@@ -73,7 +75,7 @@ const MFAVerify = () => {
 
     const handleBackToLogin = async () => {
         await handleSignOut();
-        navigate('/login', { replace: true });
+        navigate('/login', { replace: true, state: toIntendedState(intendedPath) });
     };
 
     if (isVerified) {

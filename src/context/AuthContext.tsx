@@ -19,6 +19,8 @@ interface AuthContextValue {
   signUp: (data: SignUpData) => Promise<AuthResult>;
   signIn: (data: SignInData) => Promise<AuthResult>;
   handleSignOut: () => Promise<void>;
+  /** Signed out on purpose (not an expired session): the next login starts at `/`. */
+  signedOutByUser: boolean;
   user: User | null;
   globalUser: Account | null;
   authToken: string | null;
@@ -103,6 +105,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [mfaRequired, setMfaRequired] = useState(false)
   const [currentAAL, setCurrentAAL] = useState<AALLevel | null>(null)
   const [mfaFactors, setMfaFactors] = useState<Factor[]>([])
+  const [signedOutByUser, setSignedOutByUser] = useState(false)
   const [attributionPending, setAttributionPending] = useState(false)
 
   const { signup, getAccount } = useAccounts()
@@ -229,10 +232,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    // Set before the await: SIGNED_OUT clears the user, and AuthGuard redirects, before it resolves.
+    setSignedOutByUser(true);
+
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      setSignedOutByUser(false);
+      Sentry.captureException(error);
+      throw error;
+    }
 
     resetUser();
   }
+
+  useEffect(() => {
+    if (user) setSignedOutByUser(false);
+  }, [user]);
 
   // Handle session expiration
   useEffect(() => {
@@ -455,6 +471,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signUp,
     signIn,
     handleSignOut,
+    signedOutByUser,
     user,
     globalUser,
     authToken,
