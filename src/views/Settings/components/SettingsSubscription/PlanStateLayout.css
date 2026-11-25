@@ -59,6 +59,10 @@
     color: var(--text-secondary);
 }
 
+.plan-state-card .plan-card__usage {
+    font-size: var(--text-body-md-size);
+}
+
 @media (max-width: 767px) {
     .plan-state-card__facts {
         flex-direction: column;
