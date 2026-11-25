@@ -201,7 +201,7 @@
 /* ── Subscription management card ── */
 .management-card {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-24);
 }
