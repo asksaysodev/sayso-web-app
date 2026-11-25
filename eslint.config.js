@@ -27,7 +27,15 @@ export default defineConfig([
           message: LAZY_MESSAGE,
         },
         {
+          selector: "ExportNamedDeclaration[source.value='react'] > ExportSpecifier[local.name='lazy']",
+          message: LAZY_MESSAGE,
+        },
+        {
           selector: "MemberExpression[object.name='React'][property.name='lazy']",
+          message: LAZY_MESSAGE,
+        },
+        {
+          selector: "VariableDeclarator[init.name='React'] > ObjectPattern > Property[key.name='lazy']",
           message: LAZY_MESSAGE,
         },
       ],

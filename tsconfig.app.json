@@ -31,5 +31,7 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Tests are typechecked by tsconfig.test.json (CI), not by the production build.
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }
