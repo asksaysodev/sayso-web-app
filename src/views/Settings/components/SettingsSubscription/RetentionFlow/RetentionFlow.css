@@ -1,0 +1,8 @@
+.retention-flow__state {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    margin: 0;
+    font-size: var(--text-body-lg-size);
+    color: var(--text-secondary);
+}

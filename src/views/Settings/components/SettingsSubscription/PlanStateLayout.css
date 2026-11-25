@@ -1,0 +1,84 @@
+.plan-state-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-16);
+}
+
+.plan-state-card__title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.plan-state-card__plan {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-12);
+    font-size: var(--text-body-md-size);
+    color: var(--text-secondary);
+}
+
+.plan-state-card__description {
+    margin: 0;
+    font-size: var(--text-body-lg-size);
+    color: var(--text-primary);
+}
+
+.plan-state-card__facts {
+    display: flex;
+    gap: var(--space-16);
+    width: 100%;
+    margin: 0;
+    font-size: var(--text-body-md-size);
+}
+
+.plan-state-card__fact {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.plan-state-card__fact dt {
+    color: var(--text-secondary);
+}
+
+.plan-state-card__fact dd {
+    margin: 0;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.plan-state-card__note {
+    margin: 0;
+    font-size: var(--text-body-md-size);
+    color: var(--text-secondary);
+}
+
+.plan-state-card .plan-card__usage {
+    font-size: var(--text-body-md-size);
+}
+
+@media (max-width: 767px) {
+    .plan-state-card__facts {
+        flex-direction: column;
+    }
+
+    .plan-state-card__fact {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: var(--space-12);
+    }
+
+    .plan-state-card__fact dd {
+        text-align: right;
+    }
+
+    .plan-state-card__action {
+        width: 100%;
+    }
+}

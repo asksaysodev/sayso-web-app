@@ -1,0 +1,9 @@
+.ds-textarea {
+    align-items: stretch;
+    height: 182px;
+}
+
+.ds-textarea__input {
+    flex: 1;
+    resize: none;
+}

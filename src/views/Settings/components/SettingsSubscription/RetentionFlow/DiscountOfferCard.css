@@ -1,0 +1,59 @@
+.discount-offer {
+    padding: var(--space-20);
+    border: 1px solid var(--primary-300);
+    border-radius: var(--radius-16);
+    background-color: var(--primary-50);
+    box-shadow: var(--shadow-card);
+    color: var(--text-secondary);
+}
+
+.discount-offer p {
+    margin: 0;
+}
+
+.discount-offer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-12);
+    margin-bottom: var(--space-16);
+}
+
+.discount-offer__plan {
+    font-size: var(--text-body-lg-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-800);
+}
+
+.discount-offer__badge {
+    padding: var(--space-2) var(--space-8);
+    border-radius: var(--radius-full);
+    background-color: var(--primary-500);
+    font-size: var(--text-body-md-size);
+    color: var(--primary-50);
+    white-space: nowrap;
+}
+
+.discount-offer__price {
+    font-size: var(--text-body-lg-size);
+}
+
+.discount-offer__price strong {
+    font-size: var(--text-h1-size);
+    line-height: var(--text-h1-line);
+    letter-spacing: var(--text-h1-tracking);
+    font-weight: var(--font-weight-regular);
+    color: var(--neutral-800);
+}
+
+.discount-offer .discount-offer__standard {
+    margin-top: var(--space-8);
+    font-size: var(--text-body-lg-size);
+}
+
+.discount-offer .discount-offer__dates {
+    margin-top: var(--space-32);
+    font-size: var(--text-body-md-size);
+    font-weight: var(--font-weight-semibold);
+}
