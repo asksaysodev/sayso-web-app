@@ -1,7 +1,8 @@
-import type { ErrorEvent, EventHint } from '@sentry/react';
+import type { Breadcrumb, ErrorEvent, EventHint } from '@sentry/react';
 import { isSessionExpiredError } from '@/utils/sessionExpired';
 import { isSuspendedTabTimeoutError } from '@/utils/suspendedTabTimeout';
 import { isLockAcquireTimeoutError } from '@/utils/lockTimeout';
+import { redactUrlTokens } from '@/utils/redactUrlTokens';
 
 export const sentryConfig = {
   dsn: "https://2c444147dfb523db2091f3240ca27396@o4510697565585408.ingest.us.sentry.io/4510697705046016",
@@ -9,7 +10,15 @@ export const sentryConfig = {
   beforeSend(event: ErrorEvent, hint: EventHint): ErrorEvent | null {
     const exception = hint.originalException;
     if (isSessionExpiredError(exception) || isSuspendedTabTimeoutError(exception) || isLockAcquireTimeoutError(exception)) return null;
+    if (event.request?.url) event.request.url = redactUrlTokens(event.request.url);
     return event;
+  },
+  beforeBreadcrumb(breadcrumb: Breadcrumb): Breadcrumb {
+    if (breadcrumb.category !== 'navigation' || !breadcrumb.data) return breadcrumb;
+    const data = Object.fromEntries(Object.entries(breadcrumb.data).map(
+      ([key, value]) => [key, typeof value === 'string' ? redactUrlTokens(value) : value],
+    ));
+    return { ...breadcrumb, data };
   },
   // Message-level backstop for the lock timeout above. Both lock implementations
   // are listed because the message differs between them — matching only the

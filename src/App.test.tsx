@@ -3,6 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react'
 import { BrowserRouter, useLocation } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
 import { supabase } from './config/supabase'
+import { useRequestedPath } from './context/RequestedPathContext'
 import App from './App'
 
 vi.mock('@sentry/react', () => ({ addBreadcrumb: vi.fn(), captureException: vi.fn() }))
@@ -14,7 +15,8 @@ vi.mock('./components/SaysoLoader', () => ({ default: () => null }))
 vi.mock('./AppRoutes', () => ({
   default: function Shown() {
     const { pathname, search, state } = useLocation()
-    return <p data-testid="location">{JSON.stringify({ path: pathname + search, state })}</p>
+    const requestedPath = useRequestedPath()
+    return <p data-testid="location">{JSON.stringify({ path: pathname + search, state, requestedPath })}</p>
   },
 }))
 
@@ -44,13 +46,19 @@ test.each([
   ['rejects', () => verifyOtp.mockRejectedValue(new Error('network'))],
 ])('handoff that %s: login remembers the page, not the token', async (_name, setup) => {
   setup()
-  expect(await openHandoff()).toEqual({ path: '/login', state: { from: '/subscription?ref=desktop' } })
+  let urlWhenReported = ''
+  vi.mocked(Sentry.captureException).mockImplementation(() => {
+    urlWhenReported = window.location.href
+    return ''
+  })
+  expect(await openHandoff()).toEqual({ path: '/login', state: { from: '/subscription?ref=desktop' }, requestedPath: '/login' })
   expect(Sentry.captureException).toHaveBeenCalledOnce()
+  expect(urlWhenReported).not.toContain('secret')
   expectNoToken()
 })
 
 test('successful handoff stays on the page', async () => {
   verifyOtp.mockResolvedValue({ data: {}, error: null } as unknown as VerifyResult)
-  expect(await openHandoff()).toEqual({ path: '/subscription?ref=desktop', state: null })
+  expect(await openHandoff()).toEqual({ path: '/subscription?ref=desktop', state: null, requestedPath: '/subscription?ref=desktop' })
   expectNoToken()
 })

@@ -19,7 +19,10 @@ interface AuthContextValue {
   signUp: (data: SignUpData) => Promise<AuthResult>;
   signIn: (data: SignInData) => Promise<AuthResult>;
   handleSignOut: () => Promise<void>;
-  /** Signed out on purpose (not an expired session): the next login starts at `/`. */
+  /**
+   * Signed out on purpose (not an expired session): AuthGuard doesn't remember the page.
+   * MFA's "Back to sign in" still does, since the user is on the way to it.
+   */
   signedOutByUser: boolean;
   user: User | null;
   globalUser: Account | null;
@@ -246,10 +249,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     resetUser();
   }
 
-  useEffect(() => {
-    if (user) setSignedOutByUser(false);
-  }, [user]);
-
   // Handle session expiration
   useEffect(() => {
     const handleSessionExpired = () => {
@@ -299,6 +298,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         setAuthToken(session?.access_token ?? null)
         setLoading(false)
+
+        // Only a sign-in: TOKEN_REFRESHED can land while a sign-out is in flight.
+        if (event === 'SIGNED_IN') setSignedOutByUser(false)
 
         // Covers a sign-out from another tab, which never reaches resetUser.
         if (event === 'SIGNED_OUT') {

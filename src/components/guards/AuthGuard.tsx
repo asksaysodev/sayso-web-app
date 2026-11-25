@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import { getAAL } from '@/services/mfaServices';
@@ -24,6 +24,11 @@ const AuthGuard = ({ children }: Props) => {
   const navigate = useNavigate();
   const [isCheckingMFA, setIsCheckingMFA] = useState(true);
 
+  // Reads the latest path without making it a dependency: a query change must not re-run the MFA check.
+  const goToMFA = useEffectEvent(() => {
+    navigate('/mfa-verify', { replace: true, state: toIntendedState(requestedPath) });
+  });
+
   useEffect(() => {
     const checkMFAStatus = async () => {
       if (!globalUser) {
@@ -34,14 +39,14 @@ const AuthGuard = ({ children }: Props) => {
       const aalResult = await getAAL();
 
       if (aalResult.error || !aalResult.data) {
-        navigate('/mfa-verify', { replace: true, state: toIntendedState(requestedPath) });
+        goToMFA();
         return;
       }
 
       const needsMFA = checkIfNeedsMFA(aalResult.data.currentLevel, aalResult.data.nextLevel);
 
       if (needsMFA) {
-        navigate('/mfa-verify', { replace: true, state: toIntendedState(requestedPath) });
+        goToMFA();
       } else {
         setIsCheckingMFA(false);
       }
@@ -50,7 +55,7 @@ const AuthGuard = ({ children }: Props) => {
     if (!loading && !userLoading) {
       checkMFAStatus();
     }
-  }, [globalUser, loading, userLoading, checkIfNeedsMFA, navigate, requestedPath]);
+  }, [globalUser, loading, userLoading, checkIfNeedsMFA]);
 
   // Optimistic sign-up (useOptimisticSignupStore): /signup/plan is shown while the account is
   // created and loaded, instead of the logo loader. Same tree shape as the normal return below,

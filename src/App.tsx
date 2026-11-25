@@ -62,20 +62,25 @@ function App() {
         }
       }
     } else if (handoffToken) {
+      const handleHandoffFailure = (error: unknown) => {
+        // Strip the token before reporting: Sentry attaches the current URL to the event.
+        window.history.replaceState(null, '', '/login');
+        navigate('/login', { replace: true, state: toIntendedState(intendedPath) });
+        console.error('[App] Failed to redeem desktop handoff token:', error);
+        Sentry.captureException(error, { tags: { flow: 'desktop_handoff' } });
+      };
+
       supabase.auth.verifyOtp({ type: 'magiclink', token_hash: handoffToken })
         // Strip the token from the URL either way — it is single-use, and leaving it
         // in history hands it to anything that can read the address bar.
         .then(({ error }) => {
-          if (error) throw error;
-          window.history.replaceState(null, '', intendedPath);
-          navigate(intendedPath, { replace: true });
-        })
-        .catch((error) => {
-          console.error('[App] Failed to redeem desktop handoff token:', error);
-          Sentry.captureException(error, { tags: { flow: 'desktop_handoff' } });
-          window.history.replaceState(null, '', '/login');
-          navigate('/login', { replace: true, state: toIntendedState(intendedPath) });
-        })
+          if (error) {
+            handleHandoffFailure(error);
+          } else {
+            window.history.replaceState(null, '', intendedPath);
+            navigate(intendedPath, { replace: true });
+          }
+        }, handleHandoffFailure)
         .finally(() => setProcessingToken(false));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

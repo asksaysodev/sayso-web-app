@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { act, cleanup, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { RequestedPathContext } from '@/context/RequestedPathContext'
 import { useAuth } from '@/context/AuthContext'
@@ -72,4 +72,18 @@ test.each([
   mockAuth({ user: { id: '1' }, globalUser: { id: '1' } })
   renderGuard('/subscription')
   expect(await shown()).toEqual({ pathname: '/mfa-verify', state: { from: '/subscription' } })
+})
+
+test('a query change does not re-run the MFA check', async () => {
+  vi.mocked(getAAL).mockClear().mockResolvedValue({ data: { currentLevel: 'aal1', nextLevel: 'aal1' }, error: null })
+  mockAuth({ user: { id: '1' }, globalUser: { id: '1' } })
+  const tree = (path: string) => (
+    <MemoryRouter initialEntries={['/settings']}>
+      <RequestedPathContext value={path}><AuthGuard><p>page</p></AuthGuard></RequestedPathContext>
+    </MemoryRouter>
+  )
+  const { rerender } = render(tree('/settings?tab=profile'))
+  await screen.findByText('page')
+  await act(async () => rerender(tree('/settings?tab=security')))
+  expect(getAAL).toHaveBeenCalledOnce()
 })
