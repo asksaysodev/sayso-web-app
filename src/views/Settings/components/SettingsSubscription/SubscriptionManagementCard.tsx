@@ -1,37 +1,38 @@
 import { Card } from '@/components/ds/Card';
 import { Button } from '@/components/ds/Button';
-import useStripeCancellation from '@/views/Subscription/hooks/useStripeCancellation';
+import CancelSubscription from './CancelSubscription';
+import ManageBillingButton from './ManageBillingButton';
+import { billAfterReactivation, formatBillSentence, type PlanState } from './planState';
+import { type ActiveSubscription, canStartCancellation } from './utils';
 
 interface Props {
-    plan: string;
+    subscription: ActiveSubscription;
+    state: PlanState;
+    onCancel: () => void;
+    onReactivate: () => void;
 }
 
-export default function SubscriptionManagementCard({ plan }: Props) {
-    const { mutateGetStripeCancellationPageUrl, isPendingGetStripeCancellationPageUrl } = useStripeCancellation();
-    const openBillingPortal = () => mutateGetStripeCancellationPageUrl(plan);
+export default function SubscriptionManagementCard({ subscription, state, onCancel, onReactivate }: Props) {
+    const isCancelling = state === 'cancelling';
+    const bill = isCancelling ? billAfterReactivation(subscription) : null;
 
     return (
         <Card className='subscription-card management-card'>
             <div className='management-card__text'>
                 <div>
                     <h2 className='subscription-card__title'>Subscription management</h2>
-                    <p className='management-card__description'>Update your payment method and billing information.</p>
+                    <p className='management-card__description'>
+                        {bill
+                            ? `If you reactivate, your next bill will be ${formatBillSentence(bill)}. No charge today.`
+                            : 'Update your payment method and billing information.'}
+                    </p>
                 </div>
-                {/*
-                    TODO: re-enable when we work on the user retention flow (pause/cancel).
-                    <button
-                        type='button'
-                        className='management-card__cancel'
-                        onClick={openBillingPortal}
-                        disabled={isPendingGetStripeCancellationPageUrl}
-                    >
-                        I want to cancel
-                    </button>
-                */}
+                {canStartCancellation(subscription) && <CancelSubscription onClick={onCancel} />}
             </div>
-            <Button variant='secondary' onClick={openBillingPortal} loading={isPendingGetStripeCancellationPageUrl}>
-                Manage billing
-            </Button>
+            <div className='management-card__actions'>
+                {isCancelling && <Button onClick={onReactivate}>Reactivate subscription</Button>}
+                <ManageBillingButton isTinted={state !== 'normal'} />
+            </div>
         </Card>
     );
 }

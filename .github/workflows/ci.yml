@@ -1,0 +1,40 @@
+name: CI
+
+# Runs on every PR. `Validate` is a required check in the repo ruleset, next to Vercel's build.
+on:
+  pull_request:
+    branches: [development, staging, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc -b
+
+      - name: Typecheck tests
+        run: npx tsc -p tsconfig.test.json
+
+      - name: Run tests
+        run: npm test

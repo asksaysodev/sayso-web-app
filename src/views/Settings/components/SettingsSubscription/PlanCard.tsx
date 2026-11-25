@@ -1,12 +1,9 @@
 import { useMemo } from 'react';
-import dayjs from 'dayjs';
-import { useQuery } from '@tanstack/react-query';
-import { PiSpeedometer } from 'react-icons/pi';
 import { Card } from '@/components/ds/Card';
 import { Button } from '@/components/ds/Button';
-import getAccountUsage from '@/services/getAccountUsage';
 import useStripeUpgrade from '@/views/Subscription/hooks/useStripeUpgrade';
-import { type ActiveSubscription, planStatus } from './utils';
+import PlanUsage from './PlanUsage';
+import { type ActiveSubscription, formatBillingDate, planStatus } from './utils';
 
 interface Props {
     subscription: ActiveSubscription;
@@ -14,18 +11,13 @@ interface Props {
 
 export default function PlanCard({ subscription }: Props) {
     const { mutateUpgradeTrialSubscription, isPendingUpgradeTrialSubscription } = useStripeUpgrade();
-    const { data: usage, isPending: isUsagePending } = useQuery({
-        queryKey: ['settings-account-usage'],
-        queryFn: getAccountUsage,
-    });
 
     const isTrialing = subscription.status === 'trialing';
-    const isCancelling = subscription.status === 'canceled' || !!subscription.cancelledAt;
     const isPartnerFunded = !!subscription.isPartnerFunded;
     const status = planStatus(subscription);
 
     const renewalDate = subscription.billing?.period?.end
-        ? dayjs(subscription.billing.period.end).format('MMM D, YYYY')
+        ? formatBillingDate(subscription.billing.period.end)
         : '';
 
     const planMinutes = (isTrialing ? subscription.includedMinutes?.trial : subscription.includedMinutes?.plan) ?? 0;
@@ -38,12 +30,9 @@ export default function PlanCard({ subscription }: Props) {
                 : 'Your subscription is paid by your partner organization.';
         }
         if (!renewalDate) return null;
-        if (subscription.status === 'paused') {
-            return `Your subscription is paused. Your minutes will expire on ${renewalDate}, but you'll continue to have access to your account.`;
-        }
-        if (isCancelling) return `You can continue using Sayso until ${renewalDate}.`;
+        if (subscription.status === 'canceled') return `You can continue using Sayso until ${renewalDate}.`;
         return `Your subscription renews on ${renewalDate}.`;
-    }, [subscription, renewalDate, isCancelling, isPartnerFunded]);
+    }, [subscription, renewalDate, isPartnerFunded]);
 
     return (
         <Card className='subscription-card plan-card'>
@@ -79,25 +68,7 @@ export default function PlanCard({ subscription }: Props) {
                     </div>
                 )}
             </div>
-            {isUsagePending && (
-                <p className='plan-card__usage' aria-busy='true' aria-label='Loading usage'>
-                    <PiSpeedometer size={20} aria-hidden />
-                    {/* nbsp gives the row the real text's line height, so nothing shifts on load */}
-                    <span className='plan-card__usage-placeholder' aria-hidden>
-                        {'\u00a0'}
-                        <span className='skeleton plan-card__usage-skeleton' />
-                    </span>
-                </p>
-            )}
-            {usage && (
-                <p className='plan-card__usage'>
-                    <PiSpeedometer size={20} aria-hidden />
-                    <span>
-                        {`You've used ${usage.usedMinutes} ${usage.usedMinutes === 1 ? 'minute' : 'minutes'} this period`}
-                        {usage.periodEnd && `, which ends on ${dayjs(usage.periodEnd).format('MMMM D, YYYY')}`}
-                    </span>
-                </p>
-            )}
+            <PlanUsage />
         </Card>
     );
 }

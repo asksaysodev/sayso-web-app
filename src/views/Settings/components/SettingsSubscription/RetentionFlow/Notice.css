@@ -1,0 +1,30 @@
+.notice {
+    margin: 0;
+    padding: var(--space-8) var(--space-16);
+    border: 1px solid transparent;
+    border-radius: var(--radius-8);
+    font-size: var(--text-body-md-size);
+    color: var(--neutral-800);
+}
+
+.notice--primary {
+    border-color: var(--primary-300);
+    background-color: var(--primary-50);
+}
+
+.notice--success {
+    border-color: var(--success-border-2);
+    background-color: var(--success-bg);
+    color: var(--success-text);
+}
+
+.notice--warning {
+    border-color: var(--warning-border);
+    background-color: var(--warning-bg);
+}
+
+.notice--error {
+    border-color: var(--error-icon);
+    background-color: var(--error-bg);
+    color: var(--error-text);
+}

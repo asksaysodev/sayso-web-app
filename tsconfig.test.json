@@ -1,0 +1,11 @@
+{
+  // Typechecks the tests (src/**/*.test.ts(x)), which tsconfig.app.json excludes so a test
+  // type error never blocks `npm run build` on Vercel. CI runs: npx tsc -p tsconfig.test.json
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo"
+  },
+  "include": ["src"],
+  "exclude": []
+}

@@ -98,6 +98,7 @@
 .plan-card__status-dot--success { background-color: var(--success-icon); }
 .plan-card__status-dot--primary { background-color: var(--primary-500); }
 .plan-card__status-dot--warning { background-color: var(--warning-icon); }
+.plan-card__status-dot--info { background-color: var(--info-text); }
 .plan-card__status-dot--error { background-color: var(--error-icon); }
 
 .plan-card__meta {
@@ -219,28 +220,18 @@
     color: var(--text-secondary);
 }
 
-.management-card__cancel {
-    padding: var(--space-2) var(--space-4);
-    border: none;
-    border-radius: var(--radius-8);
-    background: none;
-    font-family: var(--font-ds);
-    font-size: var(--text-body-md-size);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-secondary);
-    cursor: pointer;
-}
-
-.management-card__cancel:hover {
-    color: var(--text-primary);
-}
-
-.management-card__cancel:disabled {
-    cursor: default;
-    opacity: 0.6;
+.management-card__actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: var(--space-12);
 }
 
 @media (max-width: 767px) {
+    .management-card__actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
     .plan-card__top,
     .management-card {
         flex-direction: column;
