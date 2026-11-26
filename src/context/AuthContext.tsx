@@ -179,11 +179,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setAccountNotFound(false)
   }
 
+  /**
+   * Refreshes the account. Dropped if the signed-in user changed while it was in flight,
+   * so one user's response never becomes the next one's account.
+   */
   const updateGlobalUser = async (accountEmail: string): Promise<void> => {
+    const requestedFor = prevUserRef.current?.id;
     try {
       const account = await getAccount(accountEmail);
-      // A response requested by the previous session must not become the next one's account.
-      if (account.email.toLowerCase() !== prevUserRef.current?.email?.toLowerCase()) return;
+      if (!requestedFor || prevUserRef.current?.id !== requestedFor) return;
       updateGlobalUserState(account);
     } catch (error) {
       console.error('Error updating global user:', error);
@@ -230,10 +234,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   /**
    * Clears what belongs to the session that is ending, so the next user in this tab is not
    * served another account's (or company's) cached queries while they are still fresh.
-   * Leaves the shared `sayso-global-user` key alone: other tabs write it too, and
-   * readCachedAccount only serves it to the address it belongs to.
+   * Clears the account in memory but leaves the shared `sayso-global-user` key alone: other
+   * tabs write it too, and readCachedAccount only serves it to the address it belongs to.
    */
   const clearUserScopedState = () => {
+    setGlobalUser(null);
+    setGlobalUserIsStale(false);
+    setAccountUnavailable(false);
+    setAccountNotFound(false);
     queryClient.clear();
     clearSettledOptimisticSignup();
     setMfaFactors([]);
@@ -405,10 +413,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Another tab signed in as someone else without signing out first (SAYSO-645).
           if (prevUserRef.current && newUser && prevUserRef.current.id !== newUser.id) {
             clearUserScopedState()
-            setGlobalUser(null)
-            setGlobalUserIsStale(false)
-            setAccountUnavailable(false)
-            setAccountNotFound(false)
             Sentry.setUser({ id: newUser.id, email: newUser.email })
           }
           setUser(newUser)

@@ -20,16 +20,11 @@ const renderRoute = () => render(<MemoryRouter><SettingsModalRoute /></MemoryRou
 beforeEach(() => vi.mocked(useAuth).mockReset())
 afterEach(cleanup)
 
-test('opens once the account is loaded', async () => {
+test('hides the modal while the current account is unavailable', async () => {
   mockAuth(false)
-  renderRoute()
-  expect(await screen.findByTestId('settings-modal')).toBeTruthy()
-})
-
-test('does not show a previous account while the current one is unavailable', async () => {
+  const { rerender } = renderRoute()
+  await screen.findByTestId('settings-modal')
   mockAuth(true)
-  renderRoute()
-  await import('@/views/Settings/SettingsModal')
-  await new Promise(resolve => setTimeout(resolve, 0))
+  rerender(<MemoryRouter><SettingsModalRoute /></MemoryRouter>)
   expect(screen.queryByTestId('settings-modal')).toBeNull()
 })

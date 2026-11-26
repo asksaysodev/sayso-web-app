@@ -130,7 +130,7 @@ test("a refresh of the previous user's account that lands after the switch is dr
   expect(JSON.parse(localStorage.getItem('sayso-global-user')!)).toEqual(accountB)
 })
 
-test('the same user signing in again keeps the cache', async () => {
+test('the same user signing in again with changed profile data keeps the cache', async () => {
   await signInAsA()
   await act(async () => emit('SIGNED_IN', session('A', 'a@b.c', { name: 'Ann' })))
   expect(queryClient.getQueryData(['team'])).toBe('A team')
