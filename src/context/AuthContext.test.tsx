@@ -19,9 +19,10 @@ vi.mock('@/services/mfaServices', () => ({ getAAL: vi.fn(), listFactors: vi.fn()
 vi.mock('@/services/referralRocket', () => ({ enrollReferralParticipant: async () => {} }))
 vi.mock('@/services/setReferralAttribution', () => ({}))
 
-const session = (id: string) => ({ user: { id, email: 'a@b.c' }, access_token: 't' })
+const session = (id: string, email = 'a@b.c', user_metadata = {}) => ({ user: { id, email, user_metadata }, access_token: 't' })
 type AuthCallback = (event: string, session: unknown) => void
 let emit: AuthCallback
+let queryClient: QueryClient
 
 type Auth = ReturnType<typeof useAuth>
 const onRender = vi.fn<(auth: Auth) => void>()
@@ -45,6 +46,7 @@ const clickSignOut = () => act(async () => screen.getByText('Sign out').click())
 beforeEach(async () => {
   localStorage.clear()
   onRender.mockClear()
+  queryClient = new QueryClient()
   getAccount.mockReset().mockReturnValue(new Promise(() => {}))
   vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: session('1') }, error: null } as never)
   vi.mocked(supabase.auth.onAuthStateChange).mockImplementation(((callback: AuthCallback) => {
@@ -54,7 +56,7 @@ beforeEach(async () => {
   await act(async () => {
     render(
       <MemoryRouter>
-        <QueryClientProvider client={new QueryClient()}><AuthProvider><Probe /></AuthProvider></QueryClientProvider>
+        <QueryClientProvider client={queryClient}><AuthProvider><Probe /></AuthProvider></QueryClientProvider>
       </MemoryRouter>,
     )
   })
@@ -89,6 +91,71 @@ test('SIGNED_IN for the same user (tab focus) does not reload the account', asyn
   onRender.mockClear()
   await act(async () => emit('SIGNED_IN', session('2')))
   expect(onRender.mock.calls.some(([auth]) => auth.userLoading)).toBe(false)
+})
+
+const accountA = { id: 'A', email: 'a@b.c' }
+const accountB = { id: 'B', email: 'b@b.c' }
+
+const signInAsA = async () => {
+  vi.useFakeTimers()
+  getAccount.mockResolvedValueOnce(accountA)
+  await act(async () => emit('SIGNED_IN', session('A')))
+  await act(async () => vi.advanceTimersByTimeAsync(400))
+  expect(lastAuth().globalUser).toEqual(accountA)
+  queryClient.setQueryData(['team'], 'A team')
+}
+
+test('signing in as someone else from another tab never renders their account or cache for the new user', async () => {
+  await signInAsA()
+  getAccount.mockResolvedValueOnce(accountB)
+  onRender.mockClear()
+  await act(async () => emit('SIGNED_IN', session('B', 'b@b.c')))
+  expect(queryClient.getQueryData(['team'])).toBeUndefined()
+  await act(async () => vi.advanceTimersByTimeAsync(400))
+  const leaked = onRender.mock.calls.filter(([auth]) => auth.user?.id === 'B' && auth.globalUser?.id === 'A')
+  expect(leaked).toEqual([])
+  expect(lastAuth().globalUser).toEqual(accountB)
+})
+
+test("a refresh of the previous user's account that lands after the switch is dropped", async () => {
+  await signInAsA()
+  let resolveA!: (account: typeof accountA) => void
+  getAccount.mockReturnValueOnce(new Promise(resolve => { resolveA = resolve }))
+  let refresh!: Promise<void>
+  act(() => { refresh = lastAuth().updateGlobalUser('a@b.c') })
+  await act(async () => emit('SIGNED_IN', session('B', 'b@b.c')))
+  localStorage.setItem('sayso-global-user', JSON.stringify(accountB))
+  await act(async () => { resolveA(accountA); await refresh })
+  expect(lastAuth().globalUser).toBeNull()
+  expect(JSON.parse(localStorage.getItem('sayso-global-user')!)).toEqual(accountB)
+})
+
+test('the same user signing in again with changed profile data keeps the cache', async () => {
+  await signInAsA()
+  await act(async () => emit('SIGNED_IN', session('A', 'a@b.c', { name: 'Ann' })))
+  expect(queryClient.getQueryData(['team'])).toBe('A team')
+  expect(lastAuth().globalUser).toEqual(accountA)
+})
+
+test("the previous user's cached account is not served when the new user's fetch fails", async () => {
+  await signInAsA()
+  getAccount.mockRejectedValue(apiError(500, 'boom'))
+  await act(async () => emit('SIGNED_IN', session('B', 'b@b.c')))
+  await act(async () => vi.advanceTimersByTimeAsync(5000))
+  expect(lastAuth()).toMatchObject({ globalUser: null, accountUnavailable: true })
+})
+
+test('retrying a failed account goes straight to loading', async () => {
+  getAccount.mockRejectedValue(apiError(500, 'boom'))
+  await signInAgain()
+  await act(async () => vi.advanceTimersByTimeAsync(5000))
+  expect(lastAuth().accountUnavailable).toBe(true)
+  const { retryAccountFetch } = lastAuth()
+  onRender.mockClear()
+  await act(async () => retryAccountFetch())
+  const settled = onRender.mock.calls.filter(([auth]) => !auth.accountUnavailable && !auth.userLoading)
+  expect(onRender).toHaveBeenCalled()
+  expect(settled).toEqual([])
 })
 
 test.each([

@@ -12,11 +12,11 @@ const SettingsModal = lazyView(() => import('@/views/Settings/SettingsModal'));
  * this waits for MFA and the account, and keeps the subscription gate the full page used to get from SubscriptionGuard.
  */
 export default function SettingsModalRoute() {
-    const { globalUser, userLoading } = useAuth();
+    const { globalUser, userLoading, accountUnavailable } = useAuth();
     const mfaStatus = useMFAStatus();
     const hasSubscription = useHasSubscription();
 
-    if (!globalUser || userLoading || mfaStatus !== 'clear') return null;
+    if (!globalUser || accountUnavailable || userLoading || mfaStatus !== 'clear') return null;
     if (!hasSubscription) return <Navigate to='/signup/plan' replace />;
 
     return (
