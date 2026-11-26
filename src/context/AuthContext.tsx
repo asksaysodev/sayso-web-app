@@ -132,7 +132,8 @@ const readCachedAccount = (email: string): Account | null => {
     if (candidate.email.toLowerCase() !== email.toLowerCase()) return null
 
     return candidate as Account
-  } catch {
+  } catch (error) {
+    Sentry.captureException(error)
     localStorage.removeItem(GLOBAL_USER_CACHE_KEY)
     return null
   }
@@ -181,6 +182,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateGlobalUser = async (accountEmail: string): Promise<void> => {
     try {
       const account = await getAccount(accountEmail);
+      // A response requested by the previous session must not become the next one's account.
+      if (account.email.toLowerCase() !== prevUserRef.current?.email?.toLowerCase()) return;
       updateGlobalUserState(account);
     } catch (error) {
       console.error('Error updating global user:', error);
@@ -223,19 +226,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setAccountRetryNonce(nonce => nonce + 1)
   }
 
+  /**
+   * Clears what belongs to the session that is ending, so the next user in this tab is not
+   * served another account's (or company's) cached queries while they are still fresh.
+   * Leaves the shared `sayso-global-user` key alone: other tabs write it too, and
+   * readCachedAccount only serves it to the address it belongs to.
+   */
+  const clearUserScopedState = () => {
+    queryClient.clear();
+    clearSettledOptimisticSignup();
+    setMfaFactors([]);
+    setMfaRequired(false);
+    setCurrentAAL(null);
+  }
+
   const resetUser = () => {
     setUser(null);
     prevUserRef.current = null;
     updateGlobalUserState(null);
     setAuthToken(null);
     Sentry.setUser(null);
-    setMfaRequired(false);
-    setCurrentAAL(null);
-    setMfaFactors([]);
-    // Cached queries belong to the session that fetched them — the next sign-in in this
-    // tab must not be served another account's (or company's) data while it is still fresh.
-    queryClient.clear();
-    clearSettledOptimisticSignup();
+    clearUserScopedState();
   }
 
   /**
@@ -387,13 +398,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (event === 'SIGNED_IN') setSignedOutByUser(false)
 
         // Covers a sign-out from another tab, which never reaches resetUser.
-        if (event === 'SIGNED_OUT') {
-          setMfaFactors([])
-          queryClient.clear()
-          clearSettledOptimisticSignup()
-        }
+        if (event === 'SIGNED_OUT') clearUserScopedState()
 
         if (JSON.stringify(newUser) !== JSON.stringify(prevUserRef.current)) {
+          // Another tab signed in as someone else without signing out first (SAYSO-645).
+          if (prevUserRef.current && newUser && prevUserRef.current.id !== newUser.id) {
+            clearUserScopedState()
+            setGlobalUser(null)
+            setGlobalUserIsStale(false)
+            setAccountUnavailable(false)
+            setAccountNotFound(false)
+            Sentry.setUser({ id: newUser.id, email: newUser.email })
+          }
           setUser(newUser)
           prevUserRef.current = newUser
           // Same batch as the user: no render may see a new user whose account isn't loading yet.
