@@ -115,13 +115,35 @@ test('no session at boot does not leave the account loading', async () => {
   expect(lastAuth().userLoading).toBe(false)
 })
 
-test('a local sign-out that returns an error keeps the session', async () => {
-  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('boom') } as never)
+const storeSession = () => {
+  localStorage.setItem('sayso-auth', '{}')
+  localStorage.setItem('sayso-auth-user', '{}')
+}
+const storedSession = () => [localStorage.getItem('sayso-auth'), localStorage.getItem('sayso-auth-user')]
+const removeItem = Storage.prototype.removeItem
+const breakStorage = () => vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(function (this: Storage, key: string) {
+  if (key === 'sayso-auth') throw new Error('storage unavailable')
+  removeItem.call(this, key)
+})
+
+test('a local sign-out that returns an error still ends the session on this device', async () => {
+  storeSession()
+  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('offline') } as never)
   let signedOut: boolean | undefined
   await act(async () => { signedOut = await lastAuth().signOutLocally() })
+  expect(signedOut).toBe(true)
+  expect(lastAuth().user).toBeNull()
+  expect(storedSession()).toEqual([null, null])
+})
+
+test('a local sign-out keeps the session only when storage fails', async () => {
+  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('offline') } as never)
+  breakStorage()
+  let signedOut: boolean | undefined
+  await act(async () => { signedOut = await lastAuth().signOutLocally() })
+  vi.restoreAllMocks()
   expect(signedOut).toBe(false)
   expect(lastAuth().user).not.toBeNull()
-  expect(supabase.auth.signOut).toHaveBeenLastCalledWith({ scope: 'local' })
 })
 
 test.each([
@@ -155,8 +177,46 @@ test('the next sign-in clears the flag', async () => {
   expect(state()).toEqual({ signedIn: true, signedOutByUser: false })
 })
 
-test('a sign-out that throws clears the flag', async () => {
-  vi.mocked(supabase.auth.signOut).mockRejectedValue(new Error('lock timeout'))
+test.each([
+  ['returns an error', () => Promise.resolve({ error: new Error('offline') })],
+  ['throws', () => Promise.reject(new Error('lock timeout'))],
+])('a sign-out that %s still ends the session on this device', async (_name, signOut) => {
+  storeSession()
+  localStorage.setItem('sayso-offer-token', 'offer')
+  vi.mocked(supabase.auth.signOut).mockImplementation(signOut as never)
   await clickSignOut()
+  expect(state()).toEqual({ signedIn: false, signedOutByUser: true })
+  expect(storedSession()).toEqual([null, null])
+  expect(localStorage.getItem('sayso-offer-token')).toBeNull()
+  expect(supabase.auth.signOut).toHaveBeenLastCalledWith({ scope: 'local' })
+})
+
+test('a sign-out that hangs ends the session on this device after the timeout', async () => {
+  vi.useFakeTimers()
+  storeSession()
+  vi.mocked(supabase.auth.signOut).mockReturnValue(new Promise(() => {}))
+  await clickSignOut()
+  expect(state().signedIn).toBe(true)
+  await act(async () => vi.advanceTimersByTimeAsync(8000))
+  expect(state()).toEqual({ signedIn: false, signedOutByUser: true })
+  expect(storedSession()).toEqual([null, null])
+  expect(supabase.auth.signOut).toHaveBeenCalledTimes(1)
+})
+
+test('a sign-out that cannot clear storage rejects, keeps the session and the offer, and clears the flag', async () => {
+  localStorage.setItem('sayso-offer-token', 'offer')
+  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('offline') } as never)
+  breakStorage()
+  let rejected = false
+  await act(async () => { await lastAuth().handleSignOut().catch(() => { rejected = true }) })
+  vi.restoreAllMocks()
+  expect(rejected).toBe(true)
   expect(state()).toEqual({ signedIn: true, signedOutByUser: false })
+  expect(localStorage.getItem('sayso-offer-token')).toBe('offer')
+})
+
+test('a second sign-out joins the one in flight', async () => {
+  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null })
+  await act(async () => { await Promise.all([lastAuth().handleSignOut(), lastAuth().handleSignOut()]) })
+  expect(supabase.auth.signOut).toHaveBeenCalledTimes(1)
 })

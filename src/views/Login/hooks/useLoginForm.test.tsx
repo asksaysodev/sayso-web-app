@@ -115,11 +115,26 @@ test('deleted account: stays on the form with an error, every time', async () =>
   expect(homeRendered).not.toHaveBeenCalled()
 })
 
-test('deleted account and the sign-out fails: leaves the form instead of hanging on it', async () => {
+test('deleted account and Supabase cannot sign out: the session still ends, stays on the form', async () => {
   getAccount.mockRejectedValue(missingAccount)
-  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('boom') } as never)
+  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('offline') } as never)
   await submit()
   await settle()
+  expect(showToast).toHaveBeenLastCalledWith('error', "We couldn't find an account for this email.")
+  expect(homeRendered).not.toHaveBeenCalled()
+})
+
+test('deleted account and the session cannot be cleared: leaves the form instead of hanging on it', async () => {
+  getAccount.mockRejectedValue(missingAccount)
+  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('offline') } as never)
+  const removeItem = Storage.prototype.removeItem
+  vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(function (this: Storage, key: string) {
+    if (key === 'sayso-auth') throw new Error('storage unavailable')
+    removeItem.call(this, key)
+  })
+  await submit()
+  await settle()
+  vi.restoreAllMocks()
   screen.getByText('home')
 })
 

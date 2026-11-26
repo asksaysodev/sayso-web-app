@@ -1,5 +1,6 @@
 import { PiCaretRight, PiFileDoc, PiFileLock, PiSignOut } from 'react-icons/pi';
 import { useAuth } from '@/context/AuthContext';
+import useSignOut from '@/hooks/useSignOut';
 import { PRIVACY_POLICY_URL, TERMS_URL } from '@/constants';
 import { Card } from '@/components/ds/Card';
 import UserIdentity from '@/components/UserMenu/UserIdentity';
@@ -15,7 +16,8 @@ interface Props {
 }
 
 export default function SettingsMobileList({ availablePanels, onSelectPanel, onBack }: Props) {
-    const { globalUser, handleSignOut } = useAuth();
+    const { globalUser } = useAuth();
+    const { signOut, isSigningOut } = useSignOut();
 
     return (
         <>
@@ -45,7 +47,7 @@ export default function SettingsMobileList({ availablePanels, onSelectPanel, onB
                     <PiFileDoc size={24} aria-hidden />
                     <span className='settings-mobile-row__label'>Terms &amp; Conditions</span>
                 </a>
-                <button type='button' className='settings-mobile-row settings-mobile-row--destructive' onClick={handleSignOut}>
+                <button type='button' className='settings-mobile-row settings-mobile-row--destructive' onClick={() => void signOut()} disabled={isSigningOut}>
                     <PiSignOut size={24} aria-hidden />
                     <span className='settings-mobile-row__label'>Log out</span>
                 </button>

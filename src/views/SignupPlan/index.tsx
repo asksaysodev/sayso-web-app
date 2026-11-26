@@ -12,7 +12,8 @@ import { useAuth } from '@/context/AuthContext';
 import { isOptimisticSignupActive, useOptimisticSignupStore } from '@/store/optimisticSignupStore';
 import { hasReferralCookie } from '@/services/referralRocket';
 import useHasSubscription from '@/hooks/useHasSubscription';
-import { clearOfferToken, getOfferToken } from '@/utils/offerToken';
+import useSignOut from '@/hooks/useSignOut';
+import { getOfferToken } from '@/utils/offerToken';
 import { subscriptionPlansQuery } from '@/views/Subscription/services/getSubscriptionPlans';
 import useStripeCheckout from '@/views/Subscription/hooks/useStripeCheckout';
 import { BillingInterval, BillingIntervalEnum } from '@/views/Subscription/types';
@@ -38,7 +39,8 @@ const BILLING_ITEMS: { value: BillingInterval; label: ReactNode }[] = [
 /** Sign-up step 2 (SAYSO-563): the single pricing view, rendered at /signup/plan. */
 export default function SignupPlan() {
     const [pickedBillingTab, setPickedBillingTab] = useState<BillingInterval | null>(null);
-    const { attributionPending, handleSignOut, globalUser } = useAuth();
+    const { attributionPending, globalUser } = useAuth();
+    const { signOut, isSigningOut } = useSignOut();
     const hasSubscription = useHasSubscription();
     const navigate = useNavigate();
     // Optimistic sign-up (useOptimisticSignupStore): this view can render before the account
@@ -54,12 +56,9 @@ export default function SignupPlan() {
         isOptimisticSignupActive(useOptimisticSignupStore.getState().status),
     );
 
-    // Give users an exit from the pricing view (they have no nav here); also the
-    // natural place to drop the offer token (SAYSO-317) so it doesn't linger.
+    // Give users an exit from the pricing view (they have no nav here). handleSignOut drops the offer token (SAYSO-317).
     const onSignOut = async () => {
-        clearOfferToken();
-        await handleSignOut();
-        navigate('/login');
+        if (await signOut()) navigate('/login');
     };
 
     // URL-first (reactive) with localStorage fallback so the query key and the
@@ -156,7 +155,7 @@ export default function SignupPlan() {
     const isCheckoutPending = isPendingGetStripeCheckoutPageUrl || (!!queuedPriceId && !isAccountReady);
 
     const signOutAction = (
-        <button type="button" className="authLayoutTextLink" onClick={onSignOut}>
+        <button type="button" className="authLayoutTextLink" onClick={onSignOut} disabled={isSigningOut}>
             <LogOut size={16} strokeWidth={1.75} aria-hidden="true" />
             Sign out
         </button>

@@ -1,4 +1,5 @@
 import { createClient, processLock } from '@supabase/supabase-js'
+import { SUPABASE_STORAGE_KEY } from '@/utils/clearStoredSession'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -10,7 +11,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
-    storageKey: 'sayso-auth',
+    storageKey: SUPABASE_STORAGE_KEY,
     // Uses the Supabase default (plain localStorage), which is synchronous.
     // The previous custom cryptoStorage adapter used async PBKDF2 encryption
     // with a key bundled in the client JS — providing no real security while
