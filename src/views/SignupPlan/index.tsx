@@ -56,7 +56,7 @@ export default function SignupPlan() {
         isOptimisticSignupActive(useOptimisticSignupStore.getState().status),
     );
 
-    // Give users an exit from the pricing view (they have no nav here). handleSignOut drops the offer token (SAYSO-317).
+    // Give users an exit from the pricing view (they have no nav here).
     const onSignOut = async () => {
         if (await signOut()) navigate('/login');
     };

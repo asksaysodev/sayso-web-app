@@ -13,7 +13,7 @@ import { enrollReferralParticipant, getParticipantReferrer, hasReferralCookie } 
 import { setReferralAttribution } from '@/services/setReferralAttribution'
 import reportAALError from '@/utils/reportAALError'
 import { clearSettledOptimisticSignup } from '@/store/optimisticSignupStore'
-import { clearStoredSession } from '@/utils/clearStoredSession'
+import { clearStoredSession } from '@/config/authStorage'
 import { clearOfferToken } from '@/utils/offerToken'
 import type { Factor } from '@supabase/supabase-js'
 import type { AxiosError } from 'axios'
@@ -63,53 +63,27 @@ const GLOBAL_USER_CACHE_KEY = 'sayso-global-user'
 const ACCOUNT_NOT_FOUND_MESSAGE = 'Account not found'
 const ACCOUNT_FETCH_ATTEMPTS = 3
 const ACCOUNT_RETRY_BASE_DELAY_MS = 500
-const SIGN_OUT_TIMEOUT_MS = 8000
-
-type SignOutScope = 'global' | 'local'
-type SignOutAttempt = { outcome: 'ok' } | { outcome: 'error'; error: unknown } | { outcome: 'timeout' }
-
-/** auth-js has no fetch timeout, and a hung sign-out holds the auth lock, so it is raced against one. */
-const attemptSignOut = async (scope: SignOutScope): Promise<SignOutAttempt> => {
-  let timer: ReturnType<typeof setTimeout> | undefined
-  const timeout = new Promise<SignOutAttempt>(resolve => {
-    timer = setTimeout(() => resolve({ outcome: 'timeout' }), SIGN_OUT_TIMEOUT_MS)
-  })
-  const attempt = supabase.auth.signOut({ scope }).then(
-    ({ error }): SignOutAttempt => (error ? { outcome: 'error', error } : { outcome: 'ok' }),
-    (error: unknown): SignOutAttempt => ({ outcome: 'error', error }),
-  )
-
-  try {
-    return await Promise.race([attempt, timeout])
-  } finally {
-    clearTimeout(timer)
-  }
-}
 
 /**
  * Ends the session on this device even when Supabase can't: every signOut scope calls the
- * server first and keeps the session if that fails (offline, 5xx, expired token that can't
- * refresh), which made a failed sign-out look successful until the next reload (SAYSO-644).
+ * server first and keeps the session if that fails (offline, 5xx, timeout, expired token that
+ * can't refresh), which made a failed sign-out look successful until the next reload (SAYSO-644).
  * Throws only if clearing storage does.
  */
-const endSessionOnDevice = async (scope: SignOutScope): Promise<void> => {
-  const result = await attemptSignOut(scope)
-  if (result.outcome === 'ok') return
+const endSessionOnDevice = async (scope: 'global' | 'local'): Promise<void> => {
+  const { error } = await supabase.auth.signOut({ scope }).catch((thrown: unknown) => ({ error: thrown }))
+  if (!error) return
 
-  Sentry.captureException(result.outcome === 'error' ? result.error : new Error('Sign out timed out'), {
-    level: 'warning',
-    tags: { flow: 'signout', scope, fallback: 'storage', reason: result.outcome },
-  })
   clearStoredSession()
+  Sentry.captureException(error, { level: 'warning', tags: { flow: 'signout', scope, fallback: 'storage' } })
 
   // With no stored session this makes no request: it emits SIGNED_OUT and tells other tabs.
-  // Skipped after a timeout, where it would queue behind the hung call's lock.
-  if (result.outcome === 'error') {
-    supabase.auth.signOut({ scope: 'local' }).then(
-      ({ error }) => { if (error) Sentry.captureException(error) },
-      (error: unknown) => { Sentry.captureException(error) },
-    )
-  }
+  const reportBroadcastError = (broadcastError: unknown) =>
+    Sentry.captureException(broadcastError, { level: 'warning', tags: { flow: 'signout', step: 'broadcast' } })
+  supabase.auth.signOut({ scope: 'local' }).then(
+    ({ error: localError }) => { if (localError) reportBroadcastError(localError) },
+    reportBroadcastError,
+  )
 }
 
 const isRetriableAccountError = (error: unknown): boolean => {
@@ -251,6 +225,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resetUser = () => {
     setUser(null);
+    prevUserRef.current = null;
     updateGlobalUserState(null);
     setAuthToken(null);
     Sentry.setUser(null);
@@ -321,7 +296,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setMfaRequired(false)
   }
 
-  const signOut = async () => {
+  const runSignOut = async () => {
     // Set before the await: SIGNED_OUT clears the user, and AuthGuard redirects, before it resolves.
     setSignedOutByUser(true);
 
@@ -342,7 +317,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   /** A second click joins the sign-out in flight instead of racing it. */
   const handleSignOut = () => {
-    signOutInFlight.current ??= signOut();
+    signOutInFlight.current ??= runSignOut();
     return signOutInFlight.current;
   }
 

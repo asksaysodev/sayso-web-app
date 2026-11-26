@@ -1,5 +1,5 @@
 import { createClient, processLock } from '@supabase/supabase-js'
-import { SUPABASE_STORAGE_KEY } from '@/utils/clearStoredSession'
+import { SUPABASE_STORAGE_KEY, fetchWithTimeout } from './authStorage'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -18,5 +18,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     // introducing async-storage race conditions that contributed to spurious
     // session revocations.
     lock: processLock,
-  }
+  },
+  global: { fetch: fetchWithTimeout },
 });

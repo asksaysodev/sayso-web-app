@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { SIGN_OUT_FAILED_MESSAGE } from '@/hooks/useSignOut'
 import MFAVerify from '.'
 
 const { handleSignOut, showToast } = vi.hoisted(() => ({ handleSignOut: vi.fn(), showToast: vi.fn() }))
@@ -56,6 +57,6 @@ test('back to sign in that fails stays put and says so', async () => {
   handleSignOut.mockRejectedValue(new Error('storage unavailable'))
   renderView({ from: '/subscription' })
   await act(async () => screen.getByText('Back to sign in').click())
-  expect(showToast).toHaveBeenCalledWith('error', "We couldn't sign you out. Check your connection and try again.")
+  expect(showToast).toHaveBeenCalledWith('error', SIGN_OUT_FAILED_MESSAGE)
   expect(screen.queryByTestId('location')).toBeNull()
 })

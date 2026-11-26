@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { supabase } from '@/config/supabase'
 import { getAAL, listFactors } from '@/services/mfaServices'
+import { breakSessionStorage } from '@/test/breakSessionStorage'
 import { AuthProvider, useAuth } from './AuthContext'
 
 const getAccount = vi.hoisted(() => vi.fn())
@@ -61,6 +62,7 @@ beforeEach(async () => {
 afterEach(() => {
   cleanup()
   vi.useRealTimers()
+  vi.restoreAllMocks()
 })
 
 const signInAgain = async () => {
@@ -120,11 +122,6 @@ const storeSession = () => {
   localStorage.setItem('sayso-auth-user', '{}')
 }
 const storedSession = () => [localStorage.getItem('sayso-auth'), localStorage.getItem('sayso-auth-user')]
-const removeItem = Storage.prototype.removeItem
-const breakStorage = () => vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(function (this: Storage, key: string) {
-  if (key === 'sayso-auth') throw new Error('storage unavailable')
-  removeItem.call(this, key)
-})
 
 test('a local sign-out that returns an error still ends the session on this device', async () => {
   storeSession()
@@ -138,10 +135,9 @@ test('a local sign-out that returns an error still ends the session on this devi
 
 test('a local sign-out keeps the session only when storage fails', async () => {
   vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('offline') } as never)
-  breakStorage()
+  breakSessionStorage()
   let signedOut: boolean | undefined
   await act(async () => { signedOut = await lastAuth().signOutLocally() })
-  vi.restoreAllMocks()
   expect(signedOut).toBe(false)
   expect(lastAuth().user).not.toBeNull()
 })
@@ -191,25 +187,12 @@ test.each([
   expect(supabase.auth.signOut).toHaveBeenLastCalledWith({ scope: 'local' })
 })
 
-test('a sign-out that hangs ends the session on this device after the timeout', async () => {
-  vi.useFakeTimers()
-  storeSession()
-  vi.mocked(supabase.auth.signOut).mockReturnValue(new Promise(() => {}))
-  await clickSignOut()
-  expect(state().signedIn).toBe(true)
-  await act(async () => vi.advanceTimersByTimeAsync(8000))
-  expect(state()).toEqual({ signedIn: false, signedOutByUser: true })
-  expect(storedSession()).toEqual([null, null])
-  expect(supabase.auth.signOut).toHaveBeenCalledTimes(1)
-})
-
 test('a sign-out that cannot clear storage rejects, keeps the session and the offer, and clears the flag', async () => {
   localStorage.setItem('sayso-offer-token', 'offer')
   vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('offline') } as never)
-  breakStorage()
+  breakSessionStorage()
   let rejected = false
   await act(async () => { await lastAuth().handleSignOut().catch(() => { rejected = true }) })
-  vi.restoreAllMocks()
   expect(rejected).toBe(true)
   expect(state()).toEqual({ signedIn: true, signedOutByUser: false })
   expect(localStorage.getItem('sayso-offer-token')).toBe('offer')
