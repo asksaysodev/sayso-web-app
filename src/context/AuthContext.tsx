@@ -221,6 +221,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
    * at the account-unavailable screen has a way out that is not a page reload.
    */
   const retryAccountFetch = () => {
+    setUserLoading(true)
     setAccountUnavailable(false)
     setAccountNotFound(false)
     setAccountRetryNonce(nonce => nonce + 1)

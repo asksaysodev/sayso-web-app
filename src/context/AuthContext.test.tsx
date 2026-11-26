@@ -145,6 +145,19 @@ test("the previous user's cached account is not served when the new user's fetch
   expect(lastAuth()).toMatchObject({ globalUser: null, accountUnavailable: true })
 })
 
+test('retrying a failed account goes straight to loading', async () => {
+  getAccount.mockRejectedValue(apiError(500, 'boom'))
+  await signInAgain()
+  await act(async () => vi.advanceTimersByTimeAsync(5000))
+  expect(lastAuth().accountUnavailable).toBe(true)
+  const { retryAccountFetch } = lastAuth()
+  onRender.mockClear()
+  await act(async () => retryAccountFetch())
+  const settled = onRender.mock.calls.filter(([auth]) => !auth.accountUnavailable && !auth.userLoading)
+  expect(onRender).toHaveBeenCalled()
+  expect(settled).toEqual([])
+})
+
 test.each([
   ['missing account', 404, 'Account not found', true],
   ['any other 404', 404, 'Not Found', false],
