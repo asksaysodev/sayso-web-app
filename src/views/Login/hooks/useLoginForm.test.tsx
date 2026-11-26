@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { supabase } from '@/config/supabase'
 import { getAAL } from '@/services/mfaServices'
 import { AuthProvider } from '@/context/AuthContext'
+import { breakSessionStorage } from '@/test/breakSessionStorage'
 import GuestGuard from '@/components/guards/GuestGuard'
 import useLoginForm from './useLoginForm'
 
@@ -82,6 +83,7 @@ beforeEach(async () => {
 afterEach(() => {
   cleanup()
   vi.useRealTimers()
+  vi.restoreAllMocks()
 })
 
 test('with MFA: straight to the code, the dashboard never renders', async () => {
@@ -115,9 +117,19 @@ test('deleted account: stays on the form with an error, every time', async () =>
   expect(homeRendered).not.toHaveBeenCalled()
 })
 
-test('deleted account and the sign-out fails: leaves the form instead of hanging on it', async () => {
+test('deleted account and Supabase cannot sign out: the session still ends, stays on the form', async () => {
   getAccount.mockRejectedValue(missingAccount)
-  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('boom') } as never)
+  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('offline') } as never)
+  await submit()
+  await settle()
+  expect(showToast).toHaveBeenLastCalledWith('error', "We couldn't find an account for this email.")
+  expect(homeRendered).not.toHaveBeenCalled()
+})
+
+test('deleted account and the session cannot be cleared: leaves the form instead of hanging on it', async () => {
+  getAccount.mockRejectedValue(missingAccount)
+  vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: new Error('offline') } as never)
+  breakSessionStorage()
   await submit()
   await settle()
   screen.getByText('home')

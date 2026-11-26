@@ -4,6 +4,7 @@ import { ArrowLeft, Check, CircleAlert } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
+import useSignOut from '@/hooks/useSignOut';
 import AuthLayout from '@/components/layouts/AuthLayout';
 import { Button } from '@/components/ds/Button';
 import { CodeInput, type CodeInputHandle } from '@/components/ds/CodeInput';
@@ -21,7 +22,8 @@ const isInvalidCodeError = (error: { message?: string; code?: string } | null | 
 const MFAVerify = () => {
     const navigate = useNavigate();
     const intendedPath = getIntendedPath(useLocation().state);
-    const { verifyMFA, handleSignOut } = useAuth();
+    const { verifyMFA } = useAuth();
+    const { signOut, isSigningOut } = useSignOut();
     const { showToast } = useToast();
 
     const [code, setCode] = useState('');
@@ -74,8 +76,7 @@ const MFAVerify = () => {
     };
 
     const handleBackToLogin = async () => {
-        await handleSignOut();
-        navigate('/login', { replace: true, state: toIntendedState(intendedPath) });
+        if (await signOut()) navigate('/login', { replace: true, state: toIntendedState(intendedPath) });
     };
 
     if (isVerified) {
@@ -122,7 +123,7 @@ const MFAVerify = () => {
                 </div>
 
                 <div className="mfaCardFooter">
-                    <button type="button" className="mfaCardBackLink" onClick={handleBackToLogin}>
+                    <button type="button" className="mfaCardBackLink" onClick={handleBackToLogin} disabled={isSigningOut}>
                         <ArrowLeft size={16} aria-hidden="true" />
                         Back to sign in
                     </button>

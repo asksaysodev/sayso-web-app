@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/react';
 
 import { supabase } from '@/config/supabase';
 import { useToast } from '@/context/ToastContext';
+import useSignOut from '@/hooks/useSignOut';
 import AuthLayout from '@/components/layouts/AuthLayout';
 import { Button } from '@/components/ds/Button';
 import { TextField } from '@/components/ds/TextField';
@@ -18,6 +19,7 @@ const ResetPassword = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { showToast } = useToast();
+    const { signOut } = useSignOut();
 
     const [isLoading, setIsLoading] = useState(true);
     const [linkInvalid, setLinkInvalid] = useState(false);
@@ -113,8 +115,7 @@ const ResetPassword = () => {
     };
 
     const handleBackToLogin = async () => {
-        await supabase.auth.signOut();
-        navigate('/login');
+        if (await signOut()) navigate('/login');
     };
 
     const backLink = (

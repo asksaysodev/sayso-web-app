@@ -13,14 +13,20 @@ import { enrollReferralParticipant, getParticipantReferrer, hasReferralCookie } 
 import { setReferralAttribution } from '@/services/setReferralAttribution'
 import reportAALError from '@/utils/reportAALError'
 import { clearSettledOptimisticSignup } from '@/store/optimisticSignupStore'
+import { clearStoredSession } from '@/config/authStorage'
+import { clearOfferToken } from '@/utils/offerToken'
 import type { Factor } from '@supabase/supabase-js'
 import type { AxiosError } from 'axios'
 
 interface AuthContextValue {
   signUp: (data: SignUpData) => Promise<AuthResult>;
   signIn: (data: SignInData) => Promise<AuthResult>;
+  /**
+   * Resolves once the session has ended on this device, falling back to clearing it from storage
+   * when Supabase can't be reached. Rejects, with the session still alive, only if storage fails.
+   */
   handleSignOut: () => Promise<void>;
-  /** Ends this device's session only. Resolves to false, with the session still alive, if it fails. */
+  /** Ends this device's session only. Resolves to false, with the session still alive, if storage fails. */
   signOutLocally: () => Promise<boolean>;
   /**
    * Signed out on purpose (not an expired session): AuthGuard doesn't remember the page.
@@ -57,6 +63,28 @@ const GLOBAL_USER_CACHE_KEY = 'sayso-global-user'
 const ACCOUNT_NOT_FOUND_MESSAGE = 'Account not found'
 const ACCOUNT_FETCH_ATTEMPTS = 3
 const ACCOUNT_RETRY_BASE_DELAY_MS = 500
+
+/**
+ * Ends the session on this device even when Supabase can't: every signOut scope calls the
+ * server first and keeps the session if that fails (offline, 5xx, timeout, expired token that
+ * can't refresh), which made a failed sign-out look successful until the next reload (SAYSO-644).
+ * Throws only if clearing storage does.
+ */
+const endSessionOnDevice = async (scope: 'global' | 'local'): Promise<void> => {
+  const { error } = await supabase.auth.signOut({ scope }).catch((thrown: unknown) => ({ error: thrown }))
+  if (!error) return
+
+  clearStoredSession()
+  Sentry.captureException(error, { level: 'warning', tags: { flow: 'signout', scope, fallback: 'storage' } })
+
+  // With no stored session this makes no request: it emits SIGNED_OUT and tells other tabs.
+  const reportBroadcastError = (broadcastError: unknown) =>
+    Sentry.captureException(broadcastError, { level: 'warning', tags: { flow: 'signout', step: 'broadcast' } })
+  supabase.auth.signOut({ scope: 'local' }).then(
+    ({ error: localError }) => { if (localError) reportBroadcastError(localError) },
+    reportBroadcastError,
+  )
+}
 
 const isRetriableAccountError = (error: unknown): boolean => {
   const status = (error as AxiosError | undefined)?.response?.status
@@ -129,6 +157,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentAAL, setCurrentAAL] = useState<AALLevel | null>(null)
   const [mfaFactors, setMfaFactors] = useState<Factor[]>([])
   const [signedOutByUser, setSignedOutByUser] = useState(false)
+  const signOutInFlight = useRef<Promise<void> | null>(null)
   const [attributionPending, setAttributionPending] = useState(false)
 
   const { signup, getAccount } = useAccounts()
@@ -196,6 +225,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resetUser = () => {
     setUser(null);
+    prevUserRef.current = null;
     updateGlobalUserState(null);
     setAuthToken(null);
     Sentry.setUser(null);
@@ -266,25 +296,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setMfaRequired(false)
   }
 
-  const handleSignOut = async () => {
+  const runSignOut = async () => {
     // Set before the await: SIGNED_OUT clears the user, and AuthGuard redirects, before it resolves.
     setSignedOutByUser(true);
 
     try {
-      await supabase.auth.signOut();
+      await endSessionOnDevice('global');
     } catch (error) {
       setSignedOutByUser(false);
       Sentry.captureException(error);
       throw error;
+    } finally {
+      signOutInFlight.current = null;
     }
 
+    // Don't leave a pending offer for whoever signs in next on this browser.
+    clearOfferToken();
     resetUser();
+  }
+
+  /** A second click joins the sign-out in flight instead of racing it. */
+  const handleSignOut = () => {
+    signOutInFlight.current ??= runSignOut();
+    return signOutInFlight.current;
   }
 
   const signOutLocally = async (): Promise<boolean> => {
     try {
-      const { error } = await supabase.auth.signOut({ scope: 'local' });
-      if (error) throw error;
+      await endSessionOnDevice('local');
     } catch (error) {
       Sentry.captureException(error);
       return false;

@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import { LuX } from 'react-icons/lu';
 import { Button } from '@/components/ds/Button';
-import { useAuth } from '@/context/AuthContext';
-import { clearOfferToken } from '@/utils/offerToken';
+import useSignOut, { SIGN_OUT_FAILED_MESSAGE } from '@/hooks/useSignOut';
 import '../styles/AccountUnavailable.css';
 
 interface Props {
@@ -23,23 +22,16 @@ interface Props {
  * is broken, not just unreachable), since this screen has no nav.
  */
 export default function AccountUnavailable({ onRetry }: Props) {
-    const { handleSignOut } = useAuth();
+    const { signOut, isSigningOut } = useSignOut({ toastOnError: false });
     const navigate = useNavigate();
-    const [isSigningOut, setIsSigningOut] = useState(false);
     const [signOutFailed, setSignOutFailed] = useState(false);
 
     const onSignOut = async () => {
-        setIsSigningOut(true);
         setSignOutFailed(false);
-        // Don't leave a pending offer for whoever signs in next on this browser (same as SignupPlan).
-        clearOfferToken();
-        try {
-            await handleSignOut();
+        if (await signOut()) {
             navigate('/login', { replace: true });
-        } catch {
+        } else {
             setSignOutFailed(true);
-        } finally {
-            setIsSigningOut(false);
         }
     };
 
@@ -69,7 +61,7 @@ export default function AccountUnavailable({ onRetry }: Props) {
                 </div>
                 {signOutFailed && (
                     <p className="account-unavailable-error" role="status">
-                        We couldn't sign you out. Check your connection and try again.
+                        {SIGN_OUT_FAILED_MESSAGE}
                     </p>
                 )}
             </div>
