@@ -149,6 +149,20 @@ test('coming back to the tab skips the slow-retry wait', async () => {
   expect(sockets()).toBe(5)
 })
 
+test('coming back to the tab while an errored socket waits for its close reconnects right away', async () => {
+  renderHook(() => useConversationsSocket(), { wrapper })
+  await exhaustFastRetries()
+  await advance(SLOW_RETRY_MS)
+  expect(sockets()).toBe(5)
+  latest().onerror?.() // error, no close yet
+  document.dispatchEvent(new Event('visibilitychange'))
+  await flush()
+  expect(sockets()).toBe(6)
+  expect(Sentry.addBreadcrumb).toHaveBeenLastCalledWith(expect.objectContaining({
+    data: expect.objectContaining({ source: 'error' }),
+  }))
+})
+
 test('sign-out and unmount clear the slow-retry timer', async () => {
   const { unmount } = renderHook(() => useConversationsSocket(), { wrapper })
   await exhaustFastRetries()

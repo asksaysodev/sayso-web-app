@@ -47,6 +47,8 @@ export default function useConversationsSocket() {
     const hasConnectedOnceRef = useRef(false);
     const unmountedRef = useRef(false);
     const errorGraceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Set while a socket has errored and we're waiting for its close; runs the disconnect now.
+    const pendingErrorDisconnectRef = useRef<(() => void) | null>(null);
     const slowRetryPendingRef = useRef(false);
     // Start of the current outage: the first disconnect since the last stable connection.
     const downSinceRef = useRef<number | null>(null);
@@ -70,6 +72,7 @@ export default function useConversationsSocket() {
                 clearTimeout(errorGraceTimerRef.current);
                 errorGraceTimerRef.current = null;
             }
+            pendingErrorDisconnectRef.current = null;
         };
 
         const closeSocket = () => {
@@ -189,6 +192,7 @@ export default function useConversationsSocket() {
                         clearTimeout(errorGraceTimerRef.current);
                         errorGraceTimerRef.current = null;
                     }
+                    pendingErrorDisconnectRef.current = null;
                     recordDisconnect({
                         source: event ? (errorSeen ? 'error+close' : 'close') : 'error',
                         code: event?.code ?? null,
@@ -209,9 +213,11 @@ export default function useConversationsSocket() {
                 ws.onerror = () => {
                     if (errorSeen) return;
                     errorSeen = true;
+                    const disconnectNow = () => { if (ws.onclose) onDisconnect(null); };
+                    pendingErrorDisconnectRef.current = disconnectNow;
                     errorGraceTimerRef.current = setTimeout(() => {
                         errorGraceTimerRef.current = null;
-                        if (ws.onclose) onDisconnect(null);
+                        disconnectNow();
                     }, ERROR_CLOSE_GRACE_MS);
                 };
             } catch (error) {
@@ -223,6 +229,9 @@ export default function useConversationsSocket() {
         // fast retry is already in flight.
         const restart = () => {
             if (unmountedRef.current) return;
+            // A socket that errored and is still waiting for its close is already dead: record the
+            // disconnect now instead of letting the grace timer push us onto the slow retry.
+            pendingErrorDisconnectRef.current?.();
             if (socketRef.current) return;
             if (retryTimerRef.current && !slowRetryPendingRef.current) return;
             clearTimers();
