@@ -39,11 +39,14 @@ export default function NotificationWidget() {
         getVisibleNotifications(filteredNotifications, userIsNew),
     [filteredNotifications, userIsNew]);
 
-    const notification = visibleNotifications[currentIndex];
     const total = visibleNotifications.length;
+    // Clamp during render: dismissing the last item shrinks the list before the effect below
+    // can correct currentIndex, so reading visibleNotifications[currentIndex] would be undefined.
+    const safeIndex = Math.min(currentIndex, Math.max(total - 1, 0));
+    const notification = visibleNotifications[safeIndex];
 
-    const goPrev = () => setCurrentIndex(i => Math.max(0, i - 1));
-    const goNext = () => setCurrentIndex(i => Math.min(total - 1, i + 1));
+    const goPrev = () => setCurrentIndex(Math.max(0, safeIndex - 1));
+    const goNext = () => setCurrentIndex(Math.min(total - 1, safeIndex + 1));
 
     const isLastWelcome = (notification?.is_welcome ?? false) &&
         visibleNotifications.filter(n => n.is_welcome).length === 1;
@@ -60,6 +63,7 @@ export default function NotificationWidget() {
         setRemindedIds(updated);
     };
     
+    // Keeps the stored index in sync with the clamped one, so prev/next start from what's shown.
     /* eslint-disable react-hooks/set-state-in-effect */
     useEffect(() => {
         if (visibleNotifications.length > 0 && currentIndex >= visibleNotifications.length) {
@@ -107,7 +111,7 @@ export default function NotificationWidget() {
         return (
             <NotificationBottomSheet
                 notification={notification}
-                currentIndex={currentIndex}
+                currentIndex={safeIndex}
                 total={total}
                 onDismiss={handleDismiss}
                 onRemindLater={handleRemindLater}
@@ -173,11 +177,11 @@ export default function NotificationWidget() {
                         )}
                         {total > 1 && (
                             <div className='nw-pagination'>
-                                <button className='nw-pagination-btn' onClick={goPrev} disabled={currentIndex === 0}>
+                                <button className='nw-pagination-btn' onClick={goPrev} disabled={safeIndex === 0}>
                                     <LuChevronLeft />
                                 </button>
-                                <span className='nw-pagination-counter'>{currentIndex + 1} / {total}</span>
-                                <button className='nw-pagination-btn' onClick={goNext} disabled={currentIndex === total - 1}>
+                                <span className='nw-pagination-counter'>{safeIndex + 1} / {total}</span>
+                                <button className='nw-pagination-btn' onClick={goNext} disabled={safeIndex === total - 1}>
                                     <LuChevronRight />
                                 </button>
                             </div>
