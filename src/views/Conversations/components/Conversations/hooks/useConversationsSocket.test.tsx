@@ -112,7 +112,7 @@ test('an outage past the threshold reports once, as a warning, with the disconne
   expect(context.level).toBe('warning')
   expect(context.extra.downForMs).toBeGreaterThanOrEqual(REPORT_AFTER_DOWN_MS)
   expect(context.extra.disconnects.length).toBe(5)
-  expect(context.extra.disconnects.at(-1)).toMatchObject({ source: 'error+close', code: 1001, reason: 'going away', wasClean: false, openForMs: null })
+  expect(context.extra.disconnects[context.extra.disconnects.length - 1]).toMatchObject({ source: 'error+close', code: 1001, reason: 'going away', wasClean: false, openForMs: null })
 })
 
 test('every disconnect leaves a breadcrumb with the close code and how long the socket was open', async () => {
